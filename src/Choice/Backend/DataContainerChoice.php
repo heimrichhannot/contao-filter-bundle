@@ -6,8 +6,9 @@
  * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
  */
 
-namespace HeimrichHannot\FilterBundle\Choice;
+namespace HeimrichHannot\FilterBundle\Choice\Backend;
 
+use HeimrichHannot\FilterBundle\Choice\AbstractChoice;
 use Symfony\Component\Filesystem\Filesystem;
 
 class DataContainerChoice extends AbstractChoice

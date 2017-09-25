@@ -1,0 +1,17 @@
+services:
+  huh.filter.manager:
+    class: HeimrichHannot\FilterBundle\Manager\FilterManager
+  huh.filter.registry:
+    class: HeimrichHannot\FilterBundle\Registry\FilterRegistry
+  huh.filter.parent:
+      class: HeimrichHannot\FilterBundle\Filter\ParentFilter
+      tags:
+        - { name: huh.filter, alias: parent, group: base}
+  huh.filter.year:
+      class: HeimrichHannot\FilterBundle\Filter\Temporal\YearFilter
+      tags:
+        - { name: huh.filter, alias: year, group: temporal}
+  huh.filter.year_month:
+      class: HeimrichHannot\FilterBundle\Filter\Temporal\YearMonthFilter
+      tags:
+        - { name: huh.filter, alias: year_month, group: temporal}

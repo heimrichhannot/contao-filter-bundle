@@ -109,7 +109,7 @@ $GLOBALS['TL_DCA']['tl_filter'] = [
             'inputType'        => 'select',
             'label'            => &$GLOBALS['TL_LANG']['tl_filter']['dataContainer'],
             'options_callback' => function () {
-                return \HeimrichHannot\FilterBundle\Choice\DataContainerChoice::create()->getChoices();
+                return \HeimrichHannot\FilterBundle\Choice\Backend\DataContainerChoice::create()->getChoices();
             },
             'eval'             => [
                 'chosen'             => true,

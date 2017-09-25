@@ -69,8 +69,9 @@ $GLOBALS['TL_DCA']['tl_filter_element'] = [
         ]
     ],
     'palettes'    => [
-        '__selector__' => ['published'],
-        'default'      => '{general_legend},title,type;{publish_legend},published;'
+        '__selector__' => ['type', 'published'],
+        'default'      => '{general_legend},title,type;{publish_legend},published;',
+        'parent'       => '{general_legend},title,type;{config_legend},parents;{publish_legend},published;',
     ],
     'subpalettes' => [
         'published' => 'start,stop'
@@ -107,7 +108,7 @@ $GLOBALS['TL_DCA']['tl_filter_element'] = [
             'filter'           => true,
             'inputType'        => 'select',
             'options_callback' => function () {
-                return \HeimrichHannot\FilterBundle\Choice\FilterChoice::create()->getChoices();
+                return \HeimrichHannot\FilterBundle\Choice\Backend\FilterChoice::create()->getChoices();
             },
             'reference'        => &$GLOBALS['TL_LANG']['FILTER_ELEMENTS'],
             'eval'             => ['chosen' => true, 'submitOnChange' => true, 'tl_class' => 'w50'],
@@ -122,6 +123,18 @@ $GLOBALS['TL_DCA']['tl_filter_element'] = [
             'inputType' => 'text',
             'eval'      => ['mandatory' => true, 'tl_class' => 'w50'],
             'sql'       => "varchar(255) NOT NULL default ''"
+        ],
+        'parents'   => [
+            'label'            => &$GLOBALS['TL_LANG']['tl_filter_element']['parents'],
+            'default'          => 'text',
+            'exclude'          => true,
+            'filter'           => true,
+            'inputType'        => 'checkboxWizard',
+            'options_callback' => function (\DataContainer $dc) {
+                return \HeimrichHannot\FilterBundle\Choice\Backend\ParentChoice::create()->setContext($dc)->getChoices();
+            },
+            'eval'             => ['tl_class' => 'wizard', 'multiple' => true],
+            'sql'              => "blob NULL"
         ],
         'published' => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_element']['published'],

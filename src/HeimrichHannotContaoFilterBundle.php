@@ -8,6 +8,7 @@
 
 namespace HeimrichHannot\FilterBundle;
 
+use HeimrichHannot\FilterBundle\DependencyInjection\Compiler\FilterElementManagerPass;
 use HeimrichHannot\FilterBundle\DependencyInjection\HeimrichHannotContaoFilterExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
@@ -26,6 +27,7 @@ class HeimrichHannotContaoFilterBundle extends Bundle
      */
     public function build(ContainerBuilder $container)
     {
+        $container->addCompilerPass(new FilterElementManagerPass('huh.filter.registry', 'huh.filter'));
     }
 
 

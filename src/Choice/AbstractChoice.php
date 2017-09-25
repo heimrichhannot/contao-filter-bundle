@@ -33,6 +33,14 @@ abstract class AbstractChoice
     protected $cacheKey;
 
 
+    /**
+     * Current context
+     *
+     * @var mixed
+     */
+    protected $context;
+
+
     public function __construct()
     {
         $this->cache = new FilesystemAdapter('', 0, \System::getContainer()->get('kernel')->getCacheDir());
@@ -41,6 +49,23 @@ abstract class AbstractChoice
     public static function create()
     {
         return new static();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getContext()
+    {
+        return $this->context;
+    }
+
+    /**
+     * @param mixed $context
+     */
+    public function setContext($context)
+    {
+        $this->context = $context;
+        return $this;
     }
 
     public function getChoices()
