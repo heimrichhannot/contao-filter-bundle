@@ -1,6 +1,13 @@
 <?php
 
+$lang = &$GLOBALS['TL_LANG'];
+
 /**
- * Backend modules
+ * Back end modules
  */
-$GLOBALS['TL_LANG']['MOD']['filter'] = ['Filter', ''];
+$lang['MOD']['filter'] = ['Filter', 'Filter-Konfigurationen verwalten'];
+
+/**
+ * Front end modules
+ */
+$lang['FMD']['filter'] = ['Filter', 'Anzeige eines Filter-Formulars'];

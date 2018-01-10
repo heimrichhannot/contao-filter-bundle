@@ -7,6 +7,8 @@ $lang = &$GLOBALS['TL_LANG']['tl_filter'];
  */
 $lang['title']         = ['Title', 'Please enter a title.'];
 $lang['dataContainer'] = ['DataContainer', 'Choose the desired data container.'];
+$lang['method']        = ['HTTP-Method', 'Select the form method (GET or POST).'];
+$lang['action']        = ['Action', 'Select the url, where the form data should be submitted to.'];
 $lang['published']     = ['Publish Filter', 'Make the Filter publicly visible on the website.'];
 $lang['start']         = ['Show from', 'Do not publish the Filter on the website before this date.'];
 $lang['stop']          = ['Show until', 'Unpublish the Filter on the website after this date.'];

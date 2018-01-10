@@ -6,7 +6,7 @@
  * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
  */
 
-namespace HeimrichHannot\FilterBundle\Choice\Backend;
+namespace HeimrichHannot\FilterBundle\Choice;
 
 use HeimrichHannot\FilterBundle\Choice\AbstractChoice;
 use HeimrichHannot\FilterBundle\Model\FilterModel;
@@ -16,23 +16,31 @@ class ParentChoice extends AbstractChoice
     /**
      * @return array
      */
-    protected function collectChoices()
+    protected function collect()
     {
         $choices = [];
 
-        if (!$this->context->activeRecord->pid || ($filter = FilterModel::findByPk($this->context->activeRecord->pid)) === null || $filter->dataContainer == '') {
+        /**
+         * @var FilterModel $adapter
+         */
+        $adapter = $this->framework->getAdapter(FilterModel::class);
+
+        if (!$this->context->activeRecord->pid || ($filter = $adapter->findByPk($this->context->activeRecord->pid)) === null || $filter->dataContainer == '') {
             return $choices;
         }
 
         \Controller::loadDataContainer($filter->dataContainer);
 
-        $relation = explode('.', $GLOBALS['TL_DCA']['tl_news']['fields']['pid']['foreignKey'], 2);
+        if (!isset($GLOBALS['TL_DCA'][$filter->dataContainer]['fields']['pid']['foreignKey'])) {
+            return $choices;
+        }
+
+        $relation   = explode('.', $GLOBALS['TL_DCA'][$filter->dataContainer]['fields']['pid']['foreignKey'], 2);
         $objOptions = \Database::getInstance()->query("SELECT id, " . $relation[1] . " AS value FROM " . $relation[0] . " WHERE tstamp>0 ORDER BY value");
 
-        $choices = array();
+        $choices = [];
 
-        while ($objOptions->next())
-        {
+        while ($objOptions->next()) {
             $choices[$objOptions->id] = $objOptions->value;
         }
 

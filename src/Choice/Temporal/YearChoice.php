@@ -16,7 +16,7 @@ class YearChoice extends AbstractChoice
     /**
      * @return array
      */
-    protected function collectChoices()
+    protected function collect()
     {
         $choices      = [];
         $newsArchives = deserialize($this->filter->getModule()->news_archives, true);

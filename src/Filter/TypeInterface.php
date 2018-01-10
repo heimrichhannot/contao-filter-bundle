@@ -8,12 +8,10 @@
 
 namespace HeimrichHannot\FilterBundle\Filter;
 
-
-use HeimrichHannot\FilterBundle\Context\ContextInterface;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilderInterface;
 use Symfony\Component\Form\FormBuilderInterface;
 
-class ParentFilter implements FilterInterface
+interface TypeInterface
 {
     /**
      * Build the filter query
@@ -21,10 +19,7 @@ class ParentFilter implements FilterInterface
      * @param array $data The form data
      * @param boolean $count Distinguish between count or fetch query
      */
-    public function buildQuery(FilterQueryBuilderInterface $builder, array $data = [], $count = false)
-    {
-        // TODO: Implement buildQuery() method.
-    }
+    public function buildQuery(FilterQueryBuilderInterface $builder, array $data = [], $count = false);
 
     /**
      * Builds the form, add your filter fields here
@@ -34,22 +29,15 @@ class ParentFilter implements FilterInterface
      *
      * @see FormTypeExtensionInterface::buildForm()
      *
+     * @param array $element The element data
      * @param FormBuilderInterface $builder The form builder
-     * @param ContextInterface $context The current filter module
      */
-    public function buildForm(FormBuilderInterface $builder, ContextInterface $context)
-    {
-        // TODO: Implement buildForm() method.
-    }
+    public function buildForm(array $element, FormBuilderInterface $builder);
 
     /**
      * Clarify the filter name
      * @return string The filter name
      */
-    public static function getName()
-    {
-        return 'pid';
-    }
-
+    public static function getName();
 
 }

@@ -1,17 +1,33 @@
 services:
-  huh.filter.manager:
-    class: HeimrichHannot\FilterBundle\Manager\FilterManager
   huh.filter.registry:
     class: HeimrichHannot\FilterBundle\Registry\FilterRegistry
-  huh.filter.parent:
-      class: HeimrichHannot\FilterBundle\Filter\ParentFilter
-      tags:
-        - { name: huh.filter, alias: parent, group: base}
-  huh.filter.year:
-      class: HeimrichHannot\FilterBundle\Filter\Temporal\YearFilter
-      tags:
-        - { name: huh.filter, alias: year, group: temporal}
-  huh.filter.year_month:
-      class: HeimrichHannot\FilterBundle\Filter\Temporal\YearMonthFilter
-      tags:
-        - { name: huh.filter, alias: year_month, group: temporal}
+    arguments:
+        - "@contao.framework"
+  huh.filter.config:
+      class: HeimrichHannot\FilterBundle\Config\FilterConfig
+      arguments:
+          - "@contao.framework"
+  huh.filter.choice.data_container:
+      class: HeimrichHannot\FilterBundle\Choice\DataContainerChoice
+      arguments:
+        - "@contao.framework"
+  huh.filter.choice.template:
+      class: HeimrichHannot\FilterBundle\Choice\TemplateChoice
+      arguments:
+        - "@contao.framework"
+  huh.filter.choice.parent:
+      class: HeimrichHannot\FilterBundle\Choice\ParentChoice
+      arguments:
+        - "@contao.framework"
+  huh.filter.choice.field:
+      class: HeimrichHannot\FilterBundle\Choice\FieldChoice
+      arguments:
+        - "@contao.framework"
+  huh.filter.choice.type:
+      class: HeimrichHannot\FilterBundle\Choice\TypeChoice
+      arguments:
+          - "@contao.framework"
+  huh.filter.choice.message:
+      class: HeimrichHannot\FilterBundle\Choice\MessageChoice
+      arguments:
+          - "@contao.framework"

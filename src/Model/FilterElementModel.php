@@ -2,6 +2,50 @@
 
 namespace HeimrichHannot\FilterBundle\Model;
 
+/**
+ * Reads and writes filter
+ *
+ * @property integer $id
+ * @property integer $tstamp
+ * @property string $title
+ * @property string $type
+ * @property boolean $published
+ * @property string $start
+ * @property string $stop
+ *
+ * @method FilterElementModel|null findById($id, array $opt = [])
+ * @method FilterElementModel|null findByPk($id, array $opt = [])
+ * @method FilterElementModel|null findOneBy($col, $val, array $opt = [])
+ * @method FilterElementModel|null findOneByTstamp($val, array $opt = [])
+ * @method FilterElementModel|null findOneByTitle($val, array $opt = [])
+ * @method FilterElementModel|null findOneByType($val, array $opt = [])
+ * @method FilterElementModel|null findOneByDataContainer($val, array $opt = [])
+ * @method FilterElementModel|null findOneByPublished($val, array $opt = [])
+ * @method FilterElementModel|null findOneByStart($val, array $opt = [])
+ * @method FilterElementModel|null findOneByStop($val, array $opt = [])
+ *
+ * @method \Contao\Model\Collection|FilterElementModel[]|FilterElementModel|null findByPid($val, array $opt = [])
+ * @method \Contao\Model\Collection|FilterElementModel[]|FilterElementModel|null findByTstamp($val, array $opt = [])
+ * @method \Contao\Model\Collection|FilterElementModel[]|FilterElementModel|null findByTitle($val, array $opt = [])
+ * @method \Contao\Model\Collection|FilterElementModel[]|FilterElementModel|null findByType($val, array $opt = [])
+ * @method \Contao\Model\Collection|FilterElementModel[]|FilterElementModel|null findByDataContainer($val, array $opt = [])
+ * @method \Contao\Model\Collection|FilterElementModel[]|FilterElementModel|null findByPublished($val, array $opt = [])
+ * @method \Contao\Model\Collection|FilterElementModel[]|FilterElementModel|null findByStart($val, array $opt = [])
+ * @method \Contao\Model\Collection|FilterElementModel[]|FilterElementModel|null findByStop($val, array $opt = [])
+ * @method \Contao\Model\Collection|FilterElementModel[]|FilterElementModel|null findMultipleByIds($val, array $opt = [])
+ * @method \Contao\Model\Collection|FilterElementModel[]|FilterElementModel|null findBy($col, $val, array $opt = [])
+ * @method \Contao\Model\Collection|FilterElementModel[]|FilterElementModel|null findAll(array $opt = [])
+ *
+ * @method integer countById($id, array $opt = [])
+ * @method integer countByTstamp($val, array $opt = [])
+ * @method integer countByType($val, array $opt = [])
+ * @method integer countByTitle($val, array $opt = [])
+ * @method integer countByDataContainer($val, array $opt = [])
+ * @method integer countByPublished($val, array $opt = [])
+ * @method integer countByStart($val, array $opt = [])
+ * @method integer countByStop($val, array $opt = [])
+ *
+ */
 class FilterElementModel extends \Model
 {
     protected static $strTable = 'tl_filter_element';
@@ -15,7 +59,7 @@ class FilterElementModel extends \Model
      *
      * @return \Model\Collection|FilterElementModel[]|FilterElementModel|null A collection of models or null if there are no filter elements
      */
-    public static function findPublishedByPid($intId, $intLimit = 0, array $arrOptions = [])
+    public function findPublishedByPid($intId, $intLimit = 0, array $arrOptions = [])
     {
         $t          = static::$strTable;
         $arrColumns = ["$t.pid=?"];
@@ -26,7 +70,7 @@ class FilterElementModel extends \Model
         }
 
         if (!isset($arrOptions['order'])) {
-            $arrOptions['order'] = "$t.sorting DESC";
+            $arrOptions['order'] = "$t.sorting ASC";
         }
 
         if ($intLimit > 0) {

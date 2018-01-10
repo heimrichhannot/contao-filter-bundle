@@ -8,6 +8,8 @@
 
 namespace HeimrichHannot\FilterBundle\Choice;
 
+use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
+use Contao\DataContainer;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 
 abstract class AbstractChoice
@@ -41,14 +43,20 @@ abstract class AbstractChoice
     protected $context;
 
 
-    public function __construct()
-    {
-        $this->cache = new FilesystemAdapter('', 0, \System::getContainer()->get('kernel')->getCacheDir());
-    }
+    /**
+     * @var ContaoFrameworkInterface
+     */
+    protected $framework;
 
-    public static function create()
+    /**
+     * Constructor.
+     *
+     * @param ContaoFrameworkInterface $framework
+     */
+    public function __construct(ContaoFrameworkInterface $framework)
     {
-        return new static();
+        $this->framework = $framework;
+        $this->cache     = new FilesystemAdapter('', 0, \System::getContainer()->get('kernel')->getCacheDir());
     }
 
     /**
@@ -68,19 +76,22 @@ abstract class AbstractChoice
         return $this;
     }
 
-    public function getChoices()
+    public function getChoices($context = null)
     {
-        return $this->collectChoices();
+        $this->setContext($context);
+        $choices = $this->collect();
+
+        return $choices;
     }
 
-    public function getCachedChoices()
+    public function getCachedChoices($context = null)
     {
         $this->cacheKey = 'choice.' . str_replace('Choice', '', (new \ReflectionClass($this))->getShortName());
 
         $cache = $this->cache->getItem($this->cacheKey);
 
         if (!$cache->isHit() || empty($cache->get())) {
-            $choices = $this->getChoices();
+            $choices = $this->getChoices($context);
 
             if (!is_array($choices)) {
                 $choices = [];
@@ -99,5 +110,5 @@ abstract class AbstractChoice
     /**
      * @return array
      */
-    abstract protected function collectChoices();
+    abstract protected function collect();
 }

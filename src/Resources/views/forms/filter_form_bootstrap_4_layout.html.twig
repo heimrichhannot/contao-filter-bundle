@@ -1,0 +1,7 @@
+{% form_theme form 'bootstrap_4_layout.html.twig' %}
+
+{% block body %}
+    {{ form_start(form, {attr: {novalidate: 'novalidate'}}) }}
+    {{ form_errors(form) }}
+    {{ form_end(form) }}
+{% endblock %}

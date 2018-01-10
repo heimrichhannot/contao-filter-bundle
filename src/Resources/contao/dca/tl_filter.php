@@ -75,7 +75,7 @@ $GLOBALS['TL_DCA']['tl_filter'] = [
     ],
     'palettes'    => [
         '__selector__' => ['published'],
-        'default'      => '{general_legend},title;{config_legend},dataContainer;{publish_legend},published;'
+        'default'      => '{general_legend},title;{config_legend},dataContainer,method,action;{template_legend},template;{publish_legend},published;'
     ],
     'subpalettes' => [
         'published' => 'start,stop'
@@ -108,9 +108,7 @@ $GLOBALS['TL_DCA']['tl_filter'] = [
         'dataContainer' => [
             'inputType'        => 'select',
             'label'            => &$GLOBALS['TL_LANG']['tl_filter']['dataContainer'],
-            'options_callback' => function () {
-                return \HeimrichHannot\FilterBundle\Choice\Backend\DataContainerChoice::create()->getChoices();
-            },
+            'options_callback' => ['huh.filter.choice.data_container', 'getChoices'],
             'eval'             => [
                 'chosen'             => true,
                 'submitOnChange'     => true,
@@ -120,6 +118,40 @@ $GLOBALS['TL_DCA']['tl_filter'] = [
             ],
             'exclude'          => true,
             'sql'              => "varchar(128) NOT NULL default ''",
+        ],
+        'method'        => [
+            'inputType' => 'select',
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter']['method'],
+            'options'   => ['GET', 'POST'],
+            'default'   => 'GET',
+            'eval'      => [
+                'mandatory' => true,
+                'tl_class'  => 'w50',
+            ],
+            'exclude'   => true,
+            'sql'       => "varchar(4) NOT NULL default ''",
+        ],
+        'template'      => [
+            'inputType'        => 'select',
+            'label'            => &$GLOBALS['TL_LANG']['tl_filter']['template'],
+            'options_callback' => function (\DataContainer $dc) {
+                $choices = \Contao\System::getContainer()->get('huh.filter.choice.template')->getChoices($dc);
+                return array_keys($choices);
+            },
+            'eval'             => [
+                'mandatory' => true,
+                'tl_class'  => 'w50',
+            ],
+            'exclude'          => true,
+            'sql'              => "varchar(64) NOT NULL default ''",
+        ],
+        'action'        => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter']['action'],
+            'exclude'   => true,
+            'search'    => true,
+            'inputType' => 'text',
+            'eval'      => ['rgxp' => 'url', 'decodeEntities' => true, 'maxlength' => 255, 'dcaPicker' => true, 'tl_class' => 'w50 clr wizard'],
+            'sql'       => "varchar(255) NOT NULL default ''"
         ],
         'published'     => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter']['published'],

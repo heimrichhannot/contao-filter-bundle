@@ -27,7 +27,6 @@ class HeimrichHannotContaoFilterBundle extends Bundle
      */
     public function build(ContainerBuilder $container)
     {
-        $container->addCompilerPass(new FilterElementManagerPass('huh.filter.registry', 'huh.filter'));
     }
 
 

@@ -8,74 +8,89 @@
 
 namespace HeimrichHannot\FilterBundle\Registry;
 
-
-use HeimrichHannot\FilterBundle\Filter\FilterInterface;
+use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
+use Contao\System;
+use HeimrichHannot\FilterBundle\Config\FilterConfig;
+use HeimrichHannot\FilterBundle\Model\FilterModel;
 
 class FilterRegistry
 {
     /**
-     * Filters.
-     *
-     * @var array
+     * @var ContaoFrameworkInterface
      */
-    private $filters = [];
+    protected $framework;
 
     /**
-     * Filter groups
-     *
-     * @var array
+     * All available filter configurations
+     * @var FilterConfig[]
      */
-    private $groups = [];
+    protected $filters;
 
     /**
-     * Add the filter
+     * Constructor.
      *
-     * @param FilterInterface $filter
-     * @param string $alias
+     * @param ContaoFrameworkInterface $framework
      */
-    public function add(FilterInterface $filter, string $alias, string $group): void
+    public function __construct(ContaoFrameworkInterface $framework)
     {
-        $this->filters[$alias]        = $filter;
-        $this->groups[$group][$alias] = $filter;
+        $this->framework = $framework;
     }
 
     /**
-     * Get the filter.
-     *
-     * @param string $alias
-     *
-     * @throws \InvalidArgumentException
-     *
-     * @return FilterInterface
+     * Initialize the registry
      */
-    public function get(string $alias): FilterInterface
+    public function init()
     {
-        if (!array_key_exists($alias, $this->filters)) {
-            throw new \InvalidArgumentException(sprintf('The filter "%s" does not exist', $alias));
+        /**
+         * @var FilterModel $adapter
+         */
+        $adapter = $this->framework->getAdapter(FilterModel::class);
+
+        if (($filters = $adapter->findAll()) === null) {
+            return;
         }
 
-        return $this->filters[$alias];
+        while ($filters->next()) {
+            /**
+             * @var FilterConfig $config
+             */
+            $config = System::getContainer()->get('huh.filter.config');
+
+            try {
+                $config->init($filters->row());
+            } catch (\Exception $e) {
+                // if for instance some sql fields are not yet available, do not init filter
+            }
+
+            $this->filters[$filters->id] = $config;
+
+            if (null === $config->getBuilder()) {
+                // always build the form within the registry to have global access
+                $config->buildForm();
+            }
+        }
     }
 
     /**
-     * Get the filters.
+     * Find filter by id
+     * @param int $id
      *
-     * @return array
+     * @return FilterConfig|null The config or null if not found
      */
-    public function getAliases(): array
+    public function findById(int $id)
     {
-        return array_keys($this->filters);
-    }
-
-    public function getGroupedAliases(): array
-    {
-        $groups = [];
-
-        foreach ($this->groups as $group => $filters)
-        {
-            $groups[$group] = array_keys($filters);
+        if (!isset($this->filters[$id])) {
+            return null;
         }
 
-        return $groups;
+        return $this->filters[$id];
+    }
+
+    /**
+     * @return FilterConfig[]
+     */
+    public function getFilters(): array
+    {
+        return $this->filters;
     }
 }
