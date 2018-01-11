@@ -86,7 +86,18 @@ abstract class AbstractChoice
 
     public function getCachedChoices($context = null)
     {
+        // disable cache while in debug mode
+        if(\System::getContainer()->get('kernel')->isDebug())
+        {
+            return $this->getChoices($context);
+        }
+
         $this->cacheKey = 'choice.' . str_replace('Choice', '', (new \ReflectionClass($this))->getShortName());
+
+        // add unique identifier based on context
+        if (null !== $context && false !== ($json = json_encode($context))) {
+            $this->cacheKey .= '.' . sha1($json);
+        }
 
         $cache = $this->cache->getItem($this->cacheKey);
 

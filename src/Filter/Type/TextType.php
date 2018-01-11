@@ -31,14 +31,4 @@ class TextType extends AbstractType implements TypeInterface
     {
         $builder->add($element['field'], \Symfony\Component\Form\Extension\Core\Type\TextType::class, $this->getOptions($element, $builder));
     }
-
-    /**
-     * @inheritDoc
-     */
-    public static function getName()
-    {
-        // TODO: Implement getName() method.
-    }
-
-
 }

@@ -44,7 +44,7 @@ abstract class AbstractType
         $label  = '';
         $filter = $this->config->getFilter();
 
-        if ($element['customLabel'] && $element['label'] !== '') {
+        if (true === (bool)$element['customLabel'] && $element['label'] !== '') {
             return $this->translator->trans($element['label']);
         }
 
@@ -70,7 +70,7 @@ abstract class AbstractType
 
         $options['label'] = $this->getLabel($element, $builder);
 
-        if ($element['addPlaceholder'] && $element['placeholder'] !== '') {
+        if (true === (bool)$element['addPlaceholder'] && $element['placeholder'] !== '') {
             $options['attr']['placeholder'] = $this->translator->trans($element['placeholder'], ['%label%' => $options['label']]);
         }
 

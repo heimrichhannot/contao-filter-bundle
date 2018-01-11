@@ -11,6 +11,7 @@ $GLOBALS['TL_DCA']['tl_filter'] = [
         ],
         'onsubmit_callback' => [
             ['HeimrichHannot\Haste\Dca\General', 'setDateAdded'],
+            ['tl_filter', 'clearFilterRegistry'],
         ],
         'sql'               => [
             'keys' => [
@@ -135,7 +136,7 @@ $GLOBALS['TL_DCA']['tl_filter'] = [
             'inputType'        => 'select',
             'label'            => &$GLOBALS['TL_LANG']['tl_filter']['template'],
             'options_callback' => function (\DataContainer $dc) {
-                $choices = \Contao\System::getContainer()->get('huh.filter.choice.template')->getChoices($dc);
+                $choices = \Contao\System::getContainer()->get('huh.filter.choice.template')->getCachedChoices($dc);
                 return array_keys($choices);
             },
             'eval'             => [
@@ -303,5 +304,10 @@ class tl_filter extends \Backend
     public function deleteArchive($row, $href, $label, $title, $icon, $attributes)
     {
         return \BackendUser::getInstance()->hasAccess('delete', 'filterp') ? '<a href="' . $this->addToUrl($href . '&amp;id=' . $row['id']) . '" title="' . \StringUtil::specialchars($title) . '"' . $attributes . '>' . \Image::getHtml($icon, $label) . '</a> ' : \Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)) . ' ';
+    }
+
+    public function clearFilterRegistry(\Contao\DataContainer $dc)
+    {
+        System::getContainer()->get('huh.filter.registry')->clearCache([$dc->id]);
     }
 }

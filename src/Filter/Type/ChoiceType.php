@@ -10,6 +10,7 @@ namespace HeimrichHannot\FilterBundle\Filter\Type;
 
 
 use Contao\System;
+use Contao\Widget;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
 use HeimrichHannot\FilterBundle\Filter\TypeInterface;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilderInterface;
@@ -37,12 +38,12 @@ class ChoiceType extends AbstractType implements TypeInterface
      * Collect the choices and return as array
      *
      * @param array $element
-     * @param FormBuilderInterface $builder
      * @return array
      */
-    protected function getChoices(array $element, FormBuilderInterface $builder)
+    protected function getChoices(array $element)
     {
         $choices = [];
+        $options = [];
         $filter  = $this->config->getFilter();
 
         \Controller::loadDataContainer($filter['dataContainer']);
@@ -70,10 +71,37 @@ class ChoiceType extends AbstractType implements TypeInterface
 
                 /** @var \Codefog\TagsBundle\Tag $tag */
                 foreach ($tags as $tag) {
-                    $choices[$tag->getName()] = $tag->getValue();
+                    $options[] = ['label' => $tag->getName(), 'value' => $tag->getValue()];
                 }
 
                 break;
+            default:
+                $class = $GLOBALS['TL_FFL'][$data['inputType']];
+
+                if (!class_exists($class)) {
+                    return $choices;
+                }
+
+                $attributes = Widget::getAttributesFromDca(
+                    $data,
+                    $element['field'],
+                    '',
+                    $element['field'],
+                    $filter['dataContainer'],
+                    null
+                );
+
+                if (is_array($attributes['options'])) {
+                    $options = $attributes['options'];
+                }
+        }
+
+        foreach ($options as $option) {
+            if (!isset($option['label']) || !isset($option['value'])) {
+                continue;
+            }
+
+            $choices[$option['label']] = $option['value'];
         }
 
         return $choices;
@@ -81,8 +109,9 @@ class ChoiceType extends AbstractType implements TypeInterface
 
     protected function getOptions(array $element, FormBuilderInterface $builder)
     {
-        $options            = parent::getOptions($element, $builder);
-        $options['choices'] = $this->getChoices($element, $builder);
+        $options                              = parent::getOptions($element, $builder);
+        $options['choices']                   = System::getContainer()->get('huh.filter.choice.field_options')->getCachedChoices([$element, $this->config->getFilter()]);
+        $options['choice_translation_domain'] = false; // disable translation]
 
         if (isset($options['attr']['placeholder'])) {
             $options['attr']['data-placeholder'] = $options['attr']['placeholder'];
@@ -91,14 +120,4 @@ class ChoiceType extends AbstractType implements TypeInterface
         }
         return $options;
     }
-
-    /**
-     * @inheritDoc
-     */
-    public static function getName()
-    {
-        // TODO: Implement getName() method.
-    }
-
-
 }

@@ -13,6 +13,7 @@ use HeimrichHannot\FilterBundle\Config\FilterConfig;
 use HeimrichHannot\FilterBundle\Filter\TypeInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class FilterType extends AbstractType
 {
@@ -27,9 +28,11 @@ class FilterType extends AbstractType
     {
         $data = $builder->getData();
 
-        if (null === ($this->config = System::getContainer()->get('huh.filter.registry')->findById((int)$data['filter']))) {
+        if (!isset($options['filter']) || !$options['filter'] instanceof FilterConfig) {
             return;
         }
+
+        $this->config = $options['filter'];
 
         $filter = $this->config->getFilter();
 
@@ -77,5 +80,12 @@ class FilterType extends AbstractType
 
             $type->buildForm($element, $builder);
         }
+    }
+
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefaults([
+            'filter' => null,
+        ]);
     }
 }

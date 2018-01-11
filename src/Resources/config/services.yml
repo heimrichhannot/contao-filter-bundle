@@ -3,10 +3,14 @@ services:
     class: HeimrichHannot\FilterBundle\Registry\FilterRegistry
     arguments:
         - "@contao.framework"
-  huh.filter.config:
-      class: HeimrichHannot\FilterBundle\Config\FilterConfig
+        - "@huh.filter.session"
+  huh.filter.session:
+      class: HeimrichHannot\FilterBundle\Entity\FilterSession
       arguments:
           - "@contao.framework"
+          - "@session"
+  huh.filter.config:
+      class: HeimrichHannot\FilterBundle\Config\FilterConfig
   huh.filter.choice.data_container:
       class: HeimrichHannot\FilterBundle\Choice\DataContainerChoice
       arguments:
@@ -31,3 +35,7 @@ services:
       class: HeimrichHannot\FilterBundle\Choice\MessageChoice
       arguments:
           - "@contao.framework"
+  huh.filter.choice.field_options:
+      class: HeimrichHannot\FilterBundle\Choice\FieldOptionsChoice
+      arguments:
+        - "@contao.framework"

@@ -57,6 +57,11 @@ class ModuleFilter extends \Contao\Module
     protected function compile()
     {
         $filter = $this->config->getFilter();
+
+        if (null === $this->config->getBuilder()) {
+            $this->config->buildForm(System::getContainer()->get('huh.filter.session')->getData($this->config->getCacheKey()));
+        }
+
         $form = $this->config->getBuilder()->getForm();
 
         $form->handleRequest();

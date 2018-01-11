@@ -3,6 +3,8 @@
 namespace HeimrichHannot\FilterBundle\DependencyInjection;
 
 use HeimrichHannot\FilterBundle\Filter\Type\ChoiceType;
+use HeimrichHannot\FilterBundle\Filter\Type\HiddenType;
+use HeimrichHannot\FilterBundle\Filter\Type\ResetType;
 use HeimrichHannot\FilterBundle\Filter\Type\SubmitType;
 use HeimrichHannot\FilterBundle\Filter\Type\TextType;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
@@ -74,10 +76,10 @@ class Configuration implements ConfigurationInterface
 //                                ->scalarNode('collection')->cannotBeEmpty()->defaultValue(CollectionType::class)->end()
 //                                ->scalarNode('repeated')->cannotBeEmpty()->defaultValue(RepeatedType::class)->end()
                                 // hidden field
-//                                ->scalarNode('hidden')->cannotBeEmpty()->defaultValue(HiddenType::class)->end()
+                                ->scalarNode('hidden')->cannotBeEmpty()->defaultValue(HiddenType::class)->end()
                                 // buttons
 //                                ->scalarNode('button')->cannotBeEmpty()->defaultValue(ButtonType::class)->end()
-//                                ->scalarNode('reset')->cannotBeEmpty()->defaultValue(ResetType::class)->end()
+                                ->scalarNode('reset')->cannotBeEmpty()->defaultValue(ResetType::class)->end()
                                 ->scalarNode('submit')->cannotBeEmpty()->defaultValue(SubmitType::class)->end()
                             ->end()
                         ->end()

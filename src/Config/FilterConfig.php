@@ -18,12 +18,12 @@ use Symfony\Component\Form\Forms;
 class FilterConfig
 {
     /**
-     * @var ContaoFrameworkInterface
+     * @var string
      */
-    protected $framework;
+    protected $cacheKey;
 
     /**
-     * @var array
+     * @var array|null
      */
     protected $filter;
 
@@ -43,54 +43,40 @@ class FilterConfig
     protected $formName;
 
     /**
-     * Constructor.
-     *
-     * @param ContaoFrameworkInterface $framework
+     * Init the filter based on its model
+     * @param string $cacheKey
+     * @param array $filter
+     * @param array|null $elements
      */
-    public function __construct(ContaoFrameworkInterface $framework)
+    public function init(string $cacheKey, array $filter, $elements = null)
     {
-        $this->framework = $framework;
+        $this->cacheKey = $cacheKey;
+        $this->filter   = $filter;
+        $this->elements = $elements;
     }
 
     /**
-     * Init the filter based on its model
-     * @param array $filter
+     * Build the form
+     * @param array $data
      */
-    public function init(array $filter)
+    public function buildForm(array $data = [])
     {
-        $this->filter = $filter;
-
-        /**
-         * @var FilterElementModel $adapter
-         */
-        $adapter = $this->framework->getAdapter(FilterElementModel::class);
-
-        $this->elements = $adapter->findPublishedByPid($this->filter['id']);
-
-        if (null !== $this->elements) {
-            $this->elements = $this->elements->fetchAll();
+        if ($this->filter === null) {
+            return;
         }
-    }
 
-    public function buildForm()
-    {
         $factory = Forms::createFormFactoryBuilder()->addExtensions([])->getFormFactory();
 
-        $options = [];
+        $options = ['filter' => $this];
 
         $this->formName = FilterType::$blockPrefix . $this->filter['id'];
-        $this->builder  = $factory->createNamedBuilder($this->formName, FilterType::class, ['filter' => $this->filter['id']], $options);
-    }
-
-    protected function getTemplate()
-    {
-        
+        $this->builder  = $factory->createNamedBuilder($this->formName, FilterType::class, $data, $options);
     }
 
     /**
-     * @return array
+     * @return array|null
      */
-    public function getFilter(): array
+    public function getFilter()
     {
         return $this->filter;
     }
@@ -117,5 +103,13 @@ class FilterConfig
     public function getFormName(): string
     {
         return $this->formName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCacheKey(): string
+    {
+        return $this->cacheKey;
     }
 }

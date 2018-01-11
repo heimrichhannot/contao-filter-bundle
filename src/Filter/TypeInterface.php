@@ -33,11 +33,4 @@ interface TypeInterface
      * @param FormBuilderInterface $builder The form builder
      */
     public function buildForm(array $element, FormBuilderInterface $builder);
-
-    /**
-     * Clarify the filter name
-     * @return string The filter name
-     */
-    public static function getName();
-
 }

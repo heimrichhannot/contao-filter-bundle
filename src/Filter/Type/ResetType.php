@@ -13,7 +13,7 @@ use HeimrichHannot\FilterBundle\Filter\TypeInterface;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilderInterface;
 use Symfony\Component\Form\FormBuilderInterface;
 
-class SubmitType extends AbstractType implements TypeInterface
+class ResetType extends AbstractType implements TypeInterface
 {
     /**
      * @inheritDoc
@@ -28,6 +28,6 @@ class SubmitType extends AbstractType implements TypeInterface
      */
     public function buildForm(array $element, FormBuilderInterface $builder)
     {
-        $builder->add('submit', \Symfony\Component\Form\Extension\Core\Type\SubmitType::class, $this->getOptions($element, $builder));
+        $builder->add('reset', \Symfony\Component\Form\Extension\Core\Type\ResetType::class, $this->getOptions($element, $builder));
     }
 }

@@ -10,6 +10,7 @@ $GLOBALS['TL_DCA']['tl_filter_element'] = [
         ],
         'onsubmit_callback' => [
             ['HeimrichHannot\Haste\Dca\General', 'setDateAdded'],
+            ['tl_filter_element', 'clearFilterRegistry'],
         ],
         'sql'               => [
             'keys' => [
@@ -73,6 +74,8 @@ $GLOBALS['TL_DCA']['tl_filter_element'] = [
         'default'      => '{general_legend},title,type;{publish_legend},published;',
         'text'         => '{general_legend},title,type;{config_legend},field,addPlaceholder,customLabel;{expert_legend},cssClass;{publish_legend},published;',
         'choice'       => '{general_legend},title,type;{config_legend},field,addPlaceholder,customLabel;{expert_legend},cssClass;{publish_legend},published;',
+        'hidden'       => '{general_legend},title,type;{config_legend},field;{expert_legend},cssClass;{publish_legend},published;',
+        'reset'        => '{general_legend},title,type;{config_legend},customLabel;{expert_legend},cssClass;{publish_legend},published;',
         'submit'       => '{general_legend},title,type;{config_legend},customLabel;{expert_legend},cssClass;{publish_legend},published;',
     ],
     'subpalettes' => [
@@ -111,10 +114,10 @@ $GLOBALS['TL_DCA']['tl_filter_element'] = [
             'filter'           => true,
             'inputType'        => 'select',
             'options_callback' => function (\DataContainer $dc) {
-                $choices = \Contao\System::getContainer()->get('huh.filter.choice.type')->getChoices($dc);
+                $choices = \Contao\System::getContainer()->get('huh.filter.choice.type')->getCachedChoices($dc);
                 return array_keys($choices);
             },
-            'eval'             => ['chosen' => true, 'tl_class' => 'w50'],
+            'eval'             => ['chosen' => true, 'tl_class' => 'w50', 'submitOnChange' => true],
             'sql'              => "varchar(64) NOT NULL default ''"
         ],
         'title'          => [
@@ -139,44 +142,37 @@ $GLOBALS['TL_DCA']['tl_filter_element'] = [
         'addPlaceholder' => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_element']['addPlaceholder'],
             'exclude'   => true,
-            'filter'    => true,
-            'default'   => true,
             'inputType' => 'checkbox',
-            'eval'      => ['submitOnChange' => true],
+            'eval'      => ['submitOnChange' => true, 'doNotCopy' => true],
             'sql'       => "char(1) NOT NULL default ''"
         ],
         'placeholder'    => [
             'label'            => &$GLOBALS['TL_LANG']['tl_filter_element']['placeholder'],
             'exclude'          => true,
-            'filter'           => true,
             'inputType'        => 'select',
-            'default'          => 'huh.filter.placeholder.default',
             'options_callback' => function (\DataContainer $dc) {
-                $choices = \Contao\System::getContainer()->get('huh.filter.choice.message')->getChoices('huh.filter.placeholder');
+                $choices = \Contao\System::getContainer()->get('huh.filter.choice.message')->getCachedChoices('huh.filter.placeholder');
                 return $choices;
             },
-            'eval'             => ['chosen' => true, 'mandatory' => true, 'maxlength' => 128, 'includeBlankOption' => true],
+            'eval'             => ['chosen' => true, 'mandatory' => true, 'maxlength' => 128, 'includeBlankOption' => true, 'doNotCopy' => true],
             'sql'              => "varchar(128) NOT NULL default ''"
         ],
         'customLabel'    => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_element']['customLabel'],
             'exclude'   => true,
-            'filter'    => true,
-            'default'   => true,
             'inputType' => 'checkbox',
-            'eval'      => ['submitOnChange' => true],
+            'eval'      => ['submitOnChange' => true, 'doNotCopy' => true],
             'sql'       => "char(1) NOT NULL default ''"
         ],
         'label'          => [
             'label'            => &$GLOBALS['TL_LANG']['tl_filter_element']['label'],
             'exclude'          => true,
-            'filter'           => true,
             'inputType'        => 'select',
             'options_callback' => function (\DataContainer $dc) {
-                $choices = \Contao\System::getContainer()->get('huh.filter.choice.message')->getChoices('huh.filter.label');
+                $choices = \Contao\System::getContainer()->get('huh.filter.choice.message')->getCachedChoices('huh.filter.label');
                 return $choices;
             },
-            'eval'             => ['chosen' => true, 'mandatory' => true, 'maxlength' => 128, 'includeBlankOption' => true],
+            'eval'             => ['chosen' => true, 'mandatory' => true, 'maxlength' => 128, 'includeBlankOption' => true, 'doNotCopy' => true],
             'sql'              => "varchar(128) NOT NULL default ''"
         ],
         'parents'        => [
@@ -426,4 +422,8 @@ class tl_filter_element extends \Backend
         $objVersions->create();
     }
 
+    public function clearFilterRegistry(\Contao\DataContainer $dc)
+    {
+        System::getContainer()->get('huh.filter.registry')->clearCache([$dc->activeRecord->pid]);
+    }
 }
