@@ -84,11 +84,10 @@ abstract class AbstractType
     /**
      * Get the field name
      * @param array $element
-     * @param FormBuilderInterface $builder
      * @param string|null $default The default name
      * @return mixed
      */
-    protected function getName(array $element, FormBuilderInterface $builder, $default = null)
+    protected function getName(array $element, $default = null)
     {
         $name = $element['field'] ?: $default;
 

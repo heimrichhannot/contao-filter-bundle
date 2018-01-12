@@ -72,7 +72,7 @@ $GLOBALS['TL_DCA']['tl_filter_element'] = [
     'palettes'    => [
         '__selector__' => ['type', 'customName', 'addPlaceholder', 'customLabel', 'published'],
         'default'      => '{general_legend},title,type;{publish_legend},published;',
-        'text'         => '{general_legend},title,type;{config_legend},field,customName,addPlaceholder,customLabel;{expert_legend},cssClass;{publish_legend},published;',
+        'text'         => '{general_legend},title,type;{config_legend},field,customName,addPlaceholder,customLabel;{query_legend},like;{expert_legend},cssClass;{publish_legend},published;',
         'choice'       => '{general_legend},title,type;{config_legend},field,customName,addPlaceholder,customLabel,expanded,multiple;{expert_legend},cssClass;{publish_legend},published;',
         'hidden'       => '{general_legend},title,type;{config_legend},field,customName;{expert_legend},cssClass;{publish_legend},published;',
         'button'       => '{general_legend},title,type;{config_legend},name,label;{expert_legend},cssClass;{publish_legend},published;',
@@ -204,6 +204,17 @@ $GLOBALS['TL_DCA']['tl_filter_element'] = [
             'inputType' => 'checkbox',
             'eval'      => ['tl_class' => 'w50'],
             'sql'       => "char(1) NOT NULL default ''"
+        ],
+        'like'           => [
+            'label'            => &$GLOBALS['TL_LANG']['tl_filter_element']['label'],
+            'exclude'          => true,
+            'inputType'        => 'select',
+            'options_callback' => function (\DataContainer $dc) {
+                $choices = \Contao\System::getContainer()->get('huh.filter.choice.message')->getCachedChoices('huh.filter.label');
+                return $choices;
+            },
+            'eval'             => ['chosen' => true, 'maxlength' => 128, 'includeBlankOption' => true, 'doNotCopy' => true],
+            'sql'              => "varchar(128) NOT NULL default ''"
         ],
         'parents'        => [
             'label'            => &$GLOBALS['TL_LANG']['tl_filter_element']['parents'],

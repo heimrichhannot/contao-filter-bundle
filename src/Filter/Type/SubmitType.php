@@ -10,7 +10,7 @@ namespace HeimrichHannot\FilterBundle\Filter\Type;
 
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
 use HeimrichHannot\FilterBundle\Filter\TypeInterface;
-use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilderInterface;
+use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 use Symfony\Component\Form\FormBuilderInterface;
 
 class SubmitType extends AbstractType implements TypeInterface
@@ -18,7 +18,7 @@ class SubmitType extends AbstractType implements TypeInterface
     /**
      * @inheritDoc
      */
-    public function buildQuery(FilterQueryBuilderInterface $builder, array $data = [], $count = false)
+    public function buildQuery(FilterQueryBuilder $builder, array $element)
     {
         // TODO: Implement buildQuery() method.
     }
@@ -28,6 +28,6 @@ class SubmitType extends AbstractType implements TypeInterface
      */
     public function buildForm(array $element, FormBuilderInterface $builder)
     {
-        $builder->add($this->getName($element, $builder, 'submit'), \Symfony\Component\Form\Extension\Core\Type\SubmitType::class, $this->getOptions($element, $builder));
+        $builder->add($this->getName($element, 'submit'), \Symfony\Component\Form\Extension\Core\Type\SubmitType::class, $this->getOptions($element, $builder));
     }
 }

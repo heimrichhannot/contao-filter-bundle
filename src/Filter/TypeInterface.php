@@ -8,18 +8,17 @@
 
 namespace HeimrichHannot\FilterBundle\Filter;
 
-use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilderInterface;
+use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 use Symfony\Component\Form\FormBuilderInterface;
 
 interface TypeInterface
 {
     /**
      * Build the filter query
-     * @param FilterQueryBuilderInterface $builder The query builder
-     * @param array $data The form data
-     * @param boolean $count Distinguish between count or fetch query
+     * @param FilterQueryBuilder $builder The query builder
+     * @param array $element The element data
      */
-    public function buildQuery(FilterQueryBuilderInterface $builder, array $data = [], $count = false);
+    public function buildQuery(FilterQueryBuilder $builder, array $element);
 
     /**
      * Builds the form, add your filter fields here

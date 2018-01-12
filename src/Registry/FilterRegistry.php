@@ -101,6 +101,25 @@ class FilterRegistry
     }
 
     /**
+     * Get the query builder for a given filter id
+     * @param int $id
+     * @return \HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder|null
+     */
+    public function getQueryBuilder(int $id)
+    {
+        if (null === ($config = $this->findById($id))) {
+            return null;
+        }
+
+        if (null === ($config->getQueryBuilder())) {
+            $config->initQueryBuilder();
+        }
+
+        return $config->getQueryBuilder();
+    }
+
+
+    /**
      * Add an filter to the registry
      *
      * @param array $filter

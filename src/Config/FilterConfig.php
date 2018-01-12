@@ -11,6 +11,7 @@ namespace HeimrichHannot\FilterBundle\Config;
 
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\System;
+use HeimrichHannot\FilterBundle\Filter\TypeInterface;
 use HeimrichHannot\FilterBundle\Form\FilterType;
 use HeimrichHannot\FilterBundle\Model\FilterElementModel;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
@@ -86,6 +87,42 @@ class FilterConfig
     public function initQueryBuilder()
     {
         $this->queryBuilder = System::getContainer()->get('huh.filter.query_builder');
+
+        if (!is_array($this->getElements())) {
+            return;
+        }
+
+        $config = \System::getContainer()->getParameter('huh');
+
+        if (!isset($config['filter']['types'])) {
+            return;
+        }
+
+        $this->queryBuilder->from($this->getFilter()['dataContainer']);
+
+        foreach ($this->getElements() as $element) {
+
+            if (!isset($config['filter']['types'][$element['type']])) {
+                continue;
+            }
+
+            $class = $config['filter']['types'][$element['type']];
+
+            if (!class_exists($class)) {
+                continue;
+            }
+
+            /**
+             * @var $type TypeInterface
+             */
+            $type = new $class($this);
+
+            if (!is_subclass_of($type, \HeimrichHannot\FilterBundle\Filter\AbstractType::class) || !is_subclass_of($type, TypeInterface::class)) {
+                continue;
+            }
+
+            $type->buildQuery($this->queryBuilder, $element);
+        }
     }
 
     /**
@@ -129,10 +166,19 @@ class FilterConfig
     }
 
     /**
-     * @return FilterQueryBuilder
+     * @return FilterQueryBuilder|null
      */
-    public function getQueryBuilder(): FilterQueryBuilder
+    public function getQueryBuilder()
     {
         return $this->queryBuilder;
+    }
+
+    /**
+     * Get the filter data (e.g. form submission data)
+     * @return array
+     */
+    public function getData(): array
+    {
+        return System::getContainer()->get('huh.filter.session')->getData($this->getCacheKey());
     }
 }

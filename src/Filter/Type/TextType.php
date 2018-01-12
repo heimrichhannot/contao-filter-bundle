@@ -9,9 +9,10 @@
 namespace HeimrichHannot\FilterBundle\Filter\Type;
 
 
+use HeimrichHannot\FilterBundle\Config\FilterConfig;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
 use HeimrichHannot\FilterBundle\Filter\TypeInterface;
-use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilderInterface;
+use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 use Symfony\Component\Form\FormBuilderInterface;
 
 class TextType extends AbstractType implements TypeInterface
@@ -19,9 +20,17 @@ class TextType extends AbstractType implements TypeInterface
     /**
      * @inheritDoc
      */
-    public function buildQuery(FilterQueryBuilderInterface $builder, array $data = [], $count = false)
+    public function buildQuery(FilterQueryBuilder $builder, array $element)
     {
-        // TODO: Implement buildQuery() method.
+        $data  = $this->config->getData();
+        $name  = $this->getName($element);
+        $value = $data[$name];
+
+        if ($value === null) {
+            return;
+        }
+
+        $builder->andWhere($builder->expr()->like($name, $builder->expr()->literal('%' . $value . '%')));
     }
 
     /**
