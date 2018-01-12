@@ -58,7 +58,7 @@ class ModuleFilter extends \Contao\Module
     {
         $filter = $this->config->getFilter();
 
-        $qb      = System::getContainer()->get('huh.filter.registry')->getQueryBuilder($this->config->getFilter()['id']);
+        $qb      = System::getContainer()->get('huh.filter.registry')->getQueryBuilder($this->config->getId());
         $sql     = $qb->select('*')->getSQL();
         $results = $qb->execute()->fetchAll();
 

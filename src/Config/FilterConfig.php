@@ -126,6 +126,14 @@ class FilterConfig
     }
 
     /**
+     * @return int
+     */
+    public function getId(): int
+    {
+        return $this->filter['id'];
+    }
+
+    /**
      * @return array|null
      */
     public function getFilter()
