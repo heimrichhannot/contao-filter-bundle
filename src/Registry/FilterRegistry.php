@@ -11,6 +11,7 @@ namespace HeimrichHannot\FilterBundle\Registry;
 use Contao\Controller;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\System;
+use Doctrine\DBAL\Exception\InvalidFieldNameException;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
 use HeimrichHannot\FilterBundle\Entity\FilterSession;
 use HeimrichHannot\FilterBundle\Model\FilterElementModel;
@@ -96,7 +97,11 @@ class FilterRegistry
         }
 
         while ($filters->next()) {
-            $this->initFilter($filters->row(), $request);
+            try {
+                $this->initFilter($filters->row(), $request);
+            } catch (InvalidFieldNameException $e) {
+                // if fields does not exist in db, contao/install wont work anymore, catch error
+            }
         }
     }
 

@@ -76,7 +76,7 @@ $GLOBALS['TL_DCA']['tl_filter'] = [
     ],
     'palettes'    => [
         '__selector__' => ['published'],
-        'default'      => '{general_legend},title;{config_legend},dataContainer,method,action;{template_legend},template;{publish_legend},published;'
+        'default'      => '{general_legend},title;{config_legend},name,dataContainer,method,action;{template_legend},template;{publish_legend},published;'
     ],
     'subpalettes' => [
         'published' => 'start,stop'
@@ -106,6 +106,14 @@ $GLOBALS['TL_DCA']['tl_filter'] = [
             'eval'      => ['mandatory' => true, 'tl_class' => 'w50'],
             'sql'       => "varchar(255) NOT NULL default ''"
         ],
+        'name'          => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter']['name'],
+            'exclude'   => true,
+            'search'    => true,
+            'inputType' => 'text',
+            'eval'      => ['mandatory' => true, 'tl_class' => 'w50', 'maxlength' => 64],
+            'sql'       => "varchar(64) NOT NULL default ''"
+        ],
         'dataContainer' => [
             'inputType'        => 'select',
             'label'            => &$GLOBALS['TL_LANG']['tl_filter']['dataContainer'],
@@ -114,7 +122,7 @@ $GLOBALS['TL_DCA']['tl_filter'] = [
                 'chosen'             => true,
                 'submitOnChange'     => true,
                 'includeBlankOption' => true,
-                'tl_class'           => 'w50 clr',
+                'tl_class'           => 'w50',
                 'mandatory'          => true,
             ],
             'exclude'          => true,
@@ -132,6 +140,14 @@ $GLOBALS['TL_DCA']['tl_filter'] = [
             'exclude'   => true,
             'sql'       => "varchar(4) NOT NULL default ''",
         ],
+        'action'        => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter']['action'],
+            'exclude'   => true,
+            'search'    => true,
+            'inputType' => 'text',
+            'eval'      => ['rgxp' => 'url', 'decodeEntities' => true, 'maxlength' => 255, 'dcaPicker' => true, 'tl_class' => 'w50 wizard'],
+            'sql'       => "varchar(255) NOT NULL default ''"
+        ],
         'template'      => [
             'inputType'        => 'select',
             'label'            => &$GLOBALS['TL_LANG']['tl_filter']['template'],
@@ -145,14 +161,6 @@ $GLOBALS['TL_DCA']['tl_filter'] = [
             ],
             'exclude'          => true,
             'sql'              => "varchar(64) NOT NULL default ''",
-        ],
-        'action'        => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_filter']['action'],
-            'exclude'   => true,
-            'search'    => true,
-            'inputType' => 'text',
-            'eval'      => ['rgxp' => 'url', 'decodeEntities' => true, 'maxlength' => 255, 'dcaPicker' => true, 'tl_class' => 'w50 clr wizard'],
-            'sql'       => "varchar(255) NOT NULL default ''"
         ],
         'published'     => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter']['published'],

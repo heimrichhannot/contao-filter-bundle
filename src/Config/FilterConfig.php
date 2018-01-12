@@ -41,11 +41,6 @@ class FilterConfig
     protected $builder;
 
     /**
-     * @var string
-     */
-    protected $formName;
-
-    /**
      * @var FilterQueryBuilder
      */
     protected $queryBuilder;
@@ -77,8 +72,7 @@ class FilterConfig
 
         $options = ['filter' => $this];
 
-        $this->formName = FilterType::$blockPrefix . $this->filter['id'];
-        $this->builder  = $factory->createNamedBuilder($this->formName, FilterType::class, $data, $options);
+        $this->builder  = $factory->createNamedBuilder($this->filter['name'], FilterType::class, $data, $options);
     }
 
     /**
@@ -155,14 +149,6 @@ class FilterConfig
     public function getBuilder()
     {
         return $this->builder;
-    }
-
-    /**
-     * @return string
-     */
-    public function getFormName(): string
-    {
-        return $this->formName;
     }
 
     /**
