@@ -70,16 +70,18 @@ $GLOBALS['TL_DCA']['tl_filter_element'] = [
         ]
     ],
     'palettes'    => [
-        '__selector__' => ['type', 'customName', 'addPlaceholder', 'customLabel', 'published'],
+        '__selector__' => ['type', 'customOptions', 'customName', 'addPlaceholder', 'customLabel', 'published'],
         'default'      => '{general_legend},title,type;{publish_legend},published;',
         'text'         => '{general_legend},title,type;{config_legend},field,customName,addPlaceholder,customLabel;{expert_legend},cssClass;{publish_legend},published;',
-        'choice'       => '{general_legend},title,type;{config_legend},field,customName,addPlaceholder,customLabel,expanded,multiple;{expert_legend},cssClass;{publish_legend},published;',
+        'text_concat'  => '{general_legend},title,type;{config_legend},fields,name,addPlaceholder,customLabel;{expert_legend},cssClass;{publish_legend},published;',
+        'choice'       => '{general_legend},title,type;{config_legend},field,customOptions,customName,addPlaceholder,customLabel,expanded,multiple;{expert_legend},cssClass;{publish_legend},published;',
         'hidden'       => '{general_legend},title,type;{config_legend},field,customName;{expert_legend},cssClass;{publish_legend},published;',
         'button'       => '{general_legend},title,type;{config_legend},name,label;{expert_legend},cssClass;{publish_legend},published;',
         'reset'        => '{general_legend},title,type;{config_legend},customName,customLabel;{expert_legend},cssClass;{publish_legend},published;',
         'submit'       => '{general_legend},title,type;{config_legend},customName,customLabel;{expert_legend},cssClass;{publish_legend},published;',
     ],
     'subpalettes' => [
+        'customOptions'  => 'options',
         'addPlaceholder' => 'placeholder',
         'customName'     => 'name',
         'customLabel'    => 'label',
@@ -140,6 +142,32 @@ $GLOBALS['TL_DCA']['tl_filter_element'] = [
             'options_callback' => ['huh.filter.choice.field', 'getChoices'],
             'eval'             => ['chosen' => true, 'includeBlankOption' => true, 'doNotCopy' => true],
             'sql'              => "varchar(64) NOT NULL default ''"
+        ],
+        'fields'         => [
+            'label'            => &$GLOBALS['TL_LANG']['tl_filter_element']['fields'],
+            'exclude'          => true,
+            'filter'           => true,
+            'inputType'        => 'checkboxWizard',
+            'options_callback' => ['huh.filter.choice.field', 'getChoices'],
+            'eval'             => ['chosen' => true, 'includeBlankOption' => true, 'doNotCopy' => true, 'multiple' => true, 'mandatory' => true],
+            'sql'              => "blob NULL"
+        ],
+        'customOptions'  => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter_element']['customOptions'],
+            'exclude'   => true,
+            'inputType' => 'checkbox',
+            'eval'      => ['submitOnChange' => true, 'doNotCopy' => true],
+            'sql'       => "char(1) NOT NULL default ''"
+        ],
+        'options'        => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter_element']['options'],
+            'exclude'   => true,
+            'inputType' => 'optionWizard',
+            'eval'      => ['mandatory' => true, 'allowHtml' => true],
+            'xlabel'    => [
+                ['tl_filter_element', 'optionImportWizard']
+            ],
+            'sql'       => "blob NULL"
         ],
         'customName'     => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_element']['customName'],
@@ -455,5 +483,15 @@ class tl_filter_element extends \Backend
     public function clearFilterRegistry(\Contao\DataContainer $dc)
     {
         System::getContainer()->get('huh.filter.registry')->clearCache([$dc->activeRecord->pid]);
+    }
+
+    /**
+     * Add a link to the option items import wizard
+     *
+     * @return string
+     */
+    public function optionImportWizard()
+    {
+        return ' <a href="' . $this->addToUrl('key=option') . '" title="' . specialchars($GLOBALS['TL_LANG']['MSC']['ow_import'][1]) . '" onclick="Backend.getScrollOffset()">' . Image::getHtml('tablewizard.gif', $GLOBALS['TL_LANG']['MSC']['ow_import'][0]) . '</a>';
     }
 }

@@ -9,20 +9,31 @@
 namespace HeimrichHannot\FilterBundle\Filter\Type;
 
 
-use HeimrichHannot\FilterBundle\Config\FilterConfig;
+use Contao\StringUtil;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
 use HeimrichHannot\FilterBundle\Filter\TypeInterface;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 use Symfony\Component\Form\FormBuilderInterface;
 
-class TextType extends AbstractType implements TypeInterface
+class TextConcatType extends AbstractType implements TypeInterface
 {
     /**
      * @inheritDoc
      */
     public function buildQuery(FilterQueryBuilder $builder, array $element)
     {
-        $builder->whereElement($element, $this->getName($element), $this->config);
+        $data  = $this->config->getData();
+        $name  = $this->getName($element, $element['name']);
+        $value = $data[$name];
+
+        if ($value === null) {
+            return;
+        }
+
+        $fields = StringUtil::deserialize($element['fields'], true);
+        $concat = 'CONCAT(' . implode('," ",', $fields) . ')';
+
+        $builder->andWhere($builder->expr()->like($concat, $builder->expr()->literal('%' . $value . '%')));
     }
 
     /**
@@ -30,6 +41,6 @@ class TextType extends AbstractType implements TypeInterface
      */
     public function buildForm(array $element, FormBuilderInterface $builder)
     {
-        $builder->add($this->getName($element), \Symfony\Component\Form\Extension\Core\Type\TextType::class, $this->getOptions($element, $builder));
+        $builder->add($this->getName($element, $element['name']), \Symfony\Component\Form\Extension\Core\Type\TextType::class, $this->getOptions($element, $builder));
     }
 }

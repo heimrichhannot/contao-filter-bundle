@@ -22,7 +22,7 @@ class ChoiceType extends AbstractType implements TypeInterface
      */
     public function buildQuery(FilterQueryBuilder $builder, array $element)
     {
-        $builder->whereElement($element, $this->config);
+        $builder->whereElement($element, $this->getName($element), $this->config);
     }
 
     /**

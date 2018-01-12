@@ -4,7 +4,8 @@
  * Backend modules
  */
 $GLOBALS['BE_MOD']['system']['filter'] = [
-    'tables' => ['tl_filter', 'tl_filter_element']
+    'tables' => ['tl_filter', 'tl_filter_element'],
+    'option' => ['contao.controller.backend_csv_import', 'importOptionWizard']
 ];
 
 /**

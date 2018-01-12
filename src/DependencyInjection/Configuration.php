@@ -7,6 +7,7 @@ use HeimrichHannot\FilterBundle\Filter\Type\ChoiceType;
 use HeimrichHannot\FilterBundle\Filter\Type\HiddenType;
 use HeimrichHannot\FilterBundle\Filter\Type\ResetType;
 use HeimrichHannot\FilterBundle\Filter\Type\SubmitType;
+use HeimrichHannot\FilterBundle\Filter\Type\TextConcatType;
 use HeimrichHannot\FilterBundle\Filter\Type\TextType;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
@@ -47,6 +48,8 @@ class Configuration implements ConfigurationInterface
 //                                ->scalarNode('parent')->cannotBeEmpty()->defaultValue(TextType::class)->end()
                                 // text fields
                                 ->scalarNode('text')->cannotBeEmpty()->defaultValue(TextType::class)->end()
+                                ->scalarNode('text_concat')->cannotBeEmpty()->defaultValue(TextConcatType::class)->end()
+
 //                                ->scalarNode('textarea')->cannotBeEmpty()->defaultValue(TextareaType::class)->end()
 //                                ->scalarNode('email')->cannotBeEmpty()->defaultValue(EmailType::class)->end()
 //                                ->scalarNode('integer')->cannotBeEmpty()->defaultValue(IntegerType::class)->end()

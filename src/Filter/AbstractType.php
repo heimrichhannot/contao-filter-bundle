@@ -68,7 +68,7 @@ abstract class AbstractType
     {
         $options = [];
 
-        $options['label'] = $this->getLabel($element, $builder);
+        $options['label'] = $this->getLabel($element, $builder) ?: $element['title'];
 
         if (true === (bool)$element['addPlaceholder'] && $element['placeholder'] !== '') {
             $options['attr']['placeholder'] = $this->translator->trans($element['placeholder'], ['%label%' => $options['label']]);

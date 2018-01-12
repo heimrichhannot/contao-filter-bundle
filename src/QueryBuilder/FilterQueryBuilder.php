@@ -9,10 +9,8 @@
 namespace HeimrichHannot\FilterBundle\QueryBuilder;
 
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
-use Contao\System;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
-use Haste\Model\Model;
 use Haste\Model\Relations;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
 
@@ -32,10 +30,11 @@ class FilterQueryBuilder extends QueryBuilder
     /**
      * Add where clause based on an element
      * @param array $element
+     * @param string $name The field name
      * @param FilterConfig $config
      * @return $this This FilterQueryBuilder instance.
      */
-    public function whereElement(array $element, FilterConfig $config)
+    public function whereElement(array $element, string $name, FilterConfig $config)
     {
         $filter = $config->getFilter();
 
@@ -52,10 +51,10 @@ class FilterQueryBuilder extends QueryBuilder
                 if (!isset($dca['eval']['tagsManager'])) {
                     break;
                 }
-                $this->whereTagWidget($element, $config, $dca);
+                $this->whereTagWidget($element, $name, $config, $dca);
                 break;
             default:
-                $this->whereWidget($element, $config, $dca);
+                $this->whereWidget($element, $name, $config, $dca);
         }
 
         return $this;
@@ -64,24 +63,27 @@ class FilterQueryBuilder extends QueryBuilder
     /**
      * Add tag widget where clause
      * @param array $element
+     * @param string $name The field name
      * @param FilterConfig $config
      * @param array $dca
      *
      * @return $this This FilterQueryBuilder instance.
      */
-    protected function whereTagWidget(array $element, FilterConfig $config, array $dca)
+    protected function whereTagWidget(array $element, string $name, FilterConfig $config, array $dca)
     {
         $filter   = $config->getFilter();
         $data     = $config->getData();
-        $value    = $data[$element['field']];
+        $value    = $data[$name];
         $relation = Relations::getRelation($filter['dataContainer'], $element['field']);
 
         if ($relation === false || $value === null) {
             return $this;
         }
 
-        $this->join($relation['reference_table'], $relation['table'], $relation['table'], $relation['table'] . '.' . $relation['reference_field'] . '=' . $relation['reference_table'] . '.' . $relation['reference']);
-        $this->andWhere($this->expr()->in($relation['table'] . '.' . $relation['related_field'], $value));
+        $alias = $relation['table'] . '_' . $name;
+
+        $this->join($relation['reference_table'], $relation['table'], $alias, $alias . '.' . $relation['reference_field'] . '=' . $relation['reference_table'] . '.' . $relation['reference']);
+        $this->andWhere($this->expr()->in($alias . '.' . $relation['related_field'], $value));
 
         return $this;
     }
@@ -89,14 +91,22 @@ class FilterQueryBuilder extends QueryBuilder
     /**
      * Add tag widget where clause
      * @param array $element
+     * @param string $name The field name
      * @param FilterConfig $config
      * @param array $dca
      *
      * @return $this This FilterQueryBuilder instance.
      */
-    public function whereWidget(array $element, FilterConfig $config, array $dca)
+    public function whereWidget(array $element, string $name, FilterConfig $config, array $dca)
     {
+        $data  = $config->getData();
+        $value = $data[$name];
 
+        if ($value === null) {
+            return $this;
+        }
+
+        $this->andWhere($this->expr()->like($name, $this->expr()->literal('%' . $value . '%')));
 
         return $this;
     }

@@ -26,11 +26,52 @@ class FieldOptionsChoice extends AbstractChoice
 
         \Controller::loadDataContainer($filter['dataContainer']);
 
-        if (!isset($GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element['field']])) {
-            return $choices;
+        if (true === (bool)$element['customOptions']) {
+            $options = $this->getCustomOptions($element, $filter);
+        } elseif (isset($GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element['field']])) {
+            $options = $this->getDcaOptions($element, $filter, $GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element['field']]);
         }
 
-        $dca = $GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element['field']];
+        $translator = System::getContainer()->get('translator');
+
+        foreach ($options as $option) {
+            if (!isset($option['label']) || !isset($option['value'])) {
+                continue;
+            }
+
+            if ($translator->getCatalogue()->has($option['label'])) {
+                $option['label'] = $translator->trans($option['label']);
+            }
+
+            $choices[$option['label']] = $option['value'];
+        }
+
+        return $choices;
+    }
+
+    /**
+     * Get custom options
+     * @param array $element
+     * @param array $filter
+     * @return array
+     */
+    protected function getCustomOptions(array $element, array $filter)
+    {
+        $options = deserialize($element['options'], true);
+        return $options;
+    }
+
+    /**
+     * Get contao dca widget options
+     * @param array $element
+     * @param array $filter
+     * @param array $dca
+     * @return array
+     */
+    protected function getDcaOptions(array $element, array $filter, array $dca)
+    {
+        $options = [];
+        $dca     = $GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element['field']];
 
         switch ($dca['inputType']) {
             case 'cfgTags':
@@ -43,15 +84,7 @@ class FieldOptionsChoice extends AbstractChoice
                 $options = $this->getWidgetOptions($element, $filter, $dca);
         }
 
-        foreach ($options as $option) {
-            if (!isset($option['label']) || !isset($option['value'])) {
-                continue;
-            }
-
-            $choices[$option['label']] = $option['value'];
-        }
-
-        return $choices;
+        return $options;
     }
 
     /**
