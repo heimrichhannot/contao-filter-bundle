@@ -1,4 +1,4 @@
-#Contao filter bundle
+# Contao filter bundle
 
 ![](https://img.shields.io/packagist/v/heimrichhannot/contao-filter-bundle.svg)
 ![](https://img.shields.io/packagist/l/heimrichhannot/contao-filter-bundle.svg)
