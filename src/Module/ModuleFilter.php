@@ -58,6 +58,10 @@ class ModuleFilter extends \Contao\Module
     {
         $filter = $this->config->getFilter();
 
+        $this->config->initQueryBuilder();
+
+        $qb = $this->config->getQueryBuilder();
+
         if (null === $this->config->getBuilder()) {
             $this->config->buildForm(System::getContainer()->get('huh.filter.session')->getData($this->config->getCacheKey()));
         }

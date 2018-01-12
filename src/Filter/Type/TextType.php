@@ -29,6 +29,6 @@ class TextType extends AbstractType implements TypeInterface
      */
     public function buildForm(array $element, FormBuilderInterface $builder)
     {
-        $builder->add($element['field'], \Symfony\Component\Form\Extension\Core\Type\TextType::class, $this->getOptions($element, $builder));
+        $builder->add($this->getName($element, $builder), \Symfony\Component\Form\Extension\Core\Type\TextType::class, $this->getOptions($element, $builder));
     }
 }

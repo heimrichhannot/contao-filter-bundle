@@ -2,6 +2,7 @@
 
 namespace HeimrichHannot\FilterBundle\DependencyInjection;
 
+use HeimrichHannot\FilterBundle\Filter\Type\ButtonType;
 use HeimrichHannot\FilterBundle\Filter\Type\ChoiceType;
 use HeimrichHannot\FilterBundle\Filter\Type\HiddenType;
 use HeimrichHannot\FilterBundle\Filter\Type\ResetType;
@@ -78,7 +79,7 @@ class Configuration implements ConfigurationInterface
                                 // hidden field
                                 ->scalarNode('hidden')->cannotBeEmpty()->defaultValue(HiddenType::class)->end()
                                 // buttons
-//                                ->scalarNode('button')->cannotBeEmpty()->defaultValue(ButtonType::class)->end()
+                                ->scalarNode('button')->cannotBeEmpty()->defaultValue(ButtonType::class)->end()
                                 ->scalarNode('reset')->cannotBeEmpty()->defaultValue(ResetType::class)->end()
                                 ->scalarNode('submit')->cannotBeEmpty()->defaultValue(SubmitType::class)->end()
                             ->end()

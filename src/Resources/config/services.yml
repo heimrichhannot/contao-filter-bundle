@@ -11,6 +11,11 @@ services:
           - "@session"
   huh.filter.config:
       class: HeimrichHannot\FilterBundle\Config\FilterConfig
+  huh.filter.query_builder:
+      class: HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder
+      arguments:
+          - "@contao.framework"
+          - "@doctrine.dbal.default_connection"
   huh.filter.choice.data_container:
       class: HeimrichHannot\FilterBundle\Choice\DataContainerChoice
       arguments:

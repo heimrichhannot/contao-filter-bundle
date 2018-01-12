@@ -45,7 +45,7 @@ abstract class AbstractType
         $filter = $this->config->getFilter();
 
         if (true === (bool)$element['customLabel'] && $element['label'] !== '') {
-            return $this->translator->trans($element['label']);
+            return $element['label'];
         }
 
         \Controller::loadDataContainer($filter['dataContainer']);
@@ -79,5 +79,23 @@ abstract class AbstractType
         }
 
         return $options;
+    }
+
+    /**
+     * Get the field name
+     * @param array $element
+     * @param FormBuilderInterface $builder
+     * @param string|null $default The default name
+     * @return mixed
+     */
+    protected function getName(array $element, FormBuilderInterface $builder, $default = null)
+    {
+        $name = $element['field'] ?: $default;
+
+        if (true === (bool)$element['customName'] && $element['name'] !== '') {
+            $name = $element['name'];
+        }
+
+        return $name;
     }
 }

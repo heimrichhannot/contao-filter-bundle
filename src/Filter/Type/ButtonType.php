@@ -13,7 +13,7 @@ use HeimrichHannot\FilterBundle\Filter\TypeInterface;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilderInterface;
 use Symfony\Component\Form\FormBuilderInterface;
 
-class ResetType extends AbstractType implements TypeInterface
+class ButtonType extends AbstractType implements TypeInterface
 {
     /**
      * @inheritDoc
@@ -28,6 +28,23 @@ class ResetType extends AbstractType implements TypeInterface
      */
     public function buildForm(array $element, FormBuilderInterface $builder)
     {
-        $builder->add($this->getName($element, $builder, 'reset'), \Symfony\Component\Form\Extension\Core\Type\ResetType::class, $this->getOptions($element, $builder));
+        $builder->add($this->getName($element, $builder, $element['name']), \Symfony\Component\Form\Extension\Core\Type\ButtonType::class, $this->getOptions($element, $builder));
+    }
+
+    /**
+     * Get the field label
+     * @param array $element
+     * @param FormBuilderInterface $builder
+     * @return string
+     */
+    protected function getLabel(array $element, FormBuilderInterface $builder)
+    {
+        $label  = parent::getLabel($element, $builder);
+
+        if ($label === '' && $element['label'] !== '') {
+            return $element['label'];
+        }
+
+        return $label;
     }
 }

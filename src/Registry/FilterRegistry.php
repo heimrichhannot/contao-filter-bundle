@@ -17,6 +17,7 @@ use HeimrichHannot\FilterBundle\Model\FilterElementModel;
 use HeimrichHannot\FilterBundle\Model\FilterModel;
 use HeimrichHannot\Haste\Util\Url;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Symfony\Component\Form\Exception\TransformationFailedException;
 
 class FilterRegistry
 {
@@ -160,7 +161,14 @@ class FilterRegistry
             return;
         }
 
-        $form = $config->getBuilder()->getForm();
+        try {
+            $form = $config->getBuilder()->getForm();
+        } catch (TransformationFailedException $e) {
+            // for instance field changed from single to multiple value, transform old session data will throw an TransformationFailedException -> clear session and build again with empty data
+            $this->session->reset($cacheKey);
+            $config->buildForm($this->session->getData($cacheKey));
+            $form = $config->getBuilder()->getForm();
+        }
 
         $form->handleRequest($request);
 

@@ -10,8 +10,10 @@ namespace HeimrichHannot\FilterBundle\Config;
 
 
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
+use Contao\System;
 use HeimrichHannot\FilterBundle\Form\FilterType;
 use HeimrichHannot\FilterBundle\Model\FilterElementModel;
+use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Forms;
 
@@ -43,6 +45,11 @@ class FilterConfig
     protected $formName;
 
     /**
+     * @var FilterQueryBuilder
+     */
+    protected $queryBuilder;
+
+    /**
      * Init the filter based on its model
      * @param string $cacheKey
      * @param array $filter
@@ -71,6 +78,14 @@ class FilterConfig
 
         $this->formName = FilterType::$blockPrefix . $this->filter['id'];
         $this->builder  = $factory->createNamedBuilder($this->formName, FilterType::class, $data, $options);
+    }
+
+    /**
+     *
+     */
+    public function initQueryBuilder()
+    {
+        $this->queryBuilder = System::getContainer()->get('huh.filter.query_builder');
     }
 
     /**
@@ -111,5 +126,13 @@ class FilterConfig
     public function getCacheKey(): string
     {
         return $this->cacheKey;
+    }
+
+    /**
+     * @return FilterQueryBuilder
+     */
+    public function getQueryBuilder(): FilterQueryBuilder
+    {
+        return $this->queryBuilder;
     }
 }

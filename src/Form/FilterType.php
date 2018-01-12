@@ -26,8 +26,6 @@ class FilterType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $data = $builder->getData();
-
         if (!isset($options['filter']) || !$options['filter'] instanceof FilterConfig) {
             return;
         }

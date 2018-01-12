@@ -70,16 +70,18 @@ $GLOBALS['TL_DCA']['tl_filter_element'] = [
         ]
     ],
     'palettes'    => [
-        '__selector__' => ['type', 'addPlaceholder', 'customLabel', 'published'],
+        '__selector__' => ['type', 'customName', 'addPlaceholder', 'customLabel', 'published'],
         'default'      => '{general_legend},title,type;{publish_legend},published;',
-        'text'         => '{general_legend},title,type;{config_legend},field,addPlaceholder,customLabel;{expert_legend},cssClass;{publish_legend},published;',
-        'choice'       => '{general_legend},title,type;{config_legend},field,addPlaceholder,customLabel;{expert_legend},cssClass;{publish_legend},published;',
-        'hidden'       => '{general_legend},title,type;{config_legend},field;{expert_legend},cssClass;{publish_legend},published;',
-        'reset'        => '{general_legend},title,type;{config_legend},customLabel;{expert_legend},cssClass;{publish_legend},published;',
-        'submit'       => '{general_legend},title,type;{config_legend},customLabel;{expert_legend},cssClass;{publish_legend},published;',
+        'text'         => '{general_legend},title,type;{config_legend},field,customName,addPlaceholder,customLabel;{expert_legend},cssClass;{publish_legend},published;',
+        'choice'       => '{general_legend},title,type;{config_legend},field,customName,addPlaceholder,customLabel,expanded,multiple;{expert_legend},cssClass;{publish_legend},published;',
+        'hidden'       => '{general_legend},title,type;{config_legend},field,customName;{expert_legend},cssClass;{publish_legend},published;',
+        'button'       => '{general_legend},title,type;{config_legend},name,label;{expert_legend},cssClass;{publish_legend},published;',
+        'reset'        => '{general_legend},title,type;{config_legend},customName,customLabel;{expert_legend},cssClass;{publish_legend},published;',
+        'submit'       => '{general_legend},title,type;{config_legend},customName,customLabel;{expert_legend},cssClass;{publish_legend},published;',
     ],
     'subpalettes' => [
         'addPlaceholder' => 'placeholder',
+        'customName'     => 'name',
         'customLabel'    => 'label',
         'published'      => 'start,stop'
     ],
@@ -136,8 +138,22 @@ $GLOBALS['TL_DCA']['tl_filter_element'] = [
             'filter'           => true,
             'inputType'        => 'select',
             'options_callback' => ['huh.filter.choice.field', 'getChoices'],
-            'eval'             => ['chosen' => true],
+            'eval'             => ['chosen' => true, 'includeBlankOption' => true, 'doNotCopy' => true],
             'sql'              => "varchar(64) NOT NULL default ''"
+        ],
+        'customName'     => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter_element']['customName'],
+            'exclude'   => true,
+            'inputType' => 'checkbox',
+            'eval'      => ['submitOnChange' => true, 'doNotCopy' => true],
+            'sql'       => "char(1) NOT NULL default ''"
+        ],
+        'name'           => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter_element']['name'],
+            'exclude'   => true,
+            'inputType' => 'text',
+            'eval'      => ['mandatory' => true, 'maxlength' => 128, 'doNotCopy' => true],
+            'sql'       => "varchar(128) NOT NULL default ''"
         ],
         'addPlaceholder' => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_element']['addPlaceholder'],
@@ -174,6 +190,20 @@ $GLOBALS['TL_DCA']['tl_filter_element'] = [
             },
             'eval'             => ['chosen' => true, 'mandatory' => true, 'maxlength' => 128, 'includeBlankOption' => true, 'doNotCopy' => true],
             'sql'              => "varchar(128) NOT NULL default ''"
+        ],
+        'expanded'       => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter_element']['expanded'],
+            'exclude'   => true,
+            'inputType' => 'checkbox',
+            'eval'      => ['tl_class' => 'w50'],
+            'sql'       => "char(1) NOT NULL default ''"
+        ],
+        'multiple'       => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter_element']['expanded'],
+            'exclude'   => true,
+            'inputType' => 'checkbox',
+            'eval'      => ['tl_class' => 'w50'],
+            'sql'       => "char(1) NOT NULL default ''"
         ],
         'parents'        => [
             'label'            => &$GLOBALS['TL_LANG']['tl_filter_element']['parents'],

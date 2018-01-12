@@ -62,4 +62,15 @@ class FilterSession
 
         return !is_array($data) ? [$data] : $data;
     }
+
+    /**
+     * Reset the filter data for a given key
+     * @param string $key
+     */
+    public function reset(string $key)
+    {
+        if ($this->session->has($key)) {
+            $this->session->remove($key);
+        }
+    }
 }
