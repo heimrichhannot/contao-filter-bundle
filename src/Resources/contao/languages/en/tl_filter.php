@@ -10,6 +10,7 @@ $lang['name']          = ['Name', 'Please enter a form name.'];
 $lang['dataContainer'] = ['DataContainer', 'Choose the desired data container.'];
 $lang['method']        = ['HTTP-Method', 'Select the form method (GET or POST).'];
 $lang['action']        = ['Action', 'Select the url, where the form data should be submitted to.'];
+$lang['template']      = ['Template', 'Select the form template.'];
 $lang['published']     = ['Publish Filter', 'Make the Filter publicly visible on the website.'];
 $lang['start']         = ['Show from', 'Do not publish the Filter on the website before this date.'];
 $lang['stop']          = ['Show until', 'Unpublish the Filter on the website after this date.'];
@@ -18,9 +19,10 @@ $lang['tstamp']        = ['Revision date', ''];
 /**
  * Legends
  */
-$lang['general_legend'] = 'General settings';
-$lang['config_legend']  = 'Configuration';
-$lang['publish_legend'] = 'Publish settings';
+$lang['general_legend']  = 'General settings';
+$lang['config_legend']   = 'Configuration';
+$lang['template_legend'] = 'Template settings';
+$lang['publish_legend']  = 'Publish settings';
 
 /**
  * Buttons

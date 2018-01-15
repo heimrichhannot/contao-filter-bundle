@@ -9,14 +9,15 @@
 namespace HeimrichHannot\FilterBundle\Config;
 
 
-use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\System;
 use HeimrichHannot\FilterBundle\Filter\TypeInterface;
 use HeimrichHannot\FilterBundle\Form\FilterType;
-use HeimrichHannot\FilterBundle\Model\FilterElementModel;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\Forms;
+use Symfony\Component\Form\Exception\UnexpectedTypeException;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 
 class FilterConfig
 {
@@ -24,6 +25,11 @@ class FilterConfig
      * @var string
      */
     protected $cacheKey;
+
+    /**
+     * @var string
+     */
+    protected $sessionKey;
 
     /**
      * @var array|null
@@ -48,14 +54,16 @@ class FilterConfig
     /**
      * Init the filter based on its model
      * @param string $cacheKey
+     * @param string $sessionKey
      * @param array $filter
      * @param array|null $elements
      */
-    public function init(string $cacheKey, array $filter, $elements = null)
+    public function init(string $cacheKey, string $sessionKey, array $filter, $elements = null)
     {
-        $this->cacheKey = $cacheKey;
-        $this->filter   = $filter;
-        $this->elements = $elements;
+        $this->cacheKey   = $cacheKey;
+        $this->sessionKey = $sessionKey;
+        $this->filter     = $filter;
+        $this->elements   = $elements;
     }
 
     /**
@@ -72,7 +80,46 @@ class FilterConfig
 
         $options = ['filter' => $this];
 
-        $this->builder  = $factory->createNamedBuilder($this->filter['name'], FilterType::class, $data, $options);
+        $this->builder = $factory->createNamedBuilder($this->filter['name'], FilterType::class, $data, $options);
+
+        $this->mapFormsToData();
+    }
+
+    /**
+     * Maps the data of the current forms and update builder data
+     */
+    protected function mapFormsToData()
+    {
+        $data             = [];
+        $forms            = $this->builder->getForm();
+        $propertyAccessor = PropertyAccess::createPropertyAccessor();
+
+        /**
+         * @var FormInterface $form
+         */
+        foreach ($forms as $form) {
+
+            $propertyPath = $form->getPropertyPath();
+            $config       = $form->getConfig();
+
+            // Write-back is disabled if the form is not synchronized (transformation failed),
+            // if the form was not submitted and if the form is disabled (modification not allowed)
+            if (null !== $propertyPath && $config->getMapped() && $form->isSynchronized() && !$form->isDisabled()) {
+                // If the field is of type DateTime and the data is the same skip the update to
+                // keep the original object hash
+                if ($form->getData() instanceof \DateTime && $form->getData() == $propertyAccessor->getValue($data, $propertyPath)) {
+                    continue;
+                }
+
+                // If the data is identical to the value in $data, we are
+                // dealing with a reference
+                if (!is_object($data) || !$config->getByReference() || $form->getData() !== $propertyAccessor->getValue($data, $propertyPath)) {
+                    $propertyAccessor->setValue($data, $propertyPath, $form->getData());
+                }
+            }
+        }
+
+        $this->builder->setData($data);
     }
 
     /**
@@ -160,6 +207,14 @@ class FilterConfig
     }
 
     /**
+     * @return string
+     */
+    public function getSessionKey(): string
+    {
+        return $this->sessionKey;
+    }
+
+    /**
      * @return FilterQueryBuilder|null
      */
     public function getQueryBuilder()
@@ -173,6 +228,6 @@ class FilterConfig
      */
     public function getData(): array
     {
-        return System::getContainer()->get('huh.filter.session')->getData($this->getCacheKey());
+        return System::getContainer()->get('huh.filter.session')->getData($this->getSessionKey());
     }
 }

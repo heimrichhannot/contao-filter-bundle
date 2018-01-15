@@ -11,12 +11,13 @@ namespace HeimrichHannot\FilterBundle\Registry;
 use Contao\Controller;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\System;
-use Doctrine\DBAL\Exception\InvalidFieldNameException;
+use Doctrine\DBAL\DBALException;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
 use HeimrichHannot\FilterBundle\Entity\FilterSession;
 use HeimrichHannot\FilterBundle\Model\FilterElementModel;
 use HeimrichHannot\FilterBundle\Model\FilterModel;
 use HeimrichHannot\Haste\Util\Url;
+use PHPUnit\Util\Filter;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 
@@ -99,7 +100,7 @@ class FilterRegistry
         while ($filters->next()) {
             try {
                 $this->initFilter($filters->row(), $request);
-            } catch (InvalidFieldNameException $e) {
+            } catch (DBALException $e) {
                 // if fields does not exist in db, contao/install wont work anymore, catch error
             }
         }
@@ -133,7 +134,8 @@ class FilterRegistry
      */
     protected function initFilter(array $filter, $request = null)
     {
-        $cacheKey = $this->getCacheKeyById($filter['id']);
+        $cacheKey   = $this->getCacheKeyById($filter['id']);
+        $sessionKey = $this->getSessionKey($filter);
 
         $cache = $this->cache->getItem($cacheKey);
 
@@ -142,7 +144,7 @@ class FilterRegistry
          */
         $config = System::getContainer()->get('huh.filter.config');
 
-        if (!$cache->isHit() || empty($cache->get()) || System::getContainer()->get('kernel')->isDebug()) {
+        if (!$cache->isHit() || System::getContainer()->get('kernel')->isDebug()) {
             /**
              * @var FilterElementModel $adapter
              */
@@ -154,12 +156,14 @@ class FilterRegistry
                 $elements = $elements->fetchAll();
             }
 
-            $config->init($cacheKey, $filter, $elements);
+            $config->init($cacheKey, $sessionKey, $filter, $elements);
 
             $cache->set($config);
 
             $this->cache->save($cache);
         }
+
+        $config = $cache->get();
 
         // always build the form and handle the request within the registry to have global access
         $this->handleForm($config, $request);
@@ -175,10 +179,10 @@ class FilterRegistry
      */
     protected function handleForm(FilterConfig $config, $request = null)
     {
-        $cacheKey = $this->getCacheKeyById($config->getFilter()['id']);
+        $sessionKey = $config->getSessionKey();
 
         if (null === $config->getBuilder()) {
-            $config->buildForm($this->session->getData($cacheKey));
+            $config->buildForm($this->session->getData($sessionKey));
         }
 
         if (null === $config->getBuilder()) {
@@ -189,8 +193,8 @@ class FilterRegistry
             $form = $config->getBuilder()->getForm();
         } catch (TransformationFailedException $e) {
             // for instance field changed from single to multiple value, transform old session data will throw an TransformationFailedException -> clear session and build again with empty data
-            $this->session->reset($cacheKey);
-            $config->buildForm($this->session->getData($cacheKey));
+            $this->session->reset($sessionKey);
+            $config->buildForm($this->session->getData($sessionKey));
             $form = $config->getBuilder()->getForm();
         }
 
@@ -198,12 +202,22 @@ class FilterRegistry
 
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
-
-            $this->session->setData($cacheKey, $data);
+            $this->session->setData($sessionKey, $data);
 
             // redirect to same page without filter parameters
             Controller::redirect(Url::removeQueryString([$form->getName()], $form->getConfig()->getAction() ?: null));
         }
+    }
+
+    /**
+     * Get the session key for a given filter config
+     * @param array $filter
+     *
+     * @return string The unique session key
+     */
+    public function getSessionKey(array $filter)
+    {
+        return 'huh.filter.session.' . $filter['name'] ?: $filter['id'];
     }
 
     /**

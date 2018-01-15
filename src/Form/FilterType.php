@@ -17,8 +17,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class FilterType extends AbstractType
 {
-    public static $blockPrefix = 'f';
-
     /**
      * @var FilterConfig|null
      */
@@ -34,7 +32,7 @@ class FilterType extends AbstractType
 
         $filter = $this->config->getFilter();
 
-        $builder->setAction(InsertTags::replaceInsertTags($filter['action']));
+        $builder->setAction(urldecode(InsertTags::replaceInsertTags($filter['action'])));
         $builder->setMethod($filter['method']);
 
         $this->buildElements($builder, $options);

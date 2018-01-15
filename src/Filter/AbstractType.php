@@ -71,7 +71,7 @@ abstract class AbstractType
         $options['label'] = $this->getLabel($element, $builder) ?: $element['title'];
 
         if (true === (bool)$element['addPlaceholder'] && $element['placeholder'] !== '') {
-            $options['attr']['placeholder'] = $this->translator->trans($element['placeholder'], ['%label%' => $options['label']]);
+            $options['attr']['placeholder'] = $this->translator->trans($element['placeholder'], ['%label%' => $this->translator->trans($options['label'])]);
         }
 
         if ($element['cssClass'] !== '') {

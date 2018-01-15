@@ -11,6 +11,7 @@ services:
           - "@session"
   huh.filter.config:
       class: HeimrichHannot\FilterBundle\Config\FilterConfig
+      shared: false
   huh.filter.query_builder:
       class: HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder
       arguments:
