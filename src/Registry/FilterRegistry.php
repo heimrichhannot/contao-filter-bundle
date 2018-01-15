@@ -60,28 +60,6 @@ class FilterRegistry
     }
 
     /**
-     * Clear the registry cache
-     * @param array $ids An optional array if filter ids that should be cleared
-     */
-    public function clearCache(array $ids = [])
-    {
-        if (empty($ids)) {
-            $this->cache->reset();
-            return;
-        }
-
-        foreach ($ids as $id) {
-            $cacheKey = $this->getCacheKeyById($id);
-
-            if ($this->cache->hasItem($cacheKey)) {
-                $this->cache->deleteItem($cacheKey);
-            }
-        }
-
-        $this->cache->commit();
-    }
-
-    /**
      * Initialize the registry
      *
      * @param mixed $request The request to handle
@@ -134,43 +112,30 @@ class FilterRegistry
      */
     protected function initFilter(array $filter, $request = null)
     {
-        $cacheKey   = $this->getCacheKeyById($filter['id']);
         $sessionKey = $this->getSessionKey($filter);
-
-        $cache = $this->cache->getItem($cacheKey);
 
         /**
          * @var FilterConfig $config
          */
         $config = System::getContainer()->get('huh.filter.config');
 
-        if (!$cache->isHit() || System::getContainer()->get('kernel')->isDebug()) {
-            /**
-             * @var FilterElementModel $adapter
-             */
-            $adapter = $this->framework->getAdapter(FilterElementModel::class);
+        /**
+         * @var FilterElementModel $adapter
+         */
+        $adapter = $this->framework->getAdapter(FilterElementModel::class);
 
-            $elements = $adapter->findPublishedByPid($filter['id']);
+        $elements = $adapter->findPublishedByPid($filter['id']);
 
-            if (null !== $elements) {
-                $elements = $elements->fetchAll();
-            }
-
-            $config->init($cacheKey, $sessionKey, $filter, $elements);
-
-            $cache->set($config);
-
-            $this->cache->save($cache);
+        if (null !== $elements) {
+            $elements = $elements->fetchAll();
         }
 
-        $config = $cache->get();
+        $config->init($sessionKey, $filter, $elements);
 
         // always build the form and handle the request within the registry to have global access
         $this->handleForm($config, $request);
 
-        $config = $cache->get();
-
-        $this->filters[$cacheKey] = $config;
+        $this->filters[$config->getId()] = $config;
     }
 
     /**
@@ -210,6 +175,7 @@ class FilterRegistry
 
             $data = $form->getData();
             $this->session->setData($sessionKey, $data);
+
             // redirect to same page without filter parameters
             Controller::redirect(Url::removeQueryString([$form->getName()], $form->getConfig()->getAction() ?: null));
         }
@@ -227,17 +193,6 @@ class FilterRegistry
     }
 
     /**
-     * Get the cache key for a given filter id
-     * @param int $id
-     *
-     * @return string The unique cache key
-     */
-    public function getCacheKeyById(int $id)
-    {
-        return 'huh.registry.filter.' . $id;
-    }
-
-    /**
      * Find filter by id
      * @param int $id
      *
@@ -245,13 +200,23 @@ class FilterRegistry
      */
     public function findById(int $id)
     {
-        $cacheKey = $this->getCacheKeyById($id);
+        /**
+         * @var FilterModel $adapter
+         */
+        $adapter = $this->framework->getAdapter(FilterModel::class);
 
-        if ($this->cache->hasItem($cacheKey)) {
-            return $this->cache->getItem($cacheKey)->get();
+        if (isset($this->filters[$id])) {
+            return $this->filters[$id];
         }
 
-        return null;
+
+        if (($filter = $adapter->findByPk($id)) === null) {
+            return null;
+        }
+
+        $this->initFilter($filter->row());
+
+        return $this->filters[$id];
     }
 
     /**

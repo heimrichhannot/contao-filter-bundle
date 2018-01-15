@@ -24,11 +24,6 @@ class FilterConfig
     /**
      * @var string
      */
-    protected $cacheKey;
-
-    /**
-     * @var string
-     */
     protected $sessionKey;
 
     /**
@@ -58,14 +53,12 @@ class FilterConfig
 
     /**
      * Init the filter based on its model
-     * @param string $cacheKey
      * @param string $sessionKey
      * @param array $filter
      * @param array|null $elements
      */
-    public function init(string $cacheKey, string $sessionKey, array $filter, $elements = null)
+    public function init(string $sessionKey, array $filter, $elements = null)
     {
-        $this->cacheKey   = $cacheKey;
         $this->sessionKey = $sessionKey;
         $this->filter     = $filter;
         $this->elements   = $elements;
@@ -201,14 +194,6 @@ class FilterConfig
     public function getBuilder()
     {
         return $this->builder;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCacheKey(): string
-    {
-        return $this->cacheKey;
     }
 
     /**

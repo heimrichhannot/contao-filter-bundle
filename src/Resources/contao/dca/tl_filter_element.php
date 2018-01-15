@@ -10,7 +10,6 @@ $GLOBALS['TL_DCA']['tl_filter_element'] = [
         ],
         'onsubmit_callback' => [
             ['HeimrichHannot\Haste\Dca\General', 'setDateAdded'],
-            ['tl_filter_element', 'clearFilterRegistry'],
         ],
         'sql'               => [
             'keys' => [
@@ -662,11 +661,6 @@ class tl_filter_element extends \Backend
         }
 
         $objVersions->create();
-    }
-
-    public function clearFilterRegistry(\Contao\DataContainer $dc)
-    {
-        System::getContainer()->get('huh.filter.registry')->clearCache([$dc->activeRecord->pid]);
     }
 
     /**

@@ -313,9 +313,4 @@ class tl_filter extends \Backend
     {
         return \BackendUser::getInstance()->hasAccess('delete', 'filterp') ? '<a href="' . $this->addToUrl($href . '&amp;id=' . $row['id']) . '" title="' . \StringUtil::specialchars($title) . '"' . $attributes . '>' . \Image::getHtml($icon, $label) . '</a> ' : \Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)) . ' ';
     }
-
-    public function clearFilterRegistry(\Contao\DataContainer $dc)
-    {
-        System::getContainer()->get('huh.filter.registry')->clearCache([$dc->id]);
-    }
 }
