@@ -3,12 +3,29 @@
 namespace HeimrichHannot\FilterBundle\DependencyInjection;
 
 use HeimrichHannot\FilterBundle\Filter\Type\ButtonType;
+use HeimrichHannot\FilterBundle\Filter\Type\CheckboxType;
 use HeimrichHannot\FilterBundle\Filter\Type\ChoiceType;
+use HeimrichHannot\FilterBundle\Filter\Type\ColorType;
+use HeimrichHannot\FilterBundle\Filter\Type\CountryType;
+use HeimrichHannot\FilterBundle\Filter\Type\EmailType;
 use HeimrichHannot\FilterBundle\Filter\Type\HiddenType;
+use HeimrichHannot\FilterBundle\Filter\Type\IntegerType;
+use HeimrichHannot\FilterBundle\Filter\Type\LanguageType;
+use HeimrichHannot\FilterBundle\Filter\Type\LocaleType;
+use HeimrichHannot\FilterBundle\Filter\Type\MoneyType;
+use HeimrichHannot\FilterBundle\Filter\Type\NumberType;
+use HeimrichHannot\FilterBundle\Filter\Type\PasswordType;
+use HeimrichHannot\FilterBundle\Filter\Type\PercentType;
+use HeimrichHannot\FilterBundle\Filter\Type\RadioType;
+use HeimrichHannot\FilterBundle\Filter\Type\RangeType;
 use HeimrichHannot\FilterBundle\Filter\Type\ResetType;
+use HeimrichHannot\FilterBundle\Filter\Type\SearchType;
 use HeimrichHannot\FilterBundle\Filter\Type\SubmitType;
+use HeimrichHannot\FilterBundle\Filter\Type\TelType;
+use HeimrichHannot\FilterBundle\Filter\Type\TextareaType;
 use HeimrichHannot\FilterBundle\Filter\Type\TextConcatType;
 use HeimrichHannot\FilterBundle\Filter\Type\TextType;
+use HeimrichHannot\FilterBundle\Filter\Type\UrlType;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -49,25 +66,24 @@ class Configuration implements ConfigurationInterface
                                 // text fields
                                 ->scalarNode('text')->cannotBeEmpty()->defaultValue(TextType::class)->end()
                                 ->scalarNode('text_concat')->cannotBeEmpty()->defaultValue(TextConcatType::class)->end()
-
-//                                ->scalarNode('textarea')->cannotBeEmpty()->defaultValue(TextareaType::class)->end()
-//                                ->scalarNode('email')->cannotBeEmpty()->defaultValue(EmailType::class)->end()
-//                                ->scalarNode('integer')->cannotBeEmpty()->defaultValue(IntegerType::class)->end()
-//                                ->scalarNode('money')->cannotBeEmpty()->defaultValue(MoneyType::class)->end()
-//                                ->scalarNode('number')->cannotBeEmpty()->defaultValue(NumberType::class)->end()
-//                                ->scalarNode('password')->cannotBeEmpty()->defaultValue(PasswordType::class)->end()
-//                                ->scalarNode('percent')->cannotBeEmpty()->defaultValue(PercentType::class)->end()
-//                                ->scalarNode('search')->cannotBeEmpty()->defaultValue(SearchType::class)->end()
-//                                ->scalarNode('url')->cannotBeEmpty()->defaultValue(UrlType::class)->end()
-//                                ->scalarNode('range')->cannotBeEmpty()->defaultValue(RangeType::class)->end()
-//                                ->scalarNode('tel')->cannotBeEmpty()->defaultValue(TelType::class)->end()
-//                                ->scalarNode('color')->cannotBeEmpty()->defaultValue(ColorType::class)->end()
+                                ->scalarNode('textarea')->cannotBeEmpty()->defaultValue(TextareaType::class)->end()
+                                ->scalarNode('email')->cannotBeEmpty()->defaultValue(EmailType::class)->end()
+                                ->scalarNode('integer')->cannotBeEmpty()->defaultValue(IntegerType::class)->end()
+                                ->scalarNode('money')->cannotBeEmpty()->defaultValue(MoneyType::class)->end()
+                                ->scalarNode('number')->cannotBeEmpty()->defaultValue(NumberType::class)->end()
+                                ->scalarNode('password')->cannotBeEmpty()->defaultValue(PasswordType::class)->end()
+                                ->scalarNode('percent')->cannotBeEmpty()->defaultValue(PercentType::class)->end()
+                                ->scalarNode('search')->cannotBeEmpty()->defaultValue(SearchType::class)->end()
+                                ->scalarNode('url')->cannotBeEmpty()->defaultValue(UrlType::class)->end()
+                                ->scalarNode('range')->cannotBeEmpty()->defaultValue(RangeType::class)->end()
+                                ->scalarNode('tel')->cannotBeEmpty()->defaultValue(TelType::class)->end()
+                                ->scalarNode('color')->cannotBeEmpty()->defaultValue(ColorType::class)->end()
                                 // choice fields
                                 ->scalarNode('choice')->cannotBeEmpty()->defaultValue(ChoiceType::class)->end()
 //                                ->scalarNode('entity')->cannotBeEmpty()->defaultValue(EntityType::class)->end()
-//                                ->scalarNode('country')->cannotBeEmpty()->defaultValue(CountryType::class)->end()
-//                                ->scalarNode('language')->cannotBeEmpty()->defaultValue(LanguageType::class)->end()
-//                                ->scalarNode('locale')->cannotBeEmpty()->defaultValue(LocaleType::class)->end()
+                                ->scalarNode('country')->cannotBeEmpty()->defaultValue(CountryType::class)->end()
+                                ->scalarNode('language')->cannotBeEmpty()->defaultValue(LanguageType::class)->end()
+                                ->scalarNode('locale')->cannotBeEmpty()->defaultValue(LocaleType::class)->end()
 //                                ->scalarNode('timezone')->cannotBeEmpty()->defaultValue(TimezoneType::class)->end()
 //                                ->scalarNode('currency')->cannotBeEmpty()->defaultValue(CurrencyType::class)->end()
                                 // date and time fields
@@ -85,6 +101,9 @@ class Configuration implements ConfigurationInterface
                                 ->scalarNode('button')->cannotBeEmpty()->defaultValue(ButtonType::class)->end()
                                 ->scalarNode('reset')->cannotBeEmpty()->defaultValue(ResetType::class)->end()
                                 ->scalarNode('submit')->cannotBeEmpty()->defaultValue(SubmitType::class)->end()
+                                // other fields
+                                ->scalarNode('checkbox')->cannotBeEmpty()->defaultValue(CheckboxType::class)->end()
+                                ->scalarNode('radio')->cannotBeEmpty()->defaultValue(RadioType::class)->end()
                             ->end()
                         ->end()
                         ->arrayNode('templates')

@@ -201,9 +201,15 @@ class FilterRegistry
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            if ($form->getClickedButton() && in_array($form->getClickedButton()->getName(), $config->getResetNames())) {
+                $this->session->reset($sessionKey);
+                // redirect to same page without filter parameters
+                Controller::redirect(Url::removeQueryString([$form->getName()], $form->getConfig()->getAction() ?: null));
+            }
+
             $data = $form->getData();
             $this->session->setData($sessionKey, $data);
-
             // redirect to same page without filter parameters
             Controller::redirect(Url::removeQueryString([$form->getName()], $form->getConfig()->getAction() ?: null));
         }

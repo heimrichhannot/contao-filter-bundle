@@ -8,19 +8,18 @@
 
 namespace HeimrichHannot\FilterBundle\Filter\Type;
 
-use HeimrichHannot\FilterBundle\Filter\AbstractType;
-use HeimrichHannot\FilterBundle\Filter\TypeInterface;
+
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 use Symfony\Component\Form\FormBuilderInterface;
 
-class ResetType extends AbstractType implements TypeInterface
+class PasswordType extends TextType
 {
     /**
      * @inheritDoc
      */
     public function buildQuery(FilterQueryBuilder $builder, array $element)
     {
-        // TODO: Implement buildQuery() method.
+        $builder->whereElement($element, $this->getName($element), $this->config);
     }
 
     /**
@@ -28,9 +27,18 @@ class ResetType extends AbstractType implements TypeInterface
      */
     public function buildForm(array $element, FormBuilderInterface $builder)
     {
-        $name = $this->getName($element, 'reset');
-        // use SubmitType instead of ResetType, because ResetType wont submit the form (client-side only)
-        $builder->add($name, \Symfony\Component\Form\Extension\Core\Type\SubmitType::class, $this->getOptions($element, $builder));
-        $this->config->addResetName($name);
+        $builder->add($this->getName($element), \Symfony\Component\Form\Extension\Core\Type\PasswordType::class, $this->getOptions($element, $builder));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function getOptions(array $element, FormBuilderInterface $builder)
+    {
+        $options = parent::getOptions($element, $builder);
+
+        $options['always_empty'] = (bool)$element['alwaysEmpty'];
+
+        return $options;
     }
 }

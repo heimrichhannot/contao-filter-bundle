@@ -45,3 +45,15 @@ services:
       class: HeimrichHannot\FilterBundle\Choice\FieldOptionsChoice
       arguments:
         - "@contao.framework"
+  huh.filter.choice.country:
+        class: HeimrichHannot\FilterBundle\Choice\CountryChoice
+        arguments:
+          - "@contao.framework"
+  huh.filter.choice.language:
+        class: HeimrichHannot\FilterBundle\Choice\LanguageChoice
+        arguments:
+          - "@contao.framework"
+  huh.filter.choice.locale:
+        class: HeimrichHannot\FilterBundle\Choice\LocaleChoice
+        arguments:
+          - "@contao.framework"

@@ -32,6 +32,11 @@ class FilterConfig
     protected $sessionKey;
 
     /**
+     * @var array
+     */
+    protected $resetNames;
+
+    /**
      * @var array|null
      */
     protected $filter;
@@ -229,5 +234,29 @@ class FilterConfig
     public function getData(): array
     {
         return System::getContainer()->get('huh.filter.session')->getData($this->getSessionKey());
+    }
+
+    /**
+     * @return array
+     */
+    public function getResetNames(): array
+    {
+        return $this->resetNames;
+    }
+
+    /**
+     * @param string $resetName
+     */
+    public function addResetName(string $resetName)
+    {
+        $this->resetNames[] = $resetName;
+    }
+
+    /**
+     * @param array $resetName
+     */
+    public function setResetNames(array $resetNames)
+    {
+        $this->resetName = $resetNames;
     }
 }
