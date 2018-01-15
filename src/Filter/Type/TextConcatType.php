@@ -41,6 +41,14 @@ class TextConcatType extends AbstractType implements TypeInterface
      */
     public function buildForm(array $element, FormBuilderInterface $builder)
     {
-        $builder->add($this->getName($element, $element['name']), \Symfony\Component\Form\Extension\Core\Type\TextType::class, $this->getOptions($element, $builder));
+        $builder->add($this->getName($element), \Symfony\Component\Form\Extension\Core\Type\TextType::class, $this->getOptions($element, $builder));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function getName(array $element, $default = null)
+    {
+        return parent::getName($element, $element['name']);
     }
 }

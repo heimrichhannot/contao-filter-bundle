@@ -28,6 +28,14 @@ class SubmitType extends AbstractType implements TypeInterface
      */
     public function buildForm(array $element, FormBuilderInterface $builder)
     {
-        $builder->add($this->getName($element, 'submit'), \Symfony\Component\Form\Extension\Core\Type\SubmitType::class, $this->getOptions($element, $builder));
+        $builder->add($this->getName($element), \Symfony\Component\Form\Extension\Core\Type\SubmitType::class, $this->getOptions($element, $builder));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function getName(array $element, $default = null)
+    {
+        return parent::getName($element, 'submit');
     }
 }

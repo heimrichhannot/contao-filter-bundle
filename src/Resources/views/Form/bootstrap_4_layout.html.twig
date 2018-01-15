@@ -1,0 +1,20 @@
+{% use "bootstrap_4_layout.html.twig" %}
+
+{# Rows #}
+
+{% block form_row -%}
+    {%- if compound is defined and compound -%}
+        {%- set element = 'fieldset' -%}
+    {%- endif -%}
+    <{{ element|default('div') }} class="{{ ('form-group ')~ id|trim }}">
+        {{- form_label(form) -}}
+        {{- form_widget(form) -}}
+        {{- form_errors(form) -}}
+    </{{ element|default('div') }}>
+{%- endblock form_row %}
+
+{% block button_row -%}
+    <div class="{{ ('form-group ')~ id|trim }}">
+        {{- form_widget(form) -}}
+    </div>
+{%- endblock button_row %}

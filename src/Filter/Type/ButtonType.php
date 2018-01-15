@@ -28,14 +28,11 @@ class ButtonType extends AbstractType implements TypeInterface
      */
     public function buildForm(array $element, FormBuilderInterface $builder)
     {
-        $builder->add($this->getName($element, $element['name']), \Symfony\Component\Form\Extension\Core\Type\ButtonType::class, $this->getOptions($element, $builder));
+        $builder->add($this->getName($element), \Symfony\Component\Form\Extension\Core\Type\ButtonType::class, $this->getOptions($element, $builder));
     }
 
     /**
-     * Get the field label
-     * @param array $element
-     * @param FormBuilderInterface $builder
-     * @return string
+     * @inheritDoc
      */
     protected function getLabel(array $element, FormBuilderInterface $builder)
     {
@@ -46,5 +43,13 @@ class ButtonType extends AbstractType implements TypeInterface
         }
 
         return $label;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function getName(array $element, $default = null)
+    {
+        return parent::getName($element, $element['name']);
     }
 }

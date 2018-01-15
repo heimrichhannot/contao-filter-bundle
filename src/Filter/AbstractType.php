@@ -78,6 +78,8 @@ abstract class AbstractType
             $options['attr']['class'] = $element['cssClass'];
         }
 
+        $options['block_name'] = $this->getName($element);
+
         return $options;
     }
 
