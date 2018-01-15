@@ -78,6 +78,10 @@ class FilterConfig
 
         $options = ['filter' => $this];
 
+        if ('' !== $this->filter['cssClass']) {
+            $options['attr']['class'] = $this->filter['cssClass'];
+        }
+
         $this->builder = $factory->createNamedBuilder($this->filter['name'], FilterType::class, $data, $options);
 
         $this->mapFormsToData();

@@ -11,7 +11,6 @@ $GLOBALS['TL_DCA']['tl_filter'] = [
         ],
         'onsubmit_callback' => [
             ['HeimrichHannot\Haste\Dca\General', 'setDateAdded'],
-            ['tl_filter', 'clearFilterRegistry'],
         ],
         'sql'               => [
             'keys' => [
@@ -76,7 +75,7 @@ $GLOBALS['TL_DCA']['tl_filter'] = [
     ],
     'palettes'    => [
         '__selector__' => ['published'],
-        'default'      => '{general_legend},title;{config_legend},name,dataContainer,method,action;{template_legend},template;{publish_legend},published;'
+        'default'      => '{general_legend},title;{config_legend},name,dataContainer,method,action;{template_legend},template;{publish_legend},published;{expert_legend},cssClass;'
     ],
     'subpalettes' => [
         'published' => 'start,stop'
@@ -183,7 +182,14 @@ $GLOBALS['TL_DCA']['tl_filter'] = [
             'inputType' => 'text',
             'eval'      => ['rgxp' => 'datim', 'datepicker' => true, 'tl_class' => 'w50 wizard'],
             'sql'       => "varchar(10) NOT NULL default ''"
-        ]
+        ],
+        'cssClass'      => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter']['cssClass'],
+            'exclude'   => true,
+            'inputType' => 'text',
+            'eval'      => ['tl_class' => 'w50', 'maxlength' => 64],
+            'sql'       => "varchar(64) NOT NULL default ''"
+        ],
     ]
 ];
 
