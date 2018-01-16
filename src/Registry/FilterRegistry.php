@@ -163,14 +163,17 @@ class FilterRegistry
             $form = $config->getBuilder()->getForm();
         }
 
-        $form->handleRequest($request);
+        $form->handleRequest();
+
+        if (null === $request) {
+            $request = System::getContainer()->get('request_stack')->getCurrentRequest();
+        }
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             if ($form->getClickedButton() && in_array($form->getClickedButton()->getName(), $config->getResetNames())) {
                 $this->session->reset($sessionKey);
                 // redirect to same page without filter parameters
-                Controller::redirect(Url::removeQueryString([$form->getName()], $form->getConfig()->getAction() ?: null));
+                Controller::redirect(Url::removeQueryString([$form->getName()], $request->getUri() ?: null));
             }
 
             $data = $form->getData();

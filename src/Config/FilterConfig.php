@@ -78,8 +78,22 @@ class FilterConfig
 
         $options = ['filter' => $this];
 
+        $cssClass = [];
+
         if ('' !== $this->filter['cssClass']) {
-            $options['attr']['class'] = $this->filter['cssClass'];
+            $cssClass[] = $this->filter['cssClass'];
+        }
+
+        if ($this->hasData()) {
+            $cssClass[] = 'has-data';
+        }
+
+        if (!empty($cssClass)) {
+            $options['attr']['class'] = implode(' ', $cssClass);
+        }
+
+        if (true === (bool)$this->filter['renderEmpty']) {
+            $data = [];
         }
 
         $this->builder = $factory->createNamedBuilder($this->filter['name'], FilterType::class, $data, $options);
@@ -239,7 +253,7 @@ class FilterConfig
      */
     public function getResetNames(): array
     {
-        return $this->resetNames;
+        return !is_array($this->resetNames) ? [$this->resetNames] : $this->resetNames;
     }
 
     /**

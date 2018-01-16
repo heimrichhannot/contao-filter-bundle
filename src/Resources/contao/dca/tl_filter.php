@@ -75,7 +75,7 @@ $GLOBALS['TL_DCA']['tl_filter'] = [
     ],
     'palettes'    => [
         '__selector__' => ['published'],
-        'default'      => '{general_legend},title;{config_legend},name,dataContainer,method,action;{template_legend},template;{publish_legend},published;{expert_legend},cssClass;'
+        'default'      => '{general_legend},title;{config_legend},name,dataContainer,method,action,renderEmpty;{template_legend},template;{publish_legend},published;{expert_legend},cssClass;'
     ],
     'subpalettes' => [
         'published' => 'start,stop'
@@ -146,6 +146,14 @@ $GLOBALS['TL_DCA']['tl_filter'] = [
             'inputType' => 'text',
             'eval'      => ['rgxp' => 'url', 'decodeEntities' => true, 'maxlength' => 255, 'dcaPicker' => true, 'tl_class' => 'w50 wizard'],
             'sql'       => "varchar(255) NOT NULL default ''"
+        ],
+        'renderEmpty'     => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter']['renderEmpty'],
+            'exclude'   => true,
+            'filter'    => true,
+            'inputType' => 'checkbox',
+            'eval'      => ['doNotCopy' => true, 'tl_class' => 'w50'],
+            'sql'       => "char(1) NOT NULL default ''"
         ],
         'template'      => [
             'inputType'        => 'select',

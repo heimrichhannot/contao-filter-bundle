@@ -10,6 +10,7 @@ $lang['name']          = ['Name', 'Please enter a form name.'];
 $lang['dataContainer'] = ['DataContainer', 'Choose the desired data container.'];
 $lang['method']        = ['HTTP-Method', 'Select the form method (GET or POST).'];
 $lang['action']        = ['Action', 'Select the url, where the form data should be submitted to.'];
+$lang['renderEmpty']   = ['Render empty', 'Enable, if all form fields should be rendered without submitted/session data.'];
 $lang['template']      = ['Template', 'Select the form template.'];
 $lang['cssClass']      = ['CSS class', 'Here you can enter one or more classes.'];
 $lang['published']     = ['Publish Filter', 'Make the Filter publicly visible on the website.'];
