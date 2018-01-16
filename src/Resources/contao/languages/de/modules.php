@@ -5,7 +5,7 @@ $lang = &$GLOBALS['TL_LANG'];
 /**
  * Back end modules
  */
-$lang['MOD']['filter'] = ['Filter', 'Filter-Konfigurationen verwalten'];
+$lang['MOD']['filter'] = ['Filterkonfigurationen', 'Filter-Konfigurationen verwalten'];
 
 /**
  * Front end modules

@@ -73,10 +73,13 @@ class ModuleFilter extends \Contao\Module
 
         $templates = System::getContainer()->get('huh.filter.choice.template')->getChoices();
 
+        $this->Template->filter = $this->config;
+
         $this->Template->form = $twig->render(
             $templates[$filter['template']],
             [
-                'form' => $form->createView(),
+                'filter' => $this->config,
+                'form'   => $form->createView(),
             ]
         );
     }

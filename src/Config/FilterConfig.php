@@ -226,6 +226,15 @@ class FilterConfig
     }
 
     /**
+     * Has the filter data (e.g. form submitted?)
+     * @return bool
+     */
+    public function hasData(): bool
+    {
+        return System::getContainer()->get('huh.filter.session')->hasData($this->getSessionKey());
+    }
+
+    /**
      * @return array
      */
     public function getResetNames(): array

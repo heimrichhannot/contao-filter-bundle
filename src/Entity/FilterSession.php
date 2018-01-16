@@ -52,7 +52,7 @@ class FilterSession
      * @param string $key
      * @return array
      */
-    public function getData(string $key)
+    public function getData(string $key): array
     {
         $data = [];
 
@@ -61,6 +61,16 @@ class FilterSession
         }
 
         return !is_array($data) ? [$data] : $data;
+    }
+
+    /**
+     * Has the filter data for a given key
+     * @param string $key
+     * @return bool
+     */
+    public function hasData(string $key): bool
+    {
+        return !empty($this->getData($key));
     }
 
     /**
