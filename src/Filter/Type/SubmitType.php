@@ -1,9 +1,9 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2018 Heimrich & Hannot GmbH
  *
- * @author Rico Kaltofen <r.kaltofen@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @license LGPL-3.0+
  */
 
 namespace HeimrichHannot\FilterBundle\Filter\Type;
@@ -16,7 +16,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 class SubmitType extends AbstractType implements TypeInterface
 {
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function buildQuery(FilterQueryBuilder $builder, array $element)
     {
@@ -24,7 +24,7 @@ class SubmitType extends AbstractType implements TypeInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function buildForm(array $element, FormBuilderInterface $builder)
     {
@@ -32,7 +32,7 @@ class SubmitType extends AbstractType implements TypeInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function getName(array $element, $default = null)
     {

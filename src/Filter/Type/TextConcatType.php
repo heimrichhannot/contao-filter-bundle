@@ -1,13 +1,12 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2018 Heimrich & Hannot GmbH
  *
- * @author Rico Kaltofen <r.kaltofen@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @license LGPL-3.0+
  */
 
 namespace HeimrichHannot\FilterBundle\Filter\Type;
-
 
 use Contao\StringUtil;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
@@ -18,26 +17,26 @@ use Symfony\Component\Form\FormBuilderInterface;
 class TextConcatType extends AbstractType implements TypeInterface
 {
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function buildQuery(FilterQueryBuilder $builder, array $element)
     {
-        $data  = $this->config->getData();
-        $name  = $this->getName($element, $element['name']);
+        $data = $this->config->getData();
+        $name = $this->getName($element, $element['name']);
         $value = $data[$name];
 
-        if ($value === null) {
+        if (null === $value) {
             return;
         }
 
         $fields = StringUtil::deserialize($element['fields'], true);
-        $concat = 'CONCAT(' . implode('," ",', $fields) . ')';
+        $concat = 'CONCAT('.implode('," ",', $fields).')';
 
-        $builder->andWhere($builder->expr()->like($concat, $builder->expr()->literal('%' . $value . '%')));
+        $builder->andWhere($builder->expr()->like($concat, $builder->expr()->literal('%'.$value.'%')));
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function buildForm(array $element, FormBuilderInterface $builder)
     {
@@ -45,7 +44,7 @@ class TextConcatType extends AbstractType implements TypeInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function getName(array $element, $default = null)
     {

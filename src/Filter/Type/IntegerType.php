@@ -1,13 +1,12 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2018 Heimrich & Hannot GmbH
  *
- * @author Rico Kaltofen <r.kaltofen@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @license LGPL-3.0+
  */
 
 namespace HeimrichHannot\FilterBundle\Filter\Type;
-
 
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -15,7 +14,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 class IntegerType extends TextType
 {
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function buildQuery(FilterQueryBuilder $builder, array $element)
     {
@@ -23,7 +22,7 @@ class IntegerType extends TextType
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function buildForm(array $element, FormBuilderInterface $builder)
     {
@@ -31,15 +30,15 @@ class IntegerType extends TextType
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function getOptions(array $element, FormBuilderInterface $builder)
     {
         $options = parent::getOptions($element, $builder);
 
-        $options['grouping']      = (bool)$element['grouping'];
-        $options['scale']         = (int)$element['scale'];
-        $options['rounding_mode'] = (int)$element['roundingMode'];
+        $options['grouping'] = (bool) $element['grouping'];
+        $options['scale'] = (int) $element['scale'];
+        $options['rounding_mode'] = (int) $element['roundingMode'];
 
         return $options;
     }

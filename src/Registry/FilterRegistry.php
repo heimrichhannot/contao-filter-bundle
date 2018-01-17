@@ -1,9 +1,9 @@
 <?php
-/**
- * Copyright (c) 2017 Heimrich & Hannot GmbH
+
+/*
+ * Copyright (c) 2018 Heimrich & Hannot GmbH
  *
- * @author Rico Kaltofen <r.kaltofen@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @license LGPL-3.0+
  */
 
 namespace HeimrichHannot\FilterBundle\Registry;
@@ -34,14 +34,15 @@ class FilterRegistry
     protected $session;
 
     /**
-     * Current file cache
+     * Current file cache.
      *
      * @var FilesystemAdapter
      */
     protected $cache;
 
     /**
-     * All available filter configurations
+     * All available filter configurations.
+     *
      * @var FilterConfig[]
      */
     protected $filters;
@@ -50,28 +51,28 @@ class FilterRegistry
      * Constructor.
      *
      * @param ContaoFrameworkInterface $framework
-     * @param FilterSession $session
+     * @param FilterSession            $session
      */
     public function __construct(ContaoFrameworkInterface $framework, FilterSession $session)
     {
         $this->framework = $framework;
-        $this->session   = $session;
-        $this->cache     = new FilesystemAdapter('huh.filter.registry', 0, \System::getContainer()->get('kernel')->getCacheDir());
+        $this->session = $session;
+        $this->cache = new FilesystemAdapter('huh.filter.registry', 0, \System::getContainer()->get('kernel')->getCacheDir());
     }
 
     /**
-     * Initialize the registry
+     * Initialize the registry.
      *
      * @param mixed $request The request to handle
      */
     public function init($request = null)
     {
         /**
-         * @var FilterModel $adapter
+         * @var FilterModel
          */
         $adapter = $this->framework->getAdapter(FilterModel::class);
 
-        if (($filters = $adapter->findAll()) === null) {
+        if (null === ($filters = $adapter->findAll())) {
             return;
         }
 
@@ -85,8 +86,10 @@ class FilterRegistry
     }
 
     /**
-     * Get the query builder for a given filter id
+     * Get the query builder for a given filter id.
+     *
      * @param int $id
+     *
      * @return \HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder|null
      */
     public function getQueryBuilder(int $id)
@@ -102,25 +105,70 @@ class FilterRegistry
         return $config->getQueryBuilder();
     }
 
+    /**
+     * Get the session key for a given filter config.
+     *
+     * @param array $filter
+     *
+     * @return string The unique session key
+     */
+    public function getSessionKey(array $filter)
+    {
+        return 'huh.filter.session.'.$filter['name'] ?: $filter['id'];
+    }
 
     /**
-     * Add an filter to the registry
+     * Find filter by id.
+     *
+     * @param int $id
+     *
+     * @return FilterConfig|null The config or null if not found
+     */
+    public function findById(int $id)
+    {
+        /**
+         * @var FilterModel
+         */
+        $adapter = $this->framework->getAdapter(FilterModel::class);
+
+        if (isset($this->filters[$id])) {
+            return $this->filters[$id];
+        }
+
+        if (null === ($filter = $adapter->findByPk($id))) {
+            return null;
+        }
+
+        $this->initFilter($filter->row());
+
+        return $this->filters[$id];
+    }
+
+    /**
+     * @return FilterConfig[]
+     */
+    public function getFilters(): array
+    {
+        return $this->filters;
+    }
+
+    /**
+     * Add an filter to the registry.
      *
      * @param array $filter
      * @param mixed $request The request to handle
-     *
      */
     protected function initFilter(array $filter, $request = null)
     {
         $sessionKey = $this->getSessionKey($filter);
 
         /**
-         * @var FilterConfig $config
+         * @var FilterConfig
          */
         $config = System::getContainer()->get('huh.filter.config');
 
         /**
-         * @var FilterElementModel $adapter
+         * @var FilterElementModel
          */
         $adapter = $this->framework->getAdapter(FilterElementModel::class);
 
@@ -140,7 +188,7 @@ class FilterRegistry
 
     /**
      * @param FilterConfig $config
-     * @param mixed $request The request to handle
+     * @param mixed        $request The request to handle
      */
     protected function handleForm(FilterConfig $config, $request = null)
     {
@@ -170,7 +218,7 @@ class FilterRegistry
         }
 
         if ($form->isSubmitted() && $form->isValid()) {
-            if ($form->getClickedButton() && in_array($form->getClickedButton()->getName(), $config->getResetNames())) {
+            if ($form->getClickedButton() && in_array($form->getClickedButton()->getName(), $config->getResetNames(), true)) {
                 $this->session->reset($sessionKey);
                 // redirect to same page without filter parameters
                 Controller::redirect(Url::removeQueryString([$form->getName()], $request->getUri() ?: null));
@@ -182,51 +230,5 @@ class FilterRegistry
             // redirect to same page without filter parameters
             Controller::redirect(Url::removeQueryString([$form->getName()], $form->getConfig()->getAction() ?: null));
         }
-    }
-
-    /**
-     * Get the session key for a given filter config
-     * @param array $filter
-     *
-     * @return string The unique session key
-     */
-    public function getSessionKey(array $filter)
-    {
-        return 'huh.filter.session.' . $filter['name'] ?: $filter['id'];
-    }
-
-    /**
-     * Find filter by id
-     * @param int $id
-     *
-     * @return FilterConfig|null The config or null if not found
-     */
-    public function findById(int $id)
-    {
-        /**
-         * @var FilterModel $adapter
-         */
-        $adapter = $this->framework->getAdapter(FilterModel::class);
-
-        if (isset($this->filters[$id])) {
-            return $this->filters[$id];
-        }
-
-
-        if (($filter = $adapter->findByPk($id)) === null) {
-            return null;
-        }
-
-        $this->initFilter($filter->row());
-
-        return $this->filters[$id];
-    }
-
-    /**
-     * @return FilterConfig[]
-     */
-    public function getFilters(): array
-    {
-        return $this->filters;
     }
 }

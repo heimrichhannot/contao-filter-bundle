@@ -1,9 +1,9 @@
 <?php
-/**
- * Copyright (c) 2017 Heimrich & Hannot GmbH
+
+/*
+ * Copyright (c) 2018 Heimrich & Hannot GmbH
  *
- * @author Rico Kaltofen <r.kaltofen@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @license LGPL-3.0+
  */
 
 namespace HeimrichHannot\FilterBundle\Choice;
@@ -21,11 +21,11 @@ class ParentChoice extends AbstractChoice
         $choices = [];
 
         /**
-         * @var FilterModel $adapter
+         * @var FilterModel
          */
         $adapter = $this->framework->getAdapter(FilterModel::class);
 
-        if (!$this->context->activeRecord->pid || ($filter = $adapter->findByPk($this->context->activeRecord->pid)) === null || $filter->dataContainer == '') {
+        if (!$this->context->activeRecord->pid || null === ($filter = $adapter->findByPk($this->context->activeRecord->pid)) || '' === $filter->dataContainer) {
             return $choices;
         }
 
@@ -35,8 +35,8 @@ class ParentChoice extends AbstractChoice
             return $choices;
         }
 
-        $relation   = explode('.', $GLOBALS['TL_DCA'][$filter->dataContainer]['fields']['pid']['foreignKey'], 2);
-        $objOptions = \Database::getInstance()->query("SELECT id, " . $relation[1] . " AS value FROM " . $relation[0] . " WHERE tstamp>0 ORDER BY value");
+        $relation = explode('.', $GLOBALS['TL_DCA'][$filter->dataContainer]['fields']['pid']['foreignKey'], 2);
+        $objOptions = \Database::getInstance()->query('SELECT id, '.$relation[1].' AS value FROM '.$relation[0].' WHERE tstamp>0 ORDER BY value');
 
         $choices = [];
 

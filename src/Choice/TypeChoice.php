@@ -1,9 +1,9 @@
 <?php
-/**
- * Copyright (c) 2017 Heimrich & Hannot GmbH
+
+/*
+ * Copyright (c) 2018 Heimrich & Hannot GmbH
  *
- * @author  Rico Kaltofen <r.kaltofen@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @license LGPL-3.0+
  */
 
 namespace HeimrichHannot\FilterBundle\Choice;
@@ -12,7 +12,6 @@ use HeimrichHannot\UtilsBundle\Choice\AbstractChoice;
 
 class TypeChoice extends AbstractChoice
 {
-
     /**
      * @return array
      */
@@ -34,7 +33,7 @@ class TypeChoice extends AbstractChoice
             }
 
             if ($groupChoices) {
-                $group             = $type['type'];
+                $group = $type['type'];
                 $choices[$group][] = $type['name'];
                 continue;
             }

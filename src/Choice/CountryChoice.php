@@ -1,20 +1,18 @@
 <?php
-/**
- * Copyright (c) 2017 Heimrich & Hannot GmbH
+
+/*
+ * Copyright (c) 2018 Heimrich & Hannot GmbH
  *
- * @author Rico Kaltofen <r.kaltofen@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @license LGPL-3.0+
  */
 
 namespace HeimrichHannot\FilterBundle\Choice;
 
 use Contao\System;
-use Contao\Widget;
 use Symfony\Component\Intl\Intl;
 
 class CountryChoice extends FieldOptionsChoice
 {
-
     /**
      * @return array
      */
@@ -27,9 +25,9 @@ class CountryChoice extends FieldOptionsChoice
 
         \Controller::loadDataContainer($filter['dataContainer']);
 
-        if (true === (bool)$element['customCountries']) {
+        if (true === (bool) $element['customCountries']) {
             $options = $this->getCustomCountryOptions($element, $filter);
-        } elseif (true === (bool)$element['customOptions']) {
+        } elseif (true === (bool) $element['customOptions']) {
             $options = $this->getCustomOptions($element, $filter);
         } elseif (isset($GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element['field']])) {
             $options = $this->getDcaOptions($element, $filter, $GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element['field']]);
@@ -54,9 +52,11 @@ class CountryChoice extends FieldOptionsChoice
     }
 
     /**
-     * Get custom country options
+     * Get custom country options.
+     *
      * @param array $element
      * @param array $filter
+     *
      * @return array
      */
     protected function getCustomCountryOptions(array $element, array $filter)

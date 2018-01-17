@@ -1,13 +1,12 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2018 Heimrich & Hannot GmbH
  *
- * @author Rico Kaltofen <r.kaltofen@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @license LGPL-3.0+
  */
 
 namespace HeimrichHannot\FilterBundle\Config;
-
 
 use Contao\System;
 use HeimrichHannot\FilterBundle\Filter\TypeInterface;
@@ -16,7 +15,6 @@ use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\Forms;
-use Symfony\Component\Form\Exception\UnexpectedTypeException;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
 class FilterConfig
@@ -52,25 +50,27 @@ class FilterConfig
     protected $queryBuilder;
 
     /**
-     * Init the filter based on its model
-     * @param string $sessionKey
-     * @param array $filter
+     * Init the filter based on its model.
+     *
+     * @param string     $sessionKey
+     * @param array      $filter
      * @param array|null $elements
      */
     public function init(string $sessionKey, array $filter, $elements = null)
     {
         $this->sessionKey = $sessionKey;
-        $this->filter     = $filter;
-        $this->elements   = $elements;
+        $this->filter = $filter;
+        $this->elements = $elements;
     }
 
     /**
-     * Build the form
+     * Build the form.
+     *
      * @param array $data
      */
     public function buildForm(array $data = [])
     {
-        if ($this->filter === null) {
+        if (null === $this->filter) {
             return;
         }
 
@@ -92,7 +92,7 @@ class FilterConfig
             $options['attr']['class'] = implode(' ', $cssClass);
         }
 
-        if (true === (bool)$this->filter['renderEmpty']) {
+        if (true === (bool) $this->filter['renderEmpty']) {
             $data = [];
         }
 
@@ -101,46 +101,6 @@ class FilterConfig
         $this->mapFormsToData();
     }
 
-    /**
-     * Maps the data of the current forms and update builder data
-     */
-    protected function mapFormsToData()
-    {
-        $data             = [];
-        $forms            = $this->builder->getForm();
-        $propertyAccessor = PropertyAccess::createPropertyAccessor();
-
-        /**
-         * @var FormInterface $form
-         */
-        foreach ($forms as $form) {
-
-            $propertyPath = $form->getPropertyPath();
-            $config       = $form->getConfig();
-
-            // Write-back is disabled if the form is not synchronized (transformation failed),
-            // if the form was not submitted and if the form is disabled (modification not allowed)
-            if (null !== $propertyPath && $config->getMapped() && $form->isSynchronized() && !$form->isDisabled()) {
-                // If the field is of type DateTime and the data is the same skip the update to
-                // keep the original object hash
-                if ($form->getData() instanceof \DateTime && $form->getData() == $propertyAccessor->getValue($data, $propertyPath)) {
-                    continue;
-                }
-
-                // If the data is identical to the value in $data, we are
-                // dealing with a reference
-                if (!is_object($data) || !$config->getByReference() || $form->getData() !== $propertyAccessor->getValue($data, $propertyPath)) {
-                    $propertyAccessor->setValue($data, $propertyPath, $form->getData());
-                }
-            }
-        }
-
-        $this->builder->setData($data);
-    }
-
-    /**
-     *
-     */
     public function initQueryBuilder()
     {
         $this->queryBuilder = System::getContainer()->get('huh.filter.query_builder');
@@ -158,7 +118,6 @@ class FilterConfig
         $this->queryBuilder->from($this->getFilter()['dataContainer']);
 
         foreach ($this->getElements() as $element) {
-
             if (!isset($types[$element['type']])) {
                 continue;
             }
@@ -170,7 +129,7 @@ class FilterConfig
             }
 
             /**
-             * @var $type TypeInterface
+             * @var TypeInterface
              */
             $type = new $class($this);
 
@@ -231,7 +190,8 @@ class FilterConfig
     }
 
     /**
-     * Get the filter data (e.g. form submission data)
+     * Get the filter data (e.g. form submission data).
+     *
      * @return array
      */
     public function getData(): array
@@ -240,7 +200,8 @@ class FilterConfig
     }
 
     /**
-     * Has the filter data (e.g. form submitted?)
+     * Has the filter data (e.g. form submitted?).
+     *
      * @return bool
      */
     public function hasData(): bool
@@ -270,5 +231,41 @@ class FilterConfig
     public function setResetNames(array $resetNames)
     {
         $this->resetName = $resetNames;
+    }
+
+    /**
+     * Maps the data of the current forms and update builder data.
+     */
+    protected function mapFormsToData()
+    {
+        $data = [];
+        $forms = $this->builder->getForm();
+        $propertyAccessor = PropertyAccess::createPropertyAccessor();
+
+        /**
+         * @var FormInterface
+         */
+        foreach ($forms as $form) {
+            $propertyPath = $form->getPropertyPath();
+            $config = $form->getConfig();
+
+            // Write-back is disabled if the form is not synchronized (transformation failed),
+            // if the form was not submitted and if the form is disabled (modification not allowed)
+            if (null !== $propertyPath && $config->getMapped() && $form->isSynchronized() && !$form->isDisabled()) {
+                // If the field is of type DateTime and the data is the same skip the update to
+                // keep the original object hash
+                if ($form->getData() instanceof \DateTime && $form->getData() === $propertyAccessor->getValue($data, $propertyPath)) {
+                    continue;
+                }
+
+                // If the data is identical to the value in $data, we are
+                // dealing with a reference
+                if (!is_object($data) || !$config->getByReference() || $form->getData() !== $propertyAccessor->getValue($data, $propertyPath)) {
+                    $propertyAccessor->setValue($data, $propertyPath, $form->getData());
+                }
+            }
+        }
+
+        $this->builder->setData($data);
     }
 }

@@ -1,9 +1,9 @@
 <?php
-/**
- * Copyright (c) 2017 Heimrich & Hannot GmbH
+
+/*
+ * Copyright (c) 2018 Heimrich & Hannot GmbH
  *
- * @author Rico Kaltofen <r.kaltofen@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @license LGPL-3.0+
  */
 
 namespace HeimrichHannot\FilterBundle\QueryBuilder;
@@ -28,11 +28,13 @@ class FilterQueryBuilder extends QueryBuilder
     }
 
     /**
-     * Add where clause based on an element
-     * @param array $element
-     * @param string $name The field name
+     * Add where clause based on an element.
+     *
+     * @param array        $element
+     * @param string       $name    The field name
      * @param FilterConfig $config
-     * @return $this This FilterQueryBuilder instance.
+     *
+     * @return $this this FilterQueryBuilder instance
      */
     public function whereElement(array $element, string $name, FilterConfig $config)
     {
@@ -61,52 +63,54 @@ class FilterQueryBuilder extends QueryBuilder
     }
 
     /**
-     * Add tag widget where clause
-     * @param array $element
-     * @param string $name The field name
-     * @param FilterConfig $config
-     * @param array $dca
+     * Add tag widget where clause.
      *
-     * @return $this This FilterQueryBuilder instance.
+     * @param array        $element
+     * @param string       $name    The field name
+     * @param FilterConfig $config
+     * @param array        $dca
+     *
+     * @return $this this FilterQueryBuilder instance
      */
-    protected function whereTagWidget(array $element, string $name, FilterConfig $config, array $dca)
+    public function whereWidget(array $element, string $name, FilterConfig $config, array $dca)
     {
-        $filter   = $config->getFilter();
-        $data     = $config->getData();
-        $value    = $data[$name];
-        $relation = Relations::getRelation($filter['dataContainer'], $element['field']);
+        $data = $config->getData();
+        $value = $data[$name];
 
-        if ($relation === false || $value === null) {
+        if (null === $value) {
             return $this;
         }
 
-        $alias = $relation['table'] . '_' . $name;
-
-        $this->join($relation['reference_table'], $relation['table'], $alias, $alias . '.' . $relation['reference_field'] . '=' . $relation['reference_table'] . '.' . $relation['reference']);
-        $this->andWhere($this->expr()->in($alias . '.' . $relation['related_field'], $value));
+        $this->andWhere($this->expr()->like($name, $this->expr()->literal('%'.$value.'%')));
 
         return $this;
     }
 
     /**
-     * Add tag widget where clause
-     * @param array $element
-     * @param string $name The field name
-     * @param FilterConfig $config
-     * @param array $dca
+     * Add tag widget where clause.
      *
-     * @return $this This FilterQueryBuilder instance.
+     * @param array        $element
+     * @param string       $name    The field name
+     * @param FilterConfig $config
+     * @param array        $dca
+     *
+     * @return $this this FilterQueryBuilder instance
      */
-    public function whereWidget(array $element, string $name, FilterConfig $config, array $dca)
+    protected function whereTagWidget(array $element, string $name, FilterConfig $config, array $dca)
     {
-        $data  = $config->getData();
+        $filter = $config->getFilter();
+        $data = $config->getData();
         $value = $data[$name];
+        $relation = Relations::getRelation($filter['dataContainer'], $element['field']);
 
-        if ($value === null) {
+        if (false === $relation || null === $value) {
             return $this;
         }
 
-        $this->andWhere($this->expr()->like($name, $this->expr()->literal('%' . $value . '%')));
+        $alias = $relation['table'].'_'.$name;
+
+        $this->join($relation['reference_table'], $relation['table'], $alias, $alias.'.'.$relation['reference_field'].'='.$relation['reference_table'].'.'.$relation['reference']);
+        $this->andWhere($this->expr()->in($alias.'.'.$relation['related_field'], $value));
 
         return $this;
     }

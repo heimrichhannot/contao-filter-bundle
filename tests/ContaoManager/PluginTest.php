@@ -63,7 +63,7 @@ class PluginTest extends TestCase
     }
 
     /**
-     * Test extend configuration
+     * Test extend configuration.
      */
     public function testGetExtensionConfigEnableFormPlugin()
     {
@@ -79,7 +79,7 @@ class PluginTest extends TestCase
     }
 
     /**
-     * Test extend configuration
+     * Test extend configuration.
      */
     public function testGetExtensionConfigLoadFilterConfig()
     {
