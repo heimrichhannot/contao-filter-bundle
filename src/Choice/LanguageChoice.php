@@ -1,20 +1,18 @@
 <?php
-/**
- * Copyright (c) 2017 Heimrich & Hannot GmbH
+
+/*
+ * Copyright (c) 2018 Heimrich & Hannot GmbH
  *
- * @author Rico Kaltofen <r.kaltofen@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @license LGPL-3.0+
  */
 
 namespace HeimrichHannot\FilterBundle\Choice;
 
 use Contao\System;
-use Contao\Widget;
 use Symfony\Component\Intl\Intl;
 
 class LanguageChoice extends FieldOptionsChoice
 {
-
     /**
      * @return array
      */
@@ -27,9 +25,9 @@ class LanguageChoice extends FieldOptionsChoice
 
         \Controller::loadDataContainer($filter['dataContainer']);
 
-        if (true === (bool)$element['customLanguages']) {
+        if (true === (bool) $element['customLanguages']) {
             $options = $this->getCustomLanguageOptions($element, $filter);
-        } elseif (true === (bool)$element['customOptions']) {
+        } elseif (true === (bool) $element['customOptions']) {
             $options = $this->getCustomOptions($element, $filter);
         } elseif (isset($GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element['field']])) {
             $options = $this->getDcaOptions($element, $filter, $GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element['field']]);
@@ -54,9 +52,11 @@ class LanguageChoice extends FieldOptionsChoice
     }
 
     /**
-     * Get custom language options
+     * Get custom language options.
+     *
      * @param array $element
      * @param array $filter
+     *
      * @return array
      */
     protected function getCustomLanguageOptions(array $element, array $filter)

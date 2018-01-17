@@ -1,19 +1,17 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2018 Heimrich & Hannot GmbH
  *
- * @author Rico Kaltofen <r.kaltofen@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @license LGPL-3.0+
  */
 
 namespace HeimrichHannot\FilterBundle\Module;
-
 
 use Contao\System;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
 use HeimrichHannot\FilterBundle\Registry\FilterRegistry;
 use Patchwork\Utf8;
-use Symfony\Bridge\Twig\TokenParser\FormThemeTokenParser;
 
 class ModuleFilter extends \Contao\Module
 {
@@ -26,19 +24,19 @@ class ModuleFilter extends \Contao\Module
 
     public function generate()
     {
-        if (TL_MODE == 'BE') {
-            $objTemplate           = new \BackendTemplate('be_wildcard');
-            $objTemplate->wildcard = '### ' . Utf8::strtoupper($GLOBALS['TL_LANG']['FMD'][$this->type][0]) . ' ###';
-            $objTemplate->title    = $this->headline;
-            $objTemplate->id       = $this->id;
-            $objTemplate->link     = $this->name;
-            $objTemplate->href     = 'contao/main.php?do=themes&amp;table=tl_module&amp;act=edit&amp;id=' . $this->id;
+        if (TL_MODE === 'BE') {
+            $objTemplate = new \BackendTemplate('be_wildcard');
+            $objTemplate->wildcard = '### '.Utf8::strtoupper($GLOBALS['TL_LANG']['FMD'][$this->type][0]).' ###';
+            $objTemplate->title = $this->headline;
+            $objTemplate->id = $this->id;
+            $objTemplate->link = $this->name;
+            $objTemplate->href = 'contao/main.php?do=themes&amp;table=tl_module&amp;act=edit&amp;id='.$this->id;
 
             return $objTemplate->parse();
         }
 
         /**
-         * @var FilterRegistry $manager
+         * @var FilterRegistry
          */
         $registry = System::getContainer()->get('huh.filter.registry');
 
@@ -52,7 +50,7 @@ class ModuleFilter extends \Contao\Module
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function compile()
     {
@@ -67,7 +65,7 @@ class ModuleFilter extends \Contao\Module
         $form->handleRequest();
 
         /**
-         * @var \Twig_Environment $twig
+         * @var \Twig_Environment
          */
         $twig = System::getContainer()->get('twig');
 
@@ -79,7 +77,7 @@ class ModuleFilter extends \Contao\Module
             $templates[$filter['template']],
             [
                 'filter' => $this->config,
-                'form'   => $form->createView(),
+                'form' => $form->createView(),
             ]
         );
     }

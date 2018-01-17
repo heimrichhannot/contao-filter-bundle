@@ -1,15 +1,14 @@
 <?php
-/**
- * Copyright (c) 2017 Heimrich & Hannot GmbH
+
+/*
+ * Copyright (c) 2018 Heimrich & Hannot GmbH
  *
- * @author Rico Kaltofen <r.kaltofen@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @license LGPL-3.0+
  */
 
 namespace HeimrichHannot\FilterBundle\Choice;
 
 use HeimrichHannot\UtilsBundle\Choice\AbstractChoice;
-use Symfony\Component\Form\AbstractType;
 
 class TemplateChoice extends AbstractChoice
 {
@@ -28,8 +27,7 @@ class TemplateChoice extends AbstractChoice
 
         $templates = $config['filter']['templates'];
 
-        foreach ($templates as $config)
-        {
+        foreach ($templates as $config) {
             $choices[$config['name']] = $config['template'];
         }
 

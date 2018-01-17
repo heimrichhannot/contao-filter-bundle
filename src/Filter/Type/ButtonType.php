@@ -1,9 +1,9 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2018 Heimrich & Hannot GmbH
  *
- * @author Rico Kaltofen <r.kaltofen@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @license LGPL-3.0+
  */
 
 namespace HeimrichHannot\FilterBundle\Filter\Type;
@@ -16,15 +16,14 @@ use Symfony\Component\Form\FormBuilderInterface;
 class ButtonType extends AbstractType implements TypeInterface
 {
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function buildQuery(FilterQueryBuilder $builder, array $element)
     {
-
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function buildForm(array $element, FormBuilderInterface $builder)
     {
@@ -32,13 +31,13 @@ class ButtonType extends AbstractType implements TypeInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function getLabel(array $element, FormBuilderInterface $builder)
     {
         $label = parent::getLabel($element, $builder);
 
-        if ($label === '' && $element['label'] !== '') {
+        if ('' === $label && '' !== $element['label']) {
             return $element['label'];
         }
 
@@ -46,7 +45,7 @@ class ButtonType extends AbstractType implements TypeInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function getName(array $element, $default = null)
     {

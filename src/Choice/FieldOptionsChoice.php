@@ -1,9 +1,9 @@
 <?php
-/**
- * Copyright (c) 2017 Heimrich & Hannot GmbH
+
+/*
+ * Copyright (c) 2018 Heimrich & Hannot GmbH
  *
- * @author Rico Kaltofen <r.kaltofen@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @license LGPL-3.0+
  */
 
 namespace HeimrichHannot\FilterBundle\Choice;
@@ -14,7 +14,6 @@ use HeimrichHannot\UtilsBundle\Choice\AbstractChoice;
 
 class FieldOptionsChoice extends AbstractChoice
 {
-
     /**
      * @return array
      */
@@ -27,7 +26,7 @@ class FieldOptionsChoice extends AbstractChoice
 
         \Controller::loadDataContainer($filter['dataContainer']);
 
-        if (true === (bool)$element['customOptions']) {
+        if (true === (bool) $element['customOptions']) {
             $options = $this->getCustomOptions($element, $filter);
         } elseif (isset($GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element['field']])) {
             $options = $this->getDcaOptions($element, $filter, $GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element['field']]);
@@ -51,28 +50,33 @@ class FieldOptionsChoice extends AbstractChoice
     }
 
     /**
-     * Get custom options
+     * Get custom options.
+     *
      * @param array $element
      * @param array $filter
+     *
      * @return array
      */
     protected function getCustomOptions(array $element, array $filter)
     {
         $options = deserialize($element['options'], true);
+
         return $options;
     }
 
     /**
-     * Get contao dca widget options
+     * Get contao dca widget options.
+     *
      * @param array $element
      * @param array $filter
      * @param array $dca
+     *
      * @return array
      */
     protected function getDcaOptions(array $element, array $filter, array $dca)
     {
         $options = [];
-        $dca     = $GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element['field']];
+        $dca = $GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element['field']];
 
         switch ($dca['inputType']) {
             case 'cfgTags':
@@ -89,10 +93,12 @@ class FieldOptionsChoice extends AbstractChoice
     }
 
     /**
-     * Get default contao widget options
+     * Get default contao widget options.
+     *
      * @param array $element
      * @param array $filter
      * @param array $dca
+     *
      * @return array
      */
     protected function getWidgetOptions(array $element, array $filter, array $dca)
@@ -122,10 +128,12 @@ class FieldOptionsChoice extends AbstractChoice
     }
 
     /**
-     * Get tag widget options
+     * Get tag widget options.
+     *
      * @param array $element
      * @param array $filter
      * @param array $dca
+     *
      * @return array
      */
     protected function getTagWidgetOptions(array $element, array $filter, array $dca)
@@ -133,7 +141,7 @@ class FieldOptionsChoice extends AbstractChoice
         $options = [];
 
         /**
-         * @var \Codefog\TagsBundle\Manager\ManagerInterface $tagsManager
+         * @var \Codefog\TagsBundle\Manager\ManagerInterface
          */
         $tagsManager = System::getContainer()->get('codefog_tags.manager_registry')->get(
             $dca['eval']['tagsManager']

@@ -1,13 +1,12 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2018 Heimrich & Hannot GmbH
  *
- * @author Rico Kaltofen <r.kaltofen@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @license LGPL-3.0+
  */
 
 namespace HeimrichHannot\FilterBundle\Entity;
-
 
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -20,7 +19,7 @@ class FilterSession
     protected $framework;
 
     /**
-     * Symfony session object
+     * Symfony session object.
      *
      * @var SessionInterface
      */
@@ -34,13 +33,14 @@ class FilterSession
     public function __construct(ContaoFrameworkInterface $framework, SessionInterface $session)
     {
         $this->framework = $framework;
-        $this->session   = $session;
+        $this->session = $session;
     }
 
     /**
-     * Set the filter data for a given filter key
+     * Set the filter data for a given filter key.
+     *
      * @param string $key
-     * @param array $data
+     * @param array  $data
      */
     public function setData(string $key, array $data = [])
     {
@@ -48,8 +48,10 @@ class FilterSession
     }
 
     /**
-     * Get the filter data for a given key
+     * Get the filter data for a given key.
+     *
      * @param string $key
+     *
      * @return array
      */
     public function getData(string $key): array
@@ -64,8 +66,10 @@ class FilterSession
     }
 
     /**
-     * Has the filter data for a given key
+     * Has the filter data for a given key.
+     *
      * @param string $key
+     *
      * @return bool
      */
     public function hasData(string $key): bool
@@ -74,7 +78,8 @@ class FilterSession
     }
 
     /**
-     * Reset the filter data for a given key
+     * Reset the filter data for a given key.
+     *
      * @param string $key
      */
     public function reset(string $key)

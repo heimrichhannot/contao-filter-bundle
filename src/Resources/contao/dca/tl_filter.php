@@ -10,7 +10,10 @@ $GLOBALS['TL_DCA']['tl_filter'] = [
             ['tl_filter', 'checkPermission'],
         ],
         'onsubmit_callback' => [
-            ['HeimrichHannot\Haste\Dca\General', 'setDateAdded'],
+            ['huh.utils.dca', 'setDateAdded'],
+        ],
+        'oncopy_callback' => [
+            ['huh.utils.dca', 'setDateAddedOnCopy'],
         ],
         'sql'               => [
             'keys' => [

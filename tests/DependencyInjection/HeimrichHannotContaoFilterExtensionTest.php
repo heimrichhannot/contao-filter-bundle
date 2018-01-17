@@ -1,13 +1,12 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2018 Heimrich & Hannot GmbH
  *
- * @author  Rico Kaltofen <r.kaltofen@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @license LGPL-3.0+
  */
 
 namespace HeimrichHannot\FilterBundle\Tests\DependencyInjection;
-
 
 use HeimrichHannot\FilterBundle\DependencyInjection\HeimrichHannotContaoFilterExtension;
 use PHPUnit\Framework\TestCase;
@@ -28,7 +27,7 @@ class HeimrichHannotContaoFilterExtensionTest extends TestCase
     {
         parent::setUp();
         $this->container = new ContainerBuilder(new ParameterBag(['kernel.debug' => false]));
-        $extension       = new HeimrichHannotContaoFilterExtension();
+        $extension = new HeimrichHannotContaoFilterExtension();
         $extension->load([], $this->container);
     }
 
@@ -42,11 +41,11 @@ class HeimrichHannotContaoFilterExtensionTest extends TestCase
     }
 
     /**
-     * Test getAlias
+     * Test getAlias.
      */
     public function testGetAlias()
     {
         $extension = new HeimrichHannotContaoFilterExtension();
-        $this->assertEquals('huh_filter', $extension->getAlias());
+        $this->assertSame('huh_filter', $extension->getAlias());
     }
 }

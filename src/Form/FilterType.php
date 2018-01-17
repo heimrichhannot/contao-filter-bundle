@@ -1,14 +1,14 @@
 <?php
-/**
- * Copyright (c) 2017 Heimrich & Hannot GmbH
- * @author Rico Kaltofen <r.kaltofen@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+
+/*
+ * Copyright (c) 2018 Heimrich & Hannot GmbH
+ *
+ * @license LGPL-3.0+
  */
 
 namespace HeimrichHannot\FilterBundle\Form;
 
 use Contao\InsertTags;
-use Contao\System;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
 use HeimrichHannot\FilterBundle\Filter\TypeInterface;
 use Symfony\Component\Form\AbstractType;
@@ -38,6 +38,12 @@ class FilterType extends AbstractType
         $this->buildElements($builder, $options);
     }
 
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefaults([
+            'filter' => null,
+        ]);
+    }
 
     protected function buildElements(FormBuilderInterface $builder, array $options)
     {
@@ -54,7 +60,6 @@ class FilterType extends AbstractType
         }
 
         foreach ($elements as $element) {
-
             if (!isset($types[$element['type']])) {
                 continue;
             }
@@ -66,7 +71,7 @@ class FilterType extends AbstractType
             }
 
             /**
-             * @var $type TypeInterface
+             * @var TypeInterface
              */
             $type = new $class($this->config);
 
@@ -76,12 +81,5 @@ class FilterType extends AbstractType
 
             $type->buildForm($element, $builder);
         }
-    }
-
-    public function configureOptions(OptionsResolver $resolver)
-    {
-        $resolver->setDefaults([
-            'filter' => null,
-        ]);
     }
 }

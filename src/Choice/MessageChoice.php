@@ -1,9 +1,9 @@
 <?php
-/**
- * Copyright (c) 2017 Heimrich & Hannot GmbH
+
+/*
+ * Copyright (c) 2018 Heimrich & Hannot GmbH
  *
- * @author Rico Kaltofen <r.kaltofen@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @license LGPL-3.0+
  */
 
 namespace HeimrichHannot\FilterBundle\Choice;
@@ -13,7 +13,6 @@ use HeimrichHannot\UtilsBundle\Choice\AbstractChoice;
 
 class MessageChoice extends AbstractChoice
 {
-
     /**
      * @return array
      */
@@ -27,8 +26,8 @@ class MessageChoice extends AbstractChoice
         }
         $translator = \System::getContainer()->get('translator');
 
-        $catalog  = $translator->getCatalogue();
-        $all      = $catalog->all();
+        $catalog = $translator->getCatalogue();
+        $all = $catalog->all();
         $messages = $all['messages'];
 
         if (!is_array($messages)) {
@@ -38,7 +37,7 @@ class MessageChoice extends AbstractChoice
         $choices = Arrays::filterByPrefixes($messages, $prefixes);
 
         foreach ($choices as $key => $value) {
-            $choices[$key] = $value . '[' . $key . ']';
+            $choices[$key] = $value.'['.$key.']';
         }
 
         return $choices;
