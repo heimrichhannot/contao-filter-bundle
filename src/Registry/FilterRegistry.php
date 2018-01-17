@@ -220,16 +220,14 @@ class FilterRegistry
 
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
+            $url  = Url::removeQueryString([$form->getName()], $form->getConfig()->getAction() ?: null);
 
-            // filter id must match (support different form configuration with same form name)
-            if ($config->getId() !== (int)$data[FilterType::FILTER_ID_NAME]) {
-                return;
-            }
-
+            // allow reset, support different form configuration with same form name
             if (null !== $form->getClickedButton() && in_array($form->getClickedButton()->getName(), $config->getResetNames(), true)) {
                 $this->session->reset($sessionKey);
+                $data = [];
                 // redirect to same page without filter parameters
-                Controller::redirect(Url::removeQueryString([$form->getName()], $request->getUri() ?: null));
+                $url = Url::removeQueryString([$form->getName()], $request->getUri() ?: null);
             }
 
             // do not save filter id in session
@@ -237,7 +235,7 @@ class FilterRegistry
             $this->session->setData($sessionKey, $data);
 
             // redirect to same page without filter parameters
-            Controller::redirect(Url::removeQueryString([$form->getName()], $form->getConfig()->getAction() ?: null));
+            Controller::redirect($url);
         }
     }
 }
