@@ -35,6 +35,7 @@ class ResetType extends AbstractType implements TypeInterface
         }
 
         $name = $this->getName($element);
+
         // use SubmitType instead of ResetType, because ResetType wont submit the form (client-side only)
         $builder->add($name, \Symfony\Component\Form\Extension\Core\Type\SubmitType::class, $this->getOptions($element, $builder));
         $this->config->addResetName($name);

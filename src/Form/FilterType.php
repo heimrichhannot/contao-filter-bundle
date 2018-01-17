@@ -15,11 +15,14 @@ use HeimrichHannot\FilterBundle\Exception\MissingFilterConfigException;
 use HeimrichHannot\FilterBundle\Filter\TypeInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Exception\InvalidArgumentException;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class FilterType extends AbstractType
 {
+    const FILTER_ID_NAME = 'f_id';
+
     /**
      * @var FilterConfig|null
      */
@@ -48,6 +51,9 @@ class FilterType extends AbstractType
         if (isset($filter['method'])) {
             $builder->setMethod($filter['method']);
         }
+
+        // always add a hidden field with the filter id
+        $builder->add(static::FILTER_ID_NAME, HiddenType::class, ['attr' => ['value' => $this->config->getId()]]);
 
         $this->buildElements($builder, $options);
     }

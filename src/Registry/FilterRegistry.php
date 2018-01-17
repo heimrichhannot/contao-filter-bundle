@@ -14,6 +14,7 @@ use Contao\System;
 use Doctrine\DBAL\DBALException;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
 use HeimrichHannot\FilterBundle\Entity\FilterSession;
+use HeimrichHannot\FilterBundle\Form\FilterType;
 use HeimrichHannot\FilterBundle\Model\FilterElementModel;
 use HeimrichHannot\FilterBundle\Model\FilterModel;
 use HeimrichHannot\Haste\Util\Url;
@@ -56,8 +57,8 @@ class FilterRegistry
     public function __construct(ContaoFrameworkInterface $framework, FilterSession $session)
     {
         $this->framework = $framework;
-        $this->session = $session;
-        $this->cache = new FilesystemAdapter('huh.filter.registry', 0, \System::getContainer()->get('kernel')->getCacheDir());
+        $this->session   = $session;
+        $this->cache     = new FilesystemAdapter('huh.filter.registry', 0, \System::getContainer()->get('kernel')->getCacheDir());
     }
 
     /**
@@ -211,20 +212,28 @@ class FilterRegistry
             $form = $config->getBuilder()->getForm();
         }
 
-        $form->handleRequest();
+        $form->handleRequest($request);
 
         if (null === $request) {
             $request = System::getContainer()->get('request_stack')->getCurrentRequest();
         }
 
         if ($form->isSubmitted() && $form->isValid()) {
-            if ($form->getClickedButton() && in_array($form->getClickedButton()->getName(), $config->getResetNames(), true)) {
+            $data = $form->getData();
+
+            // filter id must match (support different form configuration with same form name)
+            if ($config->getId() !== (int)$data[FilterType::FILTER_ID_NAME]) {
+                return;
+            }
+
+            if (null !== $form->getClickedButton() && in_array($form->getClickedButton()->getName(), $config->getResetNames(), true)) {
                 $this->session->reset($sessionKey);
                 // redirect to same page without filter parameters
                 Controller::redirect(Url::removeQueryString([$form->getName()], $request->getUri() ?: null));
             }
 
-            $data = $form->getData();
+            // do not save filter id in session
+            unset($data[FilterType::FILTER_ID_NAME]);
             $this->session->setData($sessionKey, $data);
 
             // redirect to same page without filter parameters

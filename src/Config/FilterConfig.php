@@ -99,6 +99,10 @@ class FilterConfig
             return;
         }
 
+        if (isset($data[FilterType::FILTER_ID_NAME]) && $data[FilterType::FILTER_ID_NAME] !== $this->getId()) {
+            return;
+        }
+
         $factory = Forms::createFormFactoryBuilder()->addExtensions([])->getFormFactory();
 
         $options = ['filter' => $this];
