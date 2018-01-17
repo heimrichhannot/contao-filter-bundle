@@ -2,7 +2,7 @@
 /**
  * Copyright (c) 2017 Heimrich & Hannot GmbH
  *
- * @author Rico Kaltofen <r.kaltofen@heimrich-hannot.de>
+ * @author  Rico Kaltofen <r.kaltofen@heimrich-hannot.de>
  * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
  */
 
@@ -15,6 +15,7 @@ use Contao\ManagerPlugin\Bundle\Parser\ParserInterface;
 use Contao\ManagerPlugin\Config\ExtensionPluginInterface;
 use HeimrichHannot\FilterBundle\HeimrichHannotContaoFilterBundle;
 use Contao\ManagerPlugin\Config\ContainerBuilder;
+use Symfony\Component\Yaml\Yaml;
 
 
 class Plugin implements BundlePluginInterface, ExtensionPluginInterface
@@ -25,16 +26,15 @@ class Plugin implements BundlePluginInterface, ExtensionPluginInterface
     public function getBundles(ParserInterface $parser)
     {
         return [
-            BundleConfig::create(HeimrichHannotContaoFilterBundle::class)
-                ->setLoadAfter([ContaoCoreBundle::class])
+            BundleConfig::create(HeimrichHannotContaoFilterBundle::class)->setLoadAfter([ContaoCoreBundle::class]),
         ];
     }
 
     /**
      * Allows a plugin to override extension configuration.
      *
-     * @param string $extensionName
-     * @param array $extensionConfigs
+     * @param string           $extensionName
+     * @param array            $extensionConfigs
      * @param ContainerBuilder $container
      *
      * @return
@@ -52,6 +52,20 @@ class Plugin implements BundlePluginInterface, ExtensionPluginInterface
                 }
             }
         }
+
+        if ('huh_filter' === $extensionName) {
+            foreach ($extensionConfigs as $key => $extensionConfig) {
+
+                // enable form plugin
+                if (!isset($extensionConfig['huh']['filter'])) {
+                    $config                = Yaml::parseFile(__DIR__.'/../../Resources/config/config.yml');
+                    $data['huh']['filter'] = $config['huh']['filter'];
+                    $extensionConfigs = array_merge_recursive($extensionConfigs, $data);
+                    break;
+                }
+            }
+        }
+
 
         return $extensionConfigs;
     }

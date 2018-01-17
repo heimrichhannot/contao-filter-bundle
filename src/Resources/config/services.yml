@@ -17,10 +17,6 @@ services:
       arguments:
           - "@contao.framework"
           - "@doctrine.dbal.default_connection"
-  huh.filter.choice.data_container:
-      class: HeimrichHannot\FilterBundle\Choice\DataContainerChoice
-      arguments:
-        - "@contao.framework"
   huh.filter.choice.template:
       class: HeimrichHannot\FilterBundle\Choice\TemplateChoice
       arguments:

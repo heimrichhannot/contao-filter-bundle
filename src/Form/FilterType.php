@@ -47,19 +47,19 @@ class FilterType extends AbstractType
             return;
         }
 
-        $config = \System::getContainer()->getParameter('huh');
+        $types = \System::getContainer()->get('huh.filter.choice.type')->getCachedChoices();
 
-        if (!isset($config['filter']['types'])) {
+        if (!is_array($types) || empty($types)) {
             return;
         }
 
         foreach ($elements as $element) {
 
-            if (!isset($config['filter']['types'][$element['type']])) {
+            if (!isset($types[$element['type']])) {
                 continue;
             }
 
-            $class = $config['filter']['types'][$element['type']];
+            $class = $types[$element['type']];
 
             if (!class_exists($class)) {
                 continue;

@@ -9,6 +9,7 @@
 namespace HeimrichHannot\FilterBundle\Choice;
 
 use HeimrichHannot\Haste\Util\Arrays;
+use HeimrichHannot\UtilsBundle\Choice\AbstractChoice;
 
 class MessageChoice extends AbstractChoice
 {

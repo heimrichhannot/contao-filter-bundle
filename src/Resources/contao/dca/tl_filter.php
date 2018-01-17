@@ -116,7 +116,7 @@ $GLOBALS['TL_DCA']['tl_filter'] = [
         'dataContainer' => [
             'inputType'        => 'select',
             'label'            => &$GLOBALS['TL_LANG']['tl_filter']['dataContainer'],
-            'options_callback' => ['huh.filter.choice.data_container', 'getChoices'],
+            'options_callback' => ['huh.utils.choice.data_container', 'getChoices'],
             'eval'             => [
                 'chosen'             => true,
                 'submitOnChange'     => true,
@@ -159,8 +159,7 @@ $GLOBALS['TL_DCA']['tl_filter'] = [
             'inputType'        => 'select',
             'label'            => &$GLOBALS['TL_LANG']['tl_filter']['template'],
             'options_callback' => function (\DataContainer $dc) {
-                $choices = \Contao\System::getContainer()->get('huh.filter.choice.template')->getCachedChoices($dc);
-                return array_keys($choices);
+                return \Contao\System::getContainer()->get('huh.filter.choice.template')->getCachedChoices($dc);
             },
             'eval'             => [
                 'mandatory' => true,

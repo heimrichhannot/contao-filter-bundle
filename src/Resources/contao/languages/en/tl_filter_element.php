@@ -62,6 +62,34 @@ $lang['show']   = ['Filterelement details', 'Show the details of Filterelement I
 /**
  * References
  */
+
+$lang['reference']['type']['text']        = 'Text';
+$lang['reference']['type']['text_concat'] = 'Text combined';
+$lang['reference']['type']['textarea']    = 'Textarea';
+$lang['reference']['type']['email']       = 'Email';
+$lang['reference']['type']['integer']     = 'Integer';
+$lang['reference']['type']['money']       = 'Money';
+$lang['reference']['type']['number']      = 'Number';
+$lang['reference']['type']['password']    = 'Password';
+$lang['reference']['type']['percent']     = 'Percent';
+$lang['reference']['type']['search']      = 'Search';
+$lang['reference']['type']['url']         = 'Url';
+$lang['reference']['type']['range']       = 'Range';
+$lang['reference']['type']['tel']         = 'Tel';
+$lang['reference']['type']['color']       = 'Color';
+$lang['reference']['type']['choice']      = 'Choice';
+$lang['reference']['type']['country']     = 'Country';
+$lang['reference']['type']['language']    = 'Language';
+$lang['reference']['type']['locale']      = 'Locale';
+$lang['reference']['type']['button']      = 'Button';
+$lang['reference']['type']['reset']       = 'Reset';
+$lang['reference']['type']['submit']      = 'Submit';
+$lang['reference']['type']['button']      = 'Button';
+$lang['reference']['type']['reset']       = 'Reset';
+$lang['reference']['type']['hidden']      = 'Hidden';
+$lang['reference']['type']['checkbox']    = 'Checkbox';
+$lang['reference']['type']['radio']       = 'Radio';
+
 $lang['reference']['roundingMode'][\Symfony\Component\Form\Extension\Core\DataTransformer\IntegerToLocalizedStringTransformer::ROUND_DOWN]      = 'Down (round towards zero)';
 $lang['reference']['roundingMode'][\Symfony\Component\Form\Extension\Core\DataTransformer\IntegerToLocalizedStringTransformer::ROUND_FLOOR]     = 'Floor (round towards negative infinity)';
 $lang['reference']['roundingMode'][\Symfony\Component\Form\Extension\Core\DataTransformer\IntegerToLocalizedStringTransformer::ROUND_UP]        = 'Up (round away from zero)';

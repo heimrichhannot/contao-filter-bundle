@@ -1,3 +1,35 @@
-# Framework configuration
-framework:
-    form:            ~
+huh:
+  filter:
+    types:
+      - {name: text, class: HeimrichHannot\FilterBundle\Filter\Type\TextType, type: text}
+      - {name: text_concat, class: HeimrichHannot\FilterBundle\Filter\Type\TextConcatType, type: text}
+      - {name: textarea, class: HeimrichHannot\FilterBundle\Filter\Type\TextareaType, type: text}
+      - {name: email, class: HeimrichHannot\FilterBundle\Filter\Type\EmailType, type: text}
+      - {name: integer, class: HeimrichHannot\FilterBundle\Filter\Type\IntegerType, type: text}
+      - {name: money, class: HeimrichHannot\FilterBundle\Filter\Type\MoneyType, type: text}
+      - {name: number, class: HeimrichHannot\FilterBundle\Filter\Type\NumberType, type: text}
+      - {name: password, class: HeimrichHannot\FilterBundle\Filter\Type\PasswordType, type: text}
+      - {name: percent, class: HeimrichHannot\FilterBundle\Filter\Type\PercentType, type: text}
+      - {name: search, class: HeimrichHannot\FilterBundle\Filter\Type\SearchType, type: text}
+      - {name: url, class: HeimrichHannot\FilterBundle\Filter\Type\UrlType, type: text}
+      - {name: range, class: HeimrichHannot\FilterBundle\Filter\Type\RangeType, type: text}
+      - {name: tel, class: HeimrichHannot\FilterBundle\Filter\Type\TelType, type: text}
+      - {name: color, class: HeimrichHannot\FilterBundle\Filter\Type\ColorType, type: text}
+      - {name: choice, class: HeimrichHannot\FilterBundle\Filter\Type\ChoiceType, type: choice}
+      - {name: country, class: HeimrichHannot\FilterBundle\Filter\Type\CountryType, type: choice}
+      - {name: language, class: HeimrichHannot\FilterBundle\Filter\Type\LanguageType, type: choice}
+      - {name: locale, class: HeimrichHannot\FilterBundle\Filter\Type\LocaleType, type: choice}
+      - {name: button, class: HeimrichHannot\FilterBundle\Filter\Type\ButtonType, type: button}
+      - {name: reset, class: HeimrichHannot\FilterBundle\Filter\Type\ResetType, type: button}
+      - {name: submit, class: HeimrichHannot\FilterBundle\Filter\Type\SubmitType, type: button}
+      - {name: hidden, class: HeimrichHannot\FilterBundle\Filter\Type\HiddenType, type: other}
+      - {name: checkbox, class: HeimrichHannot\FilterBundle\Filter\Type\CheckboxType, type: other}
+      - {name: radio, class: HeimrichHannot\FilterBundle\Filter\Type\RadioType, type: other}
+    templates:
+      - {name: form_div_layout, template: '@HeimrichHannotContaoFilter/filter/filter_form_div_layout.html.twig'}
+      - {name: form_table_layout, template: '@HeimrichHannotContaoFilter/filter/filter_form_table_layout.html.twig'}
+      - {name: bootstrap_3_layout, template: '@HeimrichHannotContaoFilter/filter/filter_form_bootstrap_3_layout.html.twig'}
+      - {name: bootstrap_3_horizontal_layout, template: '@HeimrichHannotContaoFilter/filter/filter_form_bootstrap_3_horizontal_layout.html.twig'}
+      - {name: bootstrap_4_layout, template: '@HeimrichHannotContaoFilter/filter/filter_form_bootstrap_4_layout.html.twig'}
+      - {name: bootstrap_4_horizontal_layout, template: '@HeimrichHannotContaoFilter/filter/filter_form_bootstrap_4_horizontal_layout.html.twig'}
+      - {name: foundation_5_layout, template: '@HeimrichHannotContaoFilter/filter/filter_form_foundation_5_layout.html.twig'}

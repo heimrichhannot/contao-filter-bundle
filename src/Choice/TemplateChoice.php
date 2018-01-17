@@ -8,7 +8,7 @@
 
 namespace HeimrichHannot\FilterBundle\Choice;
 
-use HeimrichHannot\FilterBundle\Choice\AbstractChoice;
+use HeimrichHannot\UtilsBundle\Choice\AbstractChoice;
 use Symfony\Component\Form\AbstractType;
 
 class TemplateChoice extends AbstractChoice
@@ -20,13 +20,18 @@ class TemplateChoice extends AbstractChoice
     {
         $choices = [];
 
-        $config = \System::getContainer()->getParameter('huh');
+        $config = \System::getContainer()->getParameter('huh.filter');
 
         if (!isset($config['filter']['templates'])) {
             return $choices;
         }
 
-        $choices = $config['filter']['templates'];
+        $templates = $config['filter']['templates'];
+
+        foreach ($templates as $config)
+        {
+            $choices[$config['name']] = $config['template'];
+        }
 
         return $choices;
     }

@@ -10,6 +10,7 @@ namespace HeimrichHannot\FilterBundle\Choice;
 
 use Contao\System;
 use Contao\Widget;
+use HeimrichHannot\UtilsBundle\Choice\AbstractChoice;
 
 class FieldOptionsChoice extends AbstractChoice
 {

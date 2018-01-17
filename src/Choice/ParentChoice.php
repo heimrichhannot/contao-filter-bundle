@@ -8,8 +8,8 @@
 
 namespace HeimrichHannot\FilterBundle\Choice;
 
-use HeimrichHannot\FilterBundle\Choice\AbstractChoice;
 use HeimrichHannot\FilterBundle\Model\FilterModel;
+use HeimrichHannot\UtilsBundle\Choice\AbstractChoice;
 
 class ParentChoice extends AbstractChoice
 {
