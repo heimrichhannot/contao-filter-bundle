@@ -12,6 +12,9 @@ services:
   huh.filter.config:
       class: HeimrichHannot\FilterBundle\Config\FilterConfig
       shared: false
+      arguments:
+          - "@contao.framework"
+          - "@huh.filter.session"
   huh.filter.query_builder:
       class: HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder
       arguments:

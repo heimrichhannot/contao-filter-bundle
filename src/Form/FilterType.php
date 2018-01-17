@@ -8,10 +8,13 @@
 
 namespace HeimrichHannot\FilterBundle\Form;
 
+use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\InsertTags;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
+use HeimrichHannot\FilterBundle\Exception\MissingFilterConfigException;
 use HeimrichHannot\FilterBundle\Filter\TypeInterface;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Exception\InvalidArgumentException;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -22,27 +25,41 @@ class FilterType extends AbstractType
      */
     protected $config;
 
+    /**
+     * @var ContaoFrameworkInterface
+     */
+    protected $framework;
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         if (!isset($options['filter']) || !$options['filter'] instanceof FilterConfig) {
-            return;
+            throw new MissingFilterConfigException('Missing filter configuration.');
         }
 
         $this->config = $options['filter'];
 
+        $this->framework = $this->config->getFramework();
+        $this->framework->initialize();
+
         $filter = $this->config->getFilter();
 
-        $builder->setAction(urldecode(InsertTags::replaceInsertTags($filter['action'])));
-        $builder->setMethod($filter['method']);
+        $builder->setAction($this->getAction());
+
+        if (isset($filter['method'])) {
+            $builder->setMethod($filter['method']);
+        }
 
         $this->buildElements($builder, $options);
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults([
-            'filter' => null,
-        ]);
+        $resolver->setDefaults(
+            [
+                'filter'    => null,
+                'framework' => null,
+            ]
+        );
     }
 
     protected function buildElements(FormBuilderInterface $builder, array $options)
@@ -81,5 +98,31 @@ class FilterType extends AbstractType
 
             $type->buildForm($element, $builder);
         }
+    }
+
+    /**
+     * Get the action based on current filter action
+     *
+     * @return string
+     */
+    protected function getAction()
+    {
+        $filter = $this->config->getFilter();
+
+        if (!isset($filter['action'])) {
+            return '';
+        }
+
+        /**
+         * @var InsertTags $insertTagAdapter
+         */
+        $insertTagAdapter = $this->framework->createInstance(InsertTags::class);
+
+        // while unit testing, the mock object cant be instantiated
+        if (null === $insertTagAdapter) {
+            $insertTagAdapter = $this->framework->getAdapter(InsertTags::class);
+        }
+
+        return urldecode($insertTagAdapter->replace($filter['action']));
     }
 }

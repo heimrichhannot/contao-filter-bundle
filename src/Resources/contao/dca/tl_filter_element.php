@@ -177,7 +177,7 @@ $GLOBALS['TL_DCA']['tl_filter_element'] = [
                     ]
                 );
             },
-            'eval'             => ['chosen' => true, 'includeBlankOption' => true, 'doNotCopy' => true],
+            'eval'             => ['chosen' => true, 'includeBlankOption' => true],
             'sql'              => "varchar(64) NOT NULL default ''",
         ],
         'fields'          => [
@@ -200,14 +200,14 @@ $GLOBALS['TL_DCA']['tl_filter_element'] = [
                     ]
                 );
             },
-            'eval'             => ['chosen' => true, 'includeBlankOption' => true, 'doNotCopy' => true, 'multiple' => true, 'mandatory' => true],
+            'eval'             => ['chosen' => true, 'includeBlankOption' => true, 'multiple' => true, 'mandatory' => true],
             'sql'              => "blob NULL",
         ],
         'customOptions'   => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_element']['customOptions'],
             'exclude'   => true,
             'inputType' => 'checkbox',
-            'eval'      => ['submitOnChange' => true, 'doNotCopy' => true],
+            'eval'      => ['submitOnChange' => true],
             'sql'       => "char(1) NOT NULL default ''",
         ],
         'options'         => [
@@ -224,7 +224,7 @@ $GLOBALS['TL_DCA']['tl_filter_element'] = [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_element']['customName'],
             'exclude'   => true,
             'inputType' => 'checkbox',
-            'eval'      => ['submitOnChange' => true, 'doNotCopy' => true],
+            'eval'      => ['submitOnChange' => true],
             'sql'       => "char(1) NOT NULL default ''",
         ],
         'name'            => [
@@ -238,7 +238,7 @@ $GLOBALS['TL_DCA']['tl_filter_element'] = [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_element']['addPlaceholder'],
             'exclude'   => true,
             'inputType' => 'checkbox',
-            'eval'      => ['submitOnChange' => true, 'doNotCopy' => true],
+            'eval'      => ['submitOnChange' => true],
             'sql'       => "char(1) NOT NULL default ''",
         ],
         'placeholder'     => [
@@ -250,14 +250,14 @@ $GLOBALS['TL_DCA']['tl_filter_element'] = [
 
                 return $choices;
             },
-            'eval'             => ['chosen' => true, 'mandatory' => true, 'maxlength' => 128, 'includeBlankOption' => true, 'doNotCopy' => true],
+            'eval'             => ['chosen' => true, 'mandatory' => true, 'maxlength' => 128, 'includeBlankOption' => true],
             'sql'              => "varchar(128) NOT NULL default ''",
         ],
         'customLabel'     => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_element']['customLabel'],
             'exclude'   => true,
             'inputType' => 'checkbox',
-            'eval'      => ['submitOnChange' => true, 'doNotCopy' => true],
+            'eval'      => ['submitOnChange' => true],
             'sql'       => "char(1) NOT NULL default ''",
         ],
         'label'           => [
@@ -269,7 +269,7 @@ $GLOBALS['TL_DCA']['tl_filter_element'] = [
 
                 return $choices;
             },
-            'eval'             => ['chosen' => true, 'mandatory' => true, 'maxlength' => 128, 'includeBlankOption' => true, 'doNotCopy' => true],
+            'eval'             => ['chosen' => true, 'mandatory' => true, 'maxlength' => 128, 'includeBlankOption' => true],
             'sql'              => "varchar(128) NOT NULL default ''",
         ],
         'expanded'        => [
@@ -407,7 +407,7 @@ $GLOBALS['TL_DCA']['tl_filter_element'] = [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_element']['customLanguages'],
             'exclude'   => true,
             'inputType' => 'checkbox',
-            'eval'      => ['submitOnChange' => true, 'doNotCopy' => true],
+            'eval'      => ['submitOnChange' => true],
             'sql'       => "char(1) NOT NULL default ''",
         ],
         'languages'       => [
@@ -423,7 +423,7 @@ $GLOBALS['TL_DCA']['tl_filter_element'] = [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_element']['customLocales'],
             'exclude'   => true,
             'inputType' => 'checkbox',
-            'eval'      => ['submitOnChange' => true, 'doNotCopy' => true],
+            'eval'      => ['submitOnChange' => true],
             'sql'       => "char(1) NOT NULL default ''",
         ],
         'locales'         => [
@@ -439,7 +439,7 @@ $GLOBALS['TL_DCA']['tl_filter_element'] = [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_element']['customValue'],
             'exclude'   => true,
             'inputType' => 'checkbox',
-            'eval'      => ['submitOnChange' => true, 'doNotCopy' => true],
+            'eval'      => ['submitOnChange' => true],
             'sql'       => "char(1) NOT NULL default ''",
         ],
         'value'           => [

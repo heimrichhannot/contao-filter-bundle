@@ -8,7 +8,9 @@
 
 namespace HeimrichHannot\FilterBundle\Config;
 
+use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\System;
+use HeimrichHannot\FilterBundle\Entity\FilterSession;
 use HeimrichHannot\FilterBundle\Filter\TypeInterface;
 use HeimrichHannot\FilterBundle\Form\FilterType;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
@@ -19,6 +21,17 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
 
 class FilterConfig
 {
+
+    /**
+     * @var ContaoFrameworkInterface
+     */
+    protected $framework;
+
+    /**
+     * @var FilterSession
+     */
+    protected $session;
+
     /**
      * @var string
      */
@@ -50,6 +63,18 @@ class FilterConfig
     protected $queryBuilder;
 
     /**
+     * Constructor.
+     *
+     * @param ContaoFrameworkInterface $framework
+     * @param FilterSession            $session
+     */
+    public function __construct(ContaoFrameworkInterface $framework, FilterSession $session)
+    {
+        $this->framework = $framework;
+        $this->session   = $session;
+    }
+
+    /**
      * Init the filter based on its model.
      *
      * @param string     $sessionKey
@@ -59,8 +84,8 @@ class FilterConfig
     public function init(string $sessionKey, array $filter, $elements = null)
     {
         $this->sessionKey = $sessionKey;
-        $this->filter = $filter;
-        $this->elements = $elements;
+        $this->filter     = $filter;
+        $this->elements   = $elements;
     }
 
     /**
@@ -80,7 +105,7 @@ class FilterConfig
 
         $cssClass = [];
 
-        if ('' !== $this->filter['cssClass']) {
+        if (isset($this->filter['cssClass']) && '' !== $this->filter['cssClass']) {
             $cssClass[] = $this->filter['cssClass'];
         }
 
@@ -92,7 +117,7 @@ class FilterConfig
             $options['attr']['class'] = implode(' ', $cssClass);
         }
 
-        if (true === (bool) $this->filter['renderEmpty']) {
+        if (isset($this->filter['renderEmpty']) && true === (bool)$this->filter['renderEmpty']) {
             $data = [];
         }
 
@@ -196,7 +221,7 @@ class FilterConfig
      */
     public function getData(): array
     {
-        return System::getContainer()->get('huh.filter.session')->getData($this->getSessionKey());
+        return $this->session->getData($this->getSessionKey());
     }
 
     /**
@@ -206,7 +231,7 @@ class FilterConfig
      */
     public function hasData(): bool
     {
-        return System::getContainer()->get('huh.filter.session')->hasData($this->getSessionKey());
+        return $this->session->hasData($this->getSessionKey());
     }
 
     /**
@@ -234,12 +259,20 @@ class FilterConfig
     }
 
     /**
+     * @return ContaoFrameworkInterface
+     */
+    public function getFramework(): ContaoFrameworkInterface
+    {
+        return $this->framework;
+    }
+
+    /**
      * Maps the data of the current forms and update builder data.
      */
     protected function mapFormsToData()
     {
-        $data = [];
-        $forms = $this->builder->getForm();
+        $data             = [];
+        $forms            = $this->builder->getForm();
         $propertyAccessor = PropertyAccess::createPropertyAccessor();
 
         /**
@@ -247,7 +280,7 @@ class FilterConfig
          */
         foreach ($forms as $form) {
             $propertyPath = $form->getPropertyPath();
-            $config = $form->getConfig();
+            $config       = $form->getConfig();
 
             // Write-back is disabled if the form is not synchronized (transformation failed),
             // if the form was not submitted and if the form is disabled (modification not allowed)
