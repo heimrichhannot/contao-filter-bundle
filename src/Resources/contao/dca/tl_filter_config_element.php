@@ -3,7 +3,7 @@
 $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
     'config'      => [
         'dataContainer'     => 'Table',
-        'ptable'            => 'tl_filter',
+        'ptable'            => 'tl_filter_config',
         'enableVersioning'  => true,
         'onload_callback'   => [
             ['tl_filter_config_element', 'checkPermission'],
