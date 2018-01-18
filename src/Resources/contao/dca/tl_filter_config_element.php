@@ -116,7 +116,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'sql' => "int(10) unsigned NOT NULL auto_increment",
         ],
         'pid'             => [
-            'foreignKey' => 'tl_filter.title',
+            'foreignKey' => 'tl_filter_config.title',
             'sql'        => "int(10) unsigned NOT NULL default '0'",
             'relation'   => ['type' => 'belongsTo', 'load' => 'eager'],
         ],
