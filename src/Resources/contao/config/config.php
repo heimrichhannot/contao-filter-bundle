@@ -11,8 +11,8 @@ $GLOBALS['BE_MOD']['system']['filter'] = [
 /**
  * Models
  */
-$GLOBALS['TL_MODELS']['tl_filter']         = 'HeimrichHannot\FilterBundle\Model\FilterModel';
-$GLOBALS['TL_MODELS']['tl_filter_element'] = 'HeimrichHannot\FilterBundle\Model\FilterElementModel';
+$GLOBALS['TL_MODELS']['tl_filter_config']         = 'HeimrichHannot\FilterBundle\Model\FilterConfigModel';
+$GLOBALS['TL_MODELS']['tl_filter_config_element'] = 'HeimrichHannot\FilterBundle\Model\FilterConfigElementModel';
 
 /**
  * Permissions

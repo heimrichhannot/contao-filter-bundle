@@ -1,12 +1,12 @@
 <?php
 
-$GLOBALS['TL_DCA']['tl_filter_element'] = [
+$GLOBALS['TL_DCA']['tl_filter_config_element'] = [
     'config'      => [
         'dataContainer'     => 'Table',
         'ptable'            => 'tl_filter',
         'enableVersioning'  => true,
         'onload_callback'   => [
-            ['tl_filter_element', 'checkPermission'],
+            ['tl_filter_config_element', 'checkPermission'],
         ],
         'onsubmit_callback' => [
             ['huh.utils.dca', 'setDateAdded'],
@@ -31,7 +31,7 @@ $GLOBALS['TL_DCA']['tl_filter_element'] = [
             'fields'                => ['sorting'],
             'headerFields'          => ['title', 'published', 'start', 'stop'],
             'panelLayout'           => 'filter;sort,search,limit',
-            'child_record_callback' => ['tl_filter_element', 'listElements'],
+            'child_record_callback' => ['tl_filter_config_element', 'listElements'],
         ],
         'global_operations' => [
             'all' => [
@@ -43,29 +43,29 @@ $GLOBALS['TL_DCA']['tl_filter_element'] = [
         ],
         'operations'        => [
             'edit'   => [
-                'label' => &$GLOBALS['TL_LANG']['tl_filter_element']['edit'],
+                'label' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['edit'],
                 'href'  => 'act=edit',
                 'icon'  => 'edit.gif',
             ],
             'copy'   => [
-                'label' => &$GLOBALS['TL_LANG']['tl_filter_element']['copy'],
+                'label' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['copy'],
                 'href'  => 'act=copy',
                 'icon'  => 'copy.gif',
             ],
             'delete' => [
-                'label'      => &$GLOBALS['TL_LANG']['tl_filter_element']['delete'],
+                'label'      => &$GLOBALS['TL_LANG']['tl_filter_config_element']['delete'],
                 'href'       => 'act=delete',
                 'icon'       => 'delete.gif',
                 'attributes' => 'onclick="if(!confirm(\''.$GLOBALS['TL_LANG']['MSC']['deleteConfirm'].'\'))return false;Backend.getScrollOffset()"',
             ],
             'toggle' => [
-                'label'           => &$GLOBALS['TL_LANG']['tl_filter_element']['toggle'],
+                'label'           => &$GLOBALS['TL_LANG']['tl_filter_config_element']['toggle'],
                 'icon'            => 'visible.gif',
                 'attributes'      => 'onclick="Backend.getScrollOffset();return AjaxRequest.toggleVisibility(this,%s)"',
-                'button_callback' => ['tl_filter_element', 'toggleIcon'],
+                'button_callback' => ['tl_filter_config_element', 'toggleIcon'],
             ],
             'show'   => [
-                'label' => &$GLOBALS['TL_LANG']['tl_filter_element']['show'],
+                'label' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['show'],
                 'href'  => 'act=show',
                 'icon'  => 'show.gif',
             ],
@@ -126,7 +126,7 @@ $GLOBALS['TL_DCA']['tl_filter_element'] = [
             'sql'     => "int(10) unsigned NOT NULL default '0'",
         ],
         'tstamp'          => [
-            'label' => &$GLOBALS['TL_LANG']['tl_filter_element']['tstamp'],
+            'label' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['tstamp'],
             'sql'   => "int(10) unsigned NOT NULL default '0'",
         ],
         'dateAdded'       => [
@@ -137,19 +137,19 @@ $GLOBALS['TL_DCA']['tl_filter_element'] = [
             'sql'     => "int(10) unsigned NOT NULL default '0'",
         ],
         'type'            => [
-            'label'            => &$GLOBALS['TL_LANG']['tl_filter_element']['type'],
+            'label'            => &$GLOBALS['TL_LANG']['tl_filter_config_element']['type'],
             'exclude'          => true,
             'filter'           => true,
             'inputType'        => 'select',
             'options_callback' => function (\DataContainer $dc) {
                 return \Contao\System::getContainer()->get('huh.filter.choice.type')->getCachedChoices($dc);
             },
-            'reference'        => &$GLOBALS['TL_LANG']['tl_filter_element']['reference']['type'],
+            'reference'        => &$GLOBALS['TL_LANG']['tl_filter_config_element']['reference']['type'],
             'eval'             => ['chosen' => true, 'tl_class' => 'w50', 'submitOnChange' => true, 'mandatory' => true, 'includeBlankOption' => true],
             'sql'              => "varchar(64) NOT NULL default ''",
         ],
         'title'           => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_filter_element']['title'],
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['title'],
             'exclude'   => true,
             'search'    => true,
             'sorting'   => true,
@@ -159,7 +159,7 @@ $GLOBALS['TL_DCA']['tl_filter_element'] = [
             'sql'       => "varchar(255) NOT NULL default ''",
         ],
         'field'           => [
-            'label'            => &$GLOBALS['TL_LANG']['tl_filter_element']['field'],
+            'label'            => &$GLOBALS['TL_LANG']['tl_filter_config_element']['field'],
             'exclude'          => true,
             'filter'           => true,
             'inputType'        => 'select',
@@ -182,7 +182,7 @@ $GLOBALS['TL_DCA']['tl_filter_element'] = [
             'sql'              => "varchar(64) NOT NULL default ''",
         ],
         'fields'          => [
-            'label'            => &$GLOBALS['TL_LANG']['tl_filter_element']['fields'],
+            'label'            => &$GLOBALS['TL_LANG']['tl_filter_config_element']['fields'],
             'exclude'          => true,
             'filter'           => true,
             'inputType'        => 'checkboxWizard',
@@ -205,45 +205,45 @@ $GLOBALS['TL_DCA']['tl_filter_element'] = [
             'sql'              => "blob NULL",
         ],
         'customOptions'   => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_filter_element']['customOptions'],
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['customOptions'],
             'exclude'   => true,
             'inputType' => 'checkbox',
             'eval'      => ['submitOnChange' => true],
             'sql'       => "char(1) NOT NULL default ''",
         ],
         'options'         => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_filter_element']['options'],
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['options'],
             'exclude'   => true,
             'inputType' => 'optionWizard',
             'eval'      => ['mandatory' => true, 'allowHtml' => true],
             'xlabel'    => [
-                ['tl_filter_element', 'optionImportWizard'],
+                ['tl_filter_config_element', 'optionImportWizard'],
             ],
             'sql'       => "blob NULL",
         ],
         'customName'      => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_filter_element']['customName'],
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['customName'],
             'exclude'   => true,
             'inputType' => 'checkbox',
             'eval'      => ['submitOnChange' => true],
             'sql'       => "char(1) NOT NULL default ''",
         ],
         'name'            => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_filter_element']['name'],
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['name'],
             'exclude'   => true,
             'inputType' => 'text',
             'eval'      => ['mandatory' => true, 'maxlength' => 128, 'doNotCopy' => true],
             'sql'       => "varchar(128) NOT NULL default ''",
         ],
         'addPlaceholder'  => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_filter_element']['addPlaceholder'],
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['addPlaceholder'],
             'exclude'   => true,
             'inputType' => 'checkbox',
             'eval'      => ['submitOnChange' => true],
             'sql'       => "char(1) NOT NULL default ''",
         ],
         'placeholder'     => [
-            'label'            => &$GLOBALS['TL_LANG']['tl_filter_element']['placeholder'],
+            'label'            => &$GLOBALS['TL_LANG']['tl_filter_config_element']['placeholder'],
             'exclude'          => true,
             'inputType'        => 'select',
             'options_callback' => function (\DataContainer $dc) {
@@ -255,14 +255,14 @@ $GLOBALS['TL_DCA']['tl_filter_element'] = [
             'sql'              => "varchar(128) NOT NULL default ''",
         ],
         'customLabel'     => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_filter_element']['customLabel'],
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['customLabel'],
             'exclude'   => true,
             'inputType' => 'checkbox',
             'eval'      => ['submitOnChange' => true],
             'sql'       => "char(1) NOT NULL default ''",
         ],
         'label'           => [
-            'label'            => &$GLOBALS['TL_LANG']['tl_filter_element']['label'],
+            'label'            => &$GLOBALS['TL_LANG']['tl_filter_config_element']['label'],
             'exclude'          => true,
             'inputType'        => 'select',
             'options_callback' => function (\DataContainer $dc) {
@@ -274,21 +274,21 @@ $GLOBALS['TL_DCA']['tl_filter_element'] = [
             'sql'              => "varchar(128) NOT NULL default ''",
         ],
         'expanded'        => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_filter_element']['expanded'],
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['expanded'],
             'exclude'   => true,
             'inputType' => 'checkbox',
             'eval'      => ['tl_class' => 'w50'],
             'sql'       => "char(1) NOT NULL default ''",
         ],
         'multiple'        => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_filter_element']['expanded'],
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['multiple'],
             'exclude'   => true,
             'inputType' => 'checkbox',
             'eval'      => ['tl_class' => 'w50'],
             'sql'       => "char(1) NOT NULL default ''",
         ],
         'grouping'        => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_filter_element']['grouping'],
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['grouping'],
             'exclude'   => true,
             'default'   => false,
             'inputType' => 'checkbox',
@@ -296,7 +296,7 @@ $GLOBALS['TL_DCA']['tl_filter_element'] = [
             'sql'       => "char(1) NOT NULL default ''",
         ],
         'scale'           => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_filter_element']['scale'],
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['scale'],
             'exclude'   => true,
             'inputType' => 'text',
             'default'   => 0,
@@ -304,7 +304,7 @@ $GLOBALS['TL_DCA']['tl_filter_element'] = [
             'sql'       => "int(2) unsigned NOT NULL default '0'",
         ],
         'roundingMode'    => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_filter_element']['roundingMode'],
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['roundingMode'],
             'exclude'   => true,
             'inputType' => 'select',
             'default'   => \Symfony\Component\Form\Extension\Core\DataTransformer\IntegerToLocalizedStringTransformer::ROUND_DOWN,
@@ -317,12 +317,12 @@ $GLOBALS['TL_DCA']['tl_filter_element'] = [
                 \Symfony\Component\Form\Extension\Core\DataTransformer\IntegerToLocalizedStringTransformer::ROUND_HALF_EVEN,
                 \Symfony\Component\Form\Extension\Core\DataTransformer\IntegerToLocalizedStringTransformer::ROUND_HALF_UP,
             ],
-            'reference' => &$GLOBALS['TL_LANG']['tl_filter_element']['reference']['roundingMode'],
+            'reference' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['reference']['roundingMode'],
             'eval'      => ['tl_class' => 'w50 wizard', 'rgxp' => 'natural', 'maxlength' => 2],
             'sql'       => "int(2) unsigned NOT NULL default '0'",
         ],
         'currency'        => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_filter_element']['currency'],
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['currency'],
             'exclude'   => true,
             'inputType' => 'select',
             'default'   => 'EUR',
@@ -331,7 +331,7 @@ $GLOBALS['TL_DCA']['tl_filter_element'] = [
             'sql'       => "varchar(3) NOT NULL default ''",
         ],
         'divisor'         => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_filter_element']['divisor'],
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['divisor'],
             'exclude'   => true,
             'inputType' => 'text',
             'default'   => 1,
@@ -339,7 +339,7 @@ $GLOBALS['TL_DCA']['tl_filter_element'] = [
             'sql'       => "int(10) unsigned NOT NULL default '1'",
         ],
         'alwaysEmpty'     => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_filter_element']['alwaysEmpty'],
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['alwaysEmpty'],
             'exclude'   => true,
             'default'   => true,
             'inputType' => 'checkbox',
@@ -347,17 +347,17 @@ $GLOBALS['TL_DCA']['tl_filter_element'] = [
             'sql'       => "char(1) NOT NULL default ''",
         ],
         'percentType'     => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_filter_element']['percentType'],
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['percentType'],
             'inputType' => 'select',
             'exclude'   => true,
             'default'   => 'fractional',
             'options'   => ['fractional', 'integer'],
-            'reference' => &$GLOBALS['TL_LANG']['tl_filter_element']['reference']['percentType'],
+            'reference' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['reference']['percentType'],
             'eval'      => ['tl_class' => 'w50', 'maxlength' => 10],
             'sql'       => "varchar(10) NOT NULL default ''",
         ],
         'defaultProtocol' => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_filter_element']['defaultProtocol'],
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['defaultProtocol'],
             'exclude'   => true,
             'inputType' => 'text',
             'default'   => 'http',
@@ -365,7 +365,7 @@ $GLOBALS['TL_DCA']['tl_filter_element'] = [
             'sql'       => "varchar(12) NOT NULL default ''",
         ],
         'min'             => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_filter_element']['min'],
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['min'],
             'exclude'   => true,
             'default'   => '12:00',
             'inputType' => 'text',
@@ -373,7 +373,7 @@ $GLOBALS['TL_DCA']['tl_filter_element'] = [
             'sql'       => "varchar(12) NOT NULL default ''",
         ],
         'max'             => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_filter_element']['max'],
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['max'],
             'exclude'   => true,
             'inputType' => 'text',
             'default'   => '14:00',
@@ -381,7 +381,7 @@ $GLOBALS['TL_DCA']['tl_filter_element'] = [
             'sql'       => "varchar(12) NOT NULL default ''",
         ],
         'step'            => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_filter_element']['step'],
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['step'],
             'exclude'   => true,
             'default'   => '00:15',
             'inputType' => 'text',
@@ -389,14 +389,14 @@ $GLOBALS['TL_DCA']['tl_filter_element'] = [
             'sql'       => "varchar(12) NOT NULL default ''",
         ],
         'customCountries' => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_filter_element']['customCountries'],
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['customCountries'],
             'exclude'   => true,
             'inputType' => 'checkbox',
             'eval'      => ['submitOnChange' => true, 'doNotCopy' => true],
             'sql'       => "char(1) NOT NULL default ''",
         ],
         'countries'       => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_filter_element']['countries'],
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['countries'],
             'exclude'   => true,
             'inputType' => 'select',
             'default'   => 'EUR',
@@ -405,14 +405,14 @@ $GLOBALS['TL_DCA']['tl_filter_element'] = [
             'sql'       => "blob NULL",
         ],
         'customLanguages' => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_filter_element']['customLanguages'],
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['customLanguages'],
             'exclude'   => true,
             'inputType' => 'checkbox',
             'eval'      => ['submitOnChange' => true],
             'sql'       => "char(1) NOT NULL default ''",
         ],
         'languages'       => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_filter_element']['languages'],
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['languages'],
             'exclude'   => true,
             'inputType' => 'select',
             'default'   => 'EUR',
@@ -421,14 +421,14 @@ $GLOBALS['TL_DCA']['tl_filter_element'] = [
             'sql'       => "blob NULL",
         ],
         'customLocales'   => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_filter_element']['customLocales'],
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['customLocales'],
             'exclude'   => true,
             'inputType' => 'checkbox',
             'eval'      => ['submitOnChange' => true],
             'sql'       => "char(1) NOT NULL default ''",
         ],
         'locales'         => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_filter_element']['locales'],
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['locales'],
             'exclude'   => true,
             'inputType' => 'select',
             'default'   => 'EUR',
@@ -437,21 +437,21 @@ $GLOBALS['TL_DCA']['tl_filter_element'] = [
             'sql'       => "blob NULL",
         ],
         'customValue'     => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_filter_element']['customValue'],
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['customValue'],
             'exclude'   => true,
             'inputType' => 'checkbox',
             'eval'      => ['submitOnChange' => true],
             'sql'       => "char(1) NOT NULL default ''",
         ],
         'value'           => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_filter_element']['value'],
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['value'],
             'exclude'   => true,
             'inputType' => 'text',
             'eval'      => ['tl_class' => 'clr w50 wizard', 'mandatory' => true],
             'sql'       => "varchar(255) NOT NULL default ''",
         ],
         'parents'         => [
-            'label'            => &$GLOBALS['TL_LANG']['tl_filter_element']['parents'],
+            'label'            => &$GLOBALS['TL_LANG']['tl_filter_config_element']['parents'],
             'default'          => 'text',
             'exclude'          => true,
             'inputType'        => 'checkboxWizard',
@@ -460,14 +460,14 @@ $GLOBALS['TL_DCA']['tl_filter_element'] = [
             'sql'              => "blob NULL",
         ],
         'cssClass'        => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_filter_element']['cssClass'],
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['cssClass'],
             'exclude'   => true,
             'inputType' => 'text',
             'eval'      => ['tl_class' => 'w50', 'maxlength' => 64],
             'sql'       => "varchar(64) NOT NULL default ''",
         ],
         'published'       => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_filter_element']['published'],
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['published'],
             'exclude'   => true,
             'filter'    => true,
             'inputType' => 'checkbox',
@@ -475,14 +475,14 @@ $GLOBALS['TL_DCA']['tl_filter_element'] = [
             'sql'       => "char(1) NOT NULL default ''",
         ],
         'start'           => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_filter_element']['start'],
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['start'],
             'exclude'   => true,
             'inputType' => 'text',
             'eval'      => ['rgxp' => 'datim', 'datepicker' => true, 'tl_class' => 'w50 wizard'],
             'sql'       => "varchar(10) NOT NULL default ''",
         ],
         'stop'            => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_filter_element']['stop'],
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['stop'],
             'exclude'   => true,
             'inputType' => 'text',
             'eval'      => ['rgxp' => 'datim', 'datepicker' => true, 'tl_class' => 'w50 wizard'],
@@ -492,12 +492,12 @@ $GLOBALS['TL_DCA']['tl_filter_element'] = [
 ];
 
 
-class tl_filter_element extends \Backend
+class tl_filter_config_element extends \Backend
 {
 
     public function listElements($arrRow)
     {
-        return '<div class="tl_content_left">'.($arrRow['title'] ?: $arrRow['id']).' <span style="color:#b3b3b3; padding-left:3px">['.$GLOBALS['TL_LANG']['tl_filter_element']['reference']['type'][$arrRow['type']].']</span></div>';
+        return '<div class="tl_content_left">'.($arrRow['title'] ?: $arrRow['id']).' <span style="color:#b3b3b3; padding-left:3px">['.$GLOBALS['TL_LANG']['tl_filter_config_element']['reference']['type'][$arrRow['type']].']</span></div>';
     }
 
     public function checkPermission()
@@ -542,7 +542,7 @@ class tl_filter_element extends \Backend
             case 'delete':
             case 'toggle':
             case 'feature':
-                $objArchive = $database->prepare("SELECT pid FROM tl_filter_element WHERE id=?")->limit(1)->execute($id);
+                $objArchive = $database->prepare("SELECT pid FROM tl_filter_config_element WHERE id=?")->limit(1)->execute($id);
 
                 if ($objArchive->numRows < 1) {
                     throw new \Contao\CoreBundle\Exception\AccessDeniedException('Invalid filter_element item ID '.$id.'.');
@@ -563,7 +563,7 @@ class tl_filter_element extends \Backend
                     throw new \Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to access filter_element archive ID '.$id.'.');
                 }
 
-                $objArchive = $database->prepare("SELECT id FROM tl_filter_element WHERE pid=?")->execute($id);
+                $objArchive = $database->prepare("SELECT id FROM tl_filter_config_element WHERE pid=?")->execute($id);
 
                 if ($objArchive->numRows < 1) {
                     throw new \Contao\CoreBundle\Exception\AccessDeniedException('Invalid filter_element archive ID '.$id.'.');
@@ -597,7 +597,7 @@ class tl_filter_element extends \Backend
         }
 
         // Check permissions AFTER checking the tid, so hacking attempts are logged
-        if (!$user->hasAccess('tl_filter_element::published', 'alexf')) {
+        if (!$user->hasAccess('tl_filter_config_element::published', 'alexf')) {
             return '';
         }
 
@@ -624,8 +624,8 @@ class tl_filter_element extends \Backend
         }
 
         // Trigger the onload_callback
-        if (is_array($GLOBALS['TL_DCA']['tl_filter_element']['config']['onload_callback'])) {
-            foreach ($GLOBALS['TL_DCA']['tl_filter_element']['config']['onload_callback'] as $callback) {
+        if (is_array($GLOBALS['TL_DCA']['tl_filter_config_element']['config']['onload_callback'])) {
+            foreach ($GLOBALS['TL_DCA']['tl_filter_config_element']['config']['onload_callback'] as $callback) {
                 if (is_array($callback)) {
                     $this->import($callback[0]);
                     $this->{$callback[0]}->{$callback[1]}($dc);
@@ -636,25 +636,25 @@ class tl_filter_element extends \Backend
         }
 
         // Check the field access
-        if (!$user->hasAccess('tl_filter_element::published', 'alexf')) {
+        if (!$user->hasAccess('tl_filter_config_element::published', 'alexf')) {
             throw new \Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to publish/unpublish filter_element item ID '.$intId.'.');
         }
 
         // Set the current record
         if ($dc) {
-            $objRow = $database->prepare("SELECT * FROM tl_filter_element WHERE id=?")->limit(1)->execute($intId);
+            $objRow = $database->prepare("SELECT * FROM tl_filter_config_element WHERE id=?")->limit(1)->execute($intId);
 
             if ($objRow->numRows) {
                 $dc->activeRecord = $objRow;
             }
         }
 
-        $objVersions = new \Versions('tl_filter_element', $intId);
+        $objVersions = new \Versions('tl_filter_config_element', $intId);
         $objVersions->initialize();
 
         // Trigger the save_callback
-        if (is_array($GLOBALS['TL_DCA']['tl_filter_element']['fields']['published']['save_callback'])) {
-            foreach ($GLOBALS['TL_DCA']['tl_filter_element']['fields']['published']['save_callback'] as $callback) {
+        if (is_array($GLOBALS['TL_DCA']['tl_filter_config_element']['fields']['published']['save_callback'])) {
+            foreach ($GLOBALS['TL_DCA']['tl_filter_config_element']['fields']['published']['save_callback'] as $callback) {
                 if (is_array($callback)) {
                     $this->import($callback[0]);
                     $blnVisible = $this->{$callback[0]}->{$callback[1]}($blnVisible, $dc);
@@ -667,7 +667,7 @@ class tl_filter_element extends \Backend
         $time = time();
 
         // Update the database
-        $database->prepare("UPDATE tl_filter_element SET tstamp=$time, published='".($blnVisible ? '1' : '')."' WHERE id=?")->execute($intId);
+        $database->prepare("UPDATE tl_filter_config_element SET tstamp=$time, published='".($blnVisible ? '1' : '')."' WHERE id=?")->execute($intId);
 
         if ($dc) {
             $dc->activeRecord->tstamp    = $time;
@@ -675,8 +675,8 @@ class tl_filter_element extends \Backend
         }
 
         // Trigger the onsubmit_callback
-        if (is_array($GLOBALS['TL_DCA']['tl_filter_element']['config']['onsubmit_callback'])) {
-            foreach ($GLOBALS['TL_DCA']['tl_filter_element']['config']['onsubmit_callback'] as $callback) {
+        if (is_array($GLOBALS['TL_DCA']['tl_filter_config_element']['config']['onsubmit_callback'])) {
+            foreach ($GLOBALS['TL_DCA']['tl_filter_config_element']['config']['onsubmit_callback'] as $callback) {
                 if (is_array($callback)) {
                     $this->import($callback[0]);
                     $this->{$callback[0]}->{$callback[1]}($dc);

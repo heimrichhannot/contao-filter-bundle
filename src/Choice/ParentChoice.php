@@ -8,7 +8,7 @@
 
 namespace HeimrichHannot\FilterBundle\Choice;
 
-use HeimrichHannot\FilterBundle\Model\FilterModel;
+use HeimrichHannot\FilterBundle\Model\FilterConfigModel;
 use HeimrichHannot\UtilsBundle\Choice\AbstractChoice;
 
 class ParentChoice extends AbstractChoice
@@ -21,9 +21,9 @@ class ParentChoice extends AbstractChoice
         $choices = [];
 
         /**
-         * @var FilterModel
+         * @var FilterConfigModel
          */
-        $adapter = $this->framework->getAdapter(FilterModel::class);
+        $adapter = $this->framework->getAdapter(FilterConfigModel::class);
 
         if (!$this->context->activeRecord->pid || null === ($filter = $adapter->findByPk($this->context->activeRecord->pid)) || '' === $filter->dataContainer) {
             return $choices;

@@ -15,8 +15,8 @@ use Doctrine\DBAL\DBALException;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
 use HeimrichHannot\FilterBundle\Entity\FilterSession;
 use HeimrichHannot\FilterBundle\Form\FilterType;
-use HeimrichHannot\FilterBundle\Model\FilterElementModel;
-use HeimrichHannot\FilterBundle\Model\FilterModel;
+use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
+use HeimrichHannot\FilterBundle\Model\FilterConfigModel;
 use HeimrichHannot\Haste\Util\Url;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\Form\Exception\TransformationFailedException;
@@ -68,14 +68,12 @@ class FilterRegistry
     public function init($request = null)
     {
         /**
-         * @var FilterModel
+         * @var FilterConfigModel $adapter
          */
-        $adapter = $this->framework->getAdapter(FilterModel::class);
+        $adapter = $this->framework->getAdapter(FilterConfigModel::class);
 
         try {
-
-
-            if (null === ($filters = $adapter->findAll())) {
+            if (null === ($filters = $adapter->findAllPublished())) {
                 return;
             }
 
@@ -129,9 +127,9 @@ class FilterRegistry
     public function findById(int $id)
     {
         /**
-         * @var FilterModel
+         * @var FilterConfigModel
          */
-        $adapter = $this->framework->getAdapter(FilterModel::class);
+        $adapter = $this->framework->getAdapter(FilterConfigModel::class);
 
         if (isset($this->filters[$id])) {
             return $this->filters[$id];
@@ -170,9 +168,9 @@ class FilterRegistry
         $config = System::getContainer()->get('huh.filter.config');
 
         /**
-         * @var FilterElementModel
+         * @var FilterConfigElementModel
          */
-        $adapter = $this->framework->getAdapter(FilterElementModel::class);
+        $adapter = $this->framework->getAdapter(FilterConfigElementModel::class);
 
         $elements = $adapter->findPublishedByPid($filter['id']);
 
