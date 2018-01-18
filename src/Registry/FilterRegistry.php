@@ -18,7 +18,6 @@ use HeimrichHannot\FilterBundle\Form\FilterType;
 use HeimrichHannot\FilterBundle\Model\FilterElementModel;
 use HeimrichHannot\FilterBundle\Model\FilterModel;
 use HeimrichHannot\Haste\Util\Url;
-use PHPUnit\Util\Filter;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 
@@ -73,16 +72,18 @@ class FilterRegistry
          */
         $adapter = $this->framework->getAdapter(FilterModel::class);
 
-        if (null === ($filters = $adapter->findAll())) {
-            return;
-        }
+        try {
 
-        while ($filters->next()) {
-            try {
-                $this->initFilter($filters->row(), $request);
-            } catch (DBALException $e) {
-                // if fields does not exist in db, contao/install wont work anymore, catch error
+
+            if (null === ($filters = $adapter->findAll())) {
+                return;
             }
+
+            while ($filters->next()) {
+                $this->initFilter($filters->row(), $request);
+            }
+        } catch (DBALException $e) {
+            // if fields does not exist in db, contao/install wont work anymore, catch error
         }
     }
 
