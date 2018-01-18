@@ -65,7 +65,7 @@ $GLOBALS['TL_DCA']['tl_filter_config'] = [
                 'button_callback' => ['tl_filter_config', 'deleteArchive'],
             ],
             'toggle'     => [
-                'label'           => &$GLOBALS['TL_LANG']['tl_filter_config_element']['toggle'],
+                'label'           => &$GLOBALS['TL_LANG']['tl_filter_config']['toggle'],
                 'icon'            => 'visible.gif',
                 'attributes'      => 'onclick="Backend.getScrollOffset();return AjaxRequest.toggleVisibility(this,%s)"',
                 'button_callback' => ['tl_filter_config', 'toggleIcon'],
