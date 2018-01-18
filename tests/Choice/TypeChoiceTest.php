@@ -155,7 +155,7 @@ class TypeChoiceTest extends ContaoTestCase
         $this->assertArrayHasKey('button', $choices);
         $this->assertEquals('button', $choices['button'][0]);
         $this->assertArrayHasKey('other', $choices);
-        $this->assertArrayHasKey('hidden', $choices['other'][0]);
+        $this->assertEquals('hidden', $choices['other'][0]);
     }
 
     /**
