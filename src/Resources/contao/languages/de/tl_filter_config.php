@@ -1,6 +1,6 @@
 <?php
 
-$lang = &$GLOBALS['TL_LANG']['tl_filter'];
+$lang = &$GLOBALS['TL_LANG']['tl_filter_config'];
 
 /**
  * Fields
