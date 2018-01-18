@@ -89,6 +89,8 @@ $lang['reference']['type']['reset']       = 'Reset';
 $lang['reference']['type']['hidden']      = 'Hidden';
 $lang['reference']['type']['checkbox']    = 'Checkbox';
 $lang['reference']['type']['radio']       = 'Radio';
+$lang['reference']['type']['other']       = 'Other';
+$lang['reference']['type']['initial']     = 'Initial';
 
 $lang['reference']['roundingMode'][\Symfony\Component\Form\Extension\Core\DataTransformer\IntegerToLocalizedStringTransformer::ROUND_DOWN]      = 'Down (round towards zero)';
 $lang['reference']['roundingMode'][\Symfony\Component\Form\Extension\Core\DataTransformer\IntegerToLocalizedStringTransformer::ROUND_FLOOR]     = 'Floor (round towards negative infinity)';

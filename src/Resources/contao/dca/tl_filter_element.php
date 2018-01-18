@@ -11,7 +11,7 @@ $GLOBALS['TL_DCA']['tl_filter_element'] = [
         'onsubmit_callback' => [
             ['huh.utils.dca', 'setDateAdded'],
         ],
-        'oncopy_callback' => [
+        'oncopy_callback'   => [
             ['huh.utils.dca', 'setDateAddedOnCopy'],
         ],
         'sql'               => [
@@ -74,6 +74,7 @@ $GLOBALS['TL_DCA']['tl_filter_element'] = [
     'palettes'    => [
         '__selector__' => ['type', 'customOptions', 'customName', 'addPlaceholder', 'customLabel', 'customCountries', 'customLanguages', 'customLocales', 'customValue', 'published'],
         'default'      => '{general_legend},title,type;{publish_legend},published;',
+        'initial'      => '{general_legend},title,type;{config_legend},field;{publish_legend},published;',
         'text'         => '{general_legend},title,type;{config_legend},field,customName,addPlaceholder,customLabel;{expert_legend},cssClass;{publish_legend},published;',
         'text_concat'  => '{general_legend},title,type;{config_legend},fields,name,addPlaceholder,customLabel;{expert_legend},cssClass;{publish_legend},published;',
         'textarea'     => '{general_legend},title,type;{config_legend},field,customName,addPlaceholder,customLabel;{expert_legend},cssClass;{publish_legend},published;',
@@ -144,7 +145,7 @@ $GLOBALS['TL_DCA']['tl_filter_element'] = [
                 return \Contao\System::getContainer()->get('huh.filter.choice.type')->getCachedChoices($dc);
             },
             'reference'        => &$GLOBALS['TL_LANG']['tl_filter_element']['reference']['type'],
-            'eval'             => ['chosen' => true, 'tl_class' => 'w50', 'submitOnChange' => true],
+            'eval'             => ['chosen' => true, 'tl_class' => 'w50', 'submitOnChange' => true, 'mandatory' => true, 'includeBlankOption' => true],
             'sql'              => "varchar(64) NOT NULL default ''",
         ],
         'title'           => [
