@@ -54,7 +54,7 @@ class Plugin implements BundlePluginInterface, ExtensionPluginInterface
             'huh_filter',
             $extensionName,
             $extensionConfigs,
-            __DIR__.'/../../Resources/config/config.yml'
+            __DIR__.'/../Resources/config/config.yml'
         );
     }
 }
