@@ -8,6 +8,7 @@
 
 namespace HeimrichHannot\FilterBundle\Choice;
 
+use Contao\StringUtil;
 use Contao\System;
 use Symfony\Component\Intl\Intl;
 
@@ -18,19 +19,30 @@ class LanguageChoice extends FieldOptionsChoice
      */
     protected function collect()
     {
-        list($element, $filter) = $this->getContext();
-
         $choices = [];
         $options = [];
 
-        \Controller::loadDataContainer($filter['dataContainer']);
+        if (!is_array($this->getContext()) || empty($this->getContext())) {
+            return $choices;
+        }
 
-        if (true === (bool) $element['customLanguages']) {
+        $context = $this->getContext();
+
+        if (!isset($context[0]) || !isset($context[1])) {
+            return $choices;
+        }
+
+        list($element, $filter) = $context;
+
+        if (isset($element['customLanguages']) && true === (bool)$element['customLanguages']) {
             $options = $this->getCustomLanguageOptions($element, $filter);
-        } elseif (true === (bool) $element['customOptions']) {
+        } elseif (isset($element['customOptions']) && true === (bool)$element['customOptions']) {
             $options = $this->getCustomOptions($element, $filter);
-        } elseif (isset($GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element['field']])) {
-            $options = $this->getDcaOptions($element, $filter, $GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element['field']]);
+        } elseif (isset($filter['dataContainer']) && '' !== $filter['dataContainer'] && isset($element['field'])) {
+            if (isset($GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element['field']])) {
+                \Controller::loadDataContainer($filter['dataContainer']);
+                $options = $this->getDcaOptions($element, $filter, $GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element['field']]);
+            }
         }
 
         $translator = System::getContainer()->get('translator');
@@ -43,6 +55,8 @@ class LanguageChoice extends FieldOptionsChoice
 
             if ($translator->getCatalogue()->has($option['label'])) {
                 $option['label'] = $translator->trans($option['label']);
+            } elseif (null !== ($label = Intl::getLanguageBundle()->getLanguageName($option['label']))) {
+                $option['label'] = $label;
             }
 
             $choices[$option['label']] = $option['value'];
@@ -61,7 +75,11 @@ class LanguageChoice extends FieldOptionsChoice
      */
     protected function getCustomLanguageOptions(array $element, array $filter)
     {
-        $options = deserialize($element['languages'], true);
+        if (!isset($element['languages'])) {
+            return [];
+        }
+
+        $options = StringUtil::deserialize($element['languages'], true);
 
         $all = Intl::getLanguageBundle()->getLanguageNames();
 

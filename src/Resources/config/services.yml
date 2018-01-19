@@ -28,10 +28,6 @@ services:
       class: HeimrichHannot\FilterBundle\Choice\ParentChoice
       arguments:
         - "@contao.framework"
-  huh.filter.choice.field:
-      class: HeimrichHannot\FilterBundle\Choice\FieldChoice
-      arguments:
-        - "@contao.framework"
   huh.filter.choice.type:
       class: HeimrichHannot\FilterBundle\Choice\TypeChoice
       arguments:

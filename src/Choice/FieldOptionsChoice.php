@@ -8,6 +8,7 @@
 
 namespace HeimrichHannot\FilterBundle\Choice;
 
+use Contao\StringUtil;
 use Contao\System;
 use Contao\Widget;
 use HeimrichHannot\UtilsBundle\Choice\AbstractChoice;
@@ -59,7 +60,7 @@ class FieldOptionsChoice extends AbstractChoice
      */
     protected function getCustomOptions(array $element, array $filter)
     {
-        $options = deserialize($element['options'], true);
+        $options = StringUtil::deserialize($element['options'], true);
 
         return $options;
     }

@@ -9,6 +9,7 @@
 namespace HeimrichHannot\FilterBundle\Choice;
 
 use Contao\System;
+use Contao\StringUtil;
 use Symfony\Component\Intl\Intl;
 
 class CountryChoice extends FieldOptionsChoice
@@ -18,19 +19,30 @@ class CountryChoice extends FieldOptionsChoice
      */
     protected function collect()
     {
-        list($element, $filter) = $this->getContext();
-
         $choices = [];
         $options = [];
 
-        \Controller::loadDataContainer($filter['dataContainer']);
+        if (!is_array($this->getContext()) || empty($this->getContext())) {
+            return $choices;
+        }
 
-        if (true === (bool) $element['customCountries']) {
+        $context = $this->getContext();
+
+        if (!isset($context[0]) || !isset($context[1])) {
+            return $choices;
+        }
+
+        list($element, $filter) = $context;
+
+        if (isset($element['customCountries']) && true === (bool)$element['customCountries']) {
             $options = $this->getCustomCountryOptions($element, $filter);
-        } elseif (true === (bool) $element['customOptions']) {
+        } elseif (isset($element['customOptions']) && true === (bool)$element['customOptions']) {
             $options = $this->getCustomOptions($element, $filter);
-        } elseif (isset($GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element['field']])) {
-            $options = $this->getDcaOptions($element, $filter, $GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element['field']]);
+        } elseif (isset($filter['dataContainer']) && '' !== $filter['dataContainer'] && isset($element['field'])) {
+            if (isset($GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element['field']])) {
+                \Controller::loadDataContainer($filter['dataContainer']);
+                $options = $this->getDcaOptions($element, $filter, $GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element['field']]);
+            }
         }
 
         $translator = System::getContainer()->get('translator');
@@ -41,8 +53,11 @@ class CountryChoice extends FieldOptionsChoice
                 continue;
             }
 
+
             if ($translator->getCatalogue()->has($option['label'])) {
                 $option['label'] = $translator->trans($option['label']);
+            } elseif (null !== ($label = Intl::getRegionBundle()->getCountryName($option['label']))) {
+                $option['label'] = $label;
             }
 
             $choices[$option['label']] = $option['value'];
@@ -61,7 +76,11 @@ class CountryChoice extends FieldOptionsChoice
      */
     protected function getCustomCountryOptions(array $element, array $filter)
     {
-        $options = deserialize($element['countries'], true);
+        if (!isset($element['countries'])) {
+            return [];
+        }
+
+        $options = StringUtil::deserialize($element['countries'], true);
 
         $all = Intl::getRegionBundle()->getCountryNames();
 

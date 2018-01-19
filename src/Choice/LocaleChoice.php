@@ -18,19 +18,30 @@ class LocaleChoice extends FieldOptionsChoice
      */
     protected function collect()
     {
-        list($element, $filter) = $this->getContext();
-
         $choices = [];
         $options = [];
 
-        \Controller::loadDataContainer($filter['dataContainer']);
+        if (!is_array($this->getContext()) || empty($this->getContext())) {
+            return $choices;
+        }
 
-        if (true === (bool) $element['customLocales']) {
+        $context = $this->getContext();
+
+        if (!isset($context[0]) || !isset($context[1])) {
+            return $choices;
+        }
+
+        list($element, $filter) = $context;
+
+        if (isset($element['customLocales']) && true === (bool)$element['customLocales']) {
             $options = $this->getCustomLocaleOptions($element, $filter);
-        } elseif (true === (bool) $element['customOptions']) {
+        } elseif (isset($element['customOptions']) && true === (bool)$element['customOptions']) {
             $options = $this->getCustomOptions($element, $filter);
-        } elseif (isset($GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element['field']])) {
-            $options = $this->getDcaOptions($element, $filter, $GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element['field']]);
+        } elseif (isset($filter['dataContainer']) && '' !== $filter['dataContainer'] && isset($element['field'])) {
+            if (isset($GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element['field']])) {
+                \Controller::loadDataContainer($filter['dataContainer']);
+                $options = $this->getDcaOptions($element, $filter, $GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element['field']]);
+            }
         }
 
         $translator = System::getContainer()->get('translator');
@@ -43,6 +54,8 @@ class LocaleChoice extends FieldOptionsChoice
 
             if ($translator->getCatalogue()->has($option['label'])) {
                 $option['label'] = $translator->trans($option['label']);
+            } elseif (null !== ($label = Intl::getLocaleBundle()->getLocaleName($option['label']))) {
+                $option['label'] = $label;
             }
 
             $choices[$option['label']] = $option['value'];
@@ -61,6 +74,10 @@ class LocaleChoice extends FieldOptionsChoice
      */
     protected function getCustomLocaleOptions(array $element, array $filter)
     {
+        if (!isset($element['locales'])) {
+            return [];
+        }
+
         $options = deserialize($element['locales'], true);
 
         $all = Intl::getLocaleBundle()->getLocaleNames();
