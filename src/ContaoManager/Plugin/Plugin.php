@@ -15,7 +15,7 @@ use Contao\ManagerPlugin\Bundle\Parser\ParserInterface;
 use Contao\ManagerPlugin\Config\ContainerBuilder;
 use Contao\ManagerPlugin\Config\ExtensionPluginInterface;
 use HeimrichHannot\FilterBundle\HeimrichHannotContaoFilterBundle;
-use Symfony\Component\Yaml\Yaml;
+use HeimrichHannot\UtilsBundle\Container\ContainerUtil;
 
 class Plugin implements BundlePluginInterface, ExtensionPluginInterface
 {
@@ -50,18 +50,11 @@ class Plugin implements BundlePluginInterface, ExtensionPluginInterface
             }
         }
 
-        if ('huh_filter' === $extensionName) {
-            foreach ($extensionConfigs as $key => $extensionConfig) {
-                // enable form plugin
-                if (!isset($extensionConfig['huh']['filter'])) {
-                    $config = Yaml::parseFile(__DIR__.'/../../Resources/config/config.yml');
-                    $data['huh']['filter'] = $config['huh']['filter'];
-                    $extensionConfigs = array_merge_recursive($extensionConfigs, $data);
-                    break;
-                }
-            }
-        }
-
-        return $extensionConfigs;
+        return ContainerUtil::mergeConfigFile(
+            'huh_filter',
+            $extensionName,
+            $extensionConfigs,
+            __DIR__.'/../Resources/config/config.yml'
+        );
     }
 }
