@@ -2,7 +2,7 @@
     "name": "heimrichhannot/contao-filter-bundle",
     "type": "contao-bundle",
     "description": "A generic contao filter.",
-    "license": "LGPL-3.0+",
+    "license": "LGPL-3.0-or-later",
     "require": {
         "php": "^7.1",
         "contao/manager-bundle": "^4.4",
