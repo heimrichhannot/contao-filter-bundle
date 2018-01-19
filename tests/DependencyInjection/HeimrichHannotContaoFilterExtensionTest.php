@@ -159,19 +159,6 @@ class HeimrichHannotContaoFilterExtensionTest extends TestCase
     }
 
     /**
-     * Tests the huh.filter.choice.message service.
-     */
-    public function testRegistersTheFilterChoiceMessage()
-    {
-        $this->assertTrue($this->container->has('huh.filter.choice.message'));
-
-        $definition = $this->container->getDefinition('huh.filter.choice.message');
-
-        $this->assertSame(MessageChoice::class, $definition->getClass());
-        $this->assertSame('contao.framework', (string)$definition->getArgument(0));
-    }
-
-    /**
      * Tests the huh.filter.choice.field_options service.
      */
     public function testRegistersTheFilterChoiceFieldOptions()

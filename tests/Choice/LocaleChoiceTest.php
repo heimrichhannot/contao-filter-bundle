@@ -20,8 +20,6 @@ use Symfony\Component\Translation\Translator;
 
 class LocaleChoiceTest extends ContaoTestCase
 {
-    static $tempDirs = [];
-
     /**
      * @var ContainerBuilder
      */

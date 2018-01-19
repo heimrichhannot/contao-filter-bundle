@@ -247,7 +247,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'exclude'          => true,
             'inputType'        => 'select',
             'options_callback' => function (\DataContainer $dc) {
-                $choices = \Contao\System::getContainer()->get('huh.filter.choice.message')->getCachedChoices('huh.filter.placeholder');
+                $choices = \Contao\System::getContainer()->get('huh.utils.choice.message')->getCachedChoices('huh.filter.placeholder');
 
                 return $choices;
             },
@@ -266,7 +266,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'exclude'          => true,
             'inputType'        => 'select',
             'options_callback' => function (\DataContainer $dc) {
-                $choices = \Contao\System::getContainer()->get('huh.filter.choice.message')->getCachedChoices('huh.filter.label');
+                $choices = \Contao\System::getContainer()->get('huh.utils.choice.message')->getCachedChoices('huh.filter.label');
 
                 return $choices;
             },

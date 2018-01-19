@@ -19,8 +19,6 @@ use Symfony\Component\Translation\Translator;
 
 class LanguageChoiceTest extends ContaoTestCase
 {
-    static $tempDirs = [];
-
     /**
      * @var ContainerBuilder
      */

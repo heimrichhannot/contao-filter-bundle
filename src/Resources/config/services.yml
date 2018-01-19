@@ -32,10 +32,6 @@ services:
       class: HeimrichHannot\FilterBundle\Choice\TypeChoice
       arguments:
           - "@contao.framework"
-  huh.filter.choice.message:
-      class: HeimrichHannot\FilterBundle\Choice\MessageChoice
-      arguments:
-          - "@contao.framework"
   huh.filter.choice.field_options:
       class: HeimrichHannot\FilterBundle\Choice\FieldOptionsChoice
       arguments:
