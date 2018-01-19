@@ -303,6 +303,35 @@ class CountryChoiceTest extends ContaoTestCase
     }
 
     /**
+     * Tests the country collection for custom countries without options
+     */
+    public function testCollectCustomCountriesWithoutOptions()
+    {
+        $this->container->set('kernel', $this->kernel);
+
+        $framework = $this->mockContaoFramework();
+
+        $this->container->set('translator', new Translator('en'));
+
+        System::setContainer($this->container);
+
+        $context = [
+            [
+                'type'            => 'choice',
+                'customCountries' => true,
+            ],
+            ['id' => 1],
+        ];
+
+        System::setContainer($this->container);
+
+        $instance = new CountryChoice($framework);
+        $choices  = $instance->getChoices($context);
+
+        $this->assertEmpty($choices);
+    }
+
+    /**
      * Tests the country collection without element
      */
     public function testCollectWithoutElement()

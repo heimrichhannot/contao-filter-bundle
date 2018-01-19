@@ -11,6 +11,11 @@ namespace HeimrichHannot\FilterBundle\Choice;
 use HeimrichHannot\FilterBundle\Model\FilterConfigModel;
 use HeimrichHannot\UtilsBundle\Choice\AbstractChoice;
 
+/**
+ * Class ParentChoice
+ *
+ * @package HeimrichHannot\FilterBundle\Choice
+ */
 class ParentChoice extends AbstractChoice
 {
     /**

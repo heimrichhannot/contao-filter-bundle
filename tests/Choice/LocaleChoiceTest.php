@@ -134,6 +134,56 @@ class LocaleChoiceTest extends ContaoTestCase
     }
 
     /**
+     * Tests the locale collection for associative dca field options without existing field class
+     */
+    public function testCollectAssociativeDcaFieldWithNonExistingFieldClassOptions()
+    {
+        $this->container->set('kernel', $this->kernel);
+
+        $framework = $this->mockContaoFramework();
+
+        $this->container->set('translator', new Translator('en'));
+
+        System::setContainer($this->container);
+
+        $GLOBALS['TL_FFL']['select'] = '_NonExistingNameSpace\NonExisingClass';
+
+        $GLOBALS['TL_DCA']['test']['fields']['test'] = [
+            'label'            => 'test',
+            'inputType'        => 'select',
+            'options'          => ['de_DE' => 'Deutsch Test', 'en' => 'Englisch Test'],
+            'options_callback' => null,
+            'eval'             => [
+                'submitOnChange'     => false,
+                'allowHtml'          => false,
+                'rte'                => null,
+                'preserveTags'       => false,
+                'isAssociative'      => false,
+                'includeBlankOption' => false,
+                'sql'                => null,
+            ],
+        ];
+
+        $context = [
+            [
+                'type'  => 'choice',
+                'field' => 'test',
+            ],
+            [
+                'id'            => 1,
+                'dataContainer' => 'test',
+            ],
+        ];
+
+        System::setContainer($this->container);
+
+        $instance = new LocaleChoice($framework);
+        $choices  = $instance->getChoices($context);
+
+        $this->assertEmpty($choices);
+    }
+
+    /**
      * Tests the locale collection for dca field options
      */
     public function testCollectDcaFieldOptions()
@@ -273,6 +323,35 @@ class LocaleChoiceTest extends ContaoTestCase
     }
 
     /**
+     * Tests the locales collection for custom locale options without locales set
+     */
+    public function testCollectCustomNonExistingLocales()
+    {
+        $this->container->set('kernel', $this->kernel);
+
+        $framework = $this->mockContaoFramework();
+
+        $this->container->set('translator', new Translator('en'));
+
+        System::setContainer($this->container);
+
+        $context = [
+            [
+                'type'          => 'choice',
+                'customLocales' => true,
+            ],
+            ['id' => 1],
+        ];
+
+        System::setContainer($this->container);
+
+        $instance = new LocaleChoice($framework);
+        $choices  = $instance->getChoices($context);
+
+        $this->assertEmpty($choices);
+    }
+
+    /**
      * Tests the locales collection for custom locale options
      */
     public function testCollectCustomLocales()
@@ -289,7 +368,7 @@ class LocaleChoiceTest extends ContaoTestCase
             [
                 'type'          => 'choice',
                 'customLocales' => true,
-                'locales'     => serialize(['de_DE', 'en']),
+                'locales'       => serialize(['de_DE', 'en']),
             ],
             ['id' => 1],
         ];

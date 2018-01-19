@@ -27,7 +27,7 @@ class FieldOptionsChoice extends AbstractChoice
 
         \Controller::loadDataContainer($filter['dataContainer']);
 
-        if (true === (bool) $element['customOptions']) {
+        if (true === (bool)$element['customOptions']) {
             $options = $this->getCustomOptions($element, $filter);
         } elseif (isset($GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element['field']])) {
             $options = $this->getDcaOptions($element, $filter, $GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element['field']]);
@@ -60,6 +60,10 @@ class FieldOptionsChoice extends AbstractChoice
      */
     protected function getCustomOptions(array $element, array $filter)
     {
+        if (!isset($element['options'])) {
+            return [];
+        }
+
         $options = StringUtil::deserialize($element['options'], true);
 
         return $options;
@@ -77,7 +81,7 @@ class FieldOptionsChoice extends AbstractChoice
     protected function getDcaOptions(array $element, array $filter, array $dca)
     {
         $options = [];
-        $dca = $GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element['field']];
+        $dca     = $GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element['field']];
 
         switch ($dca['inputType']) {
             case 'cfgTags':
