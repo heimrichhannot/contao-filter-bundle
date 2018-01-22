@@ -13,7 +13,7 @@ $GLOBALS['TL_DCA']['tl_user_group']['fields']['filters'] = [
     'label'      => &$GLOBALS['TL_LANG']['tl_user']['filters'],
     'exclude'    => true,
     'inputType'  => 'checkbox',
-    'foreignKey' => 'tl_filter.title',
+    'foreignKey' => 'tl_filter_config.title',
     'eval'       => ['multiple' => true],
     'sql'        => "blob NULL"
 ];
