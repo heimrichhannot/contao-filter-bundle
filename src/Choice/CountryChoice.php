@@ -3,13 +3,13 @@
 /*
  * Copyright (c) 2018 Heimrich & Hannot GmbH
  *
- * @license LGPL-3.0+
+ * @license LGPL-3.0-or-later
  */
 
 namespace HeimrichHannot\FilterBundle\Choice;
 
-use Contao\System;
 use Contao\StringUtil;
+use Contao\System;
 use Symfony\Component\Intl\Intl;
 
 class CountryChoice extends FieldOptionsChoice
@@ -34,9 +34,9 @@ class CountryChoice extends FieldOptionsChoice
 
         list($element, $filter) = $context;
 
-        if (isset($element['customCountries']) && true === (bool)$element['customCountries']) {
+        if (isset($element['customCountries']) && true === (bool) $element['customCountries']) {
             $options = $this->getCustomCountryOptions($element, $filter);
-        } elseif (isset($element['customOptions']) && true === (bool)$element['customOptions']) {
+        } elseif (isset($element['customOptions']) && true === (bool) $element['customOptions']) {
             $options = $this->getCustomOptions($element, $filter);
         } elseif (isset($filter['dataContainer']) && '' !== $filter['dataContainer'] && isset($element['field'])) {
             if (isset($GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element['field']])) {
@@ -52,7 +52,6 @@ class CountryChoice extends FieldOptionsChoice
                 $choices[$option] = $key;
                 continue;
             }
-
 
             if ($translator->getCatalogue()->has($option['label'])) {
                 $option['label'] = $translator->trans($option['label']);

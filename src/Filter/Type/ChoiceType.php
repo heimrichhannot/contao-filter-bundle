@@ -3,7 +3,7 @@
 /*
  * Copyright (c) 2018 Heimrich & Hannot GmbH
  *
- * @license LGPL-3.0+
+ * @license LGPL-3.0-or-later
  */
 
 namespace HeimrichHannot\FilterBundle\Filter\Type;
@@ -34,21 +34,21 @@ class ChoiceType extends AbstractType implements TypeInterface
 
     protected function getOptions(array $element, FormBuilderInterface $builder)
     {
-        $options                              = parent::getOptions($element, $builder);
-        $options['choices']                   = System::getContainer()->get('huh.filter.choice.field_options')->getCachedChoices([$element, $this->config->getFilter()]);
+        $options = parent::getOptions($element, $builder);
+        $options['choices'] = System::getContainer()->get('huh.filter.choice.field_options')->getCachedChoices([$element, $this->config->getFilter()]);
         $options['choice_translation_domain'] = false; // disable translation]
 
         if (isset($options['attr']['placeholder'])) {
             $options['attr']['data-placeholder'] = $options['attr']['placeholder'];
-            $options['placeholder']              = $options['attr']['placeholder'];
+            $options['placeholder'] = $options['attr']['placeholder'];
             unset($options['attr']['placeholder']);
 
-            $options['required']   = false;
+            $options['required'] = false;
             $options['empty_data'] = $options['placeholder'];
         }
 
-        $options['expanded'] = (bool)$element['expanded'];
-        $options['multiple'] = (bool)$element['multiple'];
+        $options['expanded'] = (bool) $element['expanded'];
+        $options['multiple'] = (bool) $element['multiple'];
 
         return $options;
     }

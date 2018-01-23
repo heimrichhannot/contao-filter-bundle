@@ -3,7 +3,7 @@
 /*
  * Copyright (c) 2018 Heimrich & Hannot GmbH
  *
- * @license LGPL-3.0+
+ * @license LGPL-3.0-or-later
  */
 
 namespace HeimrichHannot\FilterBundle\Model;
@@ -38,9 +38,8 @@ class FilterConfigModel extends \Model
 {
     protected static $strTable = 'tl_filter_config';
 
-
     /**
-     * Find published filters
+     * Find published filters.
      *
      * @param array $options
      *
@@ -48,11 +47,11 @@ class FilterConfigModel extends \Model
      */
     public function findAllPublished(array $options = [])
     {
-        $t          = static::$strTable;
+        $t = static::$strTable;
         $arrColumns = [];
 
         if (isset($arrOptions['ignoreFePreview']) || !defined('BE_USER_LOGGED_IN') || !BE_USER_LOGGED_IN) {
-            $time         = \Date::floorToMinute();
+            $time = \Date::floorToMinute();
             $arrColumns[] = "($t.start='' OR $t.start<='$time') AND ($t.stop='' OR $t.stop>'".($time + 60)."') AND $t.published='1'";
         }
 

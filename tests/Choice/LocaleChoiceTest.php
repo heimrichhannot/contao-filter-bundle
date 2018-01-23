@@ -1,9 +1,9 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2018 Heimrich & Hannot GmbH
  *
- * @author  Rico Kaltofen <r.kaltofen@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @license LGPL-3.0-or-later
  */
 
 namespace HeimrichHannot\FilterBundle\Test\Choice;
@@ -57,7 +57,7 @@ class LocaleChoiceTest extends ContaoTestCase
 
         $containerBuilder = new \Contao\ManagerPlugin\Config\ContainerBuilder($this->mockPluginLoader($this->never()), []);
 
-        $config                 = $plugin->getExtensionConfig('huh_filter', [[]], $containerBuilder);
+        $config = $plugin->getExtensionConfig('huh_filter', [[]], $containerBuilder);
         $this->config['filter'] = $config['huh']['filter'];
 
         // required within Contao\Widget::getAttributesFromDca()
@@ -77,13 +77,13 @@ class LocaleChoiceTest extends ContaoTestCase
         System::setContainer($this->container);
 
         $framework = $this->mockContaoFramework();
-        $instance  = new LocaleChoice($framework);
+        $instance = new LocaleChoice($framework);
 
         $this->assertInstanceOf('HeimrichHannot\FilterBundle\Choice\LocaleChoice', $instance);
     }
 
     /**
-     * Tests the locale collection for associative dca field options
+     * Tests the locale collection for associative dca field options.
      */
     public function testCollectAssociativeDcaFieldOptions()
     {
@@ -98,28 +98,28 @@ class LocaleChoiceTest extends ContaoTestCase
         $GLOBALS['TL_FFL']['select'] = 'Contao\SelectMenu';
 
         $GLOBALS['TL_DCA']['test']['fields']['test'] = [
-            'label'            => 'test',
-            'inputType'        => 'select',
-            'options'          => ['de_DE' => 'Deutsch Test', 'en' => 'Englisch Test'],
+            'label' => 'test',
+            'inputType' => 'select',
+            'options' => ['de_DE' => 'Deutsch Test', 'en' => 'Englisch Test'],
             'options_callback' => null,
-            'eval'             => [
-                'submitOnChange'     => false,
-                'allowHtml'          => false,
-                'rte'                => null,
-                'preserveTags'       => false,
-                'isAssociative'      => false,
+            'eval' => [
+                'submitOnChange' => false,
+                'allowHtml' => false,
+                'rte' => null,
+                'preserveTags' => false,
+                'isAssociative' => false,
                 'includeBlankOption' => false,
-                'sql'                => null,
+                'sql' => null,
             ],
         ];
 
         $context = [
             [
-                'type'  => 'choice',
+                'type' => 'choice',
                 'field' => 'test',
             ],
             [
-                'id'            => 1,
+                'id' => 1,
                 'dataContainer' => 'test',
             ],
         ];
@@ -127,14 +127,14 @@ class LocaleChoiceTest extends ContaoTestCase
         System::setContainer($this->container);
 
         $instance = new LocaleChoice($framework);
-        $choices  = $instance->getChoices($context);
+        $choices = $instance->getChoices($context);
 
         $this->assertNotEmpty($choices);
         $this->assertArraySubset(['Deutsch Test' => 'de_DE', 'Englisch Test' => 'en'], $choices);
     }
 
     /**
-     * Tests the locale collection for associative dca field options without existing field class
+     * Tests the locale collection for associative dca field options without existing field class.
      */
     public function testCollectAssociativeDcaFieldWithNonExistingFieldClassOptions()
     {
@@ -149,28 +149,28 @@ class LocaleChoiceTest extends ContaoTestCase
         $GLOBALS['TL_FFL']['select'] = '_NonExistingNameSpace\NonExisingClass';
 
         $GLOBALS['TL_DCA']['test']['fields']['test'] = [
-            'label'            => 'test',
-            'inputType'        => 'select',
-            'options'          => ['de_DE' => 'Deutsch Test', 'en' => 'Englisch Test'],
+            'label' => 'test',
+            'inputType' => 'select',
+            'options' => ['de_DE' => 'Deutsch Test', 'en' => 'Englisch Test'],
             'options_callback' => null,
-            'eval'             => [
-                'submitOnChange'     => false,
-                'allowHtml'          => false,
-                'rte'                => null,
-                'preserveTags'       => false,
-                'isAssociative'      => false,
+            'eval' => [
+                'submitOnChange' => false,
+                'allowHtml' => false,
+                'rte' => null,
+                'preserveTags' => false,
+                'isAssociative' => false,
                 'includeBlankOption' => false,
-                'sql'                => null,
+                'sql' => null,
             ],
         ];
 
         $context = [
             [
-                'type'  => 'choice',
+                'type' => 'choice',
                 'field' => 'test',
             ],
             [
-                'id'            => 1,
+                'id' => 1,
                 'dataContainer' => 'test',
             ],
         ];
@@ -178,13 +178,13 @@ class LocaleChoiceTest extends ContaoTestCase
         System::setContainer($this->container);
 
         $instance = new LocaleChoice($framework);
-        $choices  = $instance->getChoices($context);
+        $choices = $instance->getChoices($context);
 
         $this->assertEmpty($choices);
     }
 
     /**
-     * Tests the locale collection for dca field options
+     * Tests the locale collection for dca field options.
      */
     public function testCollectDcaFieldOptions()
     {
@@ -199,28 +199,28 @@ class LocaleChoiceTest extends ContaoTestCase
         $GLOBALS['TL_FFL']['select'] = 'Contao\SelectMenu';
 
         $GLOBALS['TL_DCA']['test']['fields']['test'] = [
-            'label'            => 'test',
-            'inputType'        => 'select',
-            'options'          => ['de_DE', 'en'],
+            'label' => 'test',
+            'inputType' => 'select',
+            'options' => ['de_DE', 'en'],
             'options_callback' => null,
-            'eval'             => [
-                'submitOnChange'     => false,
-                'allowHtml'          => false,
-                'rte'                => null,
-                'preserveTags'       => false,
-                'isAssociative'      => false,
+            'eval' => [
+                'submitOnChange' => false,
+                'allowHtml' => false,
+                'rte' => null,
+                'preserveTags' => false,
+                'isAssociative' => false,
                 'includeBlankOption' => false,
-                'sql'                => null,
+                'sql' => null,
             ],
         ];
 
         $context = [
             [
-                'type'  => 'choice',
+                'type' => 'choice',
                 'field' => 'test',
             ],
             [
-                'id'            => 1,
+                'id' => 1,
                 'dataContainer' => 'test',
             ],
         ];
@@ -228,14 +228,14 @@ class LocaleChoiceTest extends ContaoTestCase
         System::setContainer($this->container);
 
         $instance = new LocaleChoice($framework);
-        $choices  = $instance->getChoices($context);
+        $choices = $instance->getChoices($context);
 
         $this->assertNotEmpty($choices);
         $this->assertArraySubset(['German (Germany)' => 'de_DE', 'English' => 'en'], $choices);
     }
 
     /**
-     * Tests the locale collection for custom options
+     * Tests the locale collection for custom options.
      */
     public function testCollectAndTranslateCustomOptions()
     {
@@ -253,9 +253,9 @@ class LocaleChoiceTest extends ContaoTestCase
 
         $context = [
             [
-                'type'          => 'choice',
+                'type' => 'choice',
                 'customOptions' => true,
-                'options'       => serialize(
+                'options' => serialize(
                     [
                         [
                             'value' => 'de_DE',
@@ -274,14 +274,14 @@ class LocaleChoiceTest extends ContaoTestCase
         System::setContainer($this->container);
 
         $instance = new LocaleChoice($framework);
-        $choices  = $instance->getChoices($context);
+        $choices = $instance->getChoices($context);
 
         $this->assertNotEmpty($choices);
         $this->assertArraySubset(['German (Germany) Test' => 'de_DE', 'English Test' => 'en'], $choices);
     }
 
     /**
-     * Tests the locale collection for custom options
+     * Tests the locale collection for custom options.
      */
     public function testCollectCustomOptions()
     {
@@ -295,9 +295,9 @@ class LocaleChoiceTest extends ContaoTestCase
 
         $context = [
             [
-                'type'          => 'choice',
+                'type' => 'choice',
                 'customOptions' => true,
-                'options'       => serialize(
+                'options' => serialize(
                     [
                         [
                             'value' => 'de_DE',
@@ -316,14 +316,14 @@ class LocaleChoiceTest extends ContaoTestCase
         System::setContainer($this->container);
 
         $instance = new LocaleChoice($framework);
-        $choices  = $instance->getChoices($context);
+        $choices = $instance->getChoices($context);
 
         $this->assertNotEmpty($choices);
         $this->assertArraySubset(['German (Germany)' => 'de_DE', 'English' => 'en'], $choices);
     }
 
     /**
-     * Tests the locales collection for custom locale options without locales set
+     * Tests the locales collection for custom locale options without locales set.
      */
     public function testCollectCustomNonExistingLocales()
     {
@@ -337,7 +337,7 @@ class LocaleChoiceTest extends ContaoTestCase
 
         $context = [
             [
-                'type'          => 'choice',
+                'type' => 'choice',
                 'customLocales' => true,
             ],
             ['id' => 1],
@@ -346,13 +346,13 @@ class LocaleChoiceTest extends ContaoTestCase
         System::setContainer($this->container);
 
         $instance = new LocaleChoice($framework);
-        $choices  = $instance->getChoices($context);
+        $choices = $instance->getChoices($context);
 
         $this->assertEmpty($choices);
     }
 
     /**
-     * Tests the locales collection for custom locale options
+     * Tests the locales collection for custom locale options.
      */
     public function testCollectCustomLocales()
     {
@@ -366,9 +366,9 @@ class LocaleChoiceTest extends ContaoTestCase
 
         $context = [
             [
-                'type'          => 'choice',
+                'type' => 'choice',
                 'customLocales' => true,
-                'locales'       => serialize(['de_DE', 'en']),
+                'locales' => serialize(['de_DE', 'en']),
             ],
             ['id' => 1],
         ];
@@ -376,14 +376,14 @@ class LocaleChoiceTest extends ContaoTestCase
         System::setContainer($this->container);
 
         $instance = new LocaleChoice($framework);
-        $choices  = $instance->getChoices($context);
+        $choices = $instance->getChoices($context);
 
         $this->assertNotEmpty($choices);
         $this->assertArraySubset(['English' => 'en', 'German (Germany)' => 'de_DE'], $choices);
     }
 
     /**
-     * Tests the locales collection without element
+     * Tests the locales collection without element.
      */
     public function testCollectWithoutElement()
     {
@@ -401,7 +401,7 @@ class LocaleChoiceTest extends ContaoTestCase
         ];
 
         $instance = new LocaleChoice($framework);
-        $choices  = $instance->getChoices($context);
+        $choices = $instance->getChoices($context);
 
         System::setContainer($this->container);
 
@@ -409,8 +409,7 @@ class LocaleChoiceTest extends ContaoTestCase
     }
 
     /**
-     * Tests the locales collection with invalid context
-     *
+     * Tests the locales collection with invalid context.
      */
     public function testCollectWithInvalidContext()
     {
@@ -423,7 +422,7 @@ class LocaleChoiceTest extends ContaoTestCase
         $context = ['foo' => []];
 
         $instance = new LocaleChoice($framework);
-        $choices  = $instance->getChoices($context);
+        $choices = $instance->getChoices($context);
 
         System::setContainer($this->container);
 
@@ -431,8 +430,7 @@ class LocaleChoiceTest extends ContaoTestCase
     }
 
     /**
-     * Tests the locales collection without filter and element
-     *
+     * Tests the locales collection without filter and element.
      */
     public function testCollectWithoutFilterAndElement()
     {
@@ -445,11 +443,19 @@ class LocaleChoiceTest extends ContaoTestCase
         $context = [];
 
         $instance = new LanguageChoice($framework);
-        $choices  = $instance->getChoices($context);
+        $choices = $instance->getChoices($context);
 
         System::setContainer($this->container);
 
         $this->assertEmpty($choices);
+    }
+
+    /**
+     * @return string
+     */
+    protected function getFixturesDir(): string
+    {
+        return __DIR__.DIRECTORY_SEPARATOR.'Fixtures';
     }
 
     /**
@@ -467,13 +473,5 @@ class LocaleChoiceTest extends ContaoTestCase
         $pluginLoader->expects($expects)->method('getInstancesOf')->with(PluginLoader::EXTENSION_PLUGINS)->willReturn($plugins);
 
         return $pluginLoader;
-    }
-
-    /**
-     * @return string
-     */
-    protected function getFixturesDir(): string
-    {
-        return __DIR__.DIRECTORY_SEPARATOR.'Fixtures';
     }
 }

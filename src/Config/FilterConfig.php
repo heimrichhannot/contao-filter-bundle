@@ -3,7 +3,7 @@
 /*
  * Copyright (c) 2018 Heimrich & Hannot GmbH
  *
- * @license LGPL-3.0+
+ * @license LGPL-3.0-or-later
  */
 
 namespace HeimrichHannot\FilterBundle\Config;
@@ -21,7 +21,6 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
 
 class FilterConfig
 {
-
     /**
      * @var ContaoFrameworkInterface
      */
@@ -71,7 +70,7 @@ class FilterConfig
     public function __construct(ContaoFrameworkInterface $framework, FilterSession $session)
     {
         $this->framework = $framework;
-        $this->session   = $session;
+        $this->session = $session;
     }
 
     /**
@@ -84,8 +83,8 @@ class FilterConfig
     public function init(string $sessionKey, array $filter, $elements = null)
     {
         $this->sessionKey = $sessionKey;
-        $this->filter     = $filter;
-        $this->elements   = $elements;
+        $this->filter = $filter;
+        $this->elements = $elements;
     }
 
     /**
@@ -117,7 +116,7 @@ class FilterConfig
             $options['attr']['class'] = implode(' ', $cssClass);
         }
 
-        if (isset($this->filter['renderEmpty']) && true === (bool)$this->filter['renderEmpty']) {
+        if (isset($this->filter['renderEmpty']) && true === (bool) $this->filter['renderEmpty']) {
             $data = [];
         }
 
@@ -130,6 +129,8 @@ class FilterConfig
     {
         $this->queryBuilder = System::getContainer()->get('huh.filter.query_builder');
 
+        $this->queryBuilder->from($this->getFilter()['dataContainer']);
+
         if (!is_array($this->getElements())) {
             return;
         }
@@ -139,8 +140,6 @@ class FilterConfig
         if (!is_array($types) || empty($types)) {
             return;
         }
-
-        $this->queryBuilder->from($this->getFilter()['dataContainer']);
 
         foreach ($this->getElements() as $element) {
             if (!isset($types[$element['type']])) {
@@ -271,16 +270,16 @@ class FilterConfig
      */
     protected function mapFormsToData()
     {
-        $data             = [];
-        $forms            = $this->builder->getForm();
+        $data = [];
+        $forms = $this->builder->getForm();
         $propertyAccessor = PropertyAccess::createPropertyAccessor();
 
-        /**
+        /*
          * @var FormInterface
          */
         foreach ($forms as $form) {
             $propertyPath = $form->getPropertyPath();
-            $config       = $form->getConfig();
+            $config = $form->getConfig();
 
             // Write-back is disabled if the form is not synchronized (transformation failed),
             // if the form was not submitted and if the form is disabled (modification not allowed)

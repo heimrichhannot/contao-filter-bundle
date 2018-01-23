@@ -3,11 +3,10 @@
 /*
  * Copyright (c) 2018 Heimrich & Hannot GmbH
  *
- * @license LGPL-3.0+
+ * @license LGPL-3.0-or-later
  */
 
 namespace HeimrichHannot\FilterBundle\Tests\Form;
-
 
 use HeimrichHannot\FilterBundle\Exception\MissingFilterConfigException;
 use HeimrichHannot\FilterBundle\Form\FilterType;
@@ -27,7 +26,7 @@ class FilterTypeTest extends TestCase
     }
 
     /**
-     * Test buildForm() without filter config
+     * Test buildForm() without filter config.
      */
     public function testBuildFormWithoutFilterConfig()
     {

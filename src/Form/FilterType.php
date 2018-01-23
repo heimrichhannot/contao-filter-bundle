@@ -3,7 +3,7 @@
 /*
  * Copyright (c) 2018 Heimrich & Hannot GmbH
  *
- * @license LGPL-3.0+
+ * @license LGPL-3.0-or-later
  */
 
 namespace HeimrichHannot\FilterBundle\Form;
@@ -61,7 +61,7 @@ class FilterType extends AbstractType
     {
         $resolver->setDefaults(
             [
-                'filter'    => null,
+                'filter' => null,
                 'framework' => null,
             ]
         );
@@ -106,7 +106,7 @@ class FilterType extends AbstractType
     }
 
     /**
-     * Get the action based on current filter action
+     * Get the action based on current filter action.
      *
      * @return string
      */
@@ -119,7 +119,7 @@ class FilterType extends AbstractType
         }
 
         /**
-         * @var InsertTags $insertTagAdapter
+         * @var InsertTags
          */
         $insertTagAdapter = $this->framework->createInstance(InsertTags::class);
 
