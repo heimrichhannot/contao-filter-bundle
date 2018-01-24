@@ -61,7 +61,7 @@ $GLOBALS['TL_DCA']['tl_filter_config'] = [
                 'label'           => &$GLOBALS['TL_LANG']['tl_filter_config']['copy'],
                 'href'            => 'act=delete',
                 'icon'            => 'delete.gif',
-                'attributes'      => 'onclick="if(!confirm(\''.$GLOBALS['TL_LANG']['MSC']['deleteConfirm'].'\'))return false;Backend.getScrollOffset()"',
+                'attributes'      => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['MSC']['deleteConfirm'] . '\'))return false;Backend.getScrollOffset()"',
                 'button_callback' => ['tl_filter_config', 'deleteArchive'],
             ],
             'toggle'     => [
@@ -114,7 +114,7 @@ $GLOBALS['TL_DCA']['tl_filter_config'] = [
             'exclude'   => true,
             'search'    => true,
             'inputType' => 'text',
-            'eval'      => ['mandatory' => true, 'tl_class' => 'w50', 'maxlength' => 64],
+            'eval'      => ['mandatory' => true, 'tl_class' => 'w50', 'maxlength' => 64, 'rgxp' => 'fieldname'],
             'sql'       => "varchar(64) NOT NULL default ''",
         ],
         'dataContainer' => [
@@ -250,7 +250,7 @@ class tl_filter_config extends \Backend
                     if (is_array($arrNew['tl_filter_config']) && in_array(\Input::get('id'), $arrNew['tl_filter_config'])) {
                         // Add the permissions on group level
                         if ($user->inherit != 'custom') {
-                            $objGroup = $database->execute("SELECT id, filters, filterp FROM tl_user_group WHERE id IN(".implode(',', array_map('intval', $user->groups)).")");
+                            $objGroup = $database->execute("SELECT id, filters, filterp FROM tl_user_group WHERE id IN(" . implode(',', array_map('intval', $user->groups)) . ")");
 
                             while ($objGroup->next()) {
                                 $arrModulep = \StringUtil::deserialize($objGroup->filterp);
@@ -289,7 +289,7 @@ class tl_filter_config extends \Backend
             case 'delete':
             case 'show':
                 if (!in_array(\Input::get('id'), $root) || (\Input::get('act') == 'delete' && !$user->hasAccess('delete', 'filterp'))) {
-                    throw new \Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to '.\Input::get('act').' filter ID '.\Input::get('id').'.');
+                    throw new \Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to ' . \Input::get('act') . ' filter ID ' . \Input::get('id') . '.');
                 }
                 break;
 
@@ -307,7 +307,7 @@ class tl_filter_config extends \Backend
 
             default:
                 if (strlen(\Input::get('act'))) {
-                    throw new \Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to '.\Input::get('act').' filters.');
+                    throw new \Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to ' . \Input::get('act') . ' filters.');
                 }
                 break;
         }
@@ -327,13 +327,13 @@ class tl_filter_config extends \Backend
             return '';
         }
 
-        $href .= '&amp;tid='.$row['id'].'&amp;state='.($row['published'] ? '' : 1);
+        $href .= '&amp;tid=' . $row['id'] . '&amp;state=' . ($row['published'] ? '' : 1);
 
         if (!$row['published']) {
             $icon = 'invisible.svg';
         }
 
-        return '<a href="'.$this->addToUrl($href).'" title="'.\Contao\StringUtil::specialchars($title).'"'.$attributes.'>'.\Contao\Image::getHtml($icon, $label, 'data-state="'.($row['published'] ? 1 : 0).'"').'</a> ';
+        return '<a href="' . $this->addToUrl($href) . '" title="' . \Contao\StringUtil::specialchars($title) . '"' . $attributes . '>' . \Contao\Image::getHtml($icon, $label, 'data-state="' . ($row['published'] ? 1 : 0) . '"') . '</a> ';
     }
 
     public function toggleVisibility($intId, $blnVisible, \DataContainer $dc = null)
@@ -363,7 +363,7 @@ class tl_filter_config extends \Backend
 
         // Check the field access
         if (!$user->hasAccess('tl_filter_config::published', 'alexf')) {
-            throw new \Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to publish/unpublish filter item ID '.$intId.'.');
+            throw new \Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to publish/unpublish filter item ID ' . $intId . '.');
         }
 
         // Set the current record
@@ -393,7 +393,7 @@ class tl_filter_config extends \Backend
         $time = time();
 
         // Update the database
-        $database->prepare("UPDATE tl_filter_config SET tstamp=$time, published='".($blnVisible ? '1' : '')."' WHERE id=?")->execute($intId);
+        $database->prepare("UPDATE tl_filter_config SET tstamp=$time, published='" . ($blnVisible ? '1' : '') . "' WHERE id=?")->execute($intId);
 
         if ($dc) {
             $dc->activeRecord->tstamp    = $time;
@@ -417,16 +417,16 @@ class tl_filter_config extends \Backend
 
     public function editHeader($row, $href, $label, $title, $icon, $attributes)
     {
-        return \BackendUser::getInstance()->canEditFieldsOf('tl_filter_config') ? '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.\StringUtil::specialchars($title).'"'.$attributes.'>'.\Image::getHtml($icon, $label).'</a> ' : \Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
+        return \BackendUser::getInstance()->canEditFieldsOf('tl_filter_config') ? '<a href="' . $this->addToUrl($href . '&amp;id=' . $row['id']) . '" title="' . \StringUtil::specialchars($title) . '"' . $attributes . '>' . \Image::getHtml($icon, $label) . '</a> ' : \Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)) . ' ';
     }
 
     public function copyArchive($row, $href, $label, $title, $icon, $attributes)
     {
-        return \BackendUser::getInstance()->hasAccess('create', 'filterp') ? '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.\StringUtil::specialchars($title).'"'.$attributes.'>'.\Image::getHtml($icon, $label).'</a> ' : \Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
+        return \BackendUser::getInstance()->hasAccess('create', 'filterp') ? '<a href="' . $this->addToUrl($href . '&amp;id=' . $row['id']) . '" title="' . \StringUtil::specialchars($title) . '"' . $attributes . '>' . \Image::getHtml($icon, $label) . '</a> ' : \Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)) . ' ';
     }
 
     public function deleteArchive($row, $href, $label, $title, $icon, $attributes)
     {
-        return \BackendUser::getInstance()->hasAccess('delete', 'filterp') ? '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.\StringUtil::specialchars($title).'"'.$attributes.'>'.\Image::getHtml($icon, $label).'</a> ' : \Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
+        return \BackendUser::getInstance()->hasAccess('delete', 'filterp') ? '<a href="' . $this->addToUrl($href . '&amp;id=' . $row['id']) . '" title="' . \StringUtil::specialchars($title) . '"' . $attributes . '>' . \Image::getHtml($icon, $label) . '</a> ' : \Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)) . ' ';
     }
 }
