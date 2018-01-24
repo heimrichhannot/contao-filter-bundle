@@ -56,7 +56,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
                 'label'      => &$GLOBALS['TL_LANG']['tl_filter_config_element']['delete'],
                 'href'       => 'act=delete',
                 'icon'       => 'delete.gif',
-                'attributes' => 'onclick="if(!confirm(\''.$GLOBALS['TL_LANG']['MSC']['deleteConfirm'].'\'))return false;Backend.getScrollOffset()"',
+                'attributes' => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['MSC']['deleteConfirm'] . '\'))return false;Backend.getScrollOffset()"',
             ],
             'toggle' => [
                 'label'           => &$GLOBALS['TL_LANG']['tl_filter_config_element']['toggle'],
@@ -172,11 +172,9 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
                     return [];
                 }
 
-                return \Contao\System::getContainer()->get('huh.utils.choice.field')->getCachedChoices(
-                    [
-                        'dataContainer' => $filterConfig->getFilter()['dataContainer'],
-                    ]
-                );
+                return \Contao\System::getContainer()->get('huh.utils.choice.field')->getCachedChoices([
+                    'dataContainer' => $filterConfig->getFilter()['dataContainer'],
+                ]);
             },
             'eval'             => ['chosen' => true, 'includeBlankOption' => true],
             'sql'              => "varchar(64) NOT NULL default ''",
@@ -195,11 +193,9 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
                     return [];
                 }
 
-                return \Contao\System::getContainer()->get('huh.utils.choice.field')->getCachedChoices(
-                    [
-                        'dataContainer' => $filterConfig->getFilter()['dataContainer'],
-                    ]
-                );
+                return \Contao\System::getContainer()->get('huh.utils.choice.field')->getCachedChoices([
+                    'dataContainer' => $filterConfig->getFilter()['dataContainer'],
+                ]);
             },
             'eval'             => ['chosen' => true, 'includeBlankOption' => true, 'multiple' => true, 'mandatory' => true],
             'sql'              => "blob NULL",
@@ -232,7 +228,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['name'],
             'exclude'   => true,
             'inputType' => 'text',
-            'eval'      => ['mandatory' => true, 'maxlength' => 128, 'doNotCopy' => true],
+            'eval'      => ['mandatory' => true, 'maxlength' => 128, 'doNotCopy' => true, 'rgxp' => 'fieldname'],
             'sql'       => "varchar(128) NOT NULL default ''",
         ],
         'addPlaceholder'  => [
@@ -493,7 +489,7 @@ class tl_filter_config_element extends \Backend
 
     public function listElements($arrRow)
     {
-        return '<div class="tl_content_left">'.($arrRow['title'] ?: $arrRow['id']).' <span style="color:#b3b3b3; padding-left:3px">['.$GLOBALS['TL_LANG']['tl_filter_config_element']['reference']['type'][$arrRow['type']].']</span></div>';
+        return '<div class="tl_content_left">' . ($arrRow['title'] ?: $arrRow['id']) . ' <span style="color:#b3b3b3; padding-left:3px">[' . $GLOBALS['TL_LANG']['tl_filter_config_element']['reference']['type'][$arrRow['type']] . ']</span></div>';
     }
 
     public function checkPermission()
@@ -522,14 +518,14 @@ class tl_filter_config_element extends \Backend
 
             case 'create':
                 if (!strlen(\Input::get('pid')) || !in_array(\Input::get('pid'), $root)) {
-                    throw new \Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to create filter_element items in filter_element archive ID '.\Input::get('pid').'.');
+                    throw new \Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to create filter_element items in filter_element archive ID ' . \Input::get('pid') . '.');
                 }
                 break;
 
             case 'cut':
             case 'copy':
                 if (!in_array(\Input::get('pid'), $root)) {
-                    throw new \Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to '.\Input::get('act').' filter_element item ID '.$id.' to filter_element archive ID '.\Input::get('pid').'.');
+                    throw new \Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to ' . \Input::get('act') . ' filter_element item ID ' . $id . ' to filter_element archive ID ' . \Input::get('pid') . '.');
                 }
             // NO BREAK STATEMENT HERE
 
@@ -541,11 +537,11 @@ class tl_filter_config_element extends \Backend
                 $objArchive = $database->prepare("SELECT pid FROM tl_filter_config_element WHERE id=?")->limit(1)->execute($id);
 
                 if ($objArchive->numRows < 1) {
-                    throw new \Contao\CoreBundle\Exception\AccessDeniedException('Invalid filter_element item ID '.$id.'.');
+                    throw new \Contao\CoreBundle\Exception\AccessDeniedException('Invalid filter_element item ID ' . $id . '.');
                 }
 
                 if (!in_array($objArchive->pid, $root)) {
-                    throw new \Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to '.\Input::get('act').' filter_element item ID '.$id.' of filter_element archive ID '.$objArchive->pid.'.');
+                    throw new \Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to ' . \Input::get('act') . ' filter_element item ID ' . $id . ' of filter_element archive ID ' . $objArchive->pid . '.');
                 }
                 break;
 
@@ -556,13 +552,13 @@ class tl_filter_config_element extends \Backend
             case 'cutAll':
             case 'copyAll':
                 if (!in_array($id, $root)) {
-                    throw new \Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to access filter_element archive ID '.$id.'.');
+                    throw new \Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to access filter_element archive ID ' . $id . '.');
                 }
 
                 $objArchive = $database->prepare("SELECT id FROM tl_filter_config_element WHERE pid=?")->execute($id);
 
                 if ($objArchive->numRows < 1) {
-                    throw new \Contao\CoreBundle\Exception\AccessDeniedException('Invalid filter_element archive ID '.$id.'.');
+                    throw new \Contao\CoreBundle\Exception\AccessDeniedException('Invalid filter_element archive ID ' . $id . '.');
                 }
 
                 /** @var \Symfony\Component\HttpFoundation\Session\SessionInterface $session */
@@ -575,9 +571,9 @@ class tl_filter_config_element extends \Backend
 
             default:
                 if (strlen(\Input::get('act'))) {
-                    throw new \Contao\CoreBundle\Exception\AccessDeniedException('Invalid command "'.\Input::get('act').'".');
+                    throw new \Contao\CoreBundle\Exception\AccessDeniedException('Invalid command "' . \Input::get('act') . '".');
                 } elseif (!in_array($id, $root)) {
-                    throw new \Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to access filter_element archive ID '.$id.'.');
+                    throw new \Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to access filter_element archive ID ' . $id . '.');
                 }
                 break;
         }
@@ -597,13 +593,13 @@ class tl_filter_config_element extends \Backend
             return '';
         }
 
-        $href .= '&amp;tid='.$row['id'].'&amp;state='.($row['published'] ? '' : 1);
+        $href .= '&amp;tid=' . $row['id'] . '&amp;state=' . ($row['published'] ? '' : 1);
 
         if (!$row['published']) {
             $icon = 'invisible.svg';
         }
 
-        return '<a href="'.$this->addToUrl($href).'" title="'.\StringUtil::specialchars($title).'"'.$attributes.'>'.\Image::getHtml($icon, $label, 'data-state="'.($row['published'] ? 1 : 0).'"').'</a> ';
+        return '<a href="' . $this->addToUrl($href) . '" title="' . \StringUtil::specialchars($title) . '"' . $attributes . '>' . \Image::getHtml($icon, $label, 'data-state="' . ($row['published'] ? 1 : 0) . '"') . '</a> ';
     }
 
     public function toggleVisibility($intId, $blnVisible, \DataContainer $dc = null)
@@ -633,7 +629,7 @@ class tl_filter_config_element extends \Backend
 
         // Check the field access
         if (!$user->hasAccess('tl_filter_config_element::published', 'alexf')) {
-            throw new \Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to publish/unpublish filter_element item ID '.$intId.'.');
+            throw new \Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to publish/unpublish filter_element item ID ' . $intId . '.');
         }
 
         // Set the current record
@@ -663,7 +659,7 @@ class tl_filter_config_element extends \Backend
         $time = time();
 
         // Update the database
-        $database->prepare("UPDATE tl_filter_config_element SET tstamp=$time, published='".($blnVisible ? '1' : '')."' WHERE id=?")->execute($intId);
+        $database->prepare("UPDATE tl_filter_config_element SET tstamp=$time, published='" . ($blnVisible ? '1' : '') . "' WHERE id=?")->execute($intId);
 
         if ($dc) {
             $dc->activeRecord->tstamp    = $time;
@@ -692,6 +688,6 @@ class tl_filter_config_element extends \Backend
      */
     public function optionImportWizard()
     {
-        return ' <a href="'.$this->addToUrl('key=option').'" title="'.specialchars($GLOBALS['TL_LANG']['MSC']['ow_import'][1]).'" onclick="Backend.getScrollOffset()">'.Image::getHtml('tablewizard.gif', $GLOBALS['TL_LANG']['MSC']['ow_import'][0]).'</a>';
+        return ' <a href="' . $this->addToUrl('key=option') . '" title="' . specialchars($GLOBALS['TL_LANG']['MSC']['ow_import'][1]) . '" onclick="Backend.getScrollOffset()">' . Image::getHtml('tablewizard.gif', $GLOBALS['TL_LANG']['MSC']['ow_import'][0]) . '</a>';
     }
 }
