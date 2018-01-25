@@ -81,4 +81,5 @@ class ModuleFilter extends \Contao\Module
             ]
         );
     }
+	
 }

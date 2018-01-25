@@ -80,8 +80,21 @@ class FilterQueryBuilder extends QueryBuilder
         if (null === $value) {
             return $this;
         }
-
-        $this->andWhere($this->expr()->like($name, $this->expr()->literal('%'.$value.'%')));
+        
+//        if($element['field'] == $element['startField'])
+//		{
+//			$this->andWhere($this->expr()->gte($name,$value));
+//		}
+//		elseif($element['field'] == $element['endField'])
+//		{
+//			$this->andWhere($this->expr()->lte($name,$value));
+//		}
+//
+//		else {
+			$this->andWhere($this->expr()->like($name, $this->expr()->literal('%'.$value.'%')));
+//		}
+        
+        
 
         return $this;
     }

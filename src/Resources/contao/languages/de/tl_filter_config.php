@@ -13,6 +13,7 @@ $lang['action']        = ['Action', 'Geben Sie eine URL an, zu der die Formulard
 $lang['published']     = ['Veröffentlichen', 'Wählen Sie diese Option zum Veröffentlichen.'];
 $lang['start']         = ['Anzeigen ab', 'Filter erst ab diesem Tag auf der Webseite anzeigen.'];
 $lang['stop']          = ['Anzeigen bis', 'Filter nur bis zu diesem Tag auf der Webseite anzeigen.'];
+$lang['dateTimeFormat'] = ['Zeitformat', 'Geben Sie hier die zu verwendende Formatierung aus.'];
 
 /**
  * Legends

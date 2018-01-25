@@ -29,7 +29,7 @@ class ChoiceType extends AbstractType implements TypeInterface
      */
     public function buildForm(array $element, FormBuilderInterface $builder)
     {
-        $builder->add($this->getName($element), \Symfony\Component\Form\Extension\Core\Type\ChoiceType::class, $this->getOptions($element, $builder));
+		$builder->add($this->getName($element), \Symfony\Component\Form\Extension\Core\Type\ChoiceType::class, $this->getOptions($element, $builder));
     }
 
     protected function getOptions(array $element, FormBuilderInterface $builder)

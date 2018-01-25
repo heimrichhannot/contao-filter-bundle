@@ -6,9 +6,10 @@
     {%- if compound is defined and compound -%}
         {%- set element = 'fieldset' -%}
     {%- endif -%}
-    <{{ element|default('div') }} class="{{ ('form-group ')~ id|trim }}">
+
+    <{{ element|default('div') }} class="{{ ('form-group ')~ id|trim }} {{ attr.class|default('') }}">
         {{- form_label(form) -}}
-        {{- form_widget(form) -}}
+        {{- form_widget(form, {'attr':{'class':''}}) -}}
         {{- form_errors(form) -}}
     </{{ element|default('div') }}>
 {%- endblock form_row %}
