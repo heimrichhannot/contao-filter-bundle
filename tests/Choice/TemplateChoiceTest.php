@@ -1,9 +1,9 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2018 Heimrich & Hannot GmbH
  *
- * @author  Rico Kaltofen <r.kaltofen@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @license LGPL-3.0-or-later
  */
 
 namespace HeimrichHannot\FilterBundle\Test\Choice;
@@ -52,7 +52,7 @@ class TemplateChoiceTest extends ContaoTestCase
 
         $containerBuilder = new \Contao\ManagerPlugin\Config\ContainerBuilder($this->mockPluginLoader($this->never()), []);
 
-        $config                 = $plugin->getExtensionConfig('huh_filter', [[]], $containerBuilder);
+        $config = $plugin->getExtensionConfig('huh_filter', [[]], $containerBuilder);
         $this->config['filter'] = $config['huh']['filter'];
     }
 
@@ -67,13 +67,13 @@ class TemplateChoiceTest extends ContaoTestCase
         System::setContainer($this->container);
 
         $framework = $this->mockContaoFramework();
-        $instance  = new TemplateChoice($framework);
+        $instance = new TemplateChoice($framework);
 
         $this->assertInstanceOf('HeimrichHannot\FilterBundle\Choice\TemplateChoice', $instance);
     }
 
     /**
-     * Tests the type collection without templates
+     * Tests the type collection without templates.
      */
     public function testCollectWithoutTypes()
     {
@@ -83,8 +83,8 @@ class TemplateChoiceTest extends ContaoTestCase
         System::setContainer($this->container);
 
         $framework = $this->mockContaoFramework();
-        $instance  = new TemplateChoice($framework);
-        $choices   = $instance->getChoices();
+        $instance = new TemplateChoice($framework);
+        $choices = $instance->getChoices();
 
         System::setContainer($this->container);
 
@@ -92,7 +92,7 @@ class TemplateChoiceTest extends ContaoTestCase
     }
 
     /**
-     * Tests the type collection with types without context
+     * Tests the type collection with types without context.
      */
     public function testCollectWithExistingTypesWithoutContext()
     {
@@ -102,32 +102,32 @@ class TemplateChoiceTest extends ContaoTestCase
         System::setContainer($this->container);
 
         $framework = $this->mockContaoFramework();
-        $instance  = new TemplateChoice($framework);
-        $choices   = $instance->getChoices();
+        $instance = new TemplateChoice($framework);
+        $choices = $instance->getChoices();
 
         $this->assertNotEmpty($choices);
         $this->assertArrayHasKey('form_div_layout', $choices);
-        $this->assertEquals('@HeimrichHannotContaoFilter/filter/filter_form_div_layout.html.twig', $choices['form_div_layout']);
+        $this->assertSame('@HeimrichHannotContaoFilter/filter/filter_form_div_layout.html.twig', $choices['form_div_layout']);
         $this->assertArrayHasKey('form_table_layout', $choices);
-        $this->assertEquals('@HeimrichHannotContaoFilter/filter/filter_form_table_layout.html.twig', $choices['form_table_layout']);
+        $this->assertSame('@HeimrichHannotContaoFilter/filter/filter_form_table_layout.html.twig', $choices['form_table_layout']);
         $this->assertArrayHasKey('bootstrap_3_layout', $choices);
-        $this->assertEquals('@HeimrichHannotContaoFilter/filter/filter_form_bootstrap_3_layout.html.twig', $choices['bootstrap_3_layout']);
+        $this->assertSame('@HeimrichHannotContaoFilter/filter/filter_form_bootstrap_3_layout.html.twig', $choices['bootstrap_3_layout']);
         $this->assertArrayHasKey('bootstrap_3_horizontal_layout', $choices);
-        $this->assertEquals('@HeimrichHannotContaoFilter/filter/filter_form_bootstrap_3_horizontal_layout.html.twig', $choices['bootstrap_3_horizontal_layout']);
+        $this->assertSame('@HeimrichHannotContaoFilter/filter/filter_form_bootstrap_3_horizontal_layout.html.twig', $choices['bootstrap_3_horizontal_layout']);
         $this->assertArrayHasKey('bootstrap_4_layout', $choices);
-        $this->assertEquals('@HeimrichHannotContaoFilter/filter/filter_form_bootstrap_4_layout.html.twig', $choices['bootstrap_4_layout']);
+        $this->assertSame('@HeimrichHannotContaoFilter/filter/filter_form_bootstrap_4_layout.html.twig', $choices['bootstrap_4_layout']);
         $this->assertArrayHasKey('bootstrap_4_horizontal_layout', $choices);
-        $this->assertEquals('@HeimrichHannotContaoFilter/filter/filter_form_bootstrap_4_horizontal_layout.html.twig', $choices['bootstrap_4_horizontal_layout']);
+        $this->assertSame('@HeimrichHannotContaoFilter/filter/filter_form_bootstrap_4_horizontal_layout.html.twig', $choices['bootstrap_4_horizontal_layout']);
         $this->assertArrayHasKey('foundation_5_layout', $choices);
-        $this->assertEquals('@HeimrichHannotContaoFilter/filter/filter_form_foundation_5_layout.html.twig', $choices['foundation_5_layout']);
+        $this->assertSame('@HeimrichHannotContaoFilter/filter/filter_form_foundation_5_layout.html.twig', $choices['foundation_5_layout']);
     }
 
     /**
-     * Tests the type collection with existing types but missing text type class
+     * Tests the type collection with existing types but missing text type class.
      */
     public function testCollectWithExistingTypeWithMissingClassWithoutContext()
     {
-        $config                                = $this->config;
+        $config = $this->config;
         $config['filter']['types'][0]['class'] = '_NonExistingNamespace\NonExistingClass';
 
         $this->container->set('kernel', $this->kernel);
@@ -136,15 +136,15 @@ class TemplateChoiceTest extends ContaoTestCase
         System::setContainer($this->container);
 
         $framework = $this->mockContaoFramework();
-        $instance  = new TypeChoice($framework);
-        $choices   = $instance->getChoices();
+        $instance = new TypeChoice($framework);
+        $choices = $instance->getChoices();
 
         $this->assertNotEmpty($choices);
         $this->assertArrayNotHasKey('text', $choices);
     }
 
     /**
-     * Tests the type collection with existing types and data container context, should return opt groups
+     * Tests the type collection with existing types and data container context, should return opt groups.
      */
     public function testCollectWithExistingTypesWithDataContainerContext()
     {
@@ -154,7 +154,7 @@ class TemplateChoiceTest extends ContaoTestCase
         System::setContainer($this->container);
 
         $framework = $this->mockContaoFramework();
-        $instance  = new TypeChoice($framework);
+        $instance = new TypeChoice($framework);
 
         $dataContainerMock = $this->createMock(DataContainer::class);
 
@@ -162,13 +162,13 @@ class TemplateChoiceTest extends ContaoTestCase
 
         $this->assertNotEmpty($choices);
         $this->assertArrayHasKey('text', $choices);
-        $this->assertEquals('text', $choices['text'][0]);
+        $this->assertSame('text', $choices['text'][0]);
         $this->assertArrayHasKey('choice', $choices);
-        $this->assertEquals('choice', $choices['choice'][0]);
+        $this->assertSame('choice', $choices['choice'][0]);
         $this->assertArrayHasKey('button', $choices);
-        $this->assertEquals('button', $choices['button'][0]);
+        $this->assertSame('button', $choices['button'][0]);
         $this->assertArrayHasKey('other', $choices);
-        $this->assertEquals('hidden', $choices['other'][0]);
+        $this->assertSame('hidden', $choices['other'][0]);
     }
 
     /**

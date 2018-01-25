@@ -1,0 +1,45 @@
+<div class="wrapper" id="{{ wrapperId }}"{{ dataAttributes|default()|raw }}>
+    {% if showInitialResults or isSubmitted %}
+        {% if showItemCount %}
+            <p class="count">{{ itemsFoundText|raw }}</p>
+        {% endif %}
+        {% if items is not empty %}
+            <div class="items">
+
+                <table>
+                    {% if header is defined and header is iterable %}
+                        <thead>
+                        <tr>
+                            {% for i, fieldData in header %}
+                                <th class="{{ fieldData.class }}">
+                                    {% if sortingHeader %}
+                                        <a class="{{ fieldData.sortingClass }}" href="{{ fieldData.link }}">
+                                            <?= $fieldData['label']; ?>
+                                        </a>
+                                    {% else %}
+                                        {{ fieldData.label }}
+                                    {% endif %}
+                                </th>
+                            {% endfor %}
+                            {% if addDetails %}
+                                <th class="actions"></th>
+                            {% endif %}
+                        </tr>
+                        </thead>
+                    {% endif %}
+
+                    <tbody>
+
+                    {% for item in items %}
+                        {{ item|raw }}
+                    {% endfor %}
+
+                    </tbody>
+                </table>
+            </div>
+            {{ pagination }}
+        {% elseif showNoItemsText %}
+            <p class="no-items">{{ noItemsText|raw }}</p>
+        {% endif %}
+    {% endif %}
+</div>

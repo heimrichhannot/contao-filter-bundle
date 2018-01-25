@@ -1,0 +1,29 @@
+<tr class="{{ class }}">
+    {% for field in tableFields %}
+        <td class="{{ field|lower }}">
+            {{ attribute(_context, field) }}
+        </td>
+    {% endfor %}
+
+    {% if addDetails and detailsUrl is defined %}
+        <td>
+            {% if useModal %}
+                <a class="details" href="{{ modalUrl }}" data-toggle="modal">
+                    {{ 'huh.list.misc.detailsTitle' | trans }}
+                </a>
+            {% else %}
+                <a class="details" href="{{ detailsUrl }}">
+                    {{ 'huh.list.misc.detailsTitle' | trans }}
+                </a>
+            {% endif %}
+        </td>
+    {% endif %}
+
+    {% if addShare and shareUrl is defined %}
+        <td>
+            <a class="share" href="{{ shareUrl }}" data-message="{{ shareMessage }}">
+                {{ shareTitle }}
+            </a>
+        </td>
+    {% endif %}
+</tr>

@@ -3,11 +3,12 @@
 /*
  * Copyright (c) 2018 Heimrich & Hannot GmbH
  *
- * @license LGPL-3.0+
+ * @license LGPL-3.0-or-later
  */
 
 namespace HeimrichHannot\FilterBundle\Filter;
 
+use Contao\StringUtil;
 use Contao\System;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Filter\Filter;
@@ -28,7 +29,7 @@ abstract class AbstractType
 
     public function __construct(FilterConfig $config)
     {
-        $this->config = $config;
+        $this->config     = $config;
         $this->translator = System::getContainer()->get('translator');
     }
 
@@ -42,10 +43,10 @@ abstract class AbstractType
      */
     protected function getLabel(array $element, FormBuilderInterface $builder)
     {
-        $label = '';
+        $label  = '';
         $filter = $this->config->getFilter();
 
-        if (true === (bool) $element['customLabel'] && '' !== $element['label']) {
+        if (true === (bool)$element['customLabel'] && '' !== $element['label']) {
             return $element['label'];
         }
 
@@ -73,7 +74,7 @@ abstract class AbstractType
 
         $options['label'] = $this->getLabel($element, $builder) ?: $element['title'];
 
-        if (true === (bool) $element['addPlaceholder'] && '' !== $element['placeholder']) {
+        if (true === (bool)$element['addPlaceholder'] && '' !== $element['placeholder']) {
             $options['attr']['placeholder'] = $this->translator->trans($element['placeholder'], ['%label%' => $this->translator->trans($options['label'])]);
         }
 
@@ -98,8 +99,12 @@ abstract class AbstractType
     {
         $name = $element['field'] ?: $default;
 
-        if (true === (bool) $element['customName'] && '' !== $element['name']) {
+        if (true === (bool)$element['customName'] && '' !== $element['name']) {
             $name = $element['name'];
+        }
+
+        if ('' === $name) {
+            $name = StringUtil::standardize($element['title']);
         }
 
         return $name;

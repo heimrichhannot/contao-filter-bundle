@@ -1,9 +1,9 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2018 Heimrich & Hannot GmbH
  *
- * @author  Rico Kaltofen <r.kaltofen@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @license LGPL-3.0-or-later
  */
 
 namespace HeimrichHannot\FilterBundle\Test\Choice;
@@ -56,7 +56,7 @@ class LanguageChoiceTest extends ContaoTestCase
 
         $containerBuilder = new \Contao\ManagerPlugin\Config\ContainerBuilder($this->mockPluginLoader($this->never()), []);
 
-        $config                 = $plugin->getExtensionConfig('huh_filter', [[]], $containerBuilder);
+        $config = $plugin->getExtensionConfig('huh_filter', [[]], $containerBuilder);
         $this->config['filter'] = $config['huh']['filter'];
 
         // required within Contao\Widget::getAttributesFromDca()
@@ -76,13 +76,13 @@ class LanguageChoiceTest extends ContaoTestCase
         System::setContainer($this->container);
 
         $framework = $this->mockContaoFramework();
-        $instance  = new LanguageChoice($framework);
+        $instance = new LanguageChoice($framework);
 
         $this->assertInstanceOf('HeimrichHannot\FilterBundle\Choice\LanguageChoice', $instance);
     }
 
     /**
-     * Tests the language collection for associative dca field options
+     * Tests the language collection for associative dca field options.
      */
     public function testCollectAssociativeDcaFieldOptions()
     {
@@ -97,28 +97,28 @@ class LanguageChoiceTest extends ContaoTestCase
         $GLOBALS['TL_FFL']['select'] = 'Contao\SelectMenu';
 
         $GLOBALS['TL_DCA']['test']['fields']['test'] = [
-            'label'            => 'test',
-            'inputType'        => 'select',
-            'options'          => ['de' => 'Deutsch Test', 'en' => 'Englisch Test'],
+            'label' => 'test',
+            'inputType' => 'select',
+            'options' => ['de' => 'Deutsch Test', 'en' => 'Englisch Test'],
             'options_callback' => null,
-            'eval'             => [
-                'submitOnChange'     => false,
-                'allowHtml'          => false,
-                'rte'                => null,
-                'preserveTags'       => false,
-                'isAssociative'      => false,
+            'eval' => [
+                'submitOnChange' => false,
+                'allowHtml' => false,
+                'rte' => null,
+                'preserveTags' => false,
+                'isAssociative' => false,
                 'includeBlankOption' => false,
-                'sql'                => null,
+                'sql' => null,
             ],
         ];
 
         $context = [
             [
-                'type'  => 'choice',
+                'type' => 'choice',
                 'field' => 'test',
             ],
             [
-                'id'            => 1,
+                'id' => 1,
                 'dataContainer' => 'test',
             ],
         ];
@@ -126,14 +126,14 @@ class LanguageChoiceTest extends ContaoTestCase
         System::setContainer($this->container);
 
         $instance = new LanguageChoice($framework);
-        $choices  = $instance->getChoices($context);
+        $choices = $instance->getChoices($context);
 
         $this->assertNotEmpty($choices);
         $this->assertArraySubset(['Deutsch Test' => 'de', 'Englisch Test' => 'en'], $choices);
     }
 
     /**
-     * Tests the language collection for dca field options
+     * Tests the language collection for dca field options.
      */
     public function testCollectDcaFieldOptions()
     {
@@ -148,28 +148,28 @@ class LanguageChoiceTest extends ContaoTestCase
         $GLOBALS['TL_FFL']['select'] = 'Contao\SelectMenu';
 
         $GLOBALS['TL_DCA']['test']['fields']['test'] = [
-            'label'            => 'test',
-            'inputType'        => 'select',
-            'options'          => ['de', 'en'],
+            'label' => 'test',
+            'inputType' => 'select',
+            'options' => ['de', 'en'],
             'options_callback' => null,
-            'eval'             => [
-                'submitOnChange'     => false,
-                'allowHtml'          => false,
-                'rte'                => null,
-                'preserveTags'       => false,
-                'isAssociative'      => false,
+            'eval' => [
+                'submitOnChange' => false,
+                'allowHtml' => false,
+                'rte' => null,
+                'preserveTags' => false,
+                'isAssociative' => false,
                 'includeBlankOption' => false,
-                'sql'                => null,
+                'sql' => null,
             ],
         ];
 
         $context = [
             [
-                'type'  => 'choice',
+                'type' => 'choice',
                 'field' => 'test',
             ],
             [
-                'id'            => 1,
+                'id' => 1,
                 'dataContainer' => 'test',
             ],
         ];
@@ -177,14 +177,14 @@ class LanguageChoiceTest extends ContaoTestCase
         System::setContainer($this->container);
 
         $instance = new LanguageChoice($framework);
-        $choices  = $instance->getChoices($context);
+        $choices = $instance->getChoices($context);
 
         $this->assertNotEmpty($choices);
         $this->assertArraySubset(['German' => 'de', 'English' => 'en'], $choices);
     }
 
     /**
-     * Tests the language collection for custom options
+     * Tests the language collection for custom options.
      */
     public function testCollectAndTranslateCustomOptions()
     {
@@ -202,9 +202,9 @@ class LanguageChoiceTest extends ContaoTestCase
 
         $context = [
             [
-                'type'          => 'choice',
+                'type' => 'choice',
                 'customOptions' => true,
-                'options'       => serialize(
+                'options' => serialize(
                     [
                         [
                             'value' => 'de',
@@ -223,14 +223,14 @@ class LanguageChoiceTest extends ContaoTestCase
         System::setContainer($this->container);
 
         $instance = new LanguageChoice($framework);
-        $choices  = $instance->getChoices($context);
+        $choices = $instance->getChoices($context);
 
         $this->assertNotEmpty($choices);
         $this->assertArraySubset(['German Test' => 'de', 'English Test' => 'en'], $choices);
     }
 
     /**
-     * Tests the language collection for custom options
+     * Tests the language collection for custom options.
      */
     public function testCollectCustomOptions()
     {
@@ -244,9 +244,9 @@ class LanguageChoiceTest extends ContaoTestCase
 
         $context = [
             [
-                'type'          => 'choice',
+                'type' => 'choice',
                 'customOptions' => true,
-                'options'       => serialize(
+                'options' => serialize(
                     [
                         [
                             'value' => 'de',
@@ -265,14 +265,14 @@ class LanguageChoiceTest extends ContaoTestCase
         System::setContainer($this->container);
 
         $instance = new LanguageChoice($framework);
-        $choices  = $instance->getChoices($context);
+        $choices = $instance->getChoices($context);
 
         $this->assertNotEmpty($choices);
         $this->assertArraySubset(['German' => 'de', 'English' => 'en'], $choices);
     }
 
     /**
-     * Tests the language collection for custom language options
+     * Tests the language collection for custom language options.
      */
     public function testCollectCustomLanguages()
     {
@@ -286,9 +286,9 @@ class LanguageChoiceTest extends ContaoTestCase
 
         $context = [
             [
-                'type'            => 'choice',
+                'type' => 'choice',
                 'customLanguages' => true,
-                'languages'       => serialize(['de', 'en']),
+                'languages' => serialize(['de', 'en']),
             ],
             ['id' => 1],
         ];
@@ -296,14 +296,14 @@ class LanguageChoiceTest extends ContaoTestCase
         System::setContainer($this->container);
 
         $instance = new LanguageChoice($framework);
-        $choices  = $instance->getChoices($context);
+        $choices = $instance->getChoices($context);
 
         $this->assertNotEmpty($choices);
         $this->assertArraySubset(['English' => 'en', 'German' => 'de'], $choices);
     }
 
     /**
-     * Tests the languages collection without element
+     * Tests the languages collection without element.
      */
     public function testCollectWithoutElement()
     {
@@ -321,7 +321,7 @@ class LanguageChoiceTest extends ContaoTestCase
         ];
 
         $instance = new LanguageChoice($framework);
-        $choices  = $instance->getChoices($context);
+        $choices = $instance->getChoices($context);
 
         System::setContainer($this->container);
 
@@ -329,8 +329,7 @@ class LanguageChoiceTest extends ContaoTestCase
     }
 
     /**
-     * Tests the languages collection with invalid context
-     *
+     * Tests the languages collection with invalid context.
      */
     public function testCollectWithInvalidContext()
     {
@@ -343,7 +342,7 @@ class LanguageChoiceTest extends ContaoTestCase
         $context = ['foo' => []];
 
         $instance = new LanguageChoice($framework);
-        $choices  = $instance->getChoices($context);
+        $choices = $instance->getChoices($context);
 
         System::setContainer($this->container);
 
@@ -351,8 +350,7 @@ class LanguageChoiceTest extends ContaoTestCase
     }
 
     /**
-     * Tests the languages collection without filter and element
-     *
+     * Tests the languages collection without filter and element.
      */
     public function testCollectWithoutFilterAndElement()
     {
@@ -365,11 +363,19 @@ class LanguageChoiceTest extends ContaoTestCase
         $context = [];
 
         $instance = new LanguageChoice($framework);
-        $choices  = $instance->getChoices($context);
+        $choices = $instance->getChoices($context);
 
         System::setContainer($this->container);
 
         $this->assertEmpty($choices);
+    }
+
+    /**
+     * @return string
+     */
+    protected function getFixturesDir(): string
+    {
+        return __DIR__.DIRECTORY_SEPARATOR.'Fixtures';
     }
 
     /**
@@ -387,13 +393,5 @@ class LanguageChoiceTest extends ContaoTestCase
         $pluginLoader->expects($expects)->method('getInstancesOf')->with(PluginLoader::EXTENSION_PLUGINS)->willReturn($plugins);
 
         return $pluginLoader;
-    }
-
-    /**
-     * @return string
-     */
-    protected function getFixturesDir(): string
-    {
-        return __DIR__.DIRECTORY_SEPARATOR.'Fixtures';
     }
 }

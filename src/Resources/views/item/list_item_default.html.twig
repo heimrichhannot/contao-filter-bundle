@@ -1,0 +1,25 @@
+<div class="{{ class }}">
+    {% for field, value in formatted %}
+        <div class="{{ field|lower }}">
+            {{ field }}: {{ value }}
+        </div>
+    {% endfor %}
+
+    {% if addDetails and detailsUrl is defined %}
+        {% if useModal %}
+            <a class="details" href="{{ modalUrl }}" data-toggle="modal">
+                {{ 'huh.list.misc.detailsTitle' | trans }}
+            </a>
+        {% else %}
+            <a class="details" href="{{ detailsUrl }}">
+                {{ 'huh.list.misc.detailsTitle' | trans }}
+            </a>
+        {% endif %}
+    {% endif %}
+
+    {% if addShare and shareUrl is defined %}
+        <a class="share" href="{{ shareUrl }}" data-message="{{ shareMessage }}">
+            {{ shareTitle }}
+        </a>
+    {% endif %}
+</div>

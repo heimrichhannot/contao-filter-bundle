@@ -3,7 +3,7 @@
 /*
  * Copyright (c) 2018 Heimrich & Hannot GmbH
  *
- * @license LGPL-3.0+
+ * @license LGPL-3.0-or-later
  */
 
 namespace HeimrichHannot\FilterBundle\Registry;
@@ -56,8 +56,8 @@ class FilterRegistry
     public function __construct(ContaoFrameworkInterface $framework, FilterSession $session)
     {
         $this->framework = $framework;
-        $this->session   = $session;
-        $this->cache     = new FilesystemAdapter('huh.filter.registry', 0, \System::getContainer()->get('kernel')->getCacheDir());
+        $this->session = $session;
+        $this->cache = new FilesystemAdapter('huh.filter.registry', 0, \System::getContainer()->get('kernel')->getCacheDir());
     }
 
     /**
@@ -68,7 +68,7 @@ class FilterRegistry
     public function init($request = null)
     {
         /**
-         * @var FilterConfigModel $adapter
+         * @var FilterConfigModel
          */
         $adapter = $this->framework->getAdapter(FilterConfigModel::class);
 
@@ -219,7 +219,7 @@ class FilterRegistry
 
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
-            $url  = Url::removeQueryString([$form->getName()], $form->getConfig()->getAction() ?: null);
+            $url = Url::removeQueryString([$form->getName()], $form->getConfig()->getAction() ?: null);
 
             // allow reset, support different form configuration with same form name
             if (null !== $form->getClickedButton() && in_array($form->getClickedButton()->getName(), $config->getResetNames(), true)) {

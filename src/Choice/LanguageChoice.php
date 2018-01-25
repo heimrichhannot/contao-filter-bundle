@@ -3,7 +3,7 @@
 /*
  * Copyright (c) 2018 Heimrich & Hannot GmbH
  *
- * @license LGPL-3.0+
+ * @license LGPL-3.0-or-later
  */
 
 namespace HeimrichHannot\FilterBundle\Choice;
@@ -34,9 +34,9 @@ class LanguageChoice extends FieldOptionsChoice
 
         list($element, $filter) = $context;
 
-        if (isset($element['customLanguages']) && true === (bool)$element['customLanguages']) {
+        if (isset($element['customLanguages']) && true === (bool) $element['customLanguages']) {
             $options = $this->getCustomLanguageOptions($element, $filter);
-        } elseif (isset($element['customOptions']) && true === (bool)$element['customOptions']) {
+        } elseif (isset($element['customOptions']) && true === (bool) $element['customOptions']) {
             $options = $this->getCustomOptions($element, $filter);
         } elseif (isset($filter['dataContainer']) && '' !== $filter['dataContainer'] && isset($element['field'])) {
             if (isset($GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element['field']])) {

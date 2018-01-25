@@ -1,16 +1,13 @@
 <?php
 
 /*
- * This file is part of Contao.
+ * Copyright (c) 2018 Heimrich & Hannot GmbH
  *
- * Copyright (c) 2005-2017 Leo Feyer
- *
- * @license LGPL-3.0+
+ * @license LGPL-3.0-or-later
  */
 
 namespace HeimrichHannot\FilterBundle\Tests\Config;
 
-use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\InsertTags;
 use Contao\TestCase\ContaoTestCase;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
@@ -27,7 +24,7 @@ class FilterConfigTest extends ContaoTestCase
     public function testCanBeInstantiated()
     {
         $framework = $this->mockContaoFramework([]);
-        $session   = new MockArraySessionStorage();
+        $session = new MockArraySessionStorage();
 
         $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)));
 
@@ -35,28 +32,28 @@ class FilterConfigTest extends ContaoTestCase
     }
 
     /**
-     * Tests init
+     * Tests init.
      */
     public function testInit()
     {
         $framework = $this->mockContaoFramework([]);
-        $session   = new MockArraySessionStorage();
+        $session = new MockArraySessionStorage();
 
         $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)));
         $config->init('test', []);
 
-        $this->assertEquals('test', $config->getSessionKey());
-        $this->assertEquals([], $config->getFilter());
-        $this->assertEquals(null, $config->getElements());
+        $this->assertSame('test', $config->getSessionKey());
+        $this->assertSame([], $config->getFilter());
+        $this->assertNull($config->getElements());
     }
 
     /**
-     * Test form builder
+     * Test form builder.
      */
     public function testBuildFormWithNotFilter()
     {
         $framework = $this->mockContaoFramework([]);
-        $session   = new MockArraySessionStorage();
+        $session = new MockArraySessionStorage();
 
         $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)));
         $config->buildForm();
@@ -65,19 +62,19 @@ class FilterConfigTest extends ContaoTestCase
     }
 
     /**
-     * Test form builder
+     * Test form builder.
      */
     public function testBuildFormWithoutElementsAndAction()
     {
         $filter = [
-            'id'            => 1,
+            'id' => 1,
             'dataContainer' => 'tl_member',
-            'name'          => 'test_form',
-            'method'        => 'GET',
+            'name' => 'test_form',
+            'method' => 'GET',
         ];
 
         $framework = $this->mockContaoFramework([]);
-        $session   = new MockArraySessionStorage();
+        $session = new MockArraySessionStorage();
 
         $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)));
         $config->init('test', $filter);
@@ -88,24 +85,23 @@ class FilterConfigTest extends ContaoTestCase
     }
 
     /**
-     * Test form builder
+     * Test form builder.
      */
     public function testBuildFormWithInsertTagActionAndWithoutElements()
     {
         $filter = [
-            'id'            => 1,
+            'id' => 1,
             'dataContainer' => 'tl_member',
-            'name'          => 'test_form',
-            'method'        => 'GET',
-            'action'        => '{{env::path}}',
+            'name' => 'test_form',
+            'method' => 'GET',
+            'action' => '{{env::path}}',
         ];
 
-        $insertTagAdapter            = $this->mockConfiguredAdapter(['replace' => '/test']);
+        $insertTagAdapter = $this->mockConfiguredAdapter(['replace' => '/test']);
         $adapters[InsertTags::class] = $insertTagAdapter;
 
-
         $framework = $this->mockContaoFramework($adapters);
-        $session   = new MockArraySessionStorage();
+        $session = new MockArraySessionStorage();
 
         $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)));
         $config->init('test', $filter);
@@ -113,6 +109,6 @@ class FilterConfigTest extends ContaoTestCase
 
         $this->assertNotNull($config->getBuilder(), $config);
         $this->assertInstanceOf(FormBuilder::class, $config->getBuilder());
-        $this->assertEquals('/test', $config->getBuilder()->getAction());
+        $this->assertSame('/test', $config->getBuilder()->getAction());
     }
 }

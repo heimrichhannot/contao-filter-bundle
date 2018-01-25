@@ -1,0 +1,17 @@
+<div class="wrapper" id="{{ wrapperId }}"{{ dataAttributes|default()|raw }}>
+    {% if showInitialResults or isSubmitted %}
+        {% if showItemCount %}
+            <p class="count">{{ itemsFoundText|raw }}</p>
+        {% endif %}
+        {% if items is not empty %}
+            <div class="items">
+                {% for item in items %}
+                    {{ item|raw }}
+                {% endfor %}
+            </div>
+            {{ pagination|raw }}
+        {% elseif showNoItemsText %}
+            <p class="no-items">{{ noItemsText|raw }}</p>
+        {% endif %}
+    {% endif %}
+</div>

@@ -3,7 +3,7 @@
 /*
  * Copyright (c) 2018 Heimrich & Hannot GmbH
  *
- * @license LGPL-3.0+
+ * @license LGPL-3.0-or-later
  */
 
 namespace HeimrichHannot\FilterBundle\Choice;
@@ -12,9 +12,7 @@ use HeimrichHannot\FilterBundle\Model\FilterConfigModel;
 use HeimrichHannot\UtilsBundle\Choice\AbstractChoice;
 
 /**
- * Class ParentChoice
- *
- * @package HeimrichHannot\FilterBundle\Choice
+ * Class ParentChoice.
  */
 class ParentChoice extends AbstractChoice
 {

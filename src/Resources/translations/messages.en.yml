@@ -1,0 +1,9 @@
+# placeholders
+huh.filter.placeholder.default: -
+huh.filter.placeholder.input_label: 'Enter %label%'
+
+# labels
+huh.filter.label.submit: Submit
+huh.filter.label.search: Search
+huh.filter.label.search_action: Search
+huh.filter.label.reset: Reset

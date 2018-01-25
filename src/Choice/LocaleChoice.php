@@ -3,7 +3,7 @@
 /*
  * Copyright (c) 2018 Heimrich & Hannot GmbH
  *
- * @license LGPL-3.0+
+ * @license LGPL-3.0-or-later
  */
 
 namespace HeimrichHannot\FilterBundle\Choice;
@@ -33,9 +33,9 @@ class LocaleChoice extends FieldOptionsChoice
 
         list($element, $filter) = $context;
 
-        if (isset($element['customLocales']) && true === (bool)$element['customLocales']) {
+        if (isset($element['customLocales']) && true === (bool) $element['customLocales']) {
             $options = $this->getCustomLocaleOptions($element, $filter);
-        } elseif (isset($element['customOptions']) && true === (bool)$element['customOptions']) {
+        } elseif (isset($element['customOptions']) && true === (bool) $element['customOptions']) {
             $options = $this->getCustomOptions($element, $filter);
         } elseif (isset($filter['dataContainer']) && '' !== $filter['dataContainer'] && isset($element['field'])) {
             if (isset($GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element['field']])) {
