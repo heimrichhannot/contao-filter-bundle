@@ -10,8 +10,10 @@ namespace HeimrichHannot\FilterBundle\Filter\Type;
 
 use Contao\Config;
 use Contao\Controller;
+use Contao\System;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
 use HeimrichHannot\FilterBundle\Filter\TypeInterface;
+use HeimrichHannot\FilterBundle\Form\Type\DateRangeType;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 use HeimrichHannot\UtilsBundle\Date\DateUtil;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -38,21 +40,65 @@ class DateType extends AbstractType implements TypeInterface
 	 */
 	public function buildForm(array $element, FormBuilderInterface $builder)
 	{
+		if (isset($element['startField']) && '' !== $element['startField'] && isset($element['endField']) && '' !== $element['endField']) {
+			$this->buildRangeForm($element, $builder);
+			
+			return;
+		}
+		
 		if (isset($element['startField']) && '' !== $element['startField']) {
-			$builder->add(
-				$this->getStartName($element),
-				\Symfony\Component\Form\Extension\Core\Type\DateTimeType::class,
-				$this->getOptions($element, $builder)
-			);
+			$this->buildStartForm($element, $builder);
 		}
 		
 		if (isset($element['endField']) && '' !== $element['endField']) {
-			$builder->add(
-				$this->getStopName($element),
-				\Symfony\Component\Form\Extension\Core\Type\DateTimeType::class,
-				$this->getOptions($element, $builder)
-			);
+			$this->buildStopForm($element, $builder);
 		}
+		
+	}
+	
+	/**
+	 * Add the start stop form field
+	 *
+	 * @param array                $element
+	 * @param FormBuilderInterface $builder
+	 */
+	protected function buildRangeForm(array $element, FormBuilderInterface $builder)
+	{
+		$builder->add(
+			$this->getName($element, $element['name']),
+			DateRangeType::class,
+			$this->getOptions($element, $builder)
+		);
+	}
+	
+	/**
+	 * Add the start form field
+	 *
+	 * @param array                $element
+	 * @param FormBuilderInterface $builder
+	 */
+	protected function buildStartForm(array $element, FormBuilderInterface $builder)
+	{
+		$builder->add(
+			$this->getStartName($element),
+			\Symfony\Component\Form\Extension\Core\Type\DateTimeType::class,
+			$this->getOptions($element, $builder)
+		);
+	}
+	
+	/**
+	 * Add the stop form field
+	 *
+	 * @param array                $element
+	 * @param FormBuilderInterface $builder
+	 */
+	protected function buildStopForm(array $element, FormBuilderInterface $builder)
+	{
+		$builder->add(
+			$this->getStopName($element),
+			\Symfony\Component\Form\Extension\Core\Type\DateTimeType::class,
+			$this->getOptions($element, $builder)
+		);
 	}
 	
 	/**
@@ -87,7 +133,7 @@ class DateType extends AbstractType implements TypeInterface
 	{
 		$options = parent::getOptions($element, $builder);
 		
-		$options = $this->setFormat($options, $element['dateTimeFormat']);
+		$options = $this->setFormat($element, $options);
 		
 		$options['widget'] = 'single_text';
 		
@@ -97,8 +143,10 @@ class DateType extends AbstractType implements TypeInterface
 		
 		$options = $this->setLimits($options, $element);
 		
-		$options['attr']['data-linked-start'] = '#Veranstaltungen_startDate';
-		$options['attr']['data-linked-start'] = '#Veranstaltungen_endDate';
+		$formName = $builder->getName();
+		
+		$options['attr']['data-linked-start'] = '#' . $formName . '_' . $this->getStartName($element);
+		$options['attr']['data-linked-end']   = '#' . $formName . '_' . $this->getStopName($element);
 		
 		
 		return $options;
@@ -135,16 +183,19 @@ class DateType extends AbstractType implements TypeInterface
 	
 	
 	/**
-	 * @param $options array
-	 * @param $rgxp    string
+	 * @param array $options
+	 * @param array $rgxp
+	 *
+	 * @return array
 	 */
-	protected function setFormat($options, $rgxp)
+	protected function setFormat(array $element, array $options): array
 	{
-		$format = $this->getDateTimeFormat($rgxp);
+//		$format = $this->getDateTimeFormat($rgxp);
 		
-		$options['format']                          = $format;
-		$options['attr']['data-date-format']        = $format;
-		$options['attr']['data-moment-date-format'] = DateUtil::formatPhpDateToJsDate($format);
+		$options['format']                   = $element['dateFormat'];
+		$options['attr']['data-date-format'] = $element['dateFormat'];
+		
+		$options['attr']['data-moment-date-format'] = System::getContainer()->get('huh.utils.date')->formatPhpDateToJsDate($element['dateFormat']);
 		
 		return $options;
 	}

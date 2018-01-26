@@ -1,0 +1,4 @@
+{% block date_range_widget %}
+    {% set type = type|default('date_range') %}
+    {{- form_widget(start) -}}
+{%- endblock date_range_widget %}
