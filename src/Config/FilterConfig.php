@@ -70,7 +70,7 @@ class FilterConfig
     public function __construct(ContaoFrameworkInterface $framework, FilterSession $session)
     {
         $this->framework = $framework;
-        $this->session = $session;
+        $this->session   = $session;
     }
 
     /**
@@ -83,8 +83,8 @@ class FilterConfig
     public function init(string $sessionKey, array $filter, $elements = null)
     {
         $this->sessionKey = $sessionKey;
-        $this->filter = $filter;
-        $this->elements = $elements;
+        $this->filter     = $filter;
+        $this->elements   = $elements;
     }
 
     /**
@@ -116,7 +116,7 @@ class FilterConfig
             $options['attr']['class'] = implode(' ', $cssClass);
         }
 
-        if (isset($this->filter['renderEmpty']) && true === (bool) $this->filter['renderEmpty']) {
+        if (isset($this->filter['renderEmpty']) && true === (bool)$this->filter['renderEmpty']) {
             $data = [];
         }
 
@@ -234,6 +234,16 @@ class FilterConfig
     }
 
     /**
+     * @return bool
+     */
+    public function isSubmitted(): bool
+    {
+        $data = $this->getData();
+
+        return isset($data[FilterType::FILTER_ID_NAME]);
+    }
+
+    /**
      * @return array
      */
     public function getResetNames(): array
@@ -270,8 +280,8 @@ class FilterConfig
      */
     protected function mapFormsToData()
     {
-        $data = [];
-        $forms = $this->builder->getForm();
+        $data             = [];
+        $forms            = $this->builder->getForm();
         $propertyAccessor = PropertyAccess::createPropertyAccessor();
 
         /*
@@ -279,7 +289,7 @@ class FilterConfig
          */
         foreach ($forms as $form) {
             $propertyPath = $form->getPropertyPath();
-            $config = $form->getConfig();
+            $config       = $form->getConfig();
 
             // Write-back is disabled if the form is not synchronized (transformation failed),
             // if the form was not submitted and if the form is disabled (modification not allowed)

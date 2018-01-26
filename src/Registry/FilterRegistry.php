@@ -56,8 +56,8 @@ class FilterRegistry
     public function __construct(ContaoFrameworkInterface $framework, FilterSession $session)
     {
         $this->framework = $framework;
-        $this->session = $session;
-        $this->cache = new FilesystemAdapter('huh.filter.registry', 0, \System::getContainer()->get('kernel')->getCacheDir());
+        $this->session   = $session;
+        $this->cache     = new FilesystemAdapter('huh.filter.registry', 0, \System::getContainer()->get('kernel')->getCacheDir());
     }
 
     /**
@@ -219,7 +219,7 @@ class FilterRegistry
 
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
-            $url = Url::removeQueryString([$form->getName()], $form->getConfig()->getAction() ?: null);
+            $url  = Url::removeQueryString([$form->getName()], $form->getConfig()->getAction() ?: null);
 
             // allow reset, support different form configuration with same form name
             if (null !== $form->getClickedButton() && in_array($form->getClickedButton()->getName(), $config->getResetNames(), true)) {
@@ -230,7 +230,6 @@ class FilterRegistry
             }
 
             // do not save filter id in session
-            unset($data[FilterType::FILTER_ID_NAME]);
             $this->session->setData($sessionKey, $data);
 
             // redirect to same page without filter parameters

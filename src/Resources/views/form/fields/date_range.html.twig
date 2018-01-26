@@ -2,7 +2,6 @@
     {% set type = type|default('date_range') %}
     {% for child in form %}
         <li>
-            {{ dump(child) }}
             {{ form_widget(child) }}
         </li>
     {% endfor %}
