@@ -16,6 +16,7 @@ use HeimrichHannot\FilterBundle\Filter\TypeInterface;
 use HeimrichHannot\FilterBundle\Form\Type\DateRangeType;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 use HeimrichHannot\UtilsBundle\Date\DateUtil;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\FormBuilderInterface;
 
 class DateType extends AbstractType implements TypeInterface
@@ -64,11 +65,15 @@ class DateType extends AbstractType implements TypeInterface
 	 */
 	protected function buildRangeForm(array $element, FormBuilderInterface $builder)
 	{
-		$builder->add(
-			$this->getName($element, $element['name']),
-			DateRangeType::class,
-			$this->getOptions($element, $builder)
-		);
+		$options = [
+			'start' => [
+				'name'    => $this->getStartName($element),
+				'class'   => \Symfony\Component\Form\Extension\Core\Type\DateTimeType::class,
+				'options' => $this->getOptions($element, $builder)
+			]
+		];
+		
+		$builder->add($this->getName($element, $element['name']), DateRangeType::class, $options);
 	}
 	
 	/**

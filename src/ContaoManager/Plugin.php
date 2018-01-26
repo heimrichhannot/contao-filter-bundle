@@ -19,42 +19,50 @@ use HeimrichHannot\UtilsBundle\Container\ContainerUtil;
 
 class Plugin implements BundlePluginInterface, ExtensionPluginInterface
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getBundles(ParserInterface $parser)
-    {
-        return [
-            BundleConfig::create(HeimrichHannotContaoFilterBundle::class)->setLoadAfter([ContaoCoreBundle::class]),
-        ];
-    }
-
-    /**
-     * Allows a plugin to override extension configuration.
-     *
-     * @param string           $extensionName
-     * @param array            $extensionConfigs
-     * @param ContainerBuilder $container
-     *
-     * @return
-     */
-    public function getExtensionConfig($extensionName, array $extensionConfigs, ContainerBuilder $container)
-    {
-        if ('framework' === $extensionName) {
-            foreach ($extensionConfigs as &$extensionConfig) {
-                // enable form plugin
-                if (!isset($extensionConfig['form'])) {
-                    $extensionConfig['form']['enabled'] = true;
-                    break;
-                }
-            }
-        }
-
-        return ContainerUtil::mergeConfigFile(
-            'huh_filter',
-            $extensionName,
-            $extensionConfigs,
-            __DIR__.'/../Resources/config/config.yml'
-        );
-    }
+	/**
+	 * {@inheritdoc}
+	 */
+	public function getBundles(ParserInterface $parser)
+	{
+		return [
+			BundleConfig::create(HeimrichHannotContaoFilterBundle::class)->setLoadAfter([ContaoCoreBundle::class]),
+		];
+	}
+	
+	/**
+	 * Allows a plugin to override extension configuration.
+	 *
+	 * @param string           $extensionName
+	 * @param array            $extensionConfigs
+	 * @param ContainerBuilder $container
+	 *
+	 * @return
+	 */
+	public function getExtensionConfig($extensionName, array $extensionConfigs, ContainerBuilder $container)
+	{
+		if ('framework' === $extensionName) {
+			foreach ($extensionConfigs as &$extensionConfig) {
+				// enable form plugin
+				if (!isset($extensionConfig['form'])) {
+					$extensionConfig['form']['enabled'] = true;
+					break;
+				}
+			}
+		}
+		
+		$extensionConfigs = ContainerUtil::mergeConfigFile(
+			'twig',
+			$extensionName,
+			$extensionConfigs,
+			__DIR__ . '/../Resources/config/twig.yml'
+		);
+		
+		
+		return ContainerUtil::mergeConfigFile(
+			'huh_filter',
+			$extensionName,
+			$extensionConfigs,
+			__DIR__ . '/../Resources/config/config.yml'
+		);
+	}
 }

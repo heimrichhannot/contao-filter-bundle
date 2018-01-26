@@ -11,15 +11,30 @@ namespace HeimrichHannot\FilterBundle\Form\Type;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\FormBuilderInterface;
 
 class DateRangeType extends FormType
 {
+	/**
+	 * {@inheritdoc}
+	 */
+	public function buildForm(FormBuilderInterface $builder, array $options)
+	{
+		if (null !== $options['start']) {
+			$builder->add('start', $options['start']['class'], $options['start']['options']);
+		}
+
+//		if (null !== $options['stop'] && $options['stop'] instanceof TextType) {
+//			$builder->add('stop', $options['stop']);
+//		}
+	}
+	
 	public function configureOptions(OptionsResolver $resolver)
 	{
 		$resolver->setDefaults(
 			[
-				'start' => new DateTimeType(),
-				'stop'  => new DateTimeType(),
+				'start' => null,
+				'stop'  => null,
 			]
 		);
 	}
@@ -27,5 +42,13 @@ class DateRangeType extends FormType
 	public function getParent()
 	{
 		return DateTimeType::class;
+	}
+	
+	/**
+	 * {@inheritdoc}
+	 */
+	public function getBlockPrefix()
+	{
+		return 'date_range';
 	}
 }
