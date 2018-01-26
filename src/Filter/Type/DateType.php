@@ -29,11 +29,7 @@ class DateType extends AbstractType implements TypeInterface
 	 */
 	public function buildQuery(FilterQueryBuilder $builder, array $element)
 	{
-//    	$element['field'] = $element['startField'];
-//        $builder->whereElement($element, $this->getName($element), $this->config);
-//
-//		$element['field'] = $element['endField'];
-//		$builder->whereElement($element, $this->getName($element), $this->config);
+//        $builder->whereElement($element, $this->getName($element,$element['name']), $this->config);
 	}
 	
 	/**
@@ -54,7 +50,6 @@ class DateType extends AbstractType implements TypeInterface
 		if (isset($element['endField']) && '' !== $element['endField']) {
 			$this->buildStopForm($element, $builder);
 		}
-		
 	}
 	
 	/**
@@ -139,48 +134,41 @@ class DateType extends AbstractType implements TypeInterface
 		$options = parent::getOptions($element, $builder);
 		
 		$options = $this->setFormat($element, $options);
-		
-		$options['widget'] = 'single_text';
-		
-		if ('date' == $element['dateTimeFormat']) {
-			$this->setDatepickerOptions($options, $element);
-		}
-		
 		$options = $this->setLimits($options, $element);
 		
-		$formName = $builder->getName();
-		
-		$options['attr']['data-linked-start'] = '#' . $formName . '_' . $this->getStartName($element);
-		$options['attr']['data-linked-end']   = '#' . $formName . '_' . $this->getStopName($element);
-		
+		$options['widget']                    = 'single_text';
+		$options['with_minutes']              = $options['with_seconds'] = false;
+		$options['attr']['data-linked-start'] = '#' . $builder->getName() . '_' . $this->getStartName($element);
+		$options['attr']['data-linked-end']   = '#' . $builder->getName() . '_' . $this->getStopName($element);
 		
 		return $options;
 	}
 	
 	
-	protected function setDatepickerOptions(&$options, $element)
-	{
-		$options['with_minutes'] = $options['with_seconds'] = false;
-		
-	}
-	
-	
-	protected function setLimits($options, $element)
+	/**
+	 * set top and bottom limit for form field
+	 *
+	 * @param array $options
+	 * @param array $element
+	 *
+	 * @return array
+	 */
+	protected function setLimits(array $options, array $element): array
 	{
 		if ($element['minDate']) {
-			$options['attr']['data-min-date'] = Controller::replaceInsertTags($element['minDate']);
+			$options['attr']['data-min-date'] = date($element['dateFormat'], $element['minDate']);
 		}
 		
 		if ($element['maxDate']) {
-			$options['attr']['data-max-date'] = Controller::replaceInsertTags($element['maxDate']);
+			$options['attr']['data-max-date'] = date($element['dateFormat'], $element['maxDate']);
 		}
 		
 		if ($element['minTime']) {
-			$options['attr']['data-min-time'] = Controller::replaceInsertTags($element['minTime']);
+			$options['attr']['data-min-time'] = $element['minTime'];
 		}
 		
 		if ($element['maxTime']) {
-			$options['attr']['data-max-time'] = Controller::replaceInsertTags($element['maxTime']);
+			$options['attr']['data-max-time'] = $element['maxTime'];
 		}
 		
 		return $options;
@@ -188,16 +176,15 @@ class DateType extends AbstractType implements TypeInterface
 	
 	
 	/**
+	 * set time format for form field
+	 *
+	 * @param array $element
 	 * @param array $options
-	 * @param array $rgxp
 	 *
 	 * @return array
 	 */
 	protected function setFormat(array $element, array $options): array
 	{
-//		$format = $this->getDateTimeFormat($rgxp);
-		
-		$options['format']                   = $element['dateFormat'];
 		$options['attr']['data-date-format'] = $element['dateFormat'];
 		
 		$options['attr']['data-moment-date-format'] = System::getContainer()->get('huh.utils.date')->formatPhpDateToJsDate($element['dateFormat']);
@@ -205,27 +192,4 @@ class DateType extends AbstractType implements TypeInterface
 		return $options;
 	}
 	
-	/**
-	 * @param $element array
-	 *
-	 * @return string
-	 */
-	protected function getDateTimeFormat($format)
-	{
-		$dateTimeFormat = '';
-		
-		switch ($format) {
-			case 'datim':
-				$dateTimeFormat = Config::get('datimFormat');
-				break;
-			case 'date':
-				$dateTimeFormat = Config::get('dateFormat');
-				break;
-			case 'time':
-				$dateTimeFormat = Config::get('timeFormat');
-				break;
-		}
-		
-		return $dateTimeFormat;
-	}
 }
