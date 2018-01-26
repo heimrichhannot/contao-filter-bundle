@@ -50,14 +50,6 @@ class Plugin implements BundlePluginInterface, ExtensionPluginInterface
 			}
 		}
 		
-		$extensionConfigs = ContainerUtil::mergeConfigFile(
-			'twig',
-			$extensionName,
-			$extensionConfigs,
-			__DIR__ . '/../Resources/config/twig.yml'
-		);
-		
-		
 		return ContainerUtil::mergeConfigFile(
 			'huh_filter',
 			$extensionName,

@@ -1,3 +1,0 @@
-twig:
-    form_themes:
-        - '@HeimrichHannotContaoFilter/form/fields/date_range.html.twig'
