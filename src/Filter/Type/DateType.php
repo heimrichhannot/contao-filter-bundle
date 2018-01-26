@@ -30,6 +30,45 @@ class DateType extends AbstractType implements TypeInterface
 	public function buildQuery(FilterQueryBuilder $builder, array $element)
 	{
 //        $builder->whereElement($element, $this->getName($element,$element['name']), $this->config);
+		$data = $this->config->getData();
+		
+		
+		
+//		if(null !== $data['date_start'] && null !== $data['date_stop'])
+//		{return;}
+		
+		if(isset($data['date_start']) && '' != $data['date_start'])
+		{
+			$element['field'] = $element['startField'];
+			
+			$builder->whereElement($element, $this->getStartValueName($element), $this->config);
+		}
+		
+		if(isset($data['date_stop']) && '' != $data['date_stop'])
+		{
+			$builder->whereElement($element, $this->getStopValueName($element), $this->config);
+		}
+		
+	}
+	
+	/**
+	 * @param array $element
+	 *
+	 * @return string
+	 */
+	protected function getStartValueName(array $element): string
+	{
+		return $element['name'] . '_' .  static::START_SUFFIX;
+	}
+	
+	/**
+	 * @param array $element
+	 *
+	 * @return string
+	 */
+	protected function getStopValueName(array $element): string
+	{
+		return $element['name'] . '_' .  static::STOP_SUFFIX;
 	}
 	
 	/**

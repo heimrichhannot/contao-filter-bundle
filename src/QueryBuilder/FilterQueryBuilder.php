@@ -13,6 +13,7 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Haste\Model\Relations;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
+use Symfony\Component\Validator\Constraints\DateTime;
 
 class FilterQueryBuilder extends QueryBuilder
 {
@@ -48,6 +49,12 @@ class FilterQueryBuilder extends QueryBuilder
 
         $dca = $GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element['field']];
 
+        if((isset($element['startField']) && '' != $element['startField']))
+		{
+			$this->whereRangeWidget($element, $name, $config, $dca);
+		}
+        
+        
         switch ($dca['inputType']) {
             case 'cfgTags':
                 if (!isset($dca['eval']['tagsManager'])) {
@@ -61,7 +68,45 @@ class FilterQueryBuilder extends QueryBuilder
 
         return $this;
     }
-
+	
+	/**
+	 * build where query for range
+	 *
+	 * @param array        $element
+	 * @param string       $name
+	 * @param FilterConfig $config
+	 * @param array        $dca
+	 *
+	 * @return $this
+	 */
+	protected function whereRangeWidget(array $element, string $name, FilterConfig $config, array $dca)
+	{
+		$data = $config->getData();
+		$value = $data[$name];
+		
+		if(null === $value)
+		{
+			return $this;
+		}
+		
+		if($value instanceof DateTime)
+		{
+			$value = strtotime($value['date']);
+		}
+		
+		if($name == $element['startField'])
+		{
+			$this->andWhere($this->expr()->gte($name, strtotime($value['date'])));
+		}
+		
+		if($name == $element['endField'])
+		{
+			$this->andWhere($this->expr()->lte($name, strtotime($value['date'])));
+		}
+		
+		return $this;
+    }
+    
     /**
      * Add tag widget where clause.
      *
@@ -81,20 +126,8 @@ class FilterQueryBuilder extends QueryBuilder
             return $this;
         }
         
-//        if($element['field'] == $element['startField'])
-//		{
-//			$this->andWhere($this->expr()->gte($name,$value));
-//		}
-//		elseif($element['field'] == $element['endField'])
-//		{
-//			$this->andWhere($this->expr()->lte($name,$value));
-//		}
-//
-//		else {
-			$this->andWhere($this->expr()->like($name, $this->expr()->literal('%'.$value.'%')));
-//		}
         
-        
+		$this->andWhere($this->expr()->like($name, $this->expr()->literal('%'.$value.'%')));
 
         return $this;
     }
