@@ -61,39 +61,90 @@ class FilterType extends AbstractType
     {
         $resolver->setDefaults(
             [
-                'filter' => null,
+                'filter'    => null,
                 'framework' => null,
             ]
         );
     }
 
+    /**
+     * Build the form fields for the given elements
+     *
+     * @param FormBuilderInterface $builder
+     * @param array                $options
+     */
     protected function buildElements(FormBuilderInterface $builder, array $options)
     {
         $elements = $this->config->getElements();
 
-        if (!is_array($elements)) {
+        if (null === $elements) {
             return;
         }
 
-        $types = \System::getContainer()->get('huh.filter.choice.type')->getCachedChoices();
+        $wrappers = [];
+        $types    = \System::getContainer()->get('huh.filter.choice.type')->getCachedChoices();
 
         if (!is_array($types) || empty($types)) {
             return;
         }
 
         foreach ($elements as $element) {
-            if (!isset($types[$element['type']])) {
+            if (!isset($types[$element->type])) {
                 continue;
             }
 
-            $class = $types[$element['type']];
+            $type  = $types[$element->type];
+            $class = $type['class'];
+
+            if (!class_exists($class)) {
+                continue;
+            }
+
+            // collect wrappers and render afterwards
+            if (true === $type['wrapper']) {
+                $wrappers = [$element];
+                continue;
+            }
+
+            /**
+             * @var TypeInterface
+             */
+            $type = new $class($this->config);
+
+            if (!is_subclass_of($type, \HeimrichHannot\FilterBundle\Filter\AbstractType::class) || !is_subclass_of($type, TypeInterface::class)) {
+                continue;
+            }
+
+            $type->buildForm($element, $builder);
+        }
+
+
+        $this->buildWrapperElements($wrappers, $builder, $options);
+    }
+
+    /**
+     * Build the wrapper form elements
+     *
+     * @param array                $wrappers
+     * @param FormBuilderInterface $builder
+     * @param array                $options
+     */
+    protected function buildWrapperElements(array $wrappers = [], FormBuilderInterface $builder, array $options)
+    {
+        foreach ($wrappers as $element) {
+            if (!isset($types[$element->type])) {
+                continue;
+            }
+
+            $type  = $types[$element->type];
+            $class = $type['class'];
 
             if (!class_exists($class)) {
                 continue;
             }
 
             /**
-             * @var TypeInterface
+             * @var $type TypeInterface
              */
             $type = new $class($this->config);
 

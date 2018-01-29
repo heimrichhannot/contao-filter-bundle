@@ -10,6 +10,7 @@ namespace HeimrichHannot\FilterBundle\Choice;
 
 use Contao\StringUtil;
 use Contao\System;
+use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use Symfony\Component\Intl\Intl;
 
 class LanguageChoice extends FieldOptionsChoice
@@ -34,14 +35,18 @@ class LanguageChoice extends FieldOptionsChoice
 
         list($element, $filter) = $context;
 
-        if (isset($element['customLanguages']) && true === (bool) $element['customLanguages']) {
+        if (!$element instanceof FilterConfigElementModel) {
+            return $choices;
+        }
+
+        if (true === (bool)$element->customLanguages) {
             $options = $this->getCustomLanguageOptions($element, $filter);
-        } elseif (isset($element['customOptions']) && true === (bool) $element['customOptions']) {
+        } elseif (true === (bool)$element->customOptions) {
             $options = $this->getCustomOptions($element, $filter);
-        } elseif (isset($filter['dataContainer']) && '' !== $filter['dataContainer'] && isset($element['field'])) {
-            if (isset($GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element['field']])) {
+        } elseif (isset($filter['dataContainer']) && '' !== $filter['dataContainer'] && null !== $element->field) {
+            if (isset($GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element->field])) {
                 \Controller::loadDataContainer($filter['dataContainer']);
-                $options = $this->getDcaOptions($element, $filter, $GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element['field']]);
+                $options = $this->getDcaOptions($element, $filter, $GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element->field]);
             }
         }
 
@@ -68,18 +73,18 @@ class LanguageChoice extends FieldOptionsChoice
     /**
      * Get custom language options.
      *
-     * @param array $element
-     * @param array $filter
+     * @param FilterConfigElementModel $element
+     * @param array                    $filter
      *
      * @return array
      */
-    protected function getCustomLanguageOptions(array $element, array $filter)
+    protected function getCustomLanguageOptions(FilterConfigElementModel $element, array $filter)
     {
-        if (!isset($element['languages'])) {
+        if (null === $element->languages) {
             return [];
         }
 
-        $options = StringUtil::deserialize($element['languages'], true);
+        $options = StringUtil::deserialize($element->languages, true);
 
         $all = Intl::getLanguageBundle()->getLanguageNames();
 

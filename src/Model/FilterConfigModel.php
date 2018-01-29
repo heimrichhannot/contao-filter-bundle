@@ -47,18 +47,14 @@ class FilterConfigModel extends \Model
      */
     public function findAllPublished(array $options = [])
     {
-        $t = static::$strTable;
+        $t          = static::$strTable;
         $arrColumns = [];
 
         if (isset($arrOptions['ignoreFePreview']) || !defined('BE_USER_LOGGED_IN') || !BE_USER_LOGGED_IN) {
-            $time = \Date::floorToMinute();
+            $time         = \Date::floorToMinute();
             $arrColumns[] = "($t.start='' OR $t.start<='$time') AND ($t.stop='' OR $t.stop>'".($time + 60)."') AND $t.published='1'";
         }
 
-        if (!isset($arrOptions['order'])) {
-            $arrOptions['order'] = "$t.sorting ASC";
-        }
-
-        return static::findBy($arrColumns, null, $arrOptions);
+        return static::findBy($arrColumns, null, $options);
     }
 }

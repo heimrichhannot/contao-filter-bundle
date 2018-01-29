@@ -10,6 +10,7 @@ namespace HeimrichHannot\FilterBundle\Filter\Type;
 
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
 use HeimrichHannot\FilterBundle\Filter\TypeInterface;
+use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 use Symfony\Component\Form\FormBuilderInterface;
 
@@ -18,7 +19,7 @@ class ResetType extends AbstractType implements TypeInterface
     /**
      * {@inheritdoc}
      */
-    public function buildQuery(FilterQueryBuilder $builder, array $element)
+    public function buildQuery(FilterQueryBuilder $builder, FilterConfigElementModel $element)
     {
         // TODO: Implement buildQuery() method.
     }
@@ -26,11 +27,11 @@ class ResetType extends AbstractType implements TypeInterface
     /**
      * {@inheritdoc}
      */
-    public function buildForm(array $element, FormBuilderInterface $builder)
+    public function buildForm(FilterConfigElementModel $element, FormBuilderInterface $builder)
     {
         $filter = $this->config->getFilter();
 
-        if (!$this->config->hasData() || true === (bool) $filter['renderEmpty']) {
+        if (!$this->config->hasData() || true === (bool)$filter['renderEmpty']) {
             return;
         }
 
@@ -44,8 +45,8 @@ class ResetType extends AbstractType implements TypeInterface
     /**
      * {@inheritdoc}
      */
-    protected function getName(array $element, $default = null)
+    public function getDefaultName(FilterConfigElementModel $element)
     {
-        return parent::getName($element, 'reset');
+        return 'reset';
     }
 }

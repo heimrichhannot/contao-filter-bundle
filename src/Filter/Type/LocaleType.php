@@ -11,15 +11,16 @@ namespace HeimrichHannot\FilterBundle\Filter\Type;
 use Contao\System;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
 use HeimrichHannot\FilterBundle\Filter\TypeInterface;
+use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 use Symfony\Component\Form\FormBuilderInterface;
 
-class LocaleType extends AbstractType implements TypeInterface
+class LocaleType extends ChoiceType
 {
     /**
      * {@inheritdoc}
      */
-    public function buildQuery(FilterQueryBuilder $builder, array $element)
+    public function buildQuery(FilterQueryBuilder $builder, FilterConfigElementModel $element)
     {
         $builder->whereElement($element, $this->getName($element), $this->config);
     }
@@ -27,7 +28,7 @@ class LocaleType extends AbstractType implements TypeInterface
     /**
      * {@inheritdoc}
      */
-    public function buildForm(array $element, FormBuilderInterface $builder)
+    public function buildForm(FilterConfigElementModel $element, FormBuilderInterface $builder)
     {
         $builder->add($this->getName($element), \Symfony\Component\Form\Extension\Core\Type\LocaleType::class, $this->getOptions($element, $builder));
     }
@@ -35,21 +36,8 @@ class LocaleType extends AbstractType implements TypeInterface
     /**
      * {@inheritdoc}
      */
-    protected function getOptions(array $element, FormBuilderInterface $builder)
+    protected function getChoices(FilterConfigElementModel $element)
     {
-        $options = parent::getOptions($element, $builder);
-        $options['choices'] = System::getContainer()->get('huh.filter.choice.locale')->getCachedChoices([$element, $this->config->getFilter()]);
-        $options['choice_translation_domain'] = false; // disable translation]
-
-        if (isset($options['attr']['placeholder'])) {
-            $options['attr']['data-placeholder'] = $options['attr']['placeholder'];
-            $options['placeholder'] = $options['attr']['placeholder'];
-            unset($options['attr']['placeholder']);
-        }
-
-        $options['expanded'] = (bool) $element['expanded'];
-        $options['multiple'] = (bool) $element['multiple'];
-
-        return $options;
+        return System::getContainer()->get('huh.filter.choice.locale')->getCachedChoices([$element, $this->config->getFilter()]);
     }
 }

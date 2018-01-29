@@ -8,6 +8,7 @@
 
 namespace HeimrichHannot\FilterBundle\Filter\Type;
 
+use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 use Symfony\Component\Form\FormBuilderInterface;
 
@@ -16,7 +17,7 @@ class RadioType extends CheckboxType
     /**
      * {@inheritdoc}
      */
-    public function buildQuery(FilterQueryBuilder $builder, array $element)
+    public function buildQuery(FilterQueryBuilder $builder, FilterConfigElementModel $element)
     {
         $builder->whereElement($element, $this->getName($element), $this->config);
     }
@@ -24,7 +25,7 @@ class RadioType extends CheckboxType
     /**
      * {@inheritdoc}
      */
-    public function buildForm(array $element, FormBuilderInterface $builder)
+    public function buildForm(FilterConfigElementModel $element, FormBuilderInterface $builder)
     {
         $builder->add($this->getName($element), \Symfony\Component\Form\Extension\Core\Type\RadioType::class, $this->getOptions($element, $builder));
     }

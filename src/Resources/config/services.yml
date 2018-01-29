@@ -48,3 +48,7 @@ services:
         class: HeimrichHannot\FilterBundle\Choice\LocaleChoice
         arguments:
           - "@contao.framework"
+  huh.filter.choice.element:
+        class: HeimrichHannot\FilterBundle\Choice\ElementChoice
+        arguments:
+          - "@contao.framework"

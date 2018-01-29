@@ -10,6 +10,7 @@ namespace HeimrichHannot\FilterBundle\Filter\Type;
 
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
 use HeimrichHannot\FilterBundle\Filter\TypeInterface;
+use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 use Symfony\Component\Form\FormBuilderInterface;
 
@@ -18,7 +19,7 @@ class RangeType extends AbstractType implements TypeInterface
     /**
      * {@inheritdoc}
      */
-    public function buildQuery(FilterQueryBuilder $builder, array $element)
+    public function buildQuery(FilterQueryBuilder $builder, FilterConfigElementModel $element)
     {
         $builder->whereElement($element, $this->getName($element), $this->config);
     }
@@ -26,7 +27,7 @@ class RangeType extends AbstractType implements TypeInterface
     /**
      * {@inheritdoc}
      */
-    public function buildForm(array $element, FormBuilderInterface $builder)
+    public function buildForm(FilterConfigElementModel $element, FormBuilderInterface $builder)
     {
         $builder->add($this->getName($element), \Symfony\Component\Form\Extension\Core\Type\RangeType::class, $this->getOptions($element, $builder));
     }
@@ -34,13 +35,13 @@ class RangeType extends AbstractType implements TypeInterface
     /**
      * {@inheritdoc}
      */
-    protected function getOptions(array $element, FormBuilderInterface $builder)
+    protected function getOptions(FilterConfigElementModel $element, FormBuilderInterface $builder)
     {
         $options = parent::getOptions($element, $builder);
 
-        $options['attr']['min'] = $element['min'] ?: '0';
-        $options['attr']['max'] = $element['max'] ?: '100';
-        $options['attr']['step'] = $element['step'] ?: '1';
+        $options['attr']['min']  = $element->min ?: '0';
+        $options['attr']['max']  = $element->max ?: '100';
+        $options['attr']['step'] = $element->step ?: '1';
 
         return $options;
     }

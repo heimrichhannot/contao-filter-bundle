@@ -8,6 +8,7 @@
 
 namespace HeimrichHannot\FilterBundle\Filter\Type;
 
+use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 use Symfony\Component\Form\FormBuilderInterface;
 
@@ -16,7 +17,7 @@ class NumberType extends TextType
     /**
      * {@inheritdoc}
      */
-    public function buildQuery(FilterQueryBuilder $builder, array $element)
+    public function buildQuery(FilterQueryBuilder $builder, FilterConfigElementModel $element)
     {
         $builder->whereElement($element, $this->getName($element), $this->config);
     }
@@ -24,7 +25,7 @@ class NumberType extends TextType
     /**
      * {@inheritdoc}
      */
-    public function buildForm(array $element, FormBuilderInterface $builder)
+    public function buildForm(FilterConfigElementModel $element, FormBuilderInterface $builder)
     {
         $builder->add($this->getName($element), \Symfony\Component\Form\Extension\Core\Type\NumberType::class, $this->getOptions($element, $builder));
     }
@@ -32,13 +33,13 @@ class NumberType extends TextType
     /**
      * {@inheritdoc}
      */
-    protected function getOptions(array $element, FormBuilderInterface $builder)
+    protected function getOptions(FilterConfigElementModel $element, FormBuilderInterface $builder)
     {
         $options = parent::getOptions($element, $builder);
 
-        $options['grouping'] = (bool) $element['grouping'];
-        $options['scale'] = (int) $element['scale'];
-        $options['rounding_mode'] = (int) $element['roundingMode'];
+        $options['grouping']      = (bool)$element->grouping;
+        $options['scale']         = (int)$element->scale;
+        $options['rounding_mode'] = (int)$element->roundingMode;
 
         return $options;
     }

@@ -9,6 +9,7 @@
 namespace HeimrichHannot\FilterBundle\Choice;
 
 use Contao\System;
+use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use Symfony\Component\Intl\Intl;
 
 class LocaleChoice extends FieldOptionsChoice
@@ -33,14 +34,18 @@ class LocaleChoice extends FieldOptionsChoice
 
         list($element, $filter) = $context;
 
-        if (isset($element['customLocales']) && true === (bool) $element['customLocales']) {
+        if (!$element instanceof FilterConfigElementModel) {
+            return $choices;
+        }
+
+        if (true === (bool)$element->customLocales) {
             $options = $this->getCustomLocaleOptions($element, $filter);
-        } elseif (isset($element['customOptions']) && true === (bool) $element['customOptions']) {
+        } elseif (true === (bool)$element->customOptions) {
             $options = $this->getCustomOptions($element, $filter);
-        } elseif (isset($filter['dataContainer']) && '' !== $filter['dataContainer'] && isset($element['field'])) {
-            if (isset($GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element['field']])) {
+        } elseif (isset($filter['dataContainer']) && '' !== $filter['dataContainer'] && null !== $element->field) {
+            if (isset($GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element->field])) {
                 \Controller::loadDataContainer($filter['dataContainer']);
-                $options = $this->getDcaOptions($element, $filter, $GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element['field']]);
+                $options = $this->getDcaOptions($element, $filter, $GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element->field]);
             }
         }
 
@@ -67,18 +72,18 @@ class LocaleChoice extends FieldOptionsChoice
     /**
      * Get custom language options.
      *
-     * @param array $element
-     * @param array $filter
+     * @param FilterConfigElementModel $element
+     * @param array                    $filter
      *
      * @return array
      */
-    protected function getCustomLocaleOptions(array $element, array $filter)
+    protected function getCustomLocaleOptions(FilterConfigElementModel $element, array $filter)
     {
-        if (!isset($element['locales'])) {
+        if (null === $element->locales) {
             return [];
         }
 
-        $options = deserialize($element['locales'], true);
+        $options = deserialize($element->locales, true);
 
         $all = Intl::getLocaleBundle()->getLocaleNames();
 

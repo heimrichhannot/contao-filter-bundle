@@ -106,7 +106,8 @@ class TypeChoiceTest extends ContaoTestCase
 
         $this->assertNotEmpty($choices);
         $this->assertArrayHasKey('text', $choices);
-        $this->assertSame('HeimrichHannot\FilterBundle\Filter\Type\TextType', $choices['text']);
+        $this->assertArrayHasKey('class', $choices['text']);
+        $this->assertSame('HeimrichHannot\FilterBundle\Filter\Type\TextType', $choices['text']['class']);
     }
 
     /**

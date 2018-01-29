@@ -11,6 +11,7 @@ namespace HeimrichHannot\FilterBundle\Choice;
 use Contao\StringUtil;
 use Contao\System;
 use Contao\Widget;
+use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\UtilsBundle\Choice\AbstractChoice;
 
 class FieldOptionsChoice extends AbstractChoice
@@ -20,17 +21,24 @@ class FieldOptionsChoice extends AbstractChoice
      */
     protected function collect()
     {
-        list($element, $filter) = $this->getContext();
-
         $choices = [];
+        $context = $this->getContext();
+
+        if (!isset($context['element']) || !isset($context['filter'])) {
+            return $choices;
+        }
+
+        $element = $context['element'];
+        $filter  = $context['filter'];
+
         $options = [];
 
         \Controller::loadDataContainer($filter['dataContainer']);
 
-        if (true === (bool) $element['customOptions']) {
+        if (true === (bool)$element->customOptions) {
             $options = $this->getCustomOptions($element, $filter);
-        } elseif (isset($GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element['field']])) {
-            $options = $this->getDcaOptions($element, $filter, $GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element['field']]);
+        } elseif (isset($GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element->field])) {
+            $options = $this->getDcaOptions($element, $filter, $GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element->field]);
         }
 
         $translator = System::getContainer()->get('translator');
@@ -53,18 +61,18 @@ class FieldOptionsChoice extends AbstractChoice
     /**
      * Get custom options.
      *
-     * @param array $element
-     * @param array $filter
+     * @param FilterConfigElementModel $element
+     * @param array                    $filter
      *
      * @return array
      */
-    protected function getCustomOptions(array $element, array $filter)
+    protected function getCustomOptions(FilterConfigElementModel $element, array $filter)
     {
-        if (!isset($element['options'])) {
+        if (null === $element->options) {
             return [];
         }
 
-        $options = StringUtil::deserialize($element['options'], true);
+        $options = StringUtil::deserialize($element->options, true);
 
         return $options;
     }
@@ -72,16 +80,16 @@ class FieldOptionsChoice extends AbstractChoice
     /**
      * Get contao dca widget options.
      *
-     * @param array $element
-     * @param array $filter
-     * @param array $dca
+     * @param FilterConfigElementModel $element
+     * @param array                    $filter
+     * @param array                    $dca
      *
      * @return array
      */
-    protected function getDcaOptions(array $element, array $filter, array $dca)
+    protected function getDcaOptions(FilterConfigElementModel $element, array $filter, array $dca)
     {
         $options = [];
-        $dca = $GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element['field']];
+        $dca     = $GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element->field];
 
         switch ($dca['inputType']) {
             case 'cfgTags':
@@ -100,13 +108,13 @@ class FieldOptionsChoice extends AbstractChoice
     /**
      * Get default contao widget options.
      *
-     * @param array $element
-     * @param array $filter
-     * @param array $dca
+     * @param FilterConfigElementModel $element
+     * @param array                    $filter
+     * @param array                    $dca
      *
      * @return array
      */
-    protected function getWidgetOptions(array $element, array $filter, array $dca)
+    protected function getWidgetOptions(FilterConfigElementModel $element, array $filter, array $dca)
     {
         $options = [];
 
@@ -118,9 +126,9 @@ class FieldOptionsChoice extends AbstractChoice
 
         $attributes = Widget::getAttributesFromDca(
             $dca,
-            $element['field'],
+            $element->field,
             '',
-            $element['field'],
+            $element->field,
             $filter['dataContainer'],
             null
         );
@@ -135,13 +143,13 @@ class FieldOptionsChoice extends AbstractChoice
     /**
      * Get tag widget options.
      *
-     * @param array $element
-     * @param array $filter
-     * @param array $dca
+     * @param FilterConfigElementModel $element
+     * @param array                    $filter
+     * @param array                    $dca
      *
      * @return array
      */
-    protected function getTagWidgetOptions(array $element, array $filter, array $dca)
+    protected function getTagWidgetOptions(FilterConfigElementModel $element, array $filter, array $dca)
     {
         $options = [];
 

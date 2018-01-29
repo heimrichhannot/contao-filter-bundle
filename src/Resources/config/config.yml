@@ -27,6 +27,7 @@ huh:
       - {name: radio, class: HeimrichHannot\FilterBundle\Filter\Type\RadioType, type: other}
       - {name: initial, class: HeimrichHannot\FilterBundle\Filter\Type\InitialType, type: other}
       - {name: date, class: HeimrichHannot\FilterBundle\Filter\Type\DateType, type: date}
+      - {name: date_range, class: HeimrichHannot\FilterBundle\Filter\Type\DateRangeType, type: date, wrapper: true}
     templates:
       - {name: form_div_layout, template: '@HeimrichHannotContaoFilter/filter/filter_form_div_layout.html.twig'}
       - {name: form_table_layout, template: '@HeimrichHannotContaoFilter/filter/filter_form_table_layout.html.twig'}

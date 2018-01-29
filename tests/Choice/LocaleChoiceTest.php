@@ -15,6 +15,7 @@ use Contao\TestCase\ContaoTestCase;
 use HeimrichHannot\FilterBundle\Choice\LanguageChoice;
 use HeimrichHannot\FilterBundle\Choice\LocaleChoice;
 use HeimrichHannot\FilterBundle\ContaoManager\Plugin;
+use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Translation\Translator;
 
@@ -57,7 +58,7 @@ class LocaleChoiceTest extends ContaoTestCase
 
         $containerBuilder = new \Contao\ManagerPlugin\Config\ContainerBuilder($this->mockPluginLoader($this->never()), []);
 
-        $config = $plugin->getExtensionConfig('huh_filter', [[]], $containerBuilder);
+        $config                 = $plugin->getExtensionConfig('huh_filter', [[]], $containerBuilder);
         $this->config['filter'] = $config['huh']['filter'];
 
         // required within Contao\Widget::getAttributesFromDca()
@@ -77,7 +78,7 @@ class LocaleChoiceTest extends ContaoTestCase
         System::setContainer($this->container);
 
         $framework = $this->mockContaoFramework();
-        $instance = new LocaleChoice($framework);
+        $instance  = new LocaleChoice($framework);
 
         $this->assertInstanceOf('HeimrichHannot\FilterBundle\Choice\LocaleChoice', $instance);
     }
@@ -98,28 +99,32 @@ class LocaleChoiceTest extends ContaoTestCase
         $GLOBALS['TL_FFL']['select'] = 'Contao\SelectMenu';
 
         $GLOBALS['TL_DCA']['test']['fields']['test'] = [
-            'label' => 'test',
-            'inputType' => 'select',
-            'options' => ['de_DE' => 'Deutsch Test', 'en' => 'Englisch Test'],
+            'label'            => 'test',
+            'inputType'        => 'select',
+            'options'          => ['de_DE' => 'Deutsch Test', 'en' => 'Englisch Test'],
             'options_callback' => null,
-            'eval' => [
-                'submitOnChange' => false,
-                'allowHtml' => false,
-                'rte' => null,
-                'preserveTags' => false,
-                'isAssociative' => false,
+            'eval'             => [
+                'submitOnChange'     => false,
+                'allowHtml'          => false,
+                'rte'                => null,
+                'preserveTags'       => false,
+                'isAssociative'      => false,
                 'includeBlankOption' => false,
-                'sql' => null,
+                'sql'                => null,
             ],
         ];
 
+        $elementProperties = [
+            'type'  => 'choice',
+            'field' => 'test',
+        ];
+
+        $element = $this->mockClassWithProperties(FilterConfigElementModel::class, $elementProperties);
+
         $context = [
+            $element,
             [
-                'type' => 'choice',
-                'field' => 'test',
-            ],
-            [
-                'id' => 1,
+                'id'            => 1,
                 'dataContainer' => 'test',
             ],
         ];
@@ -127,7 +132,7 @@ class LocaleChoiceTest extends ContaoTestCase
         System::setContainer($this->container);
 
         $instance = new LocaleChoice($framework);
-        $choices = $instance->getChoices($context);
+        $choices  = $instance->getChoices($context);
 
         $this->assertNotEmpty($choices);
         $this->assertArraySubset(['Deutsch Test' => 'de_DE', 'Englisch Test' => 'en'], $choices);
@@ -149,28 +154,32 @@ class LocaleChoiceTest extends ContaoTestCase
         $GLOBALS['TL_FFL']['select'] = '_NonExistingNameSpace\NonExisingClass';
 
         $GLOBALS['TL_DCA']['test']['fields']['test'] = [
-            'label' => 'test',
-            'inputType' => 'select',
-            'options' => ['de_DE' => 'Deutsch Test', 'en' => 'Englisch Test'],
+            'label'            => 'test',
+            'inputType'        => 'select',
+            'options'          => ['de_DE' => 'Deutsch Test', 'en' => 'Englisch Test'],
             'options_callback' => null,
-            'eval' => [
-                'submitOnChange' => false,
-                'allowHtml' => false,
-                'rte' => null,
-                'preserveTags' => false,
-                'isAssociative' => false,
+            'eval'             => [
+                'submitOnChange'     => false,
+                'allowHtml'          => false,
+                'rte'                => null,
+                'preserveTags'       => false,
+                'isAssociative'      => false,
                 'includeBlankOption' => false,
-                'sql' => null,
+                'sql'                => null,
             ],
         ];
 
+        $elementProperties = [
+            'type'  => 'choice',
+            'field' => 'test',
+        ];
+
+        $element = $this->mockClassWithProperties(FilterConfigElementModel::class, $elementProperties);
+
         $context = [
+            $element,
             [
-                'type' => 'choice',
-                'field' => 'test',
-            ],
-            [
-                'id' => 1,
+                'id'            => 1,
                 'dataContainer' => 'test',
             ],
         ];
@@ -178,7 +187,7 @@ class LocaleChoiceTest extends ContaoTestCase
         System::setContainer($this->container);
 
         $instance = new LocaleChoice($framework);
-        $choices = $instance->getChoices($context);
+        $choices  = $instance->getChoices($context);
 
         $this->assertEmpty($choices);
     }
@@ -199,28 +208,32 @@ class LocaleChoiceTest extends ContaoTestCase
         $GLOBALS['TL_FFL']['select'] = 'Contao\SelectMenu';
 
         $GLOBALS['TL_DCA']['test']['fields']['test'] = [
-            'label' => 'test',
-            'inputType' => 'select',
-            'options' => ['de_DE', 'en'],
+            'label'            => 'test',
+            'inputType'        => 'select',
+            'options'          => ['de_DE', 'en'],
             'options_callback' => null,
-            'eval' => [
-                'submitOnChange' => false,
-                'allowHtml' => false,
-                'rte' => null,
-                'preserveTags' => false,
-                'isAssociative' => false,
+            'eval'             => [
+                'submitOnChange'     => false,
+                'allowHtml'          => false,
+                'rte'                => null,
+                'preserveTags'       => false,
+                'isAssociative'      => false,
                 'includeBlankOption' => false,
-                'sql' => null,
+                'sql'                => null,
             ],
         ];
 
+        $elementProperties = [
+            'type'  => 'choice',
+            'field' => 'test',
+        ];
+
+        $element = $this->mockClassWithProperties(FilterConfigElementModel::class, $elementProperties);
+
         $context = [
+            $element,
             [
-                'type' => 'choice',
-                'field' => 'test',
-            ],
-            [
-                'id' => 1,
+                'id'            => 1,
                 'dataContainer' => 'test',
             ],
         ];
@@ -228,7 +241,7 @@ class LocaleChoiceTest extends ContaoTestCase
         System::setContainer($this->container);
 
         $instance = new LocaleChoice($framework);
-        $choices = $instance->getChoices($context);
+        $choices  = $instance->getChoices($context);
 
         $this->assertNotEmpty($choices);
         $this->assertArraySubset(['German (Germany)' => 'de_DE', 'English' => 'en'], $choices);
@@ -251,30 +264,35 @@ class LocaleChoiceTest extends ContaoTestCase
 
         System::setContainer($this->container);
 
-        $context = [
-            [
-                'type' => 'choice',
-                'customOptions' => true,
-                'options' => serialize(
+        $elementProperties = [
+            'type'          => 'choice',
+            'customOptions' => true,
+            'options'       => serialize(
+                [
                     [
-                        [
-                            'value' => 'de_DE',
-                            'label' => 'test.label.de_DE',
-                        ],
-                        [
-                            'value' => 'en',
-                            'label' => 'test.label.en',
-                        ],
-                    ]
-                ),
-            ],
+                        'value' => 'de_DE',
+                        'label' => 'test.label.de_DE',
+                    ],
+                    [
+                        'value' => 'en',
+                        'label' => 'test.label.en',
+                    ],
+                ]
+            ),
+        ];
+
+        $element = $this->mockClassWithProperties(FilterConfigElementModel::class, $elementProperties);
+
+        $context = [
+            $element,
             ['id' => 1],
         ];
+
 
         System::setContainer($this->container);
 
         $instance = new LocaleChoice($framework);
-        $choices = $instance->getChoices($context);
+        $choices  = $instance->getChoices($context);
 
         $this->assertNotEmpty($choices);
         $this->assertArraySubset(['German (Germany) Test' => 'de_DE', 'English Test' => 'en'], $choices);
@@ -293,30 +311,34 @@ class LocaleChoiceTest extends ContaoTestCase
 
         System::setContainer($this->container);
 
-        $context = [
-            [
-                'type' => 'choice',
-                'customOptions' => true,
-                'options' => serialize(
+        $elementProperties = [
+            'type'          => 'choice',
+            'customOptions' => true,
+            'options'       => serialize(
+                [
                     [
-                        [
-                            'value' => 'de_DE',
-                            'label' => 'de_DE',
-                        ],
-                        [
-                            'value' => 'en',
-                            'label' => 'en',
-                        ],
-                    ]
-                ),
-            ],
+                        'value' => 'de_DE',
+                        'label' => 'de_DE',
+                    ],
+                    [
+                        'value' => 'en',
+                        'label' => 'en',
+                    ],
+                ]
+            ),
+        ];
+
+        $element = $this->mockClassWithProperties(FilterConfigElementModel::class, $elementProperties);
+
+        $context = [
+            $element,
             ['id' => 1],
         ];
 
         System::setContainer($this->container);
 
         $instance = new LocaleChoice($framework);
-        $choices = $instance->getChoices($context);
+        $choices  = $instance->getChoices($context);
 
         $this->assertNotEmpty($choices);
         $this->assertArraySubset(['German (Germany)' => 'de_DE', 'English' => 'en'], $choices);
@@ -335,18 +357,22 @@ class LocaleChoiceTest extends ContaoTestCase
 
         System::setContainer($this->container);
 
+        $elementProperties = [
+            'type'          => 'choice',
+            'customLocales' => true,
+        ];
+
+        $element = $this->mockClassWithProperties(FilterConfigElementModel::class, $elementProperties);
+
         $context = [
-            [
-                'type' => 'choice',
-                'customLocales' => true,
-            ],
+            $element,
             ['id' => 1],
         ];
 
         System::setContainer($this->container);
 
         $instance = new LocaleChoice($framework);
-        $choices = $instance->getChoices($context);
+        $choices  = $instance->getChoices($context);
 
         $this->assertEmpty($choices);
     }
@@ -364,19 +390,23 @@ class LocaleChoiceTest extends ContaoTestCase
 
         System::setContainer($this->container);
 
+        $elementProperties = [
+            'type'          => 'choice',
+            'customLocales' => true,
+            'locales'       => serialize(['de_DE', 'en']),
+        ];
+
+        $element = $this->mockClassWithProperties(FilterConfigElementModel::class, $elementProperties);
+
         $context = [
-            [
-                'type' => 'choice',
-                'customLocales' => true,
-                'locales' => serialize(['de_DE', 'en']),
-            ],
+            $element,
             ['id' => 1],
         ];
 
         System::setContainer($this->container);
 
         $instance = new LocaleChoice($framework);
-        $choices = $instance->getChoices($context);
+        $choices  = $instance->getChoices($context);
 
         $this->assertNotEmpty($choices);
         $this->assertArraySubset(['English' => 'en', 'German (Germany)' => 'de_DE'], $choices);
@@ -401,7 +431,7 @@ class LocaleChoiceTest extends ContaoTestCase
         ];
 
         $instance = new LocaleChoice($framework);
-        $choices = $instance->getChoices($context);
+        $choices  = $instance->getChoices($context);
 
         System::setContainer($this->container);
 
@@ -422,7 +452,7 @@ class LocaleChoiceTest extends ContaoTestCase
         $context = ['foo' => []];
 
         $instance = new LocaleChoice($framework);
-        $choices = $instance->getChoices($context);
+        $choices  = $instance->getChoices($context);
 
         System::setContainer($this->container);
 
@@ -443,7 +473,7 @@ class LocaleChoiceTest extends ContaoTestCase
         $context = [];
 
         $instance = new LanguageChoice($framework);
-        $choices = $instance->getChoices($context);
+        $choices  = $instance->getChoices($context);
 
         System::setContainer($this->container);
 

@@ -38,7 +38,7 @@ class TypeChoice extends AbstractChoice
                 continue;
             }
 
-            $choices[$type['name']] = $type['class'];
+            $choices[$type['name']] = $type;
         }
 
         return $choices;

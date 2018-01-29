@@ -11,6 +11,7 @@ namespace HeimrichHannot\FilterBundle\Filter\Type;
 use Contao\StringUtil;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
 use HeimrichHannot\FilterBundle\Filter\TypeInterface;
+use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 use Symfony\Component\Form\FormBuilderInterface;
 
@@ -19,17 +20,17 @@ class TextConcatType extends AbstractType implements TypeInterface
     /**
      * {@inheritdoc}
      */
-    public function buildQuery(FilterQueryBuilder $builder, array $element)
+    public function buildQuery(FilterQueryBuilder $builder, FilterConfigElementModel $element)
     {
-        $data = $this->config->getData();
-        $name = $this->getName($element, $element['name']);
+        $data  = $this->config->getData();
+        $name  = $this->getName($element);
         $value = $data[$name];
 
         if (null === $value) {
             return;
         }
 
-        $fields = StringUtil::deserialize($element['fields'], true);
+        $fields = StringUtil::deserialize($element->fields, true);
         $concat = 'CONCAT('.implode('," ",', $fields).')';
 
         $builder->andWhere($builder->expr()->like($concat, $builder->expr()->literal('%'.$value.'%')));
@@ -38,7 +39,7 @@ class TextConcatType extends AbstractType implements TypeInterface
     /**
      * {@inheritdoc}
      */
-    public function buildForm(array $element, FormBuilderInterface $builder)
+    public function buildForm(FilterConfigElementModel $element, FormBuilderInterface $builder)
     {
         $builder->add($this->getName($element), \Symfony\Component\Form\Extension\Core\Type\TextType::class, $this->getOptions($element, $builder));
     }
@@ -46,8 +47,8 @@ class TextConcatType extends AbstractType implements TypeInterface
     /**
      * {@inheritdoc}
      */
-    protected function getName(array $element, $default = null)
+    public function getDefaultName(FilterConfigElementModel $element)
     {
-        return parent::getName($element, $element['name']);
+        return $element->name;
     }
 }

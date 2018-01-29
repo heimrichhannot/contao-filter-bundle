@@ -174,10 +174,6 @@ class FilterRegistry
 
         $elements = $adapter->findPublishedByPid($filter['id']);
 
-        if (null !== $elements) {
-            $elements = $elements->fetchAll();
-        }
-
         $config->init($sessionKey, $filter, $elements);
 
         // always build the form and handle the request within the registry to have global access

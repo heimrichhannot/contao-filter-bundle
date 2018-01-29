@@ -64,11 +64,11 @@ class FilterConfigElementModel extends \Model
      */
     public function findPublishedByPid($intId, $intLimit = 0, array $arrOptions = [])
     {
-        $t = static::$strTable;
+        $t          = static::$strTable;
         $arrColumns = ["$t.pid=?"];
 
         if (isset($arrOptions['ignoreFePreview']) || !defined('BE_USER_LOGGED_IN') || !BE_USER_LOGGED_IN) {
-            $time = \Date::floorToMinute();
+            $time         = \Date::floorToMinute();
             $arrColumns[] = "($t.start='' OR $t.start<='$time') AND ($t.stop='' OR $t.stop>'".($time + 60)."') AND $t.published='1'";
         }
 
@@ -78,6 +78,42 @@ class FilterConfigElementModel extends \Model
 
         if ($intLimit > 0) {
             $arrOptions['limit'] = $intLimit;
+        }
+
+        return static::findBy($arrColumns, $intId, $arrOptions);
+    }
+
+
+    /**
+     * Find published filter elements items by their parent ID and optional types
+     *
+     * @param int   $intId      The filter ID
+     * @param array $types      The list of element types
+     * @param int   $intLimit   An optional limit
+     * @param array $arrOptions An optional options array
+     *
+     * @return \Model\Collection|FilterConfigElementModel[]|FilterConfigElementModel|null A collection of models or null if there are no filter elements
+     */
+    public function findPublishedByPidAndTypes($intId, array $types = [], $intLimit = 0, array $arrOptions = [])
+    {
+        $t          = static::$strTable;
+        $arrColumns = ["$t.pid=?"];
+
+        if (isset($arrOptions['ignoreFePreview']) || !defined('BE_USER_LOGGED_IN') || !BE_USER_LOGGED_IN) {
+            $time         = \Date::floorToMinute();
+            $arrColumns[] = "($t.start='' OR $t.start<='$time') AND ($t.stop='' OR $t.stop>'".($time + 60)."') AND $t.published='1'";
+        }
+
+        if (!isset($arrOptions['order'])) {
+            $arrOptions['order'] = "$t.sorting ASC";
+        }
+
+        if ($intLimit > 0) {
+            $arrOptions['limit'] = $intLimit;
+        }
+
+        if (!empty($types)) {
+            $arrColumns[] = \Database::getInstance()->findInSet("$t.type", $types);
         }
 
         return static::findBy($arrColumns, $intId, $arrOptions);

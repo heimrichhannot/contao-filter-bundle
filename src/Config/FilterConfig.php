@@ -47,7 +47,7 @@ class FilterConfig
     protected $filter;
 
     /**
-     * @var array|null
+     * @var \Contao\Model\Collection|FilterConfigElementModel[]|null
      */
     protected $elements;
 
@@ -76,9 +76,9 @@ class FilterConfig
     /**
      * Init the filter based on its model.
      *
-     * @param string     $sessionKey
-     * @param array      $filter
-     * @param array|null $elements
+     * @param string                                                   $sessionKey
+     * @param array                                                    $filter
+     * @param \Contao\Model\Collection|FilterConfigElementModel[]|null $elements
      */
     public function init(string $sessionKey, array $filter, $elements = null)
     {
@@ -131,7 +131,7 @@ class FilterConfig
 
         $this->queryBuilder->from($this->getFilter()['dataContainer']);
 
-        if (!is_array($this->getElements())) {
+        if (null === $this->getElements()) {
             return;
         }
 
@@ -142,11 +142,12 @@ class FilterConfig
         }
 
         foreach ($this->getElements() as $element) {
-            if (!isset($types[$element['type']])) {
+            if (!isset($types[$element->type])) {
                 continue;
             }
 
-            $class = $types[$element['type']];
+            $type  = $types[$element->type];
+            $class = $type['class'];
 
             if (!class_exists($class)) {
                 continue;
@@ -182,7 +183,36 @@ class FilterConfig
     }
 
     /**
-     * @return array|null
+     * Get a specific element by its value
+     *
+     * @param  mixed $value The to search within $key
+     * @param string $key   The array key
+     *
+     * @return mixed|null
+     */
+    public function getElementByValue($value, $key = 'id')
+    {
+        if (null === $this->getElements()) {
+            return null;
+        }
+
+        if (is_array($value)) {
+            $value = serialize($value);
+        }
+
+        foreach ($this->getElements() as $element) {
+            if (null === $element->{$key} || (string)$element->{$key} != (string)$value) {
+                continue;
+            }
+
+            return $element;
+        }
+
+        return null;
+    }
+
+    /**
+     * @return \Contao\Model\Collection|FilterConfigElementModel[]|null
      */
     public function getElements()
     {

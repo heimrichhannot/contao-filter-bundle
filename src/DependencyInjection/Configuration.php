@@ -45,6 +45,7 @@ class Configuration implements ConfigurationInterface
                                     ->scalarNode('name')->cannotBeEmpty()->end()
                                     ->scalarNode('class')->cannotBeEmpty()->end()
                                     ->scalarNode('type')->defaultValue('other')->end()
+                                    ->booleanNode('wrapper')->defaultValue(false)->end()
                                 ->end()
                             ->end()
                         ->end()
