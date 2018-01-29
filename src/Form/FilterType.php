@@ -131,6 +131,12 @@ class FilterType extends AbstractType
      */
     protected function buildWrapperElements(array $wrappers = [], FormBuilderInterface $builder, array $options)
     {
+        $types    = \System::getContainer()->get('huh.filter.choice.type')->getCachedChoices();
+
+        if (!is_array($types) || empty($types)) {
+            return;
+        }
+
         foreach ($wrappers as $element) {
             if (!isset($types[$element->type])) {
                 continue;

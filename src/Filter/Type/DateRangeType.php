@@ -54,23 +54,23 @@ class DateRangeType extends AbstractType implements TypeInterface
      */
     public function buildForm(FilterConfigElementModel $element, FormBuilderInterface $builder)
     {
-//        $startElement = $this->config->getElementByValue($element['startElement']);
-//        $stopElement  = $this->config->getElementByValue($element['stopElement']);
-//
-//        if (null === $startElement || null === $stopElement) {
-//            return;
-//        }
-//
-//        $start = $builder->get($startElement['name']);
-//        $stop  = $builder->get($stopElement['name']);
-//
-//        $group = $builder->create($this->getName($element), FormType::class, ['inherit_data' => true]);
-//
-//        $group->add($start->getName(), get_class($start), $start->getOptions());
-//        $group->add($stop->getName(), get_class($stop), $stop->getOptions());
-//
-//        $builder->remove($start->getName());
-//        $builder->remove($stop->getName());
+        $startElement = $this->config->getElementByValue($element['startElement']);
+        $stopElement  = $this->config->getElementByValue($element['stopElement']);
+
+        if (null === $startElement || null === $stopElement) {
+            return;
+        }
+
+        $start = $builder->get($startElement['name']);
+        $stop  = $builder->get($stopElement['name']);
+
+        $group = $builder->create($this->getName($element), FormType::class, ['inherit_data' => true]);
+
+        $group->add($start->getName(), get_class($start), $start->getOptions());
+        $group->add($stop->getName(), get_class($stop), $stop->getOptions());
+
+        $builder->remove($start->getName());
+        $builder->remove($stop->getName());
     }
 
 

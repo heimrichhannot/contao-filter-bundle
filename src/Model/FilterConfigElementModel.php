@@ -54,6 +54,11 @@ class FilterConfigElementModel extends \Model
     protected static $strTable = 'tl_filter_config_element';
 
     /**
+     * @var string
+     */
+    protected $formName;
+
+    /**
      * Find published filte elements items by their parent ID.
      *
      * @param int   $intId      The filter ID
@@ -117,5 +122,24 @@ class FilterConfigElementModel extends \Model
         }
 
         return static::findBy($arrColumns, $intId, $arrOptions);
+    }
+
+
+    /**
+     * Set the form element name for the current model
+     *
+     * @param string $name
+     */
+    public function setElementFormName(string $name)
+    {
+        $this->formName = $name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFormName(): string
+    {
+        return $this->formName;
     }
 }

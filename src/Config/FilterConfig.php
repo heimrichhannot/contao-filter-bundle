@@ -13,6 +13,7 @@ use Contao\System;
 use HeimrichHannot\FilterBundle\Entity\FilterSession;
 use HeimrichHannot\FilterBundle\Filter\TypeInterface;
 use HeimrichHannot\FilterBundle\Form\FilterType;
+use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
