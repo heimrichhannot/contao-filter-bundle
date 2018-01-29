@@ -111,7 +111,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
 		'submit'       => '{general_legend},title,type;{config_legend},customName,customLabel;{expert_legend},cssClass;{publish_legend},published;',
 		'checkbox'     => '{general_legend},title,type;{config_legend},field,customName,customValue,customLabel;{expert_legend},cssClass;{publish_legend},published;',
 		'radio'        => '{general_legend},title,type;{config_legend},field,customName,customValue,customLabel;{expert_legend},cssClass;{publish_legend},published;',
-		'date'         => '{general_legend},title,type;{config_legend},startField,endField,name,customValue,customLabel,dateFormat,minDate,maxDate;{expert_legend},cssClass;{publish_legend},published;',
+		'date'         => '{general_legend},title,type;{config_legend},startField,stopField,name,customValue,customLabel,dateFormat,minDate,maxDate;{expert_legend},cssClass;{publish_legend},published;',
 	],
 	'subpalettes' => [
 		'customOptions'        => 'options',
@@ -319,8 +319,8 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
 			'eval'             => ['chosen' => true, 'tl_class' => 'w50', 'includeBlankOption' => true],
 			'sql'              => "varchar(64) NOT NULL default ''",
 		],
-		'endField'        => [
-			'label'            => &$GLOBALS['TL_LANG']['tl_filter_config_element']['endField'],
+		'stopField'        => [
+			'label'            => &$GLOBALS['TL_LANG']['tl_filter_config_element']['stopField'],
 			'exclude'          => true,
 			'filter'           => true,
 			'inputType'        => 'select',

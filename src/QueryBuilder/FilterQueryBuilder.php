@@ -13,7 +13,7 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Haste\Model\Relations;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
-use Symfony\Component\Validator\Constraints\DateTime;
+use HeimrichHannot\FilterBundle\Filter\Type\DateType;
 
 class FilterQueryBuilder extends QueryBuilder
 {
@@ -49,9 +49,11 @@ class FilterQueryBuilder extends QueryBuilder
 
         $dca = $GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element['field']];
 
-        if((isset($element['startField']) && '' != $element['startField']))
+        if((isset($element['startField']) && '' != $element['startField']) || (isset($element['stopField']) && '' != $element['stopField']))
 		{
 			$this->whereRangeWidget($element, $name, $config, $dca);
+			
+			return $this;
 		}
         
         
@@ -89,21 +91,21 @@ class FilterQueryBuilder extends QueryBuilder
 			return $this;
 		}
 		
-		if($value instanceof DateTime)
+		if($value->date)
 		{
-			$value = strtotime($value['date']);
+			$value = strtotime($value->date);
 		}
 		
-		if($name == $element['startField'])
+		if($element['field'] == $element['startField'] && false !== strpos($name, DateType::START_SUFFIX))
 		{
-			$this->andWhere($this->expr()->gte($name, strtotime($value['date'])));
+			$this->andWhere($this->expr()->gte($element['startField'], $value));
 		}
-		
-		if($name == $element['endField'])
+
+		if($element['field'] == $element['stopField'] && false !== strpos($name, DateType::STOP_SUFFIX))
 		{
-			$this->andWhere($this->expr()->lte($name, strtotime($value['date'])));
+			$this->andWhere($this->expr()->lte($element['stopField'], $value));
 		}
-		
+
 		return $this;
     }
     

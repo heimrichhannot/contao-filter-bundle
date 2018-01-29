@@ -29,46 +29,29 @@ class DateType extends AbstractType implements TypeInterface
 	 */
 	public function buildQuery(FilterQueryBuilder $builder, array $element)
 	{
-//        $builder->whereElement($element, $this->getName($element,$element['name']), $this->config);
 		$data = $this->config->getData();
+		$startName = $this->getStartName($element);
+		$stopName = $this->getStopName($element);
 		
-		
-		
-//		if(null !== $data['date_start'] && null !== $data['date_stop'])
+//		if(null !== $data[$startName] && null !== $data[$stopName])
 //		{return;}
 		
-		if(isset($data['date_start']) && '' != $data['date_start'])
+		if(isset($data[$startName]) && '' != $data[$startName])
 		{
+			// set field to startField for query building
 			$element['field'] = $element['startField'];
 			
-			$builder->whereElement($element, $this->getStartValueName($element), $this->config);
+			$builder->whereElement($element, $startName, $this->config);
 		}
 		
-		if(isset($data['date_stop']) && '' != $data['date_stop'])
+		if(isset($data[$stopName]) && '' != $data[$stopName])
 		{
-			$builder->whereElement($element, $this->getStopValueName($element), $this->config);
+			// set field to stopField for query building
+			$element['field'] = $element['stopField'];
+			
+			$builder->whereElement($element, $stopName, $this->config);
 		}
 		
-	}
-	
-	/**
-	 * @param array $element
-	 *
-	 * @return string
-	 */
-	protected function getStartValueName(array $element): string
-	{
-		return $element['name'] . '_' .  static::START_SUFFIX;
-	}
-	
-	/**
-	 * @param array $element
-	 *
-	 * @return string
-	 */
-	protected function getStopValueName(array $element): string
-	{
-		return $element['name'] . '_' .  static::STOP_SUFFIX;
 	}
 	
 	/**
@@ -76,7 +59,7 @@ class DateType extends AbstractType implements TypeInterface
 	 */
 	public function buildForm(array $element, FormBuilderInterface $builder)
 	{
-		if (isset($element['startField']) && '' !== $element['startField'] && isset($element['endField']) && '' !== $element['endField']) {
+		if (isset($element['startField']) && '' !== $element['startField'] && isset($element['stopField']) && '' !== $element['stopField']) {
 			$this->buildRangeForm($element, $builder);
 			
 			return;
@@ -86,7 +69,7 @@ class DateType extends AbstractType implements TypeInterface
 			$this->buildStartForm($element, $builder);
 		}
 		
-		if (isset($element['endField']) && '' !== $element['endField']) {
+		if (isset($element['stopField']) && '' !== $element['stopField']) {
 			$this->buildStopForm($element, $builder);
 		}
 	}
