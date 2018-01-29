@@ -180,7 +180,7 @@ class DateType extends AbstractType implements TypeInterface
      *
      * @return array
      */
-    protected function setLimits(FilterConfigElementModel $options, array $element): array
+    protected function setLimits(array $options, FilterConfigElementModel $element): array
     {
         if (true === (bool)$element->minDate) {
             $options['attr']['data-min-date'] = date($element->dateFormat, $element->minDate);
