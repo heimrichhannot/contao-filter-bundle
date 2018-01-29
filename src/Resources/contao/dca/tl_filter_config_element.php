@@ -291,7 +291,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
 		'dateFormat'  => [
 			'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['dateFormat'],
 			'exclude'   => true,
-			'default'   => \Config::get('dateTime'),
+			'default'   => \Config::get('dateFormat'),
 			'inputType' => 'text',
 			'eval'      => ['mandatory' => true, 'submitOnChange' => true, 'includeBlankOption' => true],
 			'sql'       => "varchar(32) NOT NULL default ''",

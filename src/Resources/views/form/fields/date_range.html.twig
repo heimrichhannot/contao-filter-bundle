@@ -1,8 +1,0 @@
-{% block date_range_widget %}
-    {% set type = type|default('date_range') %}
-    {% for child in form %}
-        <li>
-            {{ form_widget(child) }}
-        </li>
-    {% endfor %}
-{%- endblock date_range_widget %}
