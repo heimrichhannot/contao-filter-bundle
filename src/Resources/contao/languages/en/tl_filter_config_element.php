@@ -15,6 +15,7 @@ $lang['customName']      = ['Custom name', 'Set a custom field name.'];
 $lang['name']            = ['Name', 'Enter a custom field name.'];
 $lang['addPlaceholder']  = ['Add placeholder', 'Add a placeholder value.'];
 $lang['placeholder']     = ['Placeholder', 'Select a placeholder.'];
+$lang['hideLabel']       = ['Hide label', 'Hide the label.'];
 $lang['customLabel']     = ['Custom label', 'Set a custom label.'];
 $lang['label']           = ['Label', 'Select a custom label.'];
 $lang['expanded']        = ['Expanded (Radio/Checkboxes)', 'Enable to render choices as radio buttons or checkboxes.'];

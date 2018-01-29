@@ -36,4 +36,24 @@ interface TypeInterface
      * @param FormBuilderInterface     $builder The form builder
      */
     public function buildForm(FilterConfigElementModel $element, FormBuilderInterface $builder);
+
+
+    /**
+     * Get the field name.
+     *
+     * @param FilterConfigElementModel $element
+     *
+     * @return mixed
+     */
+    public function getName(FilterConfigElementModel $element);
+
+
+    /**
+     * Get the default form element name
+     *
+     * @param FilterConfigElementModel $element The element data
+     *
+     * @return string|null
+     */
+    public function getDefaultName(FilterConfigElementModel $element);
 }

@@ -30,4 +30,12 @@ class InitialType extends AbstractType implements TypeInterface
     public function buildForm(FilterConfigElementModel $element, FormBuilderInterface $builder)
     {
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function getDefaultName(FilterConfigElementModel $element)
+    {
+        return null;
+    }
 }

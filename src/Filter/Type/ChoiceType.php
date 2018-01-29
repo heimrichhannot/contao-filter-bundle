@@ -65,4 +65,12 @@ class ChoiceType extends AbstractType implements TypeInterface
     {
         return System::getContainer()->get('huh.filter.choice.field_options')->getCachedChoices(['element' => $element, 'filter' => $this->config->getFilter()]);
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function getDefaultName(FilterConfigElementModel $element)
+    {
+        return null;
+    }
 }

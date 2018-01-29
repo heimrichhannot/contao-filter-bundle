@@ -74,7 +74,7 @@ abstract class AbstractType
     {
         $options = [];
 
-        $options['label'] = $this->getLabel($element, $builder) ?: $element->title;
+        $options['label'] = (true === (bool)$element->hideLabel) ? false : ($this->getLabel($element, $builder) ?: $element->title);
 
         if (true === (bool)$element->addPlaceholder && '' !== $element->placeholder) {
             $options['attr']['placeholder'] = $this->translator->trans($element->placeholder, ['%label%' => $this->translator->trans($options['label'])]);
@@ -98,7 +98,7 @@ abstract class AbstractType
      */
     public function getName(FilterConfigElementModel $element)
     {
-        $name = $element->field ?: $this->getDefaultName($element);
+        $name = $this->getDefaultName($element) ?: $element->field;
 
         if (true === (bool)$element->customName && '' !== $element->name) {
             $name = $element->name;
@@ -109,17 +109,5 @@ abstract class AbstractType
         }
 
         return $name;
-    }
-
-    /**
-     * Get the default form element name
-     *
-     * @param FilterConfigElementModel $element The element data
-     *
-     * @return string|null
-     */
-    public function getDefaultName(FilterConfigElementModel $element)
-    {
-        return null;
     }
 }

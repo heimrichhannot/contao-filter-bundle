@@ -31,4 +31,12 @@ class SearchType extends AbstractType implements TypeInterface
     {
         $builder->add($this->getName($element), \Symfony\Component\Form\Extension\Core\Type\SearchType::class, $this->getOptions($element, $builder));
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function getDefaultName(FilterConfigElementModel $element)
+    {
+        return null;
+    }
 }

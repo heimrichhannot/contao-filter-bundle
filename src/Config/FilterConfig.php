@@ -189,7 +189,7 @@ class FilterConfig
      * @param  mixed $value The to search within $key
      * @param string $key   The array key
      *
-     * @return mixed|null
+     * @return FilterConfigElementModel|null
      */
     public function getElementByValue($value, $key = 'id')
     {

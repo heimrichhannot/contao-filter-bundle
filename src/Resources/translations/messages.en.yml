@@ -1,6 +1,10 @@
 # placeholders
 huh.filter.placeholder.default: -
 huh.filter.placeholder.input_label: 'Enter %label%'
+huh.filter.placeholder.start: Start
+huh.filter.placeholder.stop: Stop
+huh.filter.placeholder.from: From
+huh.filter.placeholder.to: To
 
 # labels
 huh.filter.label.submit: Submit

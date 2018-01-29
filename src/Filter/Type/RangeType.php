@@ -45,4 +45,12 @@ class RangeType extends AbstractType implements TypeInterface
 
         return $options;
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function getDefaultName(FilterConfigElementModel $element)
+    {
+        return null;
+    }
 }

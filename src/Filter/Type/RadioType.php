@@ -29,4 +29,12 @@ class RadioType extends CheckboxType
     {
         $builder->add($this->getName($element), \Symfony\Component\Form\Extension\Core\Type\RadioType::class, $this->getOptions($element, $builder));
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function getDefaultName(FilterConfigElementModel $element)
+    {
+        return null;
+    }
 }

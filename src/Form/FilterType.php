@@ -13,7 +13,9 @@ use Contao\InsertTags;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
 use HeimrichHannot\FilterBundle\Exception\MissingFilterConfigException;
 use HeimrichHannot\FilterBundle\Filter\TypeInterface;
+use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -88,26 +90,23 @@ class FilterType extends AbstractType
             return;
         }
 
+        /**
+         * @var $element FilterConfigElementModel
+         */
         foreach ($elements as $element) {
             if (!isset($types[$element->type])) {
                 continue;
             }
 
-            $type  = $types[$element->type];
-            $class = $type['class'];
+            $config = $types[$element->type];
+            $class  = $config['class'];
 
             if (!class_exists($class)) {
                 continue;
             }
 
-            // collect wrappers and render afterwards
-            if (true === $type['wrapper']) {
-                $wrappers = [$element];
-                continue;
-            }
-
             /**
-             * @var TypeInterface
+             * @var $type TypeInterface
              */
             $type = new $class($this->config);
 
@@ -115,7 +114,15 @@ class FilterType extends AbstractType
                 continue;
             }
 
+            // collect wrappers and render afterwards
+            if (true === $config['wrapper']) {
+                $builder->add($builder->create($type->getName($element), FormType::class, ['inherit_data' => true])); // add the group here to maintain correct form order
+                $wrappers[] = $element;
+                continue;
+            }
+
             $type->buildForm($element, $builder);
+            $element->setElementFormName($type->getName($element));
         }
 
 
@@ -131,12 +138,15 @@ class FilterType extends AbstractType
      */
     protected function buildWrapperElements(array $wrappers = [], FormBuilderInterface $builder, array $options)
     {
-        $types    = \System::getContainer()->get('huh.filter.choice.type')->getCachedChoices();
+        $types = \System::getContainer()->get('huh.filter.choice.type')->getCachedChoices();
 
         if (!is_array($types) || empty($types)) {
             return;
         }
 
+        /**
+         * @var $element FilterConfigElementModel
+         */
         foreach ($wrappers as $element) {
             if (!isset($types[$element->type])) {
                 continue;
@@ -159,6 +169,7 @@ class FilterType extends AbstractType
             }
 
             $type->buildForm($element, $builder);
+            $element->setElementFormName($type->getName($element));
         }
     }
 

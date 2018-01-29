@@ -16,11 +16,19 @@ use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
 
 class DateRangeType extends AbstractType implements TypeInterface
 {
-    const START_SUFFIX = 'start';
-    const STOP_SUFFIX  = 'stop';
+    /**
+     * @var FilterConfigElementModel
+     */
+    protected $startElement;
+
+    /**
+     * @var FilterConfigElementModel
+     */
+    protected $stopElement;
 
     /**
      * {@inheritdoc}
@@ -30,57 +38,98 @@ class DateRangeType extends AbstractType implements TypeInterface
     }
 
     /**
-     * @param array $element
-     *
-     * @return string
-     */
-    protected function getStartValueName(FilterConfigElementModel $element): string
-    {
-        return $element['name'].'_'.static::START_SUFFIX;
-    }
-
-    /**
-     * @param array $element
-     *
-     * @return string
-     */
-    protected function getStopValueName(FilterConfigElementModel $element): string
-    {
-        return $element['name'].'_'.static::STOP_SUFFIX;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function buildForm(FilterConfigElementModel $element, FormBuilderInterface $builder)
     {
-        $startElement = $this->config->getElementByValue($element['startElement']);
-        $stopElement  = $this->config->getElementByValue($element['stopElement']);
-
-        if (null === $startElement || null === $stopElement) {
+        // date_range is a wrapper form, group should already exist
+        if (!$builder->has($this->getName($element))) {
             return;
         }
 
-        $start = $builder->get($startElement['name']);
-        $stop  = $builder->get($stopElement['name']);
+        $this->startElement = $this->config->getElementByValue($element->startElement);
+        $this->stopElement  = $this->config->getElementByValue($element->stopElement);
 
-        $group = $builder->create($this->getName($element), FormType::class, ['inherit_data' => true]);
+        if (null === $this->startElement || null === $this->stopElement) {
+            return;
+        }
 
-        $group->add($start->getName(), get_class($start), $start->getOptions());
-        $group->add($stop->getName(), get_class($stop), $stop->getOptions());
+        if (!$builder->has($this->startElement->getFormName()) || !$builder->has($this->stopElement->getFormName())) {
+            return;
+        }
+
+        $start = $builder->get($this->startElement->getFormName());
+        $stop  = $builder->get($this->stopElement->getFormName());
+
+        $group = $builder->get($this->getName($element));
+
+        $group->add($this->startElement->getFormName(), get_class($start->getType()->getInnerType()), $this->getStartOptions($element, $builder, $start, $stop));
+        $group->add($this->stopElement->getFormName(), get_class($stop->getType()->getInnerType()), $this->getStopOptions($element, $builder, $start, $stop));
 
         $builder->remove($start->getName());
         $builder->remove($stop->getName());
+
+        $builder->add($group);
+    }
+
+    /**
+     * Get the options for the start field
+     *
+     * @param FilterConfigElementModel $element
+     * @param FormBuilderInterface     $builder
+     * @param FormBuilderInterface     $start
+     * @param FormBuilderInterface     $stop
+     *
+     * @return array
+     */
+    protected function getStartOptions(FilterConfigElementModel $element, FormBuilderInterface $builder, FormBuilderInterface $start, FormBuilderInterface $stop)
+    {
+        $options                            = $start->getOptions();
+        $options['attr']['data-linked-end'] = sprintf('#%s_%s_%s', $builder->getName(), $this->getName($element), $stop->getName());
+
+        return $options;
     }
 
 
     /**
-     * {@inheritdoc}
+     * Get the options for the stop field
+     *
+     * @param FilterConfigElementModel $element
+     * @param FormBuilderInterface     $builder
+     * @param FormBuilderInterface     $start
+     * @param FormBuilderInterface     $stop
+     *
+     * @return array
      */
-    public function getName(FilterConfigElementModel $element, $default = null)
+    protected function getStopOptions(FilterConfigElementModel $element, FormBuilderInterface $builder, FormBuilderInterface $start, FormBuilderInterface $stop)
     {
-        return parent::getName($element, $element->name);
+        $options                              = $stop->getOptions();
+        $options['attr']['data-linked-start'] = sprintf('#%s_%s_%s', $builder->getName(), $this->getName($element), $start->getName());
+
+        return $options;
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function getDefaultName(FilterConfigElementModel $element)
+    {
+        return $element->name;
+    }
 
+    /**
+     * @return FilterConfigElementModel
+     */
+    public function getStartElement(): FilterConfigElementModel
+    {
+        return $this->startElement;
+    }
+
+    /**
+     * @return FilterConfigElementModel
+     */
+    public function getStopElement(): FilterConfigElementModel
+    {
+        return $this->stopElement;
+    }
 }
