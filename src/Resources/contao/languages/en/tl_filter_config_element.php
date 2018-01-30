@@ -38,12 +38,14 @@ $lang['customValue']     = ['Custom value', 'Use custom value.'];
 $lang['value']           = ['Value', 'Enter a custom value.'];
 $lang['startElement']    = ['Start element', 'Select the start element for the date range.'];
 $lang['stopElement']     = ['Stop element', 'Select the stop element for the date range.'];
-$lang['datePickerType']  = ['Date picker type', 'Select a date picker type.'];
 $lang['dateFormat']      = ['Date format', 'Enter a valid date format.'];
 $lang['minDate']         = ['Minimum date', 'Enter a minimum date.'];
 $lang['maxDate']         = ['Maximum date', 'Enter a maximum date.'];
 $lang['minTime']         = ['Minimum time', 'Enter a minimum time.'];
 $lang['maxTime']         = ['Maximum time', 'Enter a maximum time.'];
+$lang['dateWidget']      = ['Date widget render mode', 'Select the basic way in which the date field should be rendered.'];
+$lang['timeWidget']      = ['Time widget render mode', 'Select the basic way in which the time field should be rendered.'];
+$lang['html5']           = ['Render as an HTML5 field ', 'This will render the field as HTML5, which means that some - but not all - browsers will add nice date picker functionality to the field.'];
 $lang['cssClass']        = ['CSS class', 'Here you can enter one or more classes.'];
 $lang['published']       = ['Publish Filterelement', 'Make the Filterelement publicly visible on the website.'];
 $lang['start']           = ['Show from', 'Do not publish the Filterelement on the website before this date.'];
@@ -112,7 +114,3 @@ $lang['reference']['roundingMode'][\Symfony\Component\Form\Extension\Core\DataTr
 
 $lang['reference']['percentType']['fractional'] = 'fractional (e.g .55)';
 $lang['reference']['percentType']['integer']    = 'integer (e.g. 55)';
-
-$lang['reference']['datePickerType'][\HeimrichHannot\FilterBundle\Filter\Type\DateType::PICKER_TYPE_TIME]      = 'Time';
-$lang['reference']['datePickerType'][\HeimrichHannot\FilterBundle\Filter\Type\DateType::PICKER_TYPE_DATE]      = 'Date';
-$lang['reference']['datePickerType'][\HeimrichHannot\FilterBundle\Filter\Type\DateType::PICKER_TYPE_DATE_TIME] = 'Date & Time';

@@ -16,12 +16,8 @@ use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 use Symfony\Component\Form\FormBuilderInterface;
 
-class DateType extends AbstractType implements TypeInterface
+class DateTimeType extends AbstractType implements TypeInterface
 {
-    const WIDGET_TYPE_CHOICE      = 'choice';
-    const WIDGET_TYPE_TEXT        = 'text';
-    const WIDGET_TYPE_SINGLE_TEXT = 'single_text';
-
     /**
      * {@inheritdoc}
      */
@@ -37,10 +33,25 @@ class DateType extends AbstractType implements TypeInterface
     {
         $builder->add(
             $this->getName($element),
-            \Symfony\Component\Form\Extension\Core\Type\DateType::class,
+            \Symfony\Component\Form\Extension\Core\Type\DateTimeType::class,
             $this->getOptions($element, $builder)
         );
     }
+
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getOptions(FilterConfigElementModel $element, FormBuilderInterface $builder)
+    {
+        $options = parent::getOptions($element, $builder);
+
+        $options           = $this->addDateWidgetOptions($options, $element, $builder);
+        $options['widget'] = $element->dateWidget ?: static::WIDGET_TYPE_CHOICE;
+
+        return $options;
+    }
+
 
     /**
      * Add the options for the date_widget property
@@ -55,27 +66,28 @@ class DateType extends AbstractType implements TypeInterface
     protected function addDateWidgetOptions(array $options, FilterConfigElementModel $element, FormBuilderInterface $builder): array
     {
         $time = time();
-        $type = $element->dateWidget ?: static::WIDGET_TYPE_CHOICE;
+        $type = $element->dateWidget ?: DateType::WIDGET_TYPE_CHOICE;
 
         switch ($type) {
-            case static::WIDGET_TYPE_SINGLE_TEXT:
+            case DateType::WIDGET_TYPE_SINGLE_TEXT:
                 $options['html5'] = (bool)$element->html5;
 
                 if (true === $options['html5']) {
                     $options['attr']['format'] = Date::getInputFormat($element->dateFormat);
 
                     if ('' !== $element->minDate) {
-                        $options['attr']['min'] = Date::parse('Y-m-d', $element->minDate); // valid rfc 3339 date `YYYY-MM-DD` format must be used
+                        $options['attr']['min'] = Date::parse('Y-m-d\TH:i', $element->minDate); // valid rfc 3339 date `YYYY-MM-DD` format must be used
                     }
 
                     if ('' !== $element->maxDate) {
-                        $options['attr']['max'] = Date::parse('Y-m-d', $element->maxDate); // valid rfc 3339 date `YYYY-MM-DD` format must be used
+                        $options['attr']['max'] = Date::parse('Y-m-d\TH:i', $element->maxDate); // valid rfc 3339 date `YYYY-MM-DD` format must be used
                     }
 
                     break;
                 }
 
-                $options['group_attr']['class']             .= ' datepicker';
+                $options['group_attr']['class']             .= ' datepicker timepicker';
+                $options['attr']['data-enable-time']        = 'true';
                 $options['attr']['data-date-format']        = $element->dateFormat;
                 $options['attr']['data-moment-date-format'] = System::getContainer()->get('huh.utils.date')->formatPhpDateToJsDate($element->dateFormat);
 
@@ -88,7 +100,7 @@ class DateType extends AbstractType implements TypeInterface
                 }
 
                 break;
-            case static::WIDGET_TYPE_CHOICE:
+            case DateType::WIDGET_TYPE_CHOICE:
                 $minYear  = Date::parse('Y', strtotime('-5 year', $time));
                 $maxYear  = Date::parse('Y', strtotime('+5 year', $time));
                 $minMonth = null;
@@ -109,20 +121,6 @@ class DateType extends AbstractType implements TypeInterface
 
         return $options;
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function getOptions(FilterConfigElementModel $element, FormBuilderInterface $builder)
-    {
-        $options = parent::getOptions($element, $builder);
-
-        $options           = $this->addDateWidgetOptions($options, $element, $builder);
-        $options['widget'] = $element->dateWidget ?: static::WIDGET_TYPE_CHOICE;
-
-        return $options;
-    }
-
 
     /**
      * @inheritdoc

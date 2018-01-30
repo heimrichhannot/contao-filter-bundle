@@ -136,9 +136,9 @@ class FilterConfigElementModel extends \Model
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getFormName(): string
+    public function getFormName()
     {
         return $this->formName;
     }

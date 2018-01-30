@@ -110,19 +110,21 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
         'submit'       => '{general_legend},title,type;{config_legend},customName,customLabel,hideLabel;{expert_legend},cssClass;{publish_legend},published;',
         'checkbox'     => '{general_legend},title,type;{config_legend},field,customName,customValue,customLabel,hideLabel;{expert_legend},cssClass;{publish_legend},published;',
         'radio'        => '{general_legend},title,type;{config_legend},field,customName,customValue,customLabel,hideLabel;{expert_legend},cssClass;{publish_legend},published;',
-        'date'         => '{general_legend},title,type;{config_legend},field,name,customValue,customLabel,hideLabel,addPlaceholder,datePickerType,dateFormat,minDate,maxDate;{expert_legend},cssClass;{publish_legend},published;',
+        'date'         => '{general_legend},title,type;{config_legend},field,name,customValue,customLabel,hideLabel,addPlaceholder,dateWidget,dateFormat,html5,minDate,maxDate;{expert_legend},cssClass;{publish_legend},published;',
+        'date_time'    => '{general_legend},title,type;{config_legend},field,name,customValue,customLabel,hideLabel,addPlaceholder,dateWidget,timeWidget,html5,dateFormat,minDateTime,maxDateTime;{expert_legend},cssClass;{publish_legend},published;',
+        'time'         => '{general_legend},title,type;{config_legend},field,name,customValue,customLabel,hideLabel,addPlaceholder,timeWidget,dateFormat,minTime,html5,maxTime;{expert_legend},cssClass;{publish_legend},published;',
         'date_range'   => '{general_legend},title,type;{config_legend},startElement,stopElement,name,customLabel,hideLabel;{expert_legend},cssClass;{publish_legend},published;',
     ],
     'subpalettes' => [
-        'customOptions'   => 'options',
-        'addPlaceholder'  => 'placeholder',
-        'customName'      => 'name',
-        'customLabel'     => 'label',
-        'customCountries' => 'countries',
-        'customLanguages' => 'languages',
-        'customLocales'   => 'locales',
-        'customValue'     => 'value',
-        'published'       => 'start,stop',
+        'customOptions'                                                                          => 'options',
+        'addPlaceholder'                                                                         => 'placeholder',
+        'customName'                                                                             => 'name',
+        'customLabel'                                                                            => 'label',
+        'customCountries'                                                                        => 'countries',
+        'customLanguages'                                                                        => 'languages',
+        'customLocales'                                                                          => 'locales',
+        'customValue'                                                                            => 'value',
+        'published'                                                                              => 'start,stop',
     ],
     'fields'      => [
         'id'              => [
@@ -299,23 +301,8 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'exclude'   => true,
             'default'   => \Config::get('dateFormat'),
             'inputType' => 'text',
-            'eval'      => ['mandatory' => true, 'submitOnChange' => true, 'includeBlankOption' => true],
+            'eval'      => ['mandatory' => true, 'submitOnChange' => true, 'includeBlankOption' => true, 'tl_class' => 'clr w50'],
             'sql'       => "varchar(32) NOT NULL default ''",
-        ],
-        'datePickerType'  => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['datePickerType'],
-            'exclude'   => true,
-            'filter'    => true,
-            'inputType' => 'select',
-            'default'   => \HeimrichHannot\FilterBundle\Filter\Type\DateType::PICKER_TYPE_DATE,
-            'options'   => [
-                \HeimrichHannot\FilterBundle\Filter\Type\DateType::PICKER_TYPE_DATE,
-                \HeimrichHannot\FilterBundle\Filter\Type\DateType::PICKER_TYPE_TIME,
-                \HeimrichHannot\FilterBundle\Filter\Type\DateType::PICKER_TYPE_DATE_TIME,
-            ],
-            'reference' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['reference']['datePickerType'],
-            'eval'      => ['chosen' => true, 'mandatory' => true, 'maxlength' => 12, 'includeBlankOption' => true],
-            'sql'       => "varchar(12) NOT NULL default ''",
         ],
         'startElement'    => [
             'label'            => &$GLOBALS['TL_LANG']['tl_filter_config_element']['startElement'],
@@ -331,7 +318,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
                 return \Contao\System::getContainer()->get('huh.filter.choice.element')->getCachedChoices(
                     [
                         'pid'   => $model->pid,
-                        'types' => ['date'],
+                        'types' => ['date', 'time', 'date_time'],
                     ]
                 );
             },
@@ -351,18 +338,32 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
                 return \Contao\System::getContainer()->get('huh.filter.choice.element')->getCachedChoices(
                     [
                         'pid'   => $model->pid,
-                        'types' => ['date'],
+                        'types' => ['date', 'time', 'date_time'],
                     ]
                 );
             },
             'eval'             => ['chosen' => true, 'tl_class' => 'w50', 'includeBlankOption' => true, 'mandatory' => true],
             'sql'              => "int(10) unsigned NOT NULL default '0'",
         ],
+        'minDateTime'     => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['minDateTime'],
+            'exclude'   => true,
+            'inputType' => 'text',
+            'eval'      => ['datepicker' => true, 'rgxp' => 'datim', 'tl_class' => 'w50 clr'],
+            'sql'       => "varchar(10) NOT NULL default ''",
+        ],
+        'maxDateTime'     => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['maxDateTime'],
+            'exclude'   => true,
+            'inputType' => 'text',
+            'eval'      => ['datepicker' => true, 'rgxp' => 'datim', 'tl_class' => 'w50'],
+            'sql'       => "varchar(10) NOT NULL default ''",
+        ],
         'minDate'         => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['minDate'],
             'exclude'   => true,
             'inputType' => 'text',
-            'eval'      => ['datepicker' => true, 'rgxp' => 'date', 'tl_class' => 'w50'],
+            'eval'      => ['datepicker' => true, 'rgxp' => 'date', 'tl_class' => 'w50 clr'],
             'sql'       => "varchar(10) NOT NULL default ''",
         ],
         'maxDate'         => [
@@ -385,6 +386,40 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'inputType' => 'text',
             'eval'      => ['timepicker' => true, 'rgxp' => 'time', 'tl_class' => 'w50'],
             'sql'       => "varchar(10) NOT NULL default ''",
+        ],
+        'dateWidget'      => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['dateWidget'],
+            'exclude'   => true,
+            'inputType' => 'select',
+            'default'   => \HeimrichHannot\FilterBundle\Filter\Type\DateType::WIDGET_TYPE_SINGLE_TEXT,
+            'options'   => [
+                \HeimrichHannot\FilterBundle\Filter\Type\DateType::WIDGET_TYPE_CHOICE,
+                \HeimrichHannot\FilterBundle\Filter\Type\DateType::WIDGET_TYPE_TEXT,
+                \HeimrichHannot\FilterBundle\Filter\Type\DateType::WIDGET_TYPE_SINGLE_TEXT,
+            ],
+            'eval'      => ['tl_class' => 'w50', 'chosen' => true, 'submitOnChange' => true],
+            'sql'       => "varchar(16) NOT NULL default ''",
+        ],
+        'timeWidget'      => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['timeWidget'],
+            'exclude'   => true,
+            'inputType' => 'select',
+            'default'   => \HeimrichHannot\FilterBundle\Filter\Type\DateType::WIDGET_TYPE_SINGLE_TEXT,
+            'options'   => [
+                \HeimrichHannot\FilterBundle\Filter\Type\DateType::WIDGET_TYPE_CHOICE,
+                \HeimrichHannot\FilterBundle\Filter\Type\DateType::WIDGET_TYPE_TEXT,
+                \HeimrichHannot\FilterBundle\Filter\Type\DateType::WIDGET_TYPE_SINGLE_TEXT,
+            ],
+            'eval'      => ['tl_class' => 'w50', 'chosen' => true],
+            'sql'       => "varchar(16) NOT NULL default ''",
+        ],
+        'html5'           => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['html5'],
+            'exclude'   => true,
+            'default'   => false,
+            'inputType' => 'checkbox',
+            'eval'      => ['tl_class' => 'w50'],
+            'sql'       => "char(1) NOT NULL default ''",
         ],
         'expanded'        => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['expanded'],
