@@ -11,6 +11,7 @@ namespace HeimrichHannot\FilterBundle\Form\Extension;
 
 use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -22,7 +23,7 @@ class FormTypeExtension extends AbstractTypeExtension
      */
     public function getExtendedType()
     {
-        return FormType::class;
+        return TextType::class;
     }
 
 
@@ -35,7 +36,7 @@ class FormTypeExtension extends AbstractTypeExtension
     {
         $resolver->setDefaults(
             [
-                'group_attr' => [],
+                'group_attr' => null,
             ]
         );
     }
@@ -49,6 +50,6 @@ class FormTypeExtension extends AbstractTypeExtension
      */
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
-        $view->vars['group_attr'] = is_array($options['group_attr']) ? $options['group_attr'] : [];
+        $view->vars['group_attr'] = isset($options['group_attr']) && is_array($options['group_attr']) ? $options['group_attr'] : [];
     }
 }

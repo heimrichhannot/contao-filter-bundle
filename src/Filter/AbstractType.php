@@ -86,7 +86,7 @@ abstract class AbstractType
 
         $options['block_name'] = $this->getName($element);
 
-        $options['group_attr']['class'] = 'foo';
+//        $options['group_attr']['class'] = 'foo';
 
         return $options;
     }
