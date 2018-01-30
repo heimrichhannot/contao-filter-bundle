@@ -1,4 +1,8 @@
 services:
+  huh.form_type_extension:
+    class: HeimrichHannot\FilterBundle\Form\Extension\FormTypeExtension
+    tags:
+      - {name: form.type_extension, extended_type:Symfony\Component\Form\Extension\Core\Type\FormType}
   huh.filter.registry:
     class: HeimrichHannot\FilterBundle\Registry\FilterRegistry
     arguments:

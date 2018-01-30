@@ -6,16 +6,23 @@
     {%- if compound is defined and compound -%}
         {%- set element = 'fieldset' -%}
     {%- endif -%}
-
-    <{{ element|default('div') }} class="{{ ('form-group ')~ id|trim }} {{ attr.class|default('') }}">
-        {{- form_label(form) -}}
-        {{- form_widget(form, {'attr':{'class':''}}) -}}
-        {{- form_errors(form) -}}
+    <{{ element|default('div') }} {{ block('form_group_attributes') }}">
+    {{- form_label(form) -}}
+    {{- form_widget(form) -}}
+    {{- form_errors(form) -}}
     </{{ element|default('div') }}>
 {%- endblock form_row %}
 
 {% block button_row -%}
-    <div class="{{ ('form-group ')~ id|trim }}">
+    <div {{ block('form_group_attributes') }}>
         {{- form_widget(form) -}}
     </div>
 {%- endblock button_row %}
+
+
+{% block form_group_attributes -%}
+    {% set group_attr = group_attr|merge({'class': 'form-group' ~ (group_attr.class is defined ? ' ' ~ group_attr.class : '') ~ ' ' ~ id} ) %}
+    {% spaceless %}
+        {% for attrname, attrvalue in group_attr %}{{ attrname }}="{{ attrvalue }}" {% endfor %}
+    {% endspaceless %}
+{%- endblock form_group_attributes %}

@@ -13,7 +13,6 @@ use HeimrichHannot\FilterBundle\Filter\AbstractType;
 use HeimrichHannot\FilterBundle\Filter\TypeInterface;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
-use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\FormBuilderInterface;
 
 class DateType extends AbstractType implements TypeInterface
@@ -48,8 +47,8 @@ class DateType extends AbstractType implements TypeInterface
         $options = $this->setFormat($element, $options);
         $options = $this->setLimits($options, $element);
 
-        $options['widget']                    = 'single_text';
-        $options['with_minutes']              = $options['with_seconds'] = false;
+        $options['widget']       = 'single_text';
+        $options['with_minutes'] = $options['with_seconds'] = false;
 
         return $options;
     }
