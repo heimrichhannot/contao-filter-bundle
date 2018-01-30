@@ -12,6 +12,8 @@ use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\System;
 use HeimrichHannot\FilterBundle\Entity\FilterSession;
 use HeimrichHannot\FilterBundle\Filter\TypeInterface;
+use HeimrichHannot\FilterBundle\Form\Extension\FormButtonExtension;
+use HeimrichHannot\FilterBundle\Form\Extension\FormTypeExtension;
 use HeimrichHannot\FilterBundle\Form\FilterType;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
@@ -99,7 +101,7 @@ class FilterConfig
             return;
         }
 
-        $factory = Forms::createFormFactoryBuilder()->addExtensions([])->getFormFactory();
+        $factory = Forms::createFormFactoryBuilder()->addTypeExtensions([new FormTypeExtension(), new FormButtonExtension()])->getFormFactory();
 
         $options = ['filter' => $this];
 

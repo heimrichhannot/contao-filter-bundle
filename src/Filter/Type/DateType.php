@@ -17,6 +17,10 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class DateType extends AbstractType implements TypeInterface
 {
+    const PICKER_TYPE_TIME      = 'time';
+    const PICKER_TYPE_DATE      = 'date';
+    const PICKER_TYPE_DATE_TIME = 'date_time';
+
     /**
      * {@inheritdoc}
      */
@@ -44,8 +48,11 @@ class DateType extends AbstractType implements TypeInterface
     {
         $options = parent::getOptions($element, $builder);
 
-        $options = $this->setFormat($element, $options);
-        $options = $this->setLimits($options, $element);
+        $options['attr']['data-date-format']        = $element->dateFormat;
+        $options['attr']['data-moment-date-format'] = System::getContainer()->get('huh.utils.date')->formatPhpDateToJsDate($element->dateFormat);
+
+        $options = $this->addLimits($options, $element);
+        $options = $this->setPickerType($options, $element);
 
         $options['widget']       = 'single_text';
         $options['with_minutes'] = $options['with_seconds'] = false;
@@ -53,16 +60,44 @@ class DateType extends AbstractType implements TypeInterface
         return $options;
     }
 
-
     /**
-     * set top and bottom limit for form field
+     * Set the picker type options
      *
      * @param array                    $options
      * @param FilterConfigElementModel $element
      *
      * @return array
      */
-    protected function setLimits(array $options, FilterConfigElementModel $element): array
+    public function setPickerType(array $options, FilterConfigElementModel $element): array
+    {
+        switch ($element->datePickerType) {
+            case static::PICKER_TYPE_DATE:
+                $options['group_attr']['class'] .= ' datepicker';
+                break;
+            case static::PICKER_TYPE_TIME:
+                $options['group_attr']['class']      .= ' timepicker';
+                $options['attr']['data-enable-time'] = 'true';
+                $options['attr']['data-no-calendar'] = 'true';
+                break;
+            case static::PICKER_TYPE_DATE_TIME:
+                $options['group_attr']['class']      .= ' datepicker';
+                $options['group_attr']['class']      .= ' timepicker';
+                $options['attr']['data-enable-time'] = 'true';
+                break;
+        }
+
+        return $options;
+    }
+
+    /**
+     * Set the min/max time and date limits
+     *
+     * @param array                    $options
+     * @param FilterConfigElementModel $element
+     *
+     * @return array $options
+     */
+    public function addLimits(array $options, FilterConfigElementModel $element): array
     {
         if (true === (bool)$element->minDate) {
             $options['attr']['data-min-date'] = date($element->dateFormat, $element->minDate);
@@ -79,24 +114,6 @@ class DateType extends AbstractType implements TypeInterface
         if (true === (bool)$element->maxTime) {
             $options['attr']['data-max-time'] = $element->maxTime;
         }
-
-        return $options;
-    }
-
-
-    /**
-     * set time format for form field
-     *
-     * @param FilterConfigElementModel $element
-     * @param array                    $options
-     *
-     * @return array
-     */
-    protected function setFormat(FilterConfigElementModel $element, array $options): array
-    {
-        $options['attr']['data-date-format'] = $element->dateFormat;
-
-        $options['attr']['data-moment-date-format'] = System::getContainer()->get('huh.utils.date')->formatPhpDateToJsDate($element->dateFormat);
 
         return $options;
     }

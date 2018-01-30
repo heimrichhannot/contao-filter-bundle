@@ -110,7 +110,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
         'submit'       => '{general_legend},title,type;{config_legend},customName,customLabel,hideLabel;{expert_legend},cssClass;{publish_legend},published;',
         'checkbox'     => '{general_legend},title,type;{config_legend},field,customName,customValue,customLabel,hideLabel;{expert_legend},cssClass;{publish_legend},published;',
         'radio'        => '{general_legend},title,type;{config_legend},field,customName,customValue,customLabel,hideLabel;{expert_legend},cssClass;{publish_legend},published;',
-        'date'         => '{general_legend},title,type;{config_legend},field,name,customValue,customLabel,hideLabel,addPlaceholder,dateFormat,minDate,maxDate;{expert_legend},cssClass;{publish_legend},published;',
+        'date'         => '{general_legend},title,type;{config_legend},field,name,customValue,customLabel,hideLabel,addPlaceholder,datePickerType,dateFormat,minDate,maxDate;{expert_legend},cssClass;{publish_legend},published;',
         'date_range'   => '{general_legend},title,type;{config_legend},startElement,stopElement,name,customLabel,hideLabel;{expert_legend},cssClass;{publish_legend},published;',
     ],
     'subpalettes' => [
@@ -271,7 +271,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'eval'             => ['chosen' => true, 'mandatory' => true, 'maxlength' => 128, 'includeBlankOption' => true],
             'sql'              => "varchar(128) NOT NULL default ''",
         ],
-        'hideLabel'     => [
+        'hideLabel'       => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['hideLabel'],
             'exclude'   => true,
             'inputType' => 'checkbox',
@@ -301,6 +301,21 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'inputType' => 'text',
             'eval'      => ['mandatory' => true, 'submitOnChange' => true, 'includeBlankOption' => true],
             'sql'       => "varchar(32) NOT NULL default ''",
+        ],
+        'datePickerType'  => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['datePickerType'],
+            'exclude'   => true,
+            'filter'    => true,
+            'inputType' => 'select',
+            'default'   => \HeimrichHannot\FilterBundle\Filter\Type\DateType::PICKER_TYPE_DATE,
+            'options'   => [
+                \HeimrichHannot\FilterBundle\Filter\Type\DateType::PICKER_TYPE_DATE,
+                \HeimrichHannot\FilterBundle\Filter\Type\DateType::PICKER_TYPE_TIME,
+                \HeimrichHannot\FilterBundle\Filter\Type\DateType::PICKER_TYPE_DATE_TIME,
+            ],
+            'reference' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['reference']['datePickerType'],
+            'eval'      => ['chosen' => true, 'mandatory' => true, 'maxlength' => 12, 'includeBlankOption' => true],
+            'sql'       => "varchar(12) NOT NULL default ''",
         ],
         'startElement'    => [
             'label'            => &$GLOBALS['TL_LANG']['tl_filter_config_element']['startElement'],

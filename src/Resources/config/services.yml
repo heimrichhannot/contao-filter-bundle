@@ -3,19 +3,26 @@ services:
     class: HeimrichHannot\FilterBundle\Form\Extension\FormTypeExtension
     tags:
       - {name: form.type_extension, extended_type: Symfony\Component\Form\Extension\Core\Type\FormType}
+  huh.form_button_extension:
+      class: HeimrichHannot\FilterBundle\Form\Extension\FormButtonExtension
+      tags:
+        - {name: form.type_extension, extended_type: Symfony\Component\Form\Extension\Core\Type\ButtonType}
   huh.filter.registry:
     class: HeimrichHannot\FilterBundle\Registry\FilterRegistry
+    public: true
     arguments:
         - "@contao.framework"
         - "@huh.filter.session"
   huh.filter.session:
       class: HeimrichHannot\FilterBundle\Entity\FilterSession
+      public: true
       arguments:
           - "@contao.framework"
           - "@session"
   huh.filter.config:
       class: HeimrichHannot\FilterBundle\Config\FilterConfig
       shared: false
+      public: true
       arguments:
           - "@contao.framework"
           - "@huh.filter.session"
@@ -26,33 +33,41 @@ services:
           - "@doctrine.dbal.default_connection"
   huh.filter.choice.template:
       class: HeimrichHannot\FilterBundle\Choice\TemplateChoice
+      public: true
       arguments:
         - "@contao.framework"
   huh.filter.choice.parent:
       class: HeimrichHannot\FilterBundle\Choice\ParentChoice
+      public: true
       arguments:
         - "@contao.framework"
   huh.filter.choice.type:
       class: HeimrichHannot\FilterBundle\Choice\TypeChoice
+      public: true
       arguments:
           - "@contao.framework"
   huh.filter.choice.field_options:
       class: HeimrichHannot\FilterBundle\Choice\FieldOptionsChoice
+      public: true
       arguments:
         - "@contao.framework"
   huh.filter.choice.country:
         class: HeimrichHannot\FilterBundle\Choice\CountryChoice
+        public: true
         arguments:
           - "@contao.framework"
   huh.filter.choice.language:
         class: HeimrichHannot\FilterBundle\Choice\LanguageChoice
+        public: true
         arguments:
           - "@contao.framework"
   huh.filter.choice.locale:
         class: HeimrichHannot\FilterBundle\Choice\LocaleChoice
+        public: true
         arguments:
           - "@contao.framework"
   huh.filter.choice.element:
         class: HeimrichHannot\FilterBundle\Choice\ElementChoice
+        public: true
         arguments:
           - "@contao.framework"

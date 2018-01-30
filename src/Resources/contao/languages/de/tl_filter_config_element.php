@@ -5,18 +5,13 @@ $lang = &$GLOBALS['TL_LANG']['tl_filter_config_element'];
 /**
  * Fields
  */
-$lang['tstamp']         = ['Änderungsdatum', ''];
-$lang['title']          = ['Titel', 'Geben Sie hier bitte den Titel ein.'];
-$lang['published']      = ['Veröffentlichen', 'Wählen Sie diese Option zum Veröffentlichen.'];
-$lang['start']          = ['Anzeigen ab', 'Filterelement erst ab diesem Tag auf der Webseite anzeigen.'];
-$lang['stop']           = ['Anzeigen bis', 'Filterelement nur bis zu diesem Tag auf der Webseite anzeigen.'];
-$lang['dateTimeFormat'] = ['Zeitformat', 'Wählen sie hier das zu verwendende Format aus.'];
-$lang['minDate']        = ['Mindest-Datum', 'Wählen sie hier den minimalen Wert für das Datum.'];
-$lang['maxDate']        = ['Maximal-Datum', 'Wählen sie hier den maximalen Wert für das Datum.'];
-$lang['minTime']        = ['Mindest-Zeit', 'Wählen sie hier den minimalen Wert für die Zeit.'];
-$lang['maxTime']        = ['Maximal-Zeit', 'Wählen sie hier den maximalen Wert für die Zeit.'];
-$lang['startField']     = ['Startfeld', 'Wählen sie hier das Feld was als Anfangsdatum im Filter genutzt werden soll.'];
-$lang['stopField']      = ['Stopfeld', 'Wählen sie hier das Feld was als Enddatum im Filter genutzt werden soll.'];
+$lang['tstamp']     = ['Änderungsdatum', ''];
+$lang['title']      = ['Titel', 'Geben Sie hier bitte den Titel ein.'];
+$lang['published']  = ['Veröffentlichen', 'Wählen Sie diese Option zum Veröffentlichen.'];
+$lang['start']      = ['Anzeigen ab', 'Filterelement erst ab diesem Tag auf der Webseite anzeigen.'];
+$lang['stop']       = ['Anzeigen bis', 'Filterelement nur bis zu diesem Tag auf der Webseite anzeigen.'];
+$lang['startField'] = ['Startfeld', 'Wählen sie hier das Feld was als Anfangsdatum im Filter genutzt werden soll.'];
+$lang['stopField']  = ['Stopfeld', 'Wählen sie hier das Feld was als Enddatum im Filter genutzt werden soll.'];
 
 /**
  * Legends
