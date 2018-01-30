@@ -6,7 +6,8 @@
     "require": {
         "php": "^7.1",
         "contao/manager-bundle": "^4.4",
-        "heimrichhannot/contao-utils-bundle": "dev-master"
+        "heimrichhannot/contao-utils-bundle": "dev-master",
+        "symfony/form": "^4.0"
     },
     "require-dev": {
         "contao/test-case": "^1.1",
