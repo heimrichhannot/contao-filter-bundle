@@ -39,7 +39,7 @@ abstract class AbstractType
      * Get the field label.
      *
      * @param FilterConfigElementModel $element
-     * @param FormBuilderInterface     $builder
+     * @param FormBuilderInterface $builder
      *
      * @return string
      */
@@ -66,7 +66,7 @@ abstract class AbstractType
      * Get field options.
      *
      * @param FilterConfigElementModel $element
-     * @param FormBuilderInterface     $builder
+     * @param FormBuilderInterface $builder
      *
      * @return array The field options
      */
@@ -82,6 +82,29 @@ abstract class AbstractType
 
         if ('' !== $element->cssClass) {
             $options['attr']['class'] = $element->cssClass;
+        }
+
+        if (true === (bool)$element->inputGroup) {
+            if ('' !== $element->inputGroupPrepend) {
+
+                $prepend = $element->inputGroupPrepend;
+
+                if ($this->translator->getCatalogue()->has($prepend)) {
+                    $prepend = $this->translator->trans($prepend);
+                }
+
+                $options['input_group_prepend'] = $prepend;
+            }
+
+            if ('' !== $element->inputGroupAppend) {
+                $append = $element->inputGroupAppend;
+
+                if ($this->translator->getCatalogue()->has($append)) {
+                    $append = $this->translator->trans($append);
+                }
+
+                $options['input_group_append'] = $append;
+            }
         }
 
         $options['block_name'] = $this->getName($element);

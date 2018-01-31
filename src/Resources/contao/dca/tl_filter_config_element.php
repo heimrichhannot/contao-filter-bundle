@@ -56,7 +56,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
                 'label'      => &$GLOBALS['TL_LANG']['tl_filter_config_element']['delete'],
                 'href'       => 'act=delete',
                 'icon'       => 'delete.gif',
-                'attributes' => 'onclick="if(!confirm(\''.$GLOBALS['TL_LANG']['MSC']['deleteConfirm'].'\'))return false;Backend.getScrollOffset()"',
+                'attributes' => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['MSC']['deleteConfirm'] . '\'))return false;Backend.getScrollOffset()"',
             ],
             'toggle' => [
                 'label'           => &$GLOBALS['TL_LANG']['tl_filter_config_element']['toggle'],
@@ -82,76 +82,78 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'customLanguages',
             'customLocales',
             'customValue',
+            'inputGroup',
             'published',
         ],
         'default'      => '{general_legend},title,type;{publish_legend},published;',
         'initial'      => '{general_legend},title,type;{config_legend},field;{publish_legend},published;',
-        'text'         => '{general_legend},title,type;{config_legend},field,customName,addPlaceholder,customLabel,hideLabel;{expert_legend},cssClass;{publish_legend},published;',
-        'text_concat'  => '{general_legend},title,type;{config_legend},fields,name,addPlaceholder,customLabel,hideLabel;{expert_legend},cssClass;{publish_legend},published;',
-        'textarea'     => '{general_legend},title,type;{config_legend},field,customName,addPlaceholder,customLabel,hideLabel;{expert_legend},cssClass;{publish_legend},published;',
-        'email'        => '{general_legend},title,type;{config_legend},field,customName,addPlaceholder,customLabel,hideLabel;{expert_legend},cssClass;{publish_legend},published;',
-        'integer'      => '{general_legend},title,type;{config_legend},field,customName,addPlaceholder,customLabel,hideLabel,grouping,scale,rounding_mode;{expert_legend},cssClass;{publish_legend},published;',
-        'money'        => '{general_legend},title,type;{config_legend},field,customName,addPlaceholder,customLabel,hideLabel,currency,divisor,grouping,scale;{expert_legend},cssClass;{publish_legend},published;',
-        'number'       => '{general_legend},title,type;{config_legend},field,customName,addPlaceholder,customLabel,hideLabel,grouping,scale,roundingMode;{expert_legend},cssClass;{publish_legend},published;',
-        'password'     => '{general_legend},title,type;{config_legend},field,customName,addPlaceholder,customLabel,hideLabel,alwaysEmpty;{expert_legend},cssClass;{publish_legend},published;',
-        'search'       => '{general_legend},title,type;{config_legend},field,customName,addPlaceholder,customLabel,hideLabel;{expert_legend},cssClass;{publish_legend},published;',
-        'percent'      => '{general_legend},title,type;{config_legend},field,customName,addPlaceholder,customLabel,hideLabel,scale,percentType;{expert_legend},cssClass;{publish_legend},published;',
-        'url'          => '{general_legend},title,type;{config_legend},field,customName,addPlaceholder,customLabel,hideLabel,defaultProtocol;{expert_legend},cssClass;{publish_legend},published;',
-        'range'        => '{general_legend},title,type;{config_legend},field,customName,addPlaceholder,customLabel,hideLabel,min,max,step;{expert_legend},cssClass;{publish_legend},published;',
-        'tel'          => '{general_legend},title,type;{config_legend},field,customName,addPlaceholder,customLabel,hideLabel;{expert_legend},cssClass;{publish_legend},published;',
-        'color'        => '{general_legend},title,type;{config_legend},field,customName,addPlaceholder,customLabel,hideLabel;{expert_legend},cssClass;{publish_legend},published;',
-        'choice'       => '{general_legend},title,type;{config_legend},field,customOptions,customName,addPlaceholder,customLabel,hideLabel,expanded,multiple;{expert_legend},cssClass;{publish_legend},published;',
-        'country'      => '{general_legend},title,type;{config_legend},field,customCountries,customOptions,customName,addPlaceholder,customLabel,hideLabel,expanded,multiple;{expert_legend},cssClass;{publish_legend},published;',
-        'language'     => '{general_legend},title,type;{config_legend},field,customLanguages,customOptions,customName,addPlaceholder,customLabel,hideLabel,expanded,multiple;{expert_legend},cssClass;{publish_legend},published;',
-        'locale'       => '{general_legend},title,type;{config_legend},field,customLocales,customOptions,customName,addPlaceholder,customLabel,hideLabel,expanded,multiple;{expert_legend},cssClass;{publish_legend},published;',
+        'text'         => '{general_legend},title,type;{config_legend},field,customName,addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
+        'text_concat'  => '{general_legend},title,type;{config_legend},fields,name,addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
+        'textarea'     => '{general_legend},title,type;{config_legend},field,customName,addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
+        'email'        => '{general_legend},title,type;{config_legend},field,customName,addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
+        'integer'      => '{general_legend},title,type;{config_legend},field,customName,addPlaceholder,customLabel,hideLabel,inputGroup,grouping,scale,rounding_mode;{expert_legend},cssClass;{publish_legend},published;',
+        'money'        => '{general_legend},title,type;{config_legend},field,customName,addPlaceholder,customLabel,hideLabel,inputGroup,currency,divisor,grouping,scale;{expert_legend},cssClass;{publish_legend},published;',
+        'number'       => '{general_legend},title,type;{config_legend},field,customName,addPlaceholder,customLabel,hideLabel,inputGroup,grouping,scale,roundingMode;{expert_legend},cssClass;{publish_legend},published;',
+        'password'     => '{general_legend},title,type;{config_legend},field,customName,addPlaceholder,customLabel,hideLabel,inputGroup,alwaysEmpty;{expert_legend},cssClass;{publish_legend},published;',
+        'search'       => '{general_legend},title,type;{config_legend},field,customName,addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
+        'percent'      => '{general_legend},title,type;{config_legend},field,customName,addPlaceholder,customLabel,hideLabel,inputGroup,scale,percentType;{expert_legend},cssClass;{publish_legend},published;',
+        'url'          => '{general_legend},title,type;{config_legend},field,customName,addPlaceholder,customLabel,hideLabel,inputGroup,defaultProtocol;{expert_legend},cssClass;{publish_legend},published;',
+        'range'        => '{general_legend},title,type;{config_legend},field,customName,addPlaceholder,customLabel,hideLabel,inputGroup,min,max,step;{expert_legend},cssClass;{publish_legend},published;',
+        'tel'          => '{general_legend},title,type;{config_legend},field,customName,addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
+        'color'        => '{general_legend},title,type;{config_legend},field,customName,addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
+        'choice'       => '{general_legend},title,type;{config_legend},field,customOptions,customName,addPlaceholder,customLabel,hideLabel,inputGroup,expanded,multiple;{expert_legend},cssClass;{publish_legend},published;',
+        'country'      => '{general_legend},title,type;{config_legend},field,customCountries,customOptions,customName,addPlaceholder,customLabel,hideLabel,inputGroup,expanded,multiple;{expert_legend},cssClass;{publish_legend},published;',
+        'language'     => '{general_legend},title,type;{config_legend},field,customLanguages,customOptions,customName,addPlaceholder,customLabel,hideLabel,inputGroup,expanded,multiple;{expert_legend},cssClass;{publish_legend},published;',
+        'locale'       => '{general_legend},title,type;{config_legend},field,customLocales,customOptions,customName,addPlaceholder,customLabel,hideLabel,inputGroup,expanded,multiple;{expert_legend},cssClass;{publish_legend},published;',
         'hidden'       => '{general_legend},title,type;{config_legend},field,customName;{expert_legend},cssClass;{publish_legend},published;',
         'button'       => '{general_legend},title,type;{config_legend},name,label;{expert_legend},cssClass;{publish_legend},published;',
         'reset'        => '{general_legend},title,type;{config_legend},customName,customLabel,hideLabel;{expert_legend},cssClass;{publish_legend},published;',
         'submit'       => '{general_legend},title,type;{config_legend},customName,customLabel,hideLabel;{expert_legend},cssClass;{publish_legend},published;',
         'checkbox'     => '{general_legend},title,type;{config_legend},field,customName,customValue,customLabel,hideLabel;{expert_legend},cssClass;{publish_legend},published;',
         'radio'        => '{general_legend},title,type;{config_legend},field,customName,customValue,customLabel,hideLabel;{expert_legend},cssClass;{publish_legend},published;',
-        'date'         => '{general_legend},title,type;{config_legend},field,name,customValue,customLabel,hideLabel,addPlaceholder,dateWidget,dateFormat,html5,minDate,maxDate;{expert_legend},cssClass;{publish_legend},published;',
-        'date_time'    => '{general_legend},title,type;{config_legend},field,name,customValue,customLabel,hideLabel,addPlaceholder,dateWidget,timeWidget,html5,dateFormat,minDateTime,maxDateTime;{expert_legend},cssClass;{publish_legend},published;',
-        'time'         => '{general_legend},title,type;{config_legend},field,name,customValue,customLabel,hideLabel,addPlaceholder,timeWidget,dateFormat,minTime,html5,maxTime;{expert_legend},cssClass;{publish_legend},published;',
+        'date'         => '{general_legend},title,type;{config_legend},field,name,customValue,customLabel,hideLabel,inputGroup,addPlaceholder,dateWidget,dateFormat,html5,minDate,maxDate;{expert_legend},cssClass;{publish_legend},published;',
+        'date_time'    => '{general_legend},title,type;{config_legend},field,name,customValue,customLabel,hideLabel,inputGroup,addPlaceholder,dateWidget,timeWidget,html5,dateFormat,minDateTime,maxDateTime;{expert_legend},cssClass;{publish_legend},published;',
+        'time'         => '{general_legend},title,type;{config_legend},field,name,customValue,customLabel,hideLabel,inputGroup,addPlaceholder,timeWidget,dateFormat,minTime,html5,maxTime;{expert_legend},cssClass;{publish_legend},published;',
         'date_range'   => '{general_legend},title,type;{config_legend},startElement,stopElement,name,customLabel,hideLabel;{expert_legend},cssClass;{publish_legend},published;',
     ],
     'subpalettes' => [
-        'customOptions'                                                                          => 'options',
-        'addPlaceholder'                                                                         => 'placeholder',
-        'customName'                                                                             => 'name',
-        'customLabel'                                                                            => 'label',
-        'customCountries'                                                                        => 'countries',
-        'customLanguages'                                                                        => 'languages',
-        'customLocales'                                                                          => 'locales',
-        'customValue'                                                                            => 'value',
-        'published'                                                                              => 'start,stop',
+        'customOptions'   => 'options',
+        'addPlaceholder'  => 'placeholder',
+        'customName'      => 'name',
+        'customLabel'     => 'label',
+        'customCountries' => 'countries',
+        'customLanguages' => 'languages',
+        'customLocales'   => 'locales',
+        'customValue'     => 'value',
+        'inputGroup'      => 'inputGroupPrepend,inputGroupAppend',
+        'published'       => 'start,stop',
     ],
     'fields'      => [
-        'id'              => [
+        'id'                => [
             'sql' => "int(10) unsigned NOT NULL auto_increment",
         ],
-        'pid'             => [
+        'pid'               => [
             'foreignKey' => 'tl_filter_config.title',
             'sql'        => "int(10) unsigned NOT NULL default '0'",
             'relation'   => ['type' => 'belongsTo', 'load' => 'eager'],
         ],
-        'sorting'         => [
+        'sorting'           => [
             'sorting' => true,
             'flag'    => 2,
             'sql'     => "int(10) unsigned NOT NULL default '0'",
         ],
-        'tstamp'          => [
+        'tstamp'            => [
             'label' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['tstamp'],
             'sql'   => "int(10) unsigned NOT NULL default '0'",
         ],
-        'dateAdded'       => [
+        'dateAdded'         => [
             'label'   => &$GLOBALS['TL_LANG']['MSC']['dateAdded'],
             'sorting' => true,
             'flag'    => 6,
             'eval'    => ['rgxp' => 'datim', 'doNotCopy' => true],
             'sql'     => "int(10) unsigned NOT NULL default '0'",
         ],
-        'type'            => [
+        'type'              => [
             'label'            => &$GLOBALS['TL_LANG']['tl_filter_config_element']['type'],
             'exclude'          => true,
             'filter'           => true,
@@ -169,7 +171,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             ],
             'sql'              => "varchar(64) NOT NULL default ''",
         ],
-        'title'           => [
+        'title'             => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['title'],
             'exclude'   => true,
             'search'    => true,
@@ -179,7 +181,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'eval'      => ['mandatory' => true, 'tl_class' => 'w50'],
             'sql'       => "varchar(255) NOT NULL default ''",
         ],
-        'field'           => [
+        'field'             => [
             'label'            => &$GLOBALS['TL_LANG']['tl_filter_config_element']['field'],
             'exclude'          => true,
             'filter'           => true,
@@ -202,7 +204,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'eval'             => ['chosen' => true, 'includeBlankOption' => true],
             'sql'              => "varchar(64) NOT NULL default ''",
         ],
-        'fields'          => [
+        'fields'            => [
             'label'            => &$GLOBALS['TL_LANG']['tl_filter_config_element']['fields'],
             'exclude'          => true,
             'filter'           => true,
@@ -225,14 +227,14 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'eval'             => ['chosen' => true, 'includeBlankOption' => true, 'multiple' => true, 'mandatory' => true],
             'sql'              => "blob NULL",
         ],
-        'customOptions'   => [
+        'customOptions'     => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['customOptions'],
             'exclude'   => true,
             'inputType' => 'checkbox',
             'eval'      => ['submitOnChange' => true],
             'sql'       => "char(1) NOT NULL default ''",
         ],
-        'options'         => [
+        'options'           => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['options'],
             'exclude'   => true,
             'inputType' => 'optionWizard',
@@ -242,28 +244,28 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             ],
             'sql'       => "blob NULL",
         ],
-        'customName'      => [
+        'customName'        => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['customName'],
             'exclude'   => true,
             'inputType' => 'checkbox',
             'eval'      => ['submitOnChange' => true],
             'sql'       => "char(1) NOT NULL default ''",
         ],
-        'name'            => [
+        'name'              => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['name'],
             'exclude'   => true,
             'inputType' => 'text',
             'eval'      => ['mandatory' => true, 'maxlength' => 128, 'doNotCopy' => true, 'rgxp' => 'fieldname', 'tl_class' => 'clr'],
             'sql'       => "varchar(128) NOT NULL default ''",
         ],
-        'addPlaceholder'  => [
+        'addPlaceholder'    => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['addPlaceholder'],
             'exclude'   => true,
             'inputType' => 'checkbox',
             'eval'      => ['submitOnChange' => true],
             'sql'       => "char(1) NOT NULL default ''",
         ],
-        'placeholder'     => [
+        'placeholder'       => [
             'label'            => &$GLOBALS['TL_LANG']['tl_filter_config_element']['placeholder'],
             'exclude'          => true,
             'inputType'        => 'select',
@@ -273,20 +275,20 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'eval'             => ['chosen' => true, 'mandatory' => true, 'maxlength' => 128, 'includeBlankOption' => true],
             'sql'              => "varchar(128) NOT NULL default ''",
         ],
-        'hideLabel'       => [
+        'hideLabel'         => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['hideLabel'],
             'exclude'   => true,
             'inputType' => 'checkbox',
             'sql'       => "char(1) NOT NULL default ''",
         ],
-        'customLabel'     => [
+        'customLabel'       => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['customLabel'],
             'exclude'   => true,
             'inputType' => 'checkbox',
             'eval'      => ['submitOnChange' => true],
             'sql'       => "char(1) NOT NULL default ''",
         ],
-        'label'           => [
+        'label'             => [
             'label'            => &$GLOBALS['TL_LANG']['tl_filter_config_element']['label'],
             'exclude'          => true,
             'inputType'        => 'select',
@@ -296,7 +298,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'eval'             => ['chosen' => true, 'mandatory' => true, 'maxlength' => 128, 'includeBlankOption' => true],
             'sql'              => "varchar(128) NOT NULL default ''",
         ],
-        'dateFormat'      => [
+        'dateFormat'        => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['dateFormat'],
             'exclude'   => true,
             'default'   => \Config::get('dateFormat'),
@@ -304,7 +306,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'eval'      => ['mandatory' => true, 'submitOnChange' => true, 'includeBlankOption' => true, 'tl_class' => 'clr w50'],
             'sql'       => "varchar(32) NOT NULL default ''",
         ],
-        'startElement'    => [
+        'startElement'      => [
             'label'            => &$GLOBALS['TL_LANG']['tl_filter_config_element']['startElement'],
             'exclude'          => true,
             'filter'           => true,
@@ -325,7 +327,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'eval'             => ['chosen' => true, 'tl_class' => 'w50', 'includeBlankOption' => true, 'mandatory' => true],
             'sql'              => "int(10) unsigned NOT NULL default '0'",
         ],
-        'stopElement'     => [
+        'stopElement'       => [
             'label'            => &$GLOBALS['TL_LANG']['tl_filter_config_element']['stopElement'],
             'exclude'          => true,
             'filter'           => true,
@@ -345,49 +347,49 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'eval'             => ['chosen' => true, 'tl_class' => 'w50', 'includeBlankOption' => true, 'mandatory' => true],
             'sql'              => "int(10) unsigned NOT NULL default '0'",
         ],
-        'minDateTime'     => [
+        'minDateTime'       => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['minDateTime'],
             'exclude'   => true,
             'inputType' => 'text',
             'eval'      => ['datepicker' => true, 'rgxp' => 'datim', 'tl_class' => 'w50 clr'],
             'sql'       => "varchar(10) NOT NULL default ''",
         ],
-        'maxDateTime'     => [
+        'maxDateTime'       => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['maxDateTime'],
             'exclude'   => true,
             'inputType' => 'text',
             'eval'      => ['datepicker' => true, 'rgxp' => 'datim', 'tl_class' => 'w50'],
             'sql'       => "varchar(10) NOT NULL default ''",
         ],
-        'minDate'         => [
+        'minDate'           => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['minDate'],
             'exclude'   => true,
             'inputType' => 'text',
             'eval'      => ['datepicker' => true, 'rgxp' => 'date', 'tl_class' => 'w50 clr'],
             'sql'       => "varchar(10) NOT NULL default ''",
         ],
-        'maxDate'         => [
+        'maxDate'           => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['maxDate'],
             'exclude'   => true,
             'inputType' => 'text',
             'eval'      => ['datepicker' => true, 'rgxp' => 'date', 'tl_class' => 'w50'],
             'sql'       => "varchar(10) NOT NULL default ''",
         ],
-        'minTime'         => [
+        'minTime'           => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['minTime'],
             'exclude'   => true,
             'inputType' => 'text',
             'eval'      => ['timepicker' => true, 'rgxp' => 'time', 'tl_class' => 'w50'],
             'sql'       => "varchar(10) NOT NULL default ''",
         ],
-        'maxTime'         => [
+        'maxTime'           => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['maxTime'],
             'exclude'   => true,
             'inputType' => 'text',
             'eval'      => ['timepicker' => true, 'rgxp' => 'time', 'tl_class' => 'w50'],
             'sql'       => "varchar(10) NOT NULL default ''",
         ],
-        'dateWidget'      => [
+        'dateWidget'        => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['dateWidget'],
             'exclude'   => true,
             'inputType' => 'select',
@@ -400,7 +402,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'eval'      => ['tl_class' => 'w50', 'chosen' => true, 'submitOnChange' => true],
             'sql'       => "varchar(16) NOT NULL default ''",
         ],
-        'timeWidget'      => [
+        'timeWidget'        => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['timeWidget'],
             'exclude'   => true,
             'inputType' => 'select',
@@ -413,7 +415,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'eval'      => ['tl_class' => 'w50', 'chosen' => true],
             'sql'       => "varchar(16) NOT NULL default ''",
         ],
-        'html5'           => [
+        'html5'             => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['html5'],
             'exclude'   => true,
             'default'   => false,
@@ -421,21 +423,48 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'eval'      => ['tl_class' => 'w50'],
             'sql'       => "char(1) NOT NULL default ''",
         ],
-        'expanded'        => [
+        'inputGroup'        => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['inputGroup'],
+            'exclude'   => true,
+            'inputType' => 'checkbox',
+            'eval'      => ['submitOnChange' => true],
+            'sql'       => "char(1) NOT NULL default ''",
+        ],
+        'inputGroupPrepend' => [
+            'label'            => &$GLOBALS['TL_LANG']['tl_filter_config_element']['inputGroupPrepend'],
+            'exclude'          => true,
+            'inputType'        => 'select',
+            'options_callback' => function (\DataContainer $dc) {
+                return \Contao\System::getContainer()->get('huh.utils.choice.message')->getCachedChoices('huh.filter.input_group_text');
+            },
+            'eval'             => ['chosen' => true, 'maxlength' => 128, 'includeBlankOption' => true],
+            'sql'              => "varchar(128) NOT NULL default ''",
+        ],
+        'inputGroupAppend'  => [
+            'label'            => &$GLOBALS['TL_LANG']['tl_filter_config_element']['inputGroupAppend'],
+            'exclude'          => true,
+            'inputType'        => 'select',
+            'options_callback' => function (\DataContainer $dc) {
+                return \Contao\System::getContainer()->get('huh.utils.choice.message')->getCachedChoices('huh.filter.input_group_text');
+            },
+            'eval'             => ['chosen' => true, 'maxlength' => 128, 'includeBlankOption' => true],
+            'sql'              => "varchar(128) NOT NULL default ''",
+        ],
+        'expanded'          => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['expanded'],
             'exclude'   => true,
             'inputType' => 'checkbox',
             'eval'      => ['tl_class' => 'w50'],
             'sql'       => "char(1) NOT NULL default ''",
         ],
-        'multiple'        => [
+        'multiple'          => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['multiple'],
             'exclude'   => true,
             'inputType' => 'checkbox',
             'eval'      => ['tl_class' => 'w50'],
             'sql'       => "char(1) NOT NULL default ''",
         ],
-        'grouping'        => [
+        'grouping'          => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['grouping'],
             'exclude'   => true,
             'default'   => false,
@@ -443,7 +472,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'eval'      => ['tl_class' => 'w50 clr'],
             'sql'       => "char(1) NOT NULL default ''",
         ],
-        'scale'           => [
+        'scale'             => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['scale'],
             'exclude'   => true,
             'inputType' => 'text',
@@ -451,7 +480,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'eval'      => ['tl_class' => 'clr w50', 'rgxp' => 'natural', 'maxlength' => 2],
             'sql'       => "int(2) unsigned NOT NULL default '0'",
         ],
-        'roundingMode'    => [
+        'roundingMode'      => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['roundingMode'],
             'exclude'   => true,
             'inputType' => 'select',
@@ -469,7 +498,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'eval'      => ['tl_class' => 'w50 wizard', 'rgxp' => 'natural', 'maxlength' => 2],
             'sql'       => "int(2) unsigned NOT NULL default '0'",
         ],
-        'currency'        => [
+        'currency'          => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['currency'],
             'exclude'   => true,
             'inputType' => 'select',
@@ -478,7 +507,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'eval'      => ['tl_class' => 'clr w50 wizard', 'chosen' => 'true', 'maxlength' => 3],
             'sql'       => "varchar(3) NOT NULL default ''",
         ],
-        'divisor'         => [
+        'divisor'           => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['divisor'],
             'exclude'   => true,
             'inputType' => 'text',
@@ -486,7 +515,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'eval'      => ['tl_class' => 'w50', 'maxlength' => 10],
             'sql'       => "int(10) unsigned NOT NULL default '1'",
         ],
-        'alwaysEmpty'     => [
+        'alwaysEmpty'       => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['alwaysEmpty'],
             'exclude'   => true,
             'default'   => true,
@@ -494,7 +523,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'eval'      => ['tl_class' => 'w50 clr'],
             'sql'       => "char(1) NOT NULL default ''",
         ],
-        'percentType'     => [
+        'percentType'       => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['percentType'],
             'inputType' => 'select',
             'exclude'   => true,
@@ -504,7 +533,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'eval'      => ['tl_class' => 'w50', 'maxlength' => 10],
             'sql'       => "varchar(10) NOT NULL default ''",
         ],
-        'defaultProtocol' => [
+        'defaultProtocol'   => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['defaultProtocol'],
             'exclude'   => true,
             'inputType' => 'text',
@@ -512,7 +541,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'eval'      => ['tl_class' => 'w50', 'maxlength' => 12],
             'sql'       => "varchar(12) NOT NULL default ''",
         ],
-        'min'             => [
+        'min'               => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['min'],
             'exclude'   => true,
             'default'   => '12:00',
@@ -520,7 +549,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'eval'      => ['tl_class' => 'w50', 'maxlength' => 12, 'mandatory' => true],
             'sql'       => "varchar(12) NOT NULL default ''",
         ],
-        'max'             => [
+        'max'               => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['max'],
             'exclude'   => true,
             'inputType' => 'text',
@@ -528,7 +557,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'eval'      => ['tl_class' => 'w50', 'maxlength' => 12, 'mandatory' => true],
             'sql'       => "varchar(12) NOT NULL default ''",
         ],
-        'step'            => [
+        'step'              => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['step'],
             'exclude'   => true,
             'default'   => '00:15',
@@ -536,14 +565,14 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'eval'      => ['tl_class' => 'w50', 'maxlength' => 12, 'mandatory' => true],
             'sql'       => "varchar(12) NOT NULL default ''",
         ],
-        'customCountries' => [
+        'customCountries'   => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['customCountries'],
             'exclude'   => true,
             'inputType' => 'checkbox',
             'eval'      => ['submitOnChange' => true, 'doNotCopy' => true],
             'sql'       => "char(1) NOT NULL default ''",
         ],
-        'countries'       => [
+        'countries'         => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['countries'],
             'exclude'   => true,
             'inputType' => 'select',
@@ -552,14 +581,14 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'eval'      => ['tl_class' => 'clr w50 wizard', 'chosen' => 'true', 'multiple' => true, 'mandatory' => true],
             'sql'       => "blob NULL",
         ],
-        'customLanguages' => [
+        'customLanguages'   => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['customLanguages'],
             'exclude'   => true,
             'inputType' => 'checkbox',
             'eval'      => ['submitOnChange' => true],
             'sql'       => "char(1) NOT NULL default ''",
         ],
-        'languages'       => [
+        'languages'         => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['languages'],
             'exclude'   => true,
             'inputType' => 'select',
@@ -568,14 +597,14 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'eval'      => ['tl_class' => 'clr w50 wizard', 'chosen' => 'true', 'multiple' => true, 'mandatory' => true],
             'sql'       => "blob NULL",
         ],
-        'customLocales'   => [
+        'customLocales'     => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['customLocales'],
             'exclude'   => true,
             'inputType' => 'checkbox',
             'eval'      => ['submitOnChange' => true],
             'sql'       => "char(1) NOT NULL default ''",
         ],
-        'locales'         => [
+        'locales'           => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['locales'],
             'exclude'   => true,
             'inputType' => 'select',
@@ -584,21 +613,21 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'eval'      => ['tl_class' => 'clr w50 wizard', 'chosen' => 'true', 'multiple' => true, 'mandatory' => true],
             'sql'       => "blob NULL",
         ],
-        'customValue'     => [
+        'customValue'       => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['customValue'],
             'exclude'   => true,
             'inputType' => 'checkbox',
             'eval'      => ['submitOnChange' => true, 'tl_class' => 'clr'],
             'sql'       => "char(1) NOT NULL default ''",
         ],
-        'value'           => [
+        'value'             => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['value'],
             'exclude'   => true,
             'inputType' => 'text',
             'eval'      => ['tl_class' => 'clr w50 wizard', 'mandatory' => true],
             'sql'       => "varchar(255) NOT NULL default ''",
         ],
-        'parents'         => [
+        'parents'           => [
             'label'            => &$GLOBALS['TL_LANG']['tl_filter_config_element']['parents'],
             'default'          => 'text',
             'exclude'          => true,
@@ -607,14 +636,14 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'eval'             => ['tl_class' => 'wizard', 'multiple' => true],
             'sql'              => "blob NULL",
         ],
-        'cssClass'        => [
+        'cssClass'          => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['cssClass'],
             'exclude'   => true,
             'inputType' => 'text',
             'eval'      => ['tl_class' => 'w50', 'maxlength' => 64],
             'sql'       => "varchar(64) NOT NULL default ''",
         ],
-        'published'       => [
+        'published'         => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['published'],
             'exclude'   => true,
             'filter'    => true,
@@ -622,14 +651,14 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'eval'      => ['doNotCopy' => true, 'submitOnChange' => true],
             'sql'       => "char(1) NOT NULL default ''",
         ],
-        'start'           => [
+        'start'             => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['start'],
             'exclude'   => true,
             'inputType' => 'text',
             'eval'      => ['rgxp' => 'datim', 'datepicker' => true, 'tl_class' => 'w50 wizard'],
             'sql'       => "varchar(10) NOT NULL default ''",
         ],
-        'stop'            => [
+        'stop'              => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['stop'],
             'exclude'   => true,
             'inputType' => 'text',
@@ -645,7 +674,7 @@ class tl_filter_config_element extends \Backend
 
     public function listElements($arrRow)
     {
-        return '<div class="tl_content_left">'.($arrRow['title'] ?: $arrRow['id']).' <span style="color:#b3b3b3; padding-left:3px">['.($GLOBALS['TL_LANG']['tl_filter_config_element']['reference']['type'][$arrRow['type']] ?: $arrRow['type']).']</span></div>';
+        return '<div class="tl_content_left">' . ($arrRow['title'] ?: $arrRow['id']) . ' <span style="color:#b3b3b3; padding-left:3px">[' . ($GLOBALS['TL_LANG']['tl_filter_config_element']['reference']['type'][$arrRow['type']] ?: $arrRow['type']) . ']</span></div>';
     }
 
     public function checkPermission()
@@ -675,7 +704,7 @@ class tl_filter_config_element extends \Backend
             case 'create':
                 if (!strlen(\Input::get('pid')) || !in_array(\Input::get('pid'), $root)) {
                     throw new \Contao\CoreBundle\Exception\AccessDeniedException(
-                        'Not enough permissions to create filter_element items in filter_element archive ID '.\Input::get('pid').'.'
+                        'Not enough permissions to create filter_element items in filter_element archive ID ' . \Input::get('pid') . '.'
                     );
                 }
                 break;
@@ -684,7 +713,7 @@ class tl_filter_config_element extends \Backend
             case 'copy':
                 if (!in_array(\Input::get('pid'), $root)) {
                     throw new \Contao\CoreBundle\Exception\AccessDeniedException(
-                        'Not enough permissions to '.\Input::get('act').' filter_element item ID '.$id.' to filter_element archive ID '.\Input::get('pid').'.'
+                        'Not enough permissions to ' . \Input::get('act') . ' filter_element item ID ' . $id . ' to filter_element archive ID ' . \Input::get('pid') . '.'
                     );
                 }
             // NO BREAK STATEMENT HERE
@@ -697,12 +726,12 @@ class tl_filter_config_element extends \Backend
                 $objArchive = $database->prepare("SELECT pid FROM tl_filter_config_element WHERE id=?")->limit(1)->execute($id);
 
                 if ($objArchive->numRows < 1) {
-                    throw new \Contao\CoreBundle\Exception\AccessDeniedException('Invalid filter_element item ID '.$id.'.');
+                    throw new \Contao\CoreBundle\Exception\AccessDeniedException('Invalid filter_element item ID ' . $id . '.');
                 }
 
                 if (!in_array($objArchive->pid, $root)) {
                     throw new \Contao\CoreBundle\Exception\AccessDeniedException(
-                        'Not enough permissions to '.\Input::get('act').' filter_element item ID '.$id.' of filter_element archive ID '.$objArchive->pid.'.'
+                        'Not enough permissions to ' . \Input::get('act') . ' filter_element item ID ' . $id . ' of filter_element archive ID ' . $objArchive->pid . '.'
                     );
                 }
                 break;
@@ -715,14 +744,14 @@ class tl_filter_config_element extends \Backend
             case 'copyAll':
                 if (!in_array($id, $root)) {
                     throw new \Contao\CoreBundle\Exception\AccessDeniedException(
-                        'Not enough permissions to access filter_element archive ID '.$id.'.'
+                        'Not enough permissions to access filter_element archive ID ' . $id . '.'
                     );
                 }
 
                 $objArchive = $database->prepare("SELECT id FROM tl_filter_config_element WHERE pid=?")->execute($id);
 
                 if ($objArchive->numRows < 1) {
-                    throw new \Contao\CoreBundle\Exception\AccessDeniedException('Invalid filter_element archive ID '.$id.'.');
+                    throw new \Contao\CoreBundle\Exception\AccessDeniedException('Invalid filter_element archive ID ' . $id . '.');
                 }
 
                 /** @var \Symfony\Component\HttpFoundation\Session\SessionInterface $session */
@@ -735,10 +764,10 @@ class tl_filter_config_element extends \Backend
 
             default:
                 if (strlen(\Input::get('act'))) {
-                    throw new \Contao\CoreBundle\Exception\AccessDeniedException('Invalid command "'.\Input::get('act').'".');
+                    throw new \Contao\CoreBundle\Exception\AccessDeniedException('Invalid command "' . \Input::get('act') . '".');
                 } elseif (!in_array($id, $root)) {
                     throw new \Contao\CoreBundle\Exception\AccessDeniedException(
-                        'Not enough permissions to access filter_element archive ID '.$id.'.'
+                        'Not enough permissions to access filter_element archive ID ' . $id . '.'
                     );
                 }
                 break;
@@ -759,17 +788,17 @@ class tl_filter_config_element extends \Backend
             return '';
         }
 
-        $href .= '&amp;tid='.$row['id'].'&amp;state='.($row['published'] ? '' : 1);
+        $href .= '&amp;tid=' . $row['id'] . '&amp;state=' . ($row['published'] ? '' : 1);
 
         if (!$row['published']) {
             $icon = 'invisible.svg';
         }
 
-        return '<a href="'.$this->addToUrl($href).'" title="'.\StringUtil::specialchars($title).'"'.$attributes.'>'.\Image::getHtml(
+        return '<a href="' . $this->addToUrl($href) . '" title="' . \StringUtil::specialchars($title) . '"' . $attributes . '>' . \Image::getHtml(
                 $icon,
                 $label,
-                'data-state="'.($row['published'] ? 1 : 0).'"'
-            ).'</a> ';
+                'data-state="' . ($row['published'] ? 1 : 0) . '"'
+            ) . '</a> ';
     }
 
     public function toggleVisibility($intId, $blnVisible, \DataContainer $dc = null)
@@ -800,7 +829,7 @@ class tl_filter_config_element extends \Backend
         // Check the field access
         if (!$user->hasAccess('tl_filter_config_element::published', 'alexf')) {
             throw new \Contao\CoreBundle\Exception\AccessDeniedException(
-                'Not enough permissions to publish/unpublish filter_element item ID '.$intId.'.'
+                'Not enough permissions to publish/unpublish filter_element item ID ' . $intId . '.'
             );
         }
 
@@ -831,7 +860,7 @@ class tl_filter_config_element extends \Backend
         $time = time();
 
         // Update the database
-        $database->prepare("UPDATE tl_filter_config_element SET tstamp=$time, published='".($blnVisible ? '1' : '')."' WHERE id=?")->execute(
+        $database->prepare("UPDATE tl_filter_config_element SET tstamp=$time, published='" . ($blnVisible ? '1' : '') . "' WHERE id=?")->execute(
             $intId
         );
 
@@ -862,6 +891,6 @@ class tl_filter_config_element extends \Backend
      */
     public function optionImportWizard()
     {
-        return ' <a href="'.$this->addToUrl('key=option').'" title="'.specialchars($GLOBALS['TL_LANG']['MSC']['ow_import'][1]).'" onclick="Backend.getScrollOffset()">'.Image::getHtml('tablewizard.gif', $GLOBALS['TL_LANG']['MSC']['ow_import'][0]).'</a>';
+        return ' <a href="' . $this->addToUrl('key=option') . '" title="' . specialchars($GLOBALS['TL_LANG']['MSC']['ow_import'][1]) . '" onclick="Backend.getScrollOffset()">' . Image::getHtml('tablewizard.gif', $GLOBALS['TL_LANG']['MSC']['ow_import'][0]) . '</a>';
     }
 }

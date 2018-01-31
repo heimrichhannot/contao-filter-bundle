@@ -6,7 +6,7 @@
     {%- if compound is defined and compound -%}
         {%- set element = 'fieldset' -%}
     {%- endif -%}
-    <{{ element|default('div') }} {{ block('form_group_attributes') }}">
+    <{{ element|default('div') }} {{ block('form_group_attributes') }}>
     {{- form_label(form) -}}
     {{- form_widget(form) -}}
     {{- form_errors(form) -}}
@@ -19,10 +19,34 @@
     </div>
 {%- endblock button_row %}
 
-
 {% block form_group_attributes -%}
-    {% set group_attr = group_attr|merge({'class': 'form-group' ~ (group_attr.class is defined ? ' ' ~ group_attr.class : '') ~ ' ' ~ id} ) %}
+    {% if (input_prepend is defined and input_prepend is not empty) or (input_append is defined and input_append is not empty) %}
+        {{ block('input_group_attributes') }}
+    {% else %}
+        {% set group_attr = group_attr|merge({'class': ('form-group' ~ (group_attr.class is defined ? ' ' ~ group_attr.class : '') ~ ' ' ~ id)|trim} ) %}
+        {% spaceless %}
+            {% for attrname, attrvalue in group_attr %}{{ attrname }}="{{ attrvalue }}" {% endfor %}
+        {% endspaceless %}
+    {% endif %}
+{%- endblock form_group_attributes %}
+
+{% block input_group_attributes -%}
+    {% set group_attr = group_attr|merge({'class': ('input-group' ~ (group_attr.class is defined ? ' ' ~ group_attr.class : '') ~ ' ' ~ id)|trim} ) %}
     {% spaceless %}
         {% for attrname, attrvalue in group_attr %}{{ attrname }}="{{ attrvalue }}" {% endfor %}
     {% endspaceless %}
-{%- endblock form_group_attributes %}
+{%- endblock input_group_attributes %}
+
+{% block form_widget_simple -%}
+    {% if input_prepend is not empty %}
+        <div class="input-group-prepend">
+            <span class="input-group-text">{{ input_prepend|raw }}</span>
+        </div>
+    {% endif %}
+    {{- parent() -}}
+    {% if input_append is not empty %}
+        <div class="input-group-append">
+            <span class="input-group-text">{{ input_append|raw }}</span>
+        </div>
+    {% endif %}
+{%- endblock form_widget_simple %}

@@ -35,7 +35,9 @@ class FormTypeExtension extends AbstractTypeExtension
     {
         $resolver->setDefaults(
             [
-                'group_attr' => null,
+                'group_attr'          => null,
+                'input_group_prepend' => false,
+                'input_group_append'  => false,
             ]
         );
     }
@@ -43,12 +45,14 @@ class FormTypeExtension extends AbstractTypeExtension
     /**
      * Pass the set row_attr options to the view
      *
-     * @param FormView      $view
+     * @param FormView $view
      * @param FormInterface $form
-     * @param array         $options
+     * @param array $options
      */
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
-        $view->vars['group_attr'] = isset($options['group_attr']) && is_array($options['group_attr']) ? $options['group_attr'] : [];
+        $view->vars['group_attr']    = isset($options['group_attr']) && is_array($options['group_attr']) ? $options['group_attr'] : [];
+        $view->vars['input_prepend'] = $options['input_group_prepend'];
+        $view->vars['input_append']  = $options['input_group_append'];
     }
 }

@@ -11,3 +11,8 @@ huh.filter.label.submit: Absenden
 huh.filter.label.search: Suche
 huh.filter.label.search_action: Suchen
 huh.filter.label.reset: Zurücksetzen
+
+# input group append/prepend text
+huh.filter.input_group_text.fa_clock_o: '<span class="fa fa-clock-o"></span>'
+huh.filter.input_group_text.fa_calendar: '<span class="fa fa-calendar"></span>'
+huh.filter.input_group_text.fa_envelope: '<span class="fa fa-envelope"></span>'

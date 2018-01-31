@@ -45,9 +45,9 @@ class DateType extends AbstractType implements TypeInterface
     /**
      * Add the options for the date_widget property
      *
-     * @param array                    $options
+     * @param array $options
      * @param FilterConfigElementModel $element
-     * @param FormBuilderInterface     $builder
+     * @param FormBuilderInterface $builder
      *
      * @return array
      * @throws \Exception

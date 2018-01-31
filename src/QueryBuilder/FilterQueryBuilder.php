@@ -33,8 +33,8 @@ class FilterQueryBuilder extends QueryBuilder
      * Add where clause based on an element.
      *
      * @param FilterConfigElementModel $element
-     * @param string                   $name The field name
-     * @param FilterConfig             $config
+     * @param string $name The field name
+     * @param FilterConfig $config
      *
      * @return $this this FilterQueryBuilder instance
      */
@@ -49,10 +49,6 @@ class FilterQueryBuilder extends QueryBuilder
         }
 
         $dca = $GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element->field];
-
-        if ((isset($element->startField) && '' != $element->startField)) {
-            $this->whereRangeWidget($element, $name, $config, $dca);
-        }
 
         switch ($dca['inputType']) {
             case 'cfgTags':
@@ -69,46 +65,12 @@ class FilterQueryBuilder extends QueryBuilder
     }
 
     /**
-     * build where query for range
-     *
-     * @param FilterConfigElementModel $element
-     * @param string                   $name
-     * @param FilterConfig             $config
-     * @param array                    $dca
-     *
-     * @return $this
-     */
-    protected function whereRangeWidget(FilterConfigElementModel $element, string $name, FilterConfig $config, array $dca)
-    {
-        $data  = $config->getData();
-        $value = $data[$name];
-
-        if (null === $value) {
-            return $this;
-        }
-
-        if ($value instanceof DateTime) {
-            $value = strtotime($value['date']);
-        }
-
-        if ($name == $element->startField) {
-            $this->andWhere($this->expr()->gte($name, strtotime($value['date'])));
-        }
-
-        if ($name == $element->endField) {
-            $this->andWhere($this->expr()->lte($name, strtotime($value['date'])));
-        }
-
-        return $this;
-    }
-
-    /**
      * Add tag widget where clause.
      *
      * @param FilterConfigElementModel $element
-     * @param string                   $name The field name
-     * @param FilterConfig             $config
-     * @param array                    $dca
+     * @param string $name The field name
+     * @param FilterConfig $config
+     * @param array $dca
      *
      * @return $this this FilterQueryBuilder instance
      */
@@ -122,7 +84,7 @@ class FilterQueryBuilder extends QueryBuilder
         }
 
 
-        $this->andWhere($this->expr()->like($name, $this->expr()->literal('%'.$value.'%')));
+        $this->andWhere($this->expr()->like($name, $this->expr()->literal('%' . $value . '%')));
 
         return $this;
     }
@@ -131,9 +93,9 @@ class FilterQueryBuilder extends QueryBuilder
      * Add tag widget where clause.
      *
      * @param FilterConfigElementModel $element
-     * @param string                   $name The field name
-     * @param FilterConfig             $config
-     * @param array                    $dca
+     * @param string $name The field name
+     * @param FilterConfig $config
+     * @param array $dca
      *
      * @return $this this FilterQueryBuilder instance
      */
@@ -148,10 +110,10 @@ class FilterQueryBuilder extends QueryBuilder
             return $this;
         }
 
-        $alias = $relation['table'].'_'.$name;
+        $alias = $relation['table'] . '_' . $name;
 
-        $this->join($relation['reference_table'], $relation['table'], $alias, $alias.'.'.$relation['reference_field'].'='.$relation['reference_table'].'.'.$relation['reference']);
-        $this->andWhere($this->expr()->in($alias.'.'.$relation['related_field'], $value));
+        $this->join($relation['reference_table'], $relation['table'], $alias, $alias . '.' . $relation['reference_field'] . '=' . $relation['reference_table'] . '.' . $relation['reference']);
+        $this->andWhere($this->expr()->in($alias . '.' . $relation['related_field'], $value));
 
         return $this;
     }

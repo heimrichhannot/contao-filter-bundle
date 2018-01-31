@@ -44,4 +44,12 @@ class MoneyType extends TextType
 
         return $options;
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function getDefaultName(FilterConfigElementModel $element)
+    {
+        return null;
+    }
 }

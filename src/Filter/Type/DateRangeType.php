@@ -35,6 +35,35 @@ class DateRangeType extends AbstractType implements TypeInterface
      */
     public function buildQuery(FilterQueryBuilder $builder, FilterConfigElementModel $element)
     {
+        $data   = $this->config->getData();
+        $filter = $this->config->getFilter();
+
+        \Controller::loadDataContainer($filter['dataContainer']);
+
+        $this->startElement = $this->config->getElementByValue($element->startElement);
+        $this->stopElement  = $this->config->getElementByValue($element->stopElement);
+
+        if (null === $this->startElement || null === $this->stopElement) {
+            return;
+        }
+
+        $startField = $this->startElement->field;
+        $startField = $this->stopElement->field;
+
+        $startName = $this->startElement->getFormName();
+        $stopName  = $this->stopElement->getFormName();
+
+//        $startDate = \Input::get('startDate') ? strtotime(\Input::get('startDate')) : 0;
+//        $stopDate  = \Input::get('stopDate') ? strtotime(\Input::get('stopDate')) : 9000000000;
+//
+//        $conditions[] = sprintf('(%s >= expandedStartDate AND %s <= expandedStopDate)', $startDate, $startDate);
+//        $conditions[] = sprintf('(%s >= expandedStartDate AND %s <= expandedStopDate)', $stopDate, $stopDate);
+//        $conditions[] = sprintf('(%s <= expandedStartDate AND %s >= expandedStopDate)', $startDate, $stopDate);
+//
+//        $expression = $builder->expr()->orX(sprintf('%s >= '));
+//
+//        $this->andWhere($this->expr()->like($name, $this->expr()->literal('%' . $value . '%')));
+
     }
 
     /**
@@ -66,6 +95,9 @@ class DateRangeType extends AbstractType implements TypeInterface
         $group->add($this->startElement->getFormName(), get_class($start->getType()->getInnerType()), $this->getStartOptions($element, $builder, $start, $stop));
         $group->add($this->stopElement->getFormName(), get_class($stop->getType()->getInnerType()), $this->getStopOptions($element, $builder, $start, $stop));
 
+        $group->get($this->startElement->getFormName())->setData($start->getData());
+        $group->get($this->stopElement->getFormName())->setData($stop->getData());
+
         $builder->remove($start->getName());
         $builder->remove($stop->getName());
 
@@ -76,9 +108,9 @@ class DateRangeType extends AbstractType implements TypeInterface
      * Get the options for the start field
      *
      * @param FilterConfigElementModel $element
-     * @param FormBuilderInterface     $builder
-     * @param FormBuilderInterface     $start
-     * @param FormBuilderInterface     $stop
+     * @param FormBuilderInterface $builder
+     * @param FormBuilderInterface $start
+     * @param FormBuilderInterface $stop
      *
      * @return array
      */
@@ -95,9 +127,9 @@ class DateRangeType extends AbstractType implements TypeInterface
      * Get the options for the stop field
      *
      * @param FilterConfigElementModel $element
-     * @param FormBuilderInterface     $builder
-     * @param FormBuilderInterface     $start
-     * @param FormBuilderInterface     $stop
+     * @param FormBuilderInterface $builder
+     * @param FormBuilderInterface $start
+     * @param FormBuilderInterface $stop
      *
      * @return array
      */

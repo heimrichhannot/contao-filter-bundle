@@ -116,7 +116,7 @@ class FilterType extends AbstractType
 
             // collect wrappers and render afterwards
             if (true === $config['wrapper']) {
-                $builder->add($builder->create($type->getName($element), FormType::class, ['inherit_data' => true])); // add the group here to maintain correct form order
+                $builder->add($builder->create($type->getName($element), FormType::class, ['inherit_data' => false])); // add the group here to maintain correct form order
                 $wrappers[] = $element;
                 continue;
             }

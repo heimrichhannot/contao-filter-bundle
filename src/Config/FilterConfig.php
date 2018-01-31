@@ -68,7 +68,7 @@ class FilterConfig
      * Constructor.
      *
      * @param ContaoFrameworkInterface $framework
-     * @param FilterSession            $session
+     * @param FilterSession $session
      */
     public function __construct(ContaoFrameworkInterface $framework, FilterSession $session)
     {
@@ -79,8 +79,8 @@ class FilterConfig
     /**
      * Init the filter based on its model.
      *
-     * @param string                                                   $sessionKey
-     * @param array                                                    $filter
+     * @param string $sessionKey
+     * @param array $filter
      * @param \Contao\Model\Collection|FilterConfigElementModel[]|null $elements
      */
     public function init(string $sessionKey, array $filter, $elements = null)
@@ -189,7 +189,7 @@ class FilterConfig
      * Get a specific element by its value
      *
      * @param  mixed $value The to search within $key
-     * @param string $key   The array key
+     * @param string $key The array key
      *
      * @return FilterConfigElementModel|null
      */

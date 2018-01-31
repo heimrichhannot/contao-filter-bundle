@@ -71,6 +71,7 @@ class DateTimeType extends AbstractType implements TypeInterface
         switch ($type) {
             case DateType::WIDGET_TYPE_SINGLE_TEXT:
                 $options['html5'] = (bool)$element->html5;
+                $options['format'] = $element->dateFormat;
 
                 if (true === $options['html5']) {
                     $options['attr']['format'] = Date::getInputFormat($element->dateFormat);
