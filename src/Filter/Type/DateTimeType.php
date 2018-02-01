@@ -56,9 +56,9 @@ class DateTimeType extends AbstractType implements TypeInterface
     /**
      * Add the options for the date_widget property
      *
-     * @param array                    $options
+     * @param array $options
      * @param FilterConfigElementModel $element
-     * @param FormBuilderInterface     $builder
+     * @param FormBuilderInterface $builder
      *
      * @return array
      * @throws \Exception
@@ -71,7 +71,6 @@ class DateTimeType extends AbstractType implements TypeInterface
         switch ($type) {
             case DateType::WIDGET_TYPE_SINGLE_TEXT:
                 $options['html5'] = (bool)$element->html5;
-                $options['format'] = $element->dateFormat;
 
                 if (true === $options['html5']) {
                     $options['attr']['format'] = Date::getInputFormat($element->dateFormat);
@@ -86,18 +85,18 @@ class DateTimeType extends AbstractType implements TypeInterface
 
                     break;
                 }
-
-                $options['group_attr']['class']             .= ' datepicker timepicker';
-                $options['attr']['data-enable-time']        = 'true';
-                $options['attr']['data-date-format']        = $element->dateFormat;
-                $options['attr']['data-moment-date-format'] = System::getContainer()->get('huh.utils.date')->formatPhpDateToJsDate($element->dateFormat);
+                $options['format']                   = $element->dateFormat; // rfc3339 format is required by symfony
+                $options['group_attr']['class']      .= ' datepicker timepicker';
+                $options['attr']['data-enable-time'] = 'true';
+                $options['attr']['data-date-format'] = 'd.m.Y H:i';
+//                $options['attr']['data-moment-date-format'] = System::getContainer()->get('huh.utils.date')->formatPhpDateToJsDate($element->dateFormat);
 
                 if ('' !== $element->minDate) {
-                    $options['attr']['data-min-date'] = Date::parse($element->dateFormat, $element->minDate);
+//                    $options['attr']['data-min-date'] = Date::parse($element->dateFormat, $element->minDate);
                 }
 
                 if ('' !== $element->maxDate) {
-                    $options['attr']['data-max-date'] = Date::parse($element->dateFormat, $element->maxDate);
+//                    $options['attr']['data-max-date'] = Date::parse($element->dateFormat, $element->maxDate);
                 }
 
                 break;

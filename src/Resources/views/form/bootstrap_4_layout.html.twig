@@ -20,7 +20,7 @@
 {%- endblock button_row %}
 
 {% block form_group_attributes -%}
-    {% if (input_prepend is defined and input_prepend is not empty) or (input_append is defined and input_append is not empty) %}
+    {% if (input_prepend|default()) or (input_append|default()) %}
         {{ block('input_group_attributes') }}
     {% else %}
         {% set group_attr = group_attr|merge({'class': ('form-group' ~ (group_attr.class is defined ? ' ' ~ group_attr.class : '') ~ ' ' ~ id)|trim} ) %}
