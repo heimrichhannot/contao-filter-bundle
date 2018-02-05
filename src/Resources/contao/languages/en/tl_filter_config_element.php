@@ -107,6 +107,10 @@ $lang['reference']['type']['checkbox']    = 'Checkbox';
 $lang['reference']['type']['radio']       = 'Radio';
 $lang['reference']['type']['other']       = 'Other';
 $lang['reference']['type']['initial']     = 'Initial';
+$lang['reference']['type']['date_time']   = 'Date & Time';
+$lang['reference']['type']['date']        = 'Date';
+$lang['reference']['type']['time']        = 'Time';
+$lang['reference']['type']['date_range']  = 'Date range';
 
 $lang['reference']['roundingMode'][\Symfony\Component\Form\Extension\Core\DataTransformer\IntegerToLocalizedStringTransformer::ROUND_DOWN]      = 'Down (round towards zero)';
 $lang['reference']['roundingMode'][\Symfony\Component\Form\Extension\Core\DataTransformer\IntegerToLocalizedStringTransformer::ROUND_FLOOR]     = 'Floor (round towards negative infinity)';

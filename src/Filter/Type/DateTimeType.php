@@ -70,10 +70,10 @@ class DateTimeType extends AbstractType implements TypeInterface
 
         switch ($type) {
             case DateType::WIDGET_TYPE_SINGLE_TEXT:
-                $options['html5'] = (bool)$element->html5;
+                $options['html5']  = (bool)$element->html5;
+                $options['format'] = System::getContainer()->get('huh.utils.date')->transformPhpDateFormatToRFC3339($element->dateTimeFormat);
 
                 if (true === $options['html5']) {
-                    $options['attr']['format'] = Date::getInputFormat($element->dateFormat);
 
                     if ('' !== $element->minDate) {
                         $options['attr']['min'] = Date::parse('Y-m-d\TH:i', $element->minDate); // valid rfc 3339 date `YYYY-MM-DD` format must be used
@@ -85,18 +85,16 @@ class DateTimeType extends AbstractType implements TypeInterface
 
                     break;
                 }
-                $options['format']                   = $element->dateFormat; // rfc3339 format is required by symfony
                 $options['group_attr']['class']      .= ' datepicker timepicker';
                 $options['attr']['data-enable-time'] = 'true';
-                $options['attr']['data-date-format'] = 'd.m.Y H:i';
-//                $options['attr']['data-moment-date-format'] = System::getContainer()->get('huh.utils.date')->formatPhpDateToJsDate($element->dateFormat);
+                $options['attr']['data-date-format'] = $element->dateTimeFormat;
 
                 if ('' !== $element->minDate) {
-//                    $options['attr']['data-min-date'] = Date::parse($element->dateFormat, $element->minDate);
+                    $options['attr']['data-min-date'] = Date::parse($element->dateTimeFormat, $element->minDate);
                 }
 
                 if ('' !== $element->maxDate) {
-//                    $options['attr']['data-max-date'] = Date::parse($element->dateFormat, $element->maxDate);
+                    $options['attr']['data-max-date'] = Date::parse($element->dateTimeFormat, $element->maxDate);
                 }
 
                 break;

@@ -55,9 +55,9 @@ class TimeType extends AbstractType implements TypeInterface
     /**
      * Add the options for the date_widget property
      *
-     * @param array                    $options
+     * @param array $options
      * @param FilterConfigElementModel $element
-     * @param FormBuilderInterface     $builder
+     * @param FormBuilderInterface $builder
      *
      * @return array
      * @throws \Exception
@@ -69,10 +69,10 @@ class TimeType extends AbstractType implements TypeInterface
 
         switch ($type) {
             case DateType::WIDGET_TYPE_SINGLE_TEXT:
-                $options['html5'] = (bool)$element->html5;
+                $options['html5']  = (bool)$element->html5;
+                $options['format'] = $options['attr']['format'] = System::getContainer()->get('huh.utils.date')->transformPhpDateFormatToRFC3339($element->timeFormat);
 
                 if (true === $options['html5']) {
-                    $options['attr']['format'] = Date::getInputFormat($element->dateFormat);
 
                     if ('' !== $element->minTime) {
                         $options['attr']['min'] = Date::parse('\TH:i', $element->minTime); // valid rfc 3339 date `\TH:i` format must be used
@@ -89,8 +89,7 @@ class TimeType extends AbstractType implements TypeInterface
                 $options['attr']['data-enable-time'] = 'true';
                 $options['attr']['data-no-calendar'] = 'true';
 
-                $options['attr']['data-date-format']        = $element->dateFormat;
-                $options['attr']['data-moment-date-format'] = System::getContainer()->get('huh.utils.date')->formatPhpDateToJsDate($element->dateFormat);
+                $options['attr']['data-date-format'] = $element->timeFormat;
 
                 if ('' !== $element->minTime) {
                     $options['attr']['data-min-date'] = Date::parse($element->dateFormat, $element->minTime);

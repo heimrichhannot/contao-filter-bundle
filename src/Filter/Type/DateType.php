@@ -59,11 +59,10 @@ class DateType extends AbstractType implements TypeInterface
 
         switch ($type) {
             case static::WIDGET_TYPE_SINGLE_TEXT:
-                $options['html5'] = (bool)$element->html5;
+                $options['html5']  = (bool)$element->html5;
+                $options['format'] = System::getContainer()->get('huh.utils.date')->transformPhpDateFormatToRFC3339($element->dateFormat);
 
                 if (true === $options['html5']) {
-                    $options['attr']['format'] = Date::getInputFormat($element->dateFormat);
-
                     if ('' !== $element->minDate) {
                         $options['attr']['min'] = Date::parse('Y-m-d', $element->minDate); // valid rfc 3339 date `YYYY-MM-DD` format must be used
                     }
@@ -75,9 +74,8 @@ class DateType extends AbstractType implements TypeInterface
                     break;
                 }
 
-                $options['group_attr']['class']             .= ' datepicker';
-                $options['attr']['data-date-format']        = $element->dateFormat;
-                $options['attr']['data-moment-date-format'] = System::getContainer()->get('huh.utils.date')->formatPhpDateToJsDate($element->dateFormat);
+                $options['group_attr']['class']      .= ' datepicker';
+                $options['attr']['data-date-format'] = $element->dateFormat;
 
                 if ('' !== $element->minDate) {
                     $options['attr']['data-min-date'] = Date::parse($element->dateFormat, $element->minDate);
