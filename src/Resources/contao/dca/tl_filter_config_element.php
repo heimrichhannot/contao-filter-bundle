@@ -317,7 +317,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
         'dateTimeFormat'    => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['dateTimeFormat'],
             'exclude'   => true,
-            'default'   => \Contao\System::getContainer()->get('huh.utils.date')->formatPhpDateToRFC3339(\Contao\Config::get('datimFormat')),
+            'default'   => \Contao\System::getContainer()->get('huh.utils.date')->transformPhpDateFormatToRFC3339(\Contao\Config::get('datimFormat')),
             'inputType' => 'text',
             'eval'      => ['mandatory' => true, 'tl_class' => 'clr w50'],
             'sql'       => "varchar(28) NOT NULL default ''",
