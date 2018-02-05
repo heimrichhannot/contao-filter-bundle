@@ -48,22 +48,55 @@ class DateRangeType extends AbstractType implements TypeInterface
         }
 
         $startField = $this->startElement->field;
-        $startField = $this->stopElement->field;
+        $stopField  = $this->stopElement->field;
+
+        if (!$startField && !$stopField) {
+            return;
+        }
 
         $startName = $this->startElement->getFormName();
         $stopName  = $this->stopElement->getFormName();
 
-//        $startDate = \Input::get('startDate') ? strtotime(\Input::get('startDate')) : 0;
-//        $stopDate  = \Input::get('stopDate') ? strtotime(\Input::get('stopDate')) : 9000000000;
-//
-//        $conditions[] = sprintf('(%s >= expandedStartDate AND %s <= expandedStopDate)', $startDate, $startDate);
-//        $conditions[] = sprintf('(%s >= expandedStartDate AND %s <= expandedStopDate)', $stopDate, $stopDate);
-//        $conditions[] = sprintf('(%s <= expandedStartDate AND %s >= expandedStopDate)', $startDate, $stopDate);
-//
-//        $expression = $builder->expr()->orX(sprintf('%s >= '));
-//
-//        $this->andWhere($this->expr()->like($name, $this->expr()->literal('%' . $value . '%')));
+        /** @var $startDate \DateTime|null */
+        $startDate = isset($data[$startName]) && $data[$startName] ? $data[$startName] : 0;
 
+        /** @var $stopDate \DateTime|null */
+        $stopDate = isset($data[$stopName]) && $data[$stopName] ? $data[$stopName] : null;
+
+        $start = 0;
+        $stop  = 9999999999999;
+
+        if ($startDate instanceof \DateTime) {
+            $start = $startDate->getTimestamp();
+        }
+
+        if ($stopDate instanceof \DateTime) {
+            $stop = $stopDate->getTimestamp();
+        }
+
+        if (null === $startDate && null === $stopDate) {
+            return;
+        }
+
+        $or = $builder->expr()->orX();
+
+        $andXA = $builder->expr()->andX();
+        $andXA->add($builder->expr()->gte($start, $startField));
+        $andXA->add($builder->expr()->lte($stop, $stopField));
+
+        $andXB = $builder->expr()->andX();
+        $andXB->add($builder->expr()->gte($stop, $startField));
+        $andXB->add($builder->expr()->lte($stop, $stopField));
+
+        $andXC = $builder->expr()->andX();
+        $andXC->add($builder->expr()->lte($start, $startField));
+        $andXC->add($builder->expr()->gte($stop, $stopField));
+
+        $or->add($andXA);
+        $or->add($andXB);
+        $or->add($andXC);
+
+        $builder->andWhere($or);
     }
 
     /**

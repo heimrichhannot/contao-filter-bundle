@@ -121,7 +121,6 @@ class DateType extends AbstractType implements TypeInterface
         return $options;
     }
 
-
     /**
      * @inheritdoc
      */

@@ -18,6 +18,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class FilterType extends AbstractType
@@ -73,7 +74,7 @@ class FilterType extends AbstractType
      * Build the form fields for the given elements
      *
      * @param FormBuilderInterface $builder
-     * @param array                $options
+     * @param array $options
      */
     protected function buildElements(FormBuilderInterface $builder, array $options)
     {
@@ -116,12 +117,19 @@ class FilterType extends AbstractType
 
             // collect wrappers and render afterwards
             if (true === $config['wrapper']) {
-                $builder->add($builder->create($type->getName($element), FormType::class, ['inherit_data' => false])); // add the group here to maintain correct form order
+//                $builder->add($builder->create($type->getName($element), FormType::class, ['inherit_data' => false])); // add the group here to maintain correct form order
                 $wrappers[] = $element;
                 continue;
             }
 
-            $type->buildForm($element, $builder);
+            // as we build the form at every request (even in back end mode), catch errors that might be thrown from invalid options, formats etc
+            try {
+                $type->buildForm($element, $builder);
+            } catch (InvalidOptionsException $e) {
+                $foo = 'bar';
+                continue;
+            }
+
             $element->setElementFormName($type->getName($element));
         }
 
@@ -132,9 +140,9 @@ class FilterType extends AbstractType
     /**
      * Build the wrapper form elements
      *
-     * @param array                $wrappers
+     * @param array $wrappers
      * @param FormBuilderInterface $builder
-     * @param array                $options
+     * @param array $options
      */
     protected function buildWrapperElements(array $wrappers = [], FormBuilderInterface $builder, array $options)
     {
@@ -168,7 +176,13 @@ class FilterType extends AbstractType
                 continue;
             }
 
-            $type->buildForm($element, $builder);
+            // as we build the form at every request (even in back end mode), catch errors that might be thrown from invalid options, formats etc
+            try {
+                $type->buildForm($element, $builder);
+            } catch (InvalidOptionsException $e) {
+                continue;
+            }
+
             $element->setElementFormName($type->getName($element));
         }
     }

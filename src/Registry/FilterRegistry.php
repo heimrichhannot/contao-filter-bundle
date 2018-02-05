@@ -67,21 +67,21 @@ class FilterRegistry
      */
     public function init($request = null)
     {
+        if (!System::getContainer()->get('huh.utils.container')->isFrontend()) {
+            return;
+        }
+
         /**
          * @var FilterConfigModel
          */
         $adapter = $this->framework->getAdapter(FilterConfigModel::class);
 
-        try {
-            if (null === ($filters = $adapter->findAllPublished())) {
-                return;
-            }
+        if (null === ($filters = $adapter->findAllPublished())) {
+            return;
+        }
 
-            while ($filters->next()) {
-                $this->initFilter($filters->row(), $request);
-            }
-        } catch (DBALException $e) {
-            // if fields does not exist in db, contao/install wont work anymore, catch error
+        while ($filters->next()) {
+            $this->initFilter($filters->row(), $request);
         }
     }
 
@@ -176,8 +176,10 @@ class FilterRegistry
 
         $config->init($sessionKey, $filter, $elements);
 
-        // always build the form and handle the request within the registry to have global access
-        $this->handleForm($config, $request);
+        // build the form and handle the request within the registry only in front end
+        if (System::getContainer()->get('huh.utils.container')->isFrontend()) {
+            $this->handleForm($config, $request);
+        }
 
         $this->filters[$config->getId()] = $config;
     }

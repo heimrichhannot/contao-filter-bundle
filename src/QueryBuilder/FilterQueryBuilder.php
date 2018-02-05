@@ -9,6 +9,8 @@
 namespace HeimrichHannot\FilterBundle\QueryBuilder;
 
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
+use Contao\Database;
+use Contao\DcaExtractor;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Haste\Model\Relations;
@@ -79,12 +81,12 @@ class FilterQueryBuilder extends QueryBuilder
         $data  = $config->getData();
         $value = $data[$name];
 
-        if (null === $value) {
+        if (null === $value || !$element->field) {
             return $this;
         }
 
 
-        $this->andWhere($this->expr()->like($name, $this->expr()->literal('%' . $value . '%')));
+        $this->andWhere($this->expr()->like($element->field, $this->expr()->literal('%' . $value . '%')));
 
         return $this;
     }
