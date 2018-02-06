@@ -16,7 +16,7 @@ $fields = [
         'exclude'    => true,
         'inputType'  => 'select',
         'foreignKey' => 'tl_filter_config.title',
-        'relation'   => ['type' => 'belongsTo', 'load' => 'eager'],
+        'relation'   => ['type' => 'belongsTo', 'load' => 'lazy'],
         'eval'       => ['tl_class' => 'w50 clr', 'includeBlankOption' => true, 'mandatory' => true],
         'sql'        => "int(10) NOT NULL default '0'",
     ],
