@@ -16,7 +16,6 @@ use HeimrichHannot\FilterBundle\Entity\FilterSession;
 use HeimrichHannot\FilterBundle\Form\FilterType;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\Model\FilterConfigModel;
-use HeimrichHannot\Haste\Util\Url;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 
@@ -225,14 +224,14 @@ class FilterRegistry
             }
 
             $data = $form->getData();
-            $url = Url::removeQueryString([$form->getName()], $form->getConfig()->getAction() ?: null);
+            $url = System::getContainer()->get('huh.utils.url')->removeQueryString([$form->getName()], $form->getConfig()->getAction() ?: null);
 
             // allow reset, support different form configuration with same form name
             if (null !== $form->getClickedButton() && in_array($form->getClickedButton()->getName(), $config->getResetNames(), true)) {
                 $this->session->reset($sessionKey);
                 $data = [];
                 // redirect to same page without filter parameters
-                $url = Url::removeQueryString([$form->getName()], $request->getUri() ?: null);
+                $url = System::getContainer()->get('huh.utils.url')->removeQueryString([$form->getName()], $request->getUri() ?: null);
             }
 
             // do not save filter id in session

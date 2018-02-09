@@ -1,8 +1,0 @@
-<!-- indexer::stop -->
-<div class="ajax-pagination block">
-    <?php if ($this->hasNext): ?>
-        <a href="<?= \Haste\Util\Url::addQueryString('as=ajax&ag=formhybrid', $this->next['href']) ?>" class="next"
-           title="<?= $this->next['title'] ?>"><?= $GLOBALS['TL_LANG']['formhybrid_list']['ajaxPaginationNext'] ?></a>
-    <?php endif; ?>
-</div>
-<!-- indexer::continue -->

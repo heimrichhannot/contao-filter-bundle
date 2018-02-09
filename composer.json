@@ -6,7 +6,8 @@
     "require": {
         "php": "^7.1",
         "contao/manager-bundle": "^4.4",
-        "heimrichhannot/contao-utils-bundle": "dev-master"
+        "heimrichhannot/contao-utils-bundle": "dev-master",
+        "codefog/contao-haste": "^4.18"
     },
     "require-dev": {
         "contao/test-case": "^1.1",
