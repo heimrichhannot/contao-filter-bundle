@@ -79,7 +79,7 @@ $GLOBALS['TL_DCA']['tl_filter_config'] = [
     ],
     'palettes'    => [
         '__selector__' => ['published'],
-        'default'      => '{general_legend},title;{config_legend},name,dataContainer,method,action,renderEmpty;{template_legend},template;{expert_legend},cssClass;{publish_legend},published;',
+        'default'      => '{general_legend},title;{config_legend},authorType,author,name,dataContainer,method,action,renderEmpty;{template_legend},template;{expert_legend},cssClass;{publish_legend},published;',
     ],
     'subpalettes' => [
         'published' => 'start,stop',
