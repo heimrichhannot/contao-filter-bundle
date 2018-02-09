@@ -64,17 +64,17 @@ class FilterType extends AbstractType
     {
         $resolver->setDefaults(
             [
-                'filter'    => null,
+                'filter' => null,
                 'framework' => null,
             ]
         );
     }
 
     /**
-     * Build the form fields for the given elements
+     * Build the form fields for the given elements.
      *
      * @param FormBuilderInterface $builder
-     * @param array $options
+     * @param array                $options
      */
     protected function buildElements(FormBuilderInterface $builder, array $options)
     {
@@ -85,14 +85,14 @@ class FilterType extends AbstractType
         }
 
         $wrappers = [];
-        $types    = \System::getContainer()->get('huh.filter.choice.type')->getCachedChoices();
+        $types = \System::getContainer()->get('huh.filter.choice.type')->getCachedChoices();
 
         if (!is_array($types) || empty($types)) {
             return;
         }
 
         /**
-         * @var $element FilterConfigElementModel
+         * @var FilterConfigElementModel
          */
         foreach ($elements as $element) {
             if (!isset($types[$element->type])) {
@@ -100,14 +100,14 @@ class FilterType extends AbstractType
             }
 
             $config = $types[$element->type];
-            $class  = $config['class'];
+            $class = $config['class'];
 
             if (!class_exists($class)) {
                 continue;
             }
 
             /**
-             * @var $type TypeInterface
+             * @var TypeInterface
              */
             $type = new $class($this->config);
 
@@ -133,18 +133,17 @@ class FilterType extends AbstractType
             $element->setElementFormName($type->getName($element));
         }
 
-
         $this->buildWrapperElements($wrappers, $builder, $options);
     }
 
     /**
-     * Build the wrapper form elements
+     * Build the wrapper form elements.
      *
-     * @param array $wrappers
+     * @param array                $wrappers
      * @param FormBuilderInterface $builder
-     * @param array $options
+     * @param array                $options
      */
-    protected function buildWrapperElements(array $wrappers = [], FormBuilderInterface $builder, array $options)
+    protected function buildWrapperElements(array $wrappers, FormBuilderInterface $builder, array $options)
     {
         $types = \System::getContainer()->get('huh.filter.choice.type')->getCachedChoices();
 
@@ -153,14 +152,14 @@ class FilterType extends AbstractType
         }
 
         /**
-         * @var $element FilterConfigElementModel
+         * @var FilterConfigElementModel
          */
         foreach ($wrappers as $element) {
             if (!isset($types[$element->type])) {
                 continue;
             }
 
-            $type  = $types[$element->type];
+            $type = $types[$element->type];
             $class = $type['class'];
 
             if (!class_exists($class)) {
@@ -168,7 +167,7 @@ class FilterType extends AbstractType
             }
 
             /**
-             * @var $type TypeInterface
+             * @var TypeInterface
              */
             $type = new $class($this->config);
 

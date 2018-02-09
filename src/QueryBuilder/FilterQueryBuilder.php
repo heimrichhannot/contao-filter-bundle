@@ -9,14 +9,11 @@
 namespace HeimrichHannot\FilterBundle\QueryBuilder;
 
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
-use Contao\Database;
-use Contao\DcaExtractor;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Haste\Model\Relations;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
-use Symfony\Component\Validator\Constraints\DateTime;
 
 class FilterQueryBuilder extends QueryBuilder
 {
@@ -35,8 +32,8 @@ class FilterQueryBuilder extends QueryBuilder
      * Add where clause based on an element.
      *
      * @param FilterConfigElementModel $element
-     * @param string $name The field name
-     * @param FilterConfig $config
+     * @param string                   $name    The field name
+     * @param FilterConfig             $config
      *
      * @return $this this FilterQueryBuilder instance
      */
@@ -70,23 +67,22 @@ class FilterQueryBuilder extends QueryBuilder
      * Add tag widget where clause.
      *
      * @param FilterConfigElementModel $element
-     * @param string $name The field name
-     * @param FilterConfig $config
-     * @param array $dca
+     * @param string                   $name    The field name
+     * @param FilterConfig             $config
+     * @param array                    $dca
      *
      * @return $this this FilterQueryBuilder instance
      */
     public function whereWidget(FilterConfigElementModel $element, string $name, FilterConfig $config, array $dca)
     {
-        $data  = $config->getData();
+        $data = $config->getData();
         $value = $data[$name];
 
         if (null === $value || !$element->field) {
             return $this;
         }
 
-
-        $this->andWhere($this->expr()->like($element->field, $this->expr()->literal('%' . $value . '%')));
+        $this->andWhere($this->expr()->like($element->field, $this->expr()->literal('%'.$value.'%')));
 
         return $this;
     }
@@ -95,27 +91,27 @@ class FilterQueryBuilder extends QueryBuilder
      * Add tag widget where clause.
      *
      * @param FilterConfigElementModel $element
-     * @param string $name The field name
-     * @param FilterConfig $config
-     * @param array $dca
+     * @param string                   $name    The field name
+     * @param FilterConfig             $config
+     * @param array                    $dca
      *
      * @return $this this FilterQueryBuilder instance
      */
     protected function whereTagWidget(FilterConfigElementModel $element, string $name, FilterConfig $config, array $dca)
     {
-        $filter   = $config->getFilter();
-        $data     = $config->getData();
-        $value    = $data[$name];
+        $filter = $config->getFilter();
+        $data = $config->getData();
+        $value = $data[$name];
         $relation = Relations::getRelation($filter['dataContainer'], $element->field);
 
         if (false === $relation || null === $value) {
             return $this;
         }
 
-        $alias = $relation['table'] . '_' . $name;
+        $alias = $relation['table'].'_'.$name;
 
-        $this->join($relation['reference_table'], $relation['table'], $alias, $alias . '.' . $relation['reference_field'] . '=' . $relation['reference_table'] . '.' . $relation['reference']);
-        $this->andWhere($this->expr()->in($alias . '.' . $relation['related_field'], $value));
+        $this->join($relation['reference_table'], $relation['table'], $alias, $alias.'.'.$relation['reference_field'].'='.$relation['reference_table'].'.'.$relation['reference']);
+        $this->andWhere($this->expr()->in($alias.'.'.$relation['related_field'], $value));
 
         return $this;
     }

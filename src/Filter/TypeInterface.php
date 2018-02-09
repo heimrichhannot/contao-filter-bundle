@@ -14,8 +14,6 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 interface TypeInterface
 {
-
-
     /**
      * Build the filter query.
      *
@@ -37,7 +35,6 @@ interface TypeInterface
      */
     public function buildForm(FilterConfigElementModel $element, FormBuilderInterface $builder);
 
-
     /**
      * Get the field name.
      *
@@ -47,9 +44,8 @@ interface TypeInterface
      */
     public function getName(FilterConfigElementModel $element);
 
-
     /**
-     * Get the default form element name
+     * Get the default form element name.
      *
      * @param FilterConfigElementModel $element The element data
      *

@@ -1,13 +1,12 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2018 Heimrich & Hannot GmbH
  *
- * @author  Rico Kaltofen <r.kaltofen@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @license LGPL-3.0-or-later
  */
 
 namespace HeimrichHannot\FilterBundle\Form\Extension;
-
 
 use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\Form\Extension\Core\Type\ButtonType;
@@ -18,16 +17,15 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class FormButtonExtension extends AbstractTypeExtension
 {
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getExtendedType()
     {
         return ButtonType::class;
     }
 
-
     /**
-     * Add the extra row_attr option
+     * Add the extra row_attr option.
      *
      * @param OptionsResolver $resolver
      */
@@ -41,7 +39,7 @@ class FormButtonExtension extends AbstractTypeExtension
     }
 
     /**
-     * Pass the set row_attr options to the view
+     * Pass the set row_attr options to the view.
      *
      * @param FormView      $view
      * @param FormInterface $form

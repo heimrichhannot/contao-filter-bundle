@@ -34,6 +34,14 @@ class ButtonType extends AbstractType implements TypeInterface
     /**
      * {@inheritdoc}
      */
+    public function getDefaultName(FilterConfigElementModel $element)
+    {
+        return $element->name;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     protected function getLabel(FilterConfigElementModel $element, FormBuilderInterface $builder)
     {
         $label = parent::getLabel($element, $builder);
@@ -43,13 +51,5 @@ class ButtonType extends AbstractType implements TypeInterface
         }
 
         return $label;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getDefaultName(FilterConfigElementModel $element)
-    {
-        return $element->name;
     }
 }

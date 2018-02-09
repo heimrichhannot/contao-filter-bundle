@@ -35,9 +35,9 @@ class CountryChoice extends FieldOptionsChoice
 
         list($element, $filter) = $context;
 
-        if (true === (bool)$element->customCountries) {
+        if (true === (bool) $element->customCountries) {
             $options = $this->getCustomCountryOptions($element, $filter);
-        } elseif (true === (bool)$element->customOptions) {
+        } elseif (true === (bool) $element->customOptions) {
             $options = $this->getCustomOptions($element, $filter);
         } elseif (isset($filter['dataContainer']) && '' !== $filter['dataContainer'] && null !== $element->field) {
             if (isset($GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element->field])) {

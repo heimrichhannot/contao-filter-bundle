@@ -37,9 +37,9 @@ class NumberType extends TextType
     {
         $options = parent::getOptions($element, $builder);
 
-        $options['grouping']      = (bool)$element->grouping;
-        $options['scale']         = (int)$element->scale;
-        $options['rounding_mode'] = (int)$element->roundingMode;
+        $options['grouping'] = (bool) $element->grouping;
+        $options['scale'] = (int) $element->scale;
+        $options['rounding_mode'] = (int) $element->roundingMode;
 
         return $options;
     }

@@ -37,8 +37,8 @@ class PercentType extends TextType
     {
         $options = parent::getOptions($element, $builder);
 
-        $options['scale'] = (int)$element->scale;
-        $options['type']  = (string)$element->percentType ?: 'fractional';
+        $options['scale'] = (int) $element->scale;
+        $options['type'] = (string) $element->percentType ?: 'fractional';
 
         return $options;
     }

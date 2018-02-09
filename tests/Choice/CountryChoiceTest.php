@@ -57,7 +57,7 @@ class CountryChoiceTest extends ContaoTestCase
 
         $containerBuilder = new \Contao\ManagerPlugin\Config\ContainerBuilder($this->mockPluginLoader($this->never()), []);
 
-        $config                 = $plugin->getExtensionConfig('huh_filter', [[]], $containerBuilder);
+        $config = $plugin->getExtensionConfig('huh_filter', [[]], $containerBuilder);
         $this->config['filter'] = $config['huh']['filter'];
 
         // required within Contao\Widget::getAttributesFromDca()
@@ -77,7 +77,7 @@ class CountryChoiceTest extends ContaoTestCase
         System::setContainer($this->container);
 
         $framework = $this->mockContaoFramework();
-        $instance  = new CountryChoice($framework);
+        $instance = new CountryChoice($framework);
 
         $this->assertInstanceOf('HeimrichHannot\FilterBundle\Choice\CountryChoice', $instance);
     }
@@ -98,33 +98,32 @@ class CountryChoiceTest extends ContaoTestCase
         $GLOBALS['TL_FFL']['select'] = 'Contao\SelectMenu';
 
         $GLOBALS['TL_DCA']['test']['fields']['test'] = [
-            'label'            => 'test',
-            'inputType'        => 'select',
-            'options'          => ['DE' => 'Deutschland Test', 'AT' => 'Österreich Test'],
+            'label' => 'test',
+            'inputType' => 'select',
+            'options' => ['DE' => 'Deutschland Test', 'AT' => 'Österreich Test'],
             'options_callback' => null,
-            'eval'             => [
-                'submitOnChange'     => false,
-                'allowHtml'          => false,
-                'rte'                => null,
-                'preserveTags'       => false,
-                'isAssociative'      => false,
+            'eval' => [
+                'submitOnChange' => false,
+                'allowHtml' => false,
+                'rte' => null,
+                'preserveTags' => false,
+                'isAssociative' => false,
                 'includeBlankOption' => false,
-                'sql'                => null,
+                'sql' => null,
             ],
         ];
 
         $elementProperties = [
-            'type'  => 'choice',
+            'type' => 'choice',
             'field' => 'test',
         ];
 
         $element = $this->mockClassWithProperties(FilterConfigElementModel::class, $elementProperties);
 
-
         $context = [
             $element,
             [
-                'id'            => 1,
+                'id' => 1,
                 'dataContainer' => 'test',
             ],
         ];
@@ -132,7 +131,7 @@ class CountryChoiceTest extends ContaoTestCase
         System::setContainer($this->container);
 
         $instance = new CountryChoice($framework);
-        $choices  = $instance->getChoices($context);
+        $choices = $instance->getChoices($context);
 
         $this->assertNotEmpty($choices);
         $this->assertArraySubset(['Deutschland Test' => 'DE', 'Österreich Test' => 'AT'], $choices);
@@ -154,23 +153,23 @@ class CountryChoiceTest extends ContaoTestCase
         $GLOBALS['TL_FFL']['select'] = 'Contao\SelectMenu';
 
         $GLOBALS['TL_DCA']['test']['fields']['test'] = [
-            'label'            => 'test',
-            'inputType'        => 'select',
-            'options'          => ['DE', 'AT'],
+            'label' => 'test',
+            'inputType' => 'select',
+            'options' => ['DE', 'AT'],
             'options_callback' => null,
-            'eval'             => [
-                'submitOnChange'     => false,
-                'allowHtml'          => false,
-                'rte'                => null,
-                'preserveTags'       => false,
-                'isAssociative'      => false,
+            'eval' => [
+                'submitOnChange' => false,
+                'allowHtml' => false,
+                'rte' => null,
+                'preserveTags' => false,
+                'isAssociative' => false,
                 'includeBlankOption' => false,
-                'sql'                => null,
+                'sql' => null,
             ],
         ];
 
         $elementProperties = [
-            'type'  => 'choice',
+            'type' => 'choice',
             'field' => 'test',
         ];
 
@@ -179,7 +178,7 @@ class CountryChoiceTest extends ContaoTestCase
         $context = [
             $element,
             [
-                'id'            => 1,
+                'id' => 1,
                 'dataContainer' => 'test',
             ],
         ];
@@ -187,7 +186,7 @@ class CountryChoiceTest extends ContaoTestCase
         System::setContainer($this->container);
 
         $instance = new CountryChoice($framework);
-        $choices  = $instance->getChoices($context);
+        $choices = $instance->getChoices($context);
 
         $this->assertNotEmpty($choices);
         $this->assertArraySubset(['Germany' => 'DE', 'Austria' => 'AT'], $choices);
@@ -211,9 +210,9 @@ class CountryChoiceTest extends ContaoTestCase
         System::setContainer($this->container);
 
         $elementProperties = [
-            'type'          => 'choice',
+            'type' => 'choice',
             'customOptions' => true,
-            'options'       => serialize(
+            'options' => serialize(
                 [
                     [
                         'value' => 'DE',
@@ -237,7 +236,7 @@ class CountryChoiceTest extends ContaoTestCase
         System::setContainer($this->container);
 
         $instance = new CountryChoice($framework);
-        $choices  = $instance->getChoices($context);
+        $choices = $instance->getChoices($context);
 
         $this->assertNotEmpty($choices);
         $this->assertArraySubset(['Deutschland Test' => 'DE', 'Österreich Test' => 'AT'], $choices);
@@ -257,9 +256,9 @@ class CountryChoiceTest extends ContaoTestCase
         System::setContainer($this->container);
 
         $elementProperties = [
-            'type'          => 'choice',
+            'type' => 'choice',
             'customOptions' => true,
-            'options'       => serialize(
+            'options' => serialize(
                 [
                     [
                         'value' => 'DE',
@@ -283,7 +282,7 @@ class CountryChoiceTest extends ContaoTestCase
         System::setContainer($this->container);
 
         $instance = new CountryChoice($framework);
-        $choices  = $instance->getChoices($context);
+        $choices = $instance->getChoices($context);
 
         $this->assertNotEmpty($choices);
         $this->assertArraySubset(['Germany' => 'DE', 'Austria' => 'AT'], $choices);
@@ -303,9 +302,9 @@ class CountryChoiceTest extends ContaoTestCase
         System::setContainer($this->container);
 
         $elementProperties = [
-            'type'            => 'choice',
+            'type' => 'choice',
             'customCountries' => true,
-            'countries'       => serialize(['DE', 'AT']),
+            'countries' => serialize(['DE', 'AT']),
         ];
 
         $element = $this->mockClassWithProperties(FilterConfigElementModel::class, $elementProperties);
@@ -318,7 +317,7 @@ class CountryChoiceTest extends ContaoTestCase
         System::setContainer($this->container);
 
         $instance = new CountryChoice($framework);
-        $choices  = $instance->getChoices($context);
+        $choices = $instance->getChoices($context);
 
         $this->assertNotEmpty($choices);
         $this->assertArraySubset(['Austria' => 'AT', 'Germany' => 'DE'], $choices);
@@ -338,7 +337,7 @@ class CountryChoiceTest extends ContaoTestCase
         System::setContainer($this->container);
 
         $elementProperties = [
-            'type'            => 'choice',
+            'type' => 'choice',
             'customCountries' => true,
         ];
 
@@ -352,7 +351,7 @@ class CountryChoiceTest extends ContaoTestCase
         System::setContainer($this->container);
 
         $instance = new CountryChoice($framework);
-        $choices  = $instance->getChoices($context);
+        $choices = $instance->getChoices($context);
 
         $this->assertEmpty($choices);
     }
@@ -378,7 +377,7 @@ class CountryChoiceTest extends ContaoTestCase
         ];
 
         $instance = new CountryChoice($framework);
-        $choices  = $instance->getChoices($context);
+        $choices = $instance->getChoices($context);
 
         System::setContainer($this->container);
 
@@ -399,7 +398,7 @@ class CountryChoiceTest extends ContaoTestCase
         $context = ['foo' => []];
 
         $instance = new CountryChoice($framework);
-        $choices  = $instance->getChoices($context);
+        $choices = $instance->getChoices($context);
 
         System::setContainer($this->container);
 
@@ -420,7 +419,7 @@ class CountryChoiceTest extends ContaoTestCase
         $context = [];
 
         $instance = new CountryChoice($framework);
-        $choices  = $instance->getChoices($context);
+        $choices = $instance->getChoices($context);
 
         System::setContainer($this->container);
 

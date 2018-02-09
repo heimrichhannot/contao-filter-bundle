@@ -3,7 +3,7 @@
 /*
  * Copyright (c) 2018 Heimrich & Hannot GmbH
  *
- * @license LGPL-3.0+
+ * @license LGPL-3.0-or-later
  */
 
 namespace HeimrichHannot\FilterBundle\Filter\Type;
@@ -23,7 +23,6 @@ class DateTimeType extends AbstractType implements TypeInterface
      */
     public function buildQuery(FilterQueryBuilder $builder, FilterConfigElementModel $element)
     {
-
     }
 
     /**
@@ -38,6 +37,13 @@ class DateTimeType extends AbstractType implements TypeInterface
         );
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function getDefaultName(FilterConfigElementModel $element)
+    {
+        return $element->name;
+    }
 
     /**
      * {@inheritdoc}
@@ -46,22 +52,22 @@ class DateTimeType extends AbstractType implements TypeInterface
     {
         $options = parent::getOptions($element, $builder);
 
-        $options           = $this->addDateWidgetOptions($options, $element, $builder);
+        $options = $this->addDateWidgetOptions($options, $element, $builder);
         $options['widget'] = $element->dateWidget ?: static::WIDGET_TYPE_CHOICE;
 
         return $options;
     }
 
-
     /**
-     * Add the options for the date_widget property
+     * Add the options for the date_widget property.
      *
-     * @param array $options
+     * @param array                    $options
      * @param FilterConfigElementModel $element
-     * @param FormBuilderInterface $builder
+     * @param FormBuilderInterface     $builder
+     *
+     * @throws \Exception
      *
      * @return array
-     * @throws \Exception
      */
     protected function addDateWidgetOptions(array $options, FilterConfigElementModel $element, FormBuilderInterface $builder): array
     {
@@ -70,11 +76,10 @@ class DateTimeType extends AbstractType implements TypeInterface
 
         switch ($type) {
             case DateType::WIDGET_TYPE_SINGLE_TEXT:
-                $options['html5']  = (bool)$element->html5;
+                $options['html5'] = (bool) $element->html5;
                 $options['format'] = System::getContainer()->get('huh.utils.date')->transformPhpDateFormatToRFC3339($element->dateTimeFormat);
 
                 if (true === $options['html5']) {
-
                     if ('' !== $element->minDate) {
                         $options['attr']['min'] = Date::parse('Y-m-d\TH:i', $element->minDate); // valid rfc 3339 date `YYYY-MM-DD` format must be used
                     }
@@ -85,7 +90,7 @@ class DateTimeType extends AbstractType implements TypeInterface
 
                     break;
                 }
-                $options['group_attr']['class']      .= ' datepicker timepicker';
+                $options['group_attr']['class'] .= ' datepicker timepicker';
                 $options['attr']['data-enable-time'] = 'true';
                 $options['attr']['data-date-format'] = $element->dateTimeFormat;
 
@@ -99,8 +104,8 @@ class DateTimeType extends AbstractType implements TypeInterface
 
                 break;
             case DateType::WIDGET_TYPE_CHOICE:
-                $minYear  = Date::parse('Y', strtotime('-5 year', $time));
-                $maxYear  = Date::parse('Y', strtotime('+5 year', $time));
+                $minYear = Date::parse('Y', strtotime('-5 year', $time));
+                $maxYear = Date::parse('Y', strtotime('+5 year', $time));
                 $minMonth = null;
 
                 if ('' !== $element->minDate) {
@@ -118,13 +123,5 @@ class DateTimeType extends AbstractType implements TypeInterface
         }
 
         return $options;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getDefaultName(FilterConfigElementModel $element)
-    {
-        return $element->name;
     }
 }

@@ -31,7 +31,7 @@ class RadioType extends CheckboxType
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getDefaultName(FilterConfigElementModel $element)
     {

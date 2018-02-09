@@ -33,23 +33,23 @@ class MoneyType extends TextType
     /**
      * {@inheritdoc}
      */
+    public function getDefaultName(FilterConfigElementModel $element)
+    {
+        return null;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     protected function getOptions(FilterConfigElementModel $element, FormBuilderInterface $builder)
     {
         $options = parent::getOptions($element, $builder);
 
-        $options['currency'] = (string)$element->currency;
-        $options['divisor']  = (int)$element->divisor;
-        $options['grouping'] = (bool)$element->grouping;
-        $options['scale']    = (int)$element->scale;
+        $options['currency'] = (string) $element->currency;
+        $options['divisor'] = (int) $element->divisor;
+        $options['grouping'] = (bool) $element->grouping;
+        $options['scale'] = (int) $element->scale;
 
         return $options;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getDefaultName(FilterConfigElementModel $element)
-    {
-        return null;
     }
 }

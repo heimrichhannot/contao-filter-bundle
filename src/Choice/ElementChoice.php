@@ -1,13 +1,12 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2018 Heimrich & Hannot GmbH
  *
- * @author  Rico Kaltofen <r.kaltofen@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @license LGPL-3.0-or-later
  */
 
 namespace HeimrichHannot\FilterBundle\Choice;
-
 
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\UtilsBundle\Choice\AbstractChoice;
@@ -15,7 +14,7 @@ use HeimrichHannot\UtilsBundle\Choice\AbstractChoice;
 class ElementChoice extends AbstractChoice
 {
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function collect()
     {
@@ -34,7 +33,7 @@ class ElementChoice extends AbstractChoice
         $context['types'] = is_array($context['types']) ? $context['types'] : [];
 
         /**
-         * @var $adapter FilterConfigElementModel
+         * @var FilterConfigElementModel
          */
         $adapter = $this->framework->getAdapter(FilterConfigElementModel::class);
 

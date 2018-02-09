@@ -7,7 +7,7 @@ $lang = &$GLOBALS['TL_LANG']['tl_filter_config_element'];
  */
 $lang['title']             = ['Title', 'Please enter a title.'];
 $lang['type']              = ['Type', 'Select a field type.'];
-$lang['field']             = ['Field', 'Select a mapping table field.'];
+$lang['field']             = ['DCA field', 'Select a mapping dca field.'];
 $lang['fields']            = ['Fields', 'Select multiple fields that should be combined in given order.'];
 $lang['customOptions']     = ['Custom options', 'Use choices.'];
 $lang['options']           = ['Options', 'If JavaScript is disabled, make sure to save your changes before modifying the order.'];

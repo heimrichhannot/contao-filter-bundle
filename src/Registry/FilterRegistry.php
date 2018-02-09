@@ -11,7 +11,6 @@ namespace HeimrichHannot\FilterBundle\Registry;
 use Contao\Controller;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\System;
-use Doctrine\DBAL\DBALException;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
 use HeimrichHannot\FilterBundle\Entity\FilterSession;
 use HeimrichHannot\FilterBundle\Form\FilterType;
@@ -51,13 +50,13 @@ class FilterRegistry
      * Constructor.
      *
      * @param ContaoFrameworkInterface $framework
-     * @param FilterSession $session
+     * @param FilterSession            $session
      */
     public function __construct(ContaoFrameworkInterface $framework, FilterSession $session)
     {
         $this->framework = $framework;
-        $this->session   = $session;
-        $this->cache     = new FilesystemAdapter('huh.filter.registry', 0, \System::getContainer()->get('kernel')->getCacheDir());
+        $this->session = $session;
+        $this->cache = new FilesystemAdapter('huh.filter.registry', 0, \System::getContainer()->get('kernel')->getCacheDir());
     }
 
     /**
@@ -114,7 +113,7 @@ class FilterRegistry
      */
     public function getSessionKey(array $filter)
     {
-        return 'huh.filter.session.' . $filter['name'] ?: $filter['id'];
+        return 'huh.filter.session.'.$filter['name'] ?: $filter['id'];
     }
 
     /**
@@ -186,7 +185,7 @@ class FilterRegistry
 
     /**
      * @param FilterConfig $config
-     * @param mixed $request The request to handle
+     * @param mixed        $request The request to handle
      */
     protected function handleForm(FilterConfig $config, $request = null)
     {
@@ -216,18 +215,17 @@ class FilterRegistry
         }
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             if (!$form->has(FilterType::FILTER_ID_NAME)) {
                 return;
             }
 
             // form id must match
-            if ((int)$form->get(FilterType::FILTER_ID_NAME)->getData() !== $config->getId()) {
+            if ((int) $form->get(FilterType::FILTER_ID_NAME)->getData() !== $config->getId()) {
                 return;
             }
 
             $data = $form->getData();
-            $url  = Url::removeQueryString([$form->getName()], $form->getConfig()->getAction() ?: null);
+            $url = Url::removeQueryString([$form->getName()], $form->getConfig()->getAction() ?: null);
 
             // allow reset, support different form configuration with same form name
             if (null !== $form->getClickedButton() && in_array($form->getClickedButton()->getName(), $config->getResetNames(), true)) {

@@ -37,7 +37,7 @@ class PasswordType extends TextType
     {
         $options = parent::getOptions($element, $builder);
 
-        $options['always_empty'] = (bool)$element->alwaysEmpty;
+        $options['always_empty'] = (bool) $element->alwaysEmpty;
 
         return $options;
     }

@@ -68,26 +68,26 @@ class FilterConfig
      * Constructor.
      *
      * @param ContaoFrameworkInterface $framework
-     * @param FilterSession $session
+     * @param FilterSession            $session
      */
     public function __construct(ContaoFrameworkInterface $framework, FilterSession $session)
     {
         $this->framework = $framework;
-        $this->session   = $session;
+        $this->session = $session;
     }
 
     /**
      * Init the filter based on its model.
      *
-     * @param string $sessionKey
-     * @param array $filter
+     * @param string                                                   $sessionKey
+     * @param array                                                    $filter
      * @param \Contao\Model\Collection|FilterConfigElementModel[]|null $elements
      */
     public function init(string $sessionKey, array $filter, $elements = null)
     {
         $this->sessionKey = $sessionKey;
-        $this->filter     = $filter;
-        $this->elements   = $elements;
+        $this->filter = $filter;
+        $this->elements = $elements;
     }
 
     /**
@@ -119,7 +119,7 @@ class FilterConfig
             $options['attr']['class'] = implode(' ', $cssClass);
         }
 
-        if (isset($this->filter['renderEmpty']) && true === (bool)$this->filter['renderEmpty']) {
+        if (isset($this->filter['renderEmpty']) && true === (bool) $this->filter['renderEmpty']) {
             $data = [];
         }
 
@@ -149,7 +149,7 @@ class FilterConfig
                 continue;
             }
 
-            $type  = $types[$element->type];
+            $type = $types[$element->type];
             $class = $type['class'];
 
             if (!class_exists($class)) {
@@ -186,10 +186,10 @@ class FilterConfig
     }
 
     /**
-     * Get a specific element by its value
+     * Get a specific element by its value.
      *
-     * @param  mixed $value The to search within $key
-     * @param string $key The array key
+     * @param mixed  $value The to search within $key
+     * @param string $key   The array key
      *
      * @return FilterConfigElementModel|null
      */
@@ -204,7 +204,7 @@ class FilterConfig
         }
 
         foreach ($this->getElements() as $element) {
-            if (null === $element->{$key} || (string)$element->{$key} != (string)$value) {
+            if (null === $element->{$key} || (string) $element->{$key} !== (string) $value) {
                 continue;
             }
 
@@ -313,8 +313,8 @@ class FilterConfig
      */
     protected function mapFormsToData()
     {
-        $data             = [];
-        $forms            = $this->builder->getForm();
+        $data = [];
+        $forms = $this->builder->getForm();
         $propertyAccessor = PropertyAccess::createPropertyAccessor();
 
         /*
@@ -322,7 +322,7 @@ class FilterConfig
          */
         foreach ($forms as $form) {
             $propertyPath = $form->getPropertyPath();
-            $config       = $form->getConfig();
+            $config = $form->getConfig();
 
             // Write-back is disabled if the form is not synchronized (transformation failed),
             // if the form was not submitted and if the form is disabled (modification not allowed)

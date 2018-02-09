@@ -33,7 +33,7 @@ class TelType extends AbstractType implements TypeInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getDefaultName(FilterConfigElementModel $element)
     {

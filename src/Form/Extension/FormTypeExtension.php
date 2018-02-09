@@ -1,13 +1,12 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2018 Heimrich & Hannot GmbH
  *
- * @author  Rico Kaltofen <r.kaltofen@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @license LGPL-3.0-or-later
  */
 
 namespace HeimrichHannot\FilterBundle\Form\Extension;
-
 
 use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
@@ -18,16 +17,15 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class FormTypeExtension extends AbstractTypeExtension
 {
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getExtendedType()
     {
         return FormType::class;
     }
 
-
     /**
-     * Add the extra row_attr option
+     * Add the extra row_attr option.
      *
      * @param OptionsResolver $resolver
      */
@@ -35,24 +33,24 @@ class FormTypeExtension extends AbstractTypeExtension
     {
         $resolver->setDefaults(
             [
-                'group_attr'          => null,
+                'group_attr' => null,
                 'input_group_prepend' => false,
-                'input_group_append'  => false,
+                'input_group_append' => false,
             ]
         );
     }
 
     /**
-     * Pass the set row_attr options to the view
+     * Pass the set row_attr options to the view.
      *
-     * @param FormView $view
+     * @param FormView      $view
      * @param FormInterface $form
-     * @param array $options
+     * @param array         $options
      */
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
-        $view->vars['group_attr']    = isset($options['group_attr']) && is_array($options['group_attr']) ? $options['group_attr'] : [];
+        $view->vars['group_attr'] = isset($options['group_attr']) && is_array($options['group_attr']) ? $options['group_attr'] : [];
         $view->vars['input_prepend'] = $options['input_group_prepend'];
-        $view->vars['input_append']  = $options['input_group_append'];
+        $view->vars['input_append'] = $options['input_group_append'];
     }
 }

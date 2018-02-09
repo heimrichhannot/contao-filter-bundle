@@ -35,20 +35,20 @@ class UrlType extends AbstractType implements TypeInterface
     /**
      * {@inheritdoc}
      */
+    public function getDefaultName(FilterConfigElementModel $element)
+    {
+        return null;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     protected function getOptions(FilterConfigElementModel $element, FormBuilderInterface $builder)
     {
         $options = parent::getOptions($element, $builder);
 
-        $options['default_protocol'] = (string)$element->defaultProtocol ?: 'http';
+        $options['default_protocol'] = (string) $element->defaultProtocol ?: 'http';
 
         return $options;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getDefaultName(FilterConfigElementModel $element)
-    {
-        return null;
     }
 }

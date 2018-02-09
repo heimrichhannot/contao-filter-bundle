@@ -248,21 +248,21 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['customName'],
             'exclude'   => true,
             'inputType' => 'checkbox',
-            'eval'      => ['submitOnChange' => true],
+            'eval'      => ['submitOnChange' => true, 'tl_class' => 'w50'],
             'sql'       => "char(1) NOT NULL default ''",
         ],
         'name'              => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['name'],
             'exclude'   => true,
             'inputType' => 'text',
-            'eval'      => ['mandatory' => true, 'maxlength' => 128, 'doNotCopy' => true, 'rgxp' => 'fieldname', 'tl_class' => 'clr'],
+            'eval'      => ['mandatory' => true, 'maxlength' => 128, 'doNotCopy' => true, 'rgxp' => 'fieldname', 'tl_class' => 'w50'],
             'sql'       => "varchar(128) NOT NULL default ''",
         ],
         'addPlaceholder'    => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['addPlaceholder'],
             'exclude'   => true,
             'inputType' => 'checkbox',
-            'eval'      => ['submitOnChange' => true],
+            'eval'      => ['submitOnChange' => true, 'tl_class' => 'w50'],
             'sql'       => "char(1) NOT NULL default ''",
         ],
         'placeholder'       => [
@@ -272,20 +272,21 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'options_callback' => function (\DataContainer $dc) {
                 return \Contao\System::getContainer()->get('huh.utils.choice.message')->getCachedChoices('huh.filter.placeholder');
             },
-            'eval'             => ['chosen' => true, 'mandatory' => true, 'maxlength' => 128, 'includeBlankOption' => true],
+            'eval'             => ['chosen' => true, 'mandatory' => true, 'maxlength' => 128, 'includeBlankOption' => true, 'tl_class' => 'w50'],
             'sql'              => "varchar(128) NOT NULL default ''",
         ],
         'hideLabel'         => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['hideLabel'],
             'exclude'   => true,
             'inputType' => 'checkbox',
+            'eval' => ['tl_class' => 'w50'],
             'sql'       => "char(1) NOT NULL default ''",
         ],
         'customLabel'       => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['customLabel'],
             'exclude'   => true,
             'inputType' => 'checkbox',
-            'eval'      => ['submitOnChange' => true],
+            'eval'      => ['submitOnChange' => true, 'tl_class' => 'w50'],
             'sql'       => "char(1) NOT NULL default ''",
         ],
         'label'             => [
@@ -295,7 +296,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'options_callback' => function (\DataContainer $dc) {
                 return \Contao\System::getContainer()->get('huh.utils.choice.message')->getCachedChoices('huh.filter.label');
             },
-            'eval'             => ['chosen' => true, 'mandatory' => true, 'maxlength' => 128, 'includeBlankOption' => true],
+            'eval'             => ['chosen' => true, 'mandatory' => true, 'maxlength' => 128, 'includeBlankOption' => true, 'tl_class' => 'w50'],
             'sql'              => "varchar(128) NOT NULL default ''",
         ],
         'timeFormat'        => [
@@ -443,7 +444,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['inputGroup'],
             'exclude'   => true,
             'inputType' => 'checkbox',
-            'eval'      => ['submitOnChange' => true],
+            'eval'      => ['submitOnChange' => true, 'tl_class' => 'w50'],
             'sql'       => "char(1) NOT NULL default ''",
         ],
         'inputGroupPrepend' => [
@@ -453,7 +454,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'options_callback' => function (\DataContainer $dc) {
                 return \Contao\System::getContainer()->get('huh.utils.choice.message')->getCachedChoices('huh.filter.input_group_text');
             },
-            'eval'             => ['chosen' => true, 'maxlength' => 128, 'includeBlankOption' => true],
+            'eval'             => ['chosen' => true, 'maxlength' => 128, 'includeBlankOption' => true, 'tl_class' => 'w50'],
             'sql'              => "varchar(128) NOT NULL default ''",
         ],
         'inputGroupAppend'  => [
@@ -463,7 +464,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'options_callback' => function (\DataContainer $dc) {
                 return \Contao\System::getContainer()->get('huh.utils.choice.message')->getCachedChoices('huh.filter.input_group_text');
             },
-            'eval'             => ['chosen' => true, 'maxlength' => 128, 'includeBlankOption' => true],
+            'eval'             => ['chosen' => true, 'maxlength' => 128, 'includeBlankOption' => true, 'tl_class' => 'w50'],
             'sql'              => "varchar(128) NOT NULL default ''",
         ],
         'expanded'          => [
@@ -585,7 +586,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['customCountries'],
             'exclude'   => true,
             'inputType' => 'checkbox',
-            'eval'      => ['submitOnChange' => true, 'doNotCopy' => true],
+            'eval'      => ['submitOnChange' => true, 'doNotCopy' => true, 'tl_class' => 'w50'],
             'sql'       => "char(1) NOT NULL default ''",
         ],
         'countries'         => [
@@ -601,7 +602,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['customLanguages'],
             'exclude'   => true,
             'inputType' => 'checkbox',
-            'eval'      => ['submitOnChange' => true],
+            'eval'      => ['submitOnChange' => true, 'tl_class' => 'w50'],
             'sql'       => "char(1) NOT NULL default ''",
         ],
         'languages'         => [
@@ -617,7 +618,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['customLocales'],
             'exclude'   => true,
             'inputType' => 'checkbox',
-            'eval'      => ['submitOnChange' => true],
+            'eval'      => ['submitOnChange' => true, 'tl_class' => 'w50'],
             'sql'       => "char(1) NOT NULL default ''",
         ],
         'locales'           => [
@@ -633,7 +634,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['customValue'],
             'exclude'   => true,
             'inputType' => 'checkbox',
-            'eval'      => ['submitOnChange' => true, 'tl_class' => 'clr'],
+            'eval'      => ['submitOnChange' => true, 'tl_class' => 'w50 clr'],
             'sql'       => "char(1) NOT NULL default ''",
         ],
         'value'             => [
@@ -664,7 +665,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'exclude'   => true,
             'filter'    => true,
             'inputType' => 'checkbox',
-            'eval'      => ['doNotCopy' => true, 'submitOnChange' => true],
+            'eval'      => ['doNotCopy' => true, 'submitOnChange' => true, 'tl_class' => 'w50'],
             'sql'       => "char(1) NOT NULL default ''",
         ],
         'start'             => [

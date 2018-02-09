@@ -12,7 +12,6 @@ use Contao\StringUtil;
 use Contao\System;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
-use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Filter\Filter;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -31,24 +30,46 @@ abstract class AbstractType
 
     public function __construct(FilterConfig $config)
     {
-        $this->config     = $config;
+        $this->config = $config;
         $this->translator = System::getContainer()->get('translator');
+    }
+
+    /**
+     * Get the field name.
+     *
+     * @param FilterConfigElementModel $element
+     *
+     * @return mixed
+     */
+    public function getName(FilterConfigElementModel $element)
+    {
+        $name = $this->getDefaultName($element) ?: $element->field;
+
+        if (true === (bool) $element->customName && '' !== $element->name) {
+            $name = $element->name;
+        }
+
+        if ('' === $name) {
+            $name = StringUtil::standardize($element->title);
+        }
+
+        return $name;
     }
 
     /**
      * Get the field label.
      *
      * @param FilterConfigElementModel $element
-     * @param FormBuilderInterface $builder
+     * @param FormBuilderInterface     $builder
      *
      * @return string
      */
     protected function getLabel(FilterConfigElementModel $element, FormBuilderInterface $builder)
     {
-        $label  = '';
+        $label = '';
         $filter = $this->config->getFilter();
 
-        if (true === (bool)$element->customLabel && '' !== $element->label) {
+        if (true === (bool) $element->customLabel && '' !== $element->label) {
             return $element->label;
         }
 
@@ -66,7 +87,7 @@ abstract class AbstractType
      * Get field options.
      *
      * @param FilterConfigElementModel $element
-     * @param FormBuilderInterface $builder
+     * @param FormBuilderInterface     $builder
      *
      * @return array The field options
      */
@@ -74,9 +95,9 @@ abstract class AbstractType
     {
         $options = [];
 
-        $options['label'] = (true === (bool)$element->hideLabel) ? false : ($this->getLabel($element, $builder) ?: $element->title);
+        $options['label'] = (true === (bool) $element->hideLabel) ? false : ($this->getLabel($element, $builder) ?: $element->title);
 
-        if (true === (bool)$element->addPlaceholder && '' !== $element->placeholder) {
+        if (true === (bool) $element->addPlaceholder && '' !== $element->placeholder) {
             $options['attr']['placeholder'] = $this->translator->trans($element->placeholder, ['%label%' => $this->translator->trans($options['label'])]);
         }
 
@@ -84,9 +105,8 @@ abstract class AbstractType
             $options['attr']['class'] = $element->cssClass;
         }
 
-        if (true === (bool)$element->inputGroup) {
+        if (true === (bool) $element->inputGroup) {
             if ('' !== $element->inputGroupPrepend) {
-
                 $prepend = $element->inputGroupPrepend;
 
                 if ($this->translator->getCatalogue()->has($prepend)) {
@@ -110,27 +130,5 @@ abstract class AbstractType
         $options['block_name'] = $this->getName($element);
 
         return $options;
-    }
-
-    /**
-     * Get the field name.
-     *
-     * @param FilterConfigElementModel $element
-     *
-     * @return mixed
-     */
-    public function getName(FilterConfigElementModel $element)
-    {
-        $name = $this->getDefaultName($element) ?: $element->field;
-
-        if (true === (bool)$element->customName && '' !== $element->name) {
-            $name = $element->name;
-        }
-
-        if ('' === $name) {
-            $name = StringUtil::standardize($element->title);
-        }
-
-        return $name;
     }
 }

@@ -35,22 +35,22 @@ class RangeType extends AbstractType implements TypeInterface
     /**
      * {@inheritdoc}
      */
+    public function getDefaultName(FilterConfigElementModel $element)
+    {
+        return null;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     protected function getOptions(FilterConfigElementModel $element, FormBuilderInterface $builder)
     {
         $options = parent::getOptions($element, $builder);
 
-        $options['attr']['min']  = $element->min ?: '0';
-        $options['attr']['max']  = $element->max ?: '100';
+        $options['attr']['min'] = $element->min ?: '0';
+        $options['attr']['max'] = $element->max ?: '100';
         $options['attr']['step'] = $element->step ?: '1';
 
         return $options;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getDefaultName(FilterConfigElementModel $element)
-    {
-        return null;
     }
 }

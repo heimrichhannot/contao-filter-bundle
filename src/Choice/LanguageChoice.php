@@ -39,9 +39,9 @@ class LanguageChoice extends FieldOptionsChoice
             return $choices;
         }
 
-        if (true === (bool)$element->customLanguages) {
+        if (true === (bool) $element->customLanguages) {
             $options = $this->getCustomLanguageOptions($element, $filter);
-        } elseif (true === (bool)$element->customOptions) {
+        } elseif (true === (bool) $element->customOptions) {
             $options = $this->getCustomOptions($element, $filter);
         } elseif (isset($filter['dataContainer']) && '' !== $filter['dataContainer'] && null !== $element->field) {
             if (isset($GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element->field])) {

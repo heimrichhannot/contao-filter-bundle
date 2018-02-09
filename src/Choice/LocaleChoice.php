@@ -38,9 +38,9 @@ class LocaleChoice extends FieldOptionsChoice
             return $choices;
         }
 
-        if (true === (bool)$element->customLocales) {
+        if (true === (bool) $element->customLocales) {
             $options = $this->getCustomLocaleOptions($element, $filter);
-        } elseif (true === (bool)$element->customOptions) {
+        } elseif (true === (bool) $element->customOptions) {
             $options = $this->getCustomOptions($element, $filter);
         } elseif (isset($filter['dataContainer']) && '' !== $filter['dataContainer'] && null !== $element->field) {
             if (isset($GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element->field])) {

@@ -31,7 +31,7 @@ class ResetType extends AbstractType implements TypeInterface
     {
         $filter = $this->config->getFilter();
 
-        if (!$this->config->hasData() || true === (bool)$filter['renderEmpty']) {
+        if (!$this->config->hasData() || true === (bool) $filter['renderEmpty']) {
             return;
         }
 

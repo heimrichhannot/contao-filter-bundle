@@ -35,6 +35,14 @@ class CheckboxType extends AbstractType implements TypeInterface
     /**
      * {@inheritdoc}
      */
+    public function getDefaultName(FilterConfigElementModel $element)
+    {
+        return null;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     protected function getOptions(FilterConfigElementModel $element, FormBuilderInterface $builder)
     {
         $options = parent::getOptions($element, $builder);
@@ -44,13 +52,5 @@ class CheckboxType extends AbstractType implements TypeInterface
         }
 
         return $options;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getDefaultName(FilterConfigElementModel $element)
-    {
-        return null;
     }
 }

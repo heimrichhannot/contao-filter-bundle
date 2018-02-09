@@ -22,8 +22,8 @@ class TextConcatType extends AbstractType implements TypeInterface
      */
     public function buildQuery(FilterQueryBuilder $builder, FilterConfigElementModel $element)
     {
-        $data  = $this->config->getData();
-        $name  = $this->getName($element);
+        $data = $this->config->getData();
+        $name = $this->getName($element);
         $value = $data[$name];
 
         if (null === $value) {
