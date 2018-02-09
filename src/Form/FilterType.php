@@ -91,7 +91,7 @@ class FilterType extends AbstractType
             return;
         }
 
-        /**
+        /*
          * @var FilterConfigElementModel
          */
         foreach ($elements as $element) {
@@ -151,7 +151,7 @@ class FilterType extends AbstractType
             return;
         }
 
-        /**
+        /*
          * @var FilterConfigElementModel
          */
         foreach ($wrappers as $element) {

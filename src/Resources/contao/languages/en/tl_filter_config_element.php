@@ -60,10 +60,11 @@ $lang['tstamp']            = ['Revision date', ''];
 /**
  * Legends
  */
-$lang['general_legend'] = 'General settings';
-$lang['config_legend']  = 'Configuration';
-$lang['expert_legend']  = 'Expert settings';
-$lang['publish_legend'] = 'Publish settings';
+$lang['general_legend']       = 'General settings';
+$lang['config_legend']        = 'Configuration';
+$lang['visualization_legend'] = 'Visualization';
+$lang['expert_legend']        = 'Expert settings';
+$lang['publish_legend']       = 'Publish settings';
 
 /**
  * Buttons
@@ -78,7 +79,6 @@ $lang['show']   = ['Filterelement details', 'Show the details of Filterelement I
 /**
  * References
  */
-
 $lang['reference']['type']['text']        = 'Text';
 $lang['reference']['type']['text_concat'] = 'Text combined';
 $lang['reference']['type']['textarea']    = 'Textarea';

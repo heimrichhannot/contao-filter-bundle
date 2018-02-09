@@ -5,4 +5,4 @@ $lang = &$GLOBALS['TL_LANG']['tl_user_group'];
 /**
  * Legends
  */
-$lang['filter_legend'] = ' permissions';
+$lang['filter_legend'] = 'Filter permissions';

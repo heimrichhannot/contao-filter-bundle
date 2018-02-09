@@ -11,4 +11,4 @@ $lang['filterp'] = ['Archivrechte', 'Hier können Sie die Archivrechte festlegen
 /**
  * Legends
  */
-$lang['filter_legend'] = '-Archivrechte';
+$lang['filter_legend'] = 'Filter-Archivrechte';

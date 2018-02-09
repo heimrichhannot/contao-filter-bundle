@@ -60,10 +60,11 @@ $lang['stop']              = ['Anzeigen bis', 'Filterelement nur bis zu diesem T
 /**
  * Legends
  */
-$lang['general_legend'] = 'Allgemeine Einstellungen';
-$lang['config_legend']  = 'Konfiguration';
-$lang['expert_legend']  = 'Experten-Einstellungen';
-$lang['publish_legend'] = 'Veröffentlichung';
+$lang['general_legend']       = 'Allgemeine Einstellungen';
+$lang['config_legend']        = 'Konfiguration';
+$lang['visualization_legend'] = 'Darstellung';
+$lang['expert_legend']        = 'Experten-Einstellungen';
+$lang['publish_legend']       = 'Veröffentlichung';
 
 /**
  * Buttons
@@ -74,3 +75,54 @@ $lang['copy']   = ['Filterelement duplizieren', 'Filterelement ID %s duplizieren
 $lang['delete'] = ['Filterelement löschen', 'Filterelement ID %s löschen'];
 $lang['toggle'] = ['Filterelement veröffentlichen', 'Filterelement ID %s veröffentlichen/verstecken'];
 $lang['show']   = ['Filterelement Details', 'Filterelement-Details ID %s anzeigen'];
+
+/**
+ * References
+ */
+$lang['reference'] = [
+    'type'         => [
+        'text'        => 'Text',
+        'text_concat' => 'Konkatenierter Text',
+        'textarea'    => 'Textarea',
+        'email'       => 'E-Mail',
+        'integer'     => 'Integer',
+        'money'       => 'Geld',
+        'number'      => 'Zahl',
+        'password'    => 'Passwort',
+        'percent'     => 'Prozent',
+        'search'      => 'Suche',
+        'url'         => 'URL',
+        'range'       => 'Spanne (range)',
+        'tel'         => 'Telefon',
+        'color'       => 'Farbe',
+        'choice'      => 'Choice',
+        'country'     => 'Land',
+        'language'    => 'Sprache',
+        'locale'      => 'Region ("locale")',
+        'button'      => 'Button',
+        'reset'       => 'Reset',
+        'submit'      => 'Submit',
+        'hidden'      => 'Hidden',
+        'checkbox'    => 'Checkbox',
+        'radio'       => 'Radio',
+        'other'       => 'Sonstiges',
+        'initial'     => 'Initial',
+        'date_time'   => 'Datum & Zeit',
+        'date'        => 'Datum',
+        'time'        => 'Zeit',
+        'date_range'  => 'Datumsspanne (date range)',
+    ],
+    'roundingMode' => [
+        \Symfony\Component\Form\Extension\Core\DataTransformer\IntegerToLocalizedStringTransformer::ROUND_DOWN      => 'Abrunden (zu 0 hin)',
+        \Symfony\Component\Form\Extension\Core\DataTransformer\IntegerToLocalizedStringTransformer::ROUND_FLOOR     => 'Floor (zu –∞ hin)',
+        \Symfony\Component\Form\Extension\Core\DataTransformer\IntegerToLocalizedStringTransformer::ROUND_UP        => 'Aufrunden (von 0 weg)',
+        \Symfony\Component\Form\Extension\Core\DataTransformer\IntegerToLocalizedStringTransformer::ROUND_CEILING   => 'Ceiling (zu +∞ hin)',
+        \Symfony\Component\Form\Extension\Core\DataTransformer\IntegerToLocalizedStringTransformer::ROUND_HALF_DOWN => 'Half down (zum nächsten Nachbarn hin; bei Äquidistanz abrunden)',
+        \Symfony\Component\Form\Extension\Core\DataTransformer\IntegerToLocalizedStringTransformer::ROUND_HALF_EVEN => 'Half even (zum nächsten Nachbarn hin; bei Äquidistanz zum nächsten geraden Nachbarn runden)',
+        \Symfony\Component\Form\Extension\Core\DataTransformer\IntegerToLocalizedStringTransformer::ROUND_HALF_UP   => 'Half up (zum nächsten Nachbarn hin; bei Äquidistanz aufrunden)',
+    ],
+    'percentType'  => [
+        'fractional' => 'Bruch (z. B. 0.55)',
+        'integer'    => 'Ganzzahl (z. B. 55)'
+    ]
+];

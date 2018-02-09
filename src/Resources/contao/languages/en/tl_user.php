@@ -11,4 +11,4 @@ $lang['filterp'] = ['Archive permissions', 'Here you can define the archive perm
 /**
  * Legends
  */
-$lang['filter_legend'] = ' permissions';
+$lang['filter_legend'] = 'Filter permissions';
