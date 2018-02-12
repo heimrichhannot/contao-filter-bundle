@@ -16,7 +16,37 @@ use HeimrichHannot\FilterBundle\Filter\Type\ChoiceType;
 
 class FilterConfigElement
 {
-    public function prepareDefaultValueConfig(DataContainer $dc)
+    const INITIAL_PALETTE = '{general_legend},title,type,isInitial;{config_legend},field,operator,initialValueType;{publish_legend},published;';
+
+    public function modifyPalette(DataContainer $dc)
+    {
+        if (null !== ($filterConfigElement = System::getContainer()->get('huh.utils.model')->findModelInstanceByPk(
+                'tl_filter_config_element', $dc->id))
+        ) {
+            $dca = &$GLOBALS['TL_DCA']['tl_filter_config_element'];
+            $config = System::getContainer()->getParameter('huh.filter');
+
+            foreach ($config['filter']['types'] as $type) {
+                if ($type['name'] === $filterConfigElement->type) {
+                    // skip handling for buttons
+                    if ('button' === $type['type']) {
+                        $dca['palettes'][$filterConfigElement->type] = str_replace(
+                            'isInitial', '',
+                            $dca['palettes'][$filterConfigElement->type]
+                        );
+
+                        return;
+                    }
+                }
+            }
+
+            if ($filterConfigElement->isInitial) {
+                $dca['palettes'][$filterConfigElement->type] = static::INITIAL_PALETTE;
+            }
+        }
+    }
+
+    public function prepareChoiceTypes(DataContainer $dc)
     {
         if (null !== ($filterConfigElement = System::getContainer()->get('huh.utils.model')->findModelInstanceByPk(
                 'tl_filter_config_element', $dc->id))
@@ -45,24 +75,29 @@ class FilterConfigElement
 
             $options = array_flip($choiceType->getChoices($filterConfigElement));
 
-            // prepare scalar field
-            $dca['fields']['defaultValue'] = array_merge($dca['fields']['defaultValue'], [
-                'inputType' => 'select',
-                'options' => $options,
-            ]);
+            // prepare scalar fields
+            $dca['fields']['defaultValue']['inputType'] = 'select';
+            $dca['fields']['defaultValue']['options'] = $options;
+            $dca['fields']['initialValue']['eval']['chosen'] = true;
 
-            // prepare array field
-            $dca['fields']['defaultValueArray']['eval']['multiColumnEditor']['fields']['value'] = array_merge(
-                $dca['fields']['defaultValueArray']['eval']['multiColumnEditor']['fields']['value'], [
-                'inputType' => 'select',
-                'options' => $options,
-            ]);
+            $dca['fields']['initialValue']['inputType'] = 'select';
+            $dca['fields']['initialValue']['options'] = $options;
+            $dca['fields']['initialValue']['eval']['chosen'] = true;
+
+            // prepare array fields
+            $dca['fields']['defaultValueArray']['eval']['multiColumnEditor']['fields']['value']['inputType'] = 'select';
+            $dca['fields']['defaultValueArray']['eval']['multiColumnEditor']['fields']['value']['options'] = $options;
+            $dca['fields']['defaultValueArray']['eval']['multiColumnEditor']['fields']['value']['eval']['chosen'] = true;
+
+            $dca['fields']['initialValueArray']['eval']['multiColumnEditor']['fields']['value']['inputType'] = 'select';
+            $dca['fields']['initialValueArray']['eval']['multiColumnEditor']['fields']['value']['options'] = $options;
+            $dca['fields']['initialValueArray']['eval']['multiColumnEditor']['fields']['value']['eval']['chosen'] = true;
         }
     }
 
     public function listElements($arrRow)
     {
-        return '<div class="tl_content_left">'.($arrRow['title'] ?: $arrRow['id']).' <span style="color:#b3b3b3; padding-left:3px">['.($GLOBALS['TL_LANG']['tl_filter_config_element']['reference']['type'][$arrRow['type']] ?: $arrRow['type']).']</span></div>';
+        return '<div class="tl_content_left">'.($arrRow['title'] ?: $arrRow['id']).' <span style="color:#b3b3b3; padding-left:3px">['.($GLOBALS['TL_LANG']['tl_filter_config_element']['reference']['type'][$arrRow['type']] ?: $arrRow['type']).($arrRow['isInitial'] ? ' – Initial' : '').']</span></div>';
     }
 
     public function checkPermission()

@@ -81,6 +81,23 @@ abstract class AbstractType
         return $value;
     }
 
+    public static function getInitialValue(FilterConfigElementModel $element)
+    {
+        switch ($element->initialValueType) {
+            case static::VALUE_TYPE_ARRAY:
+                $value = array_map(function ($val) {
+                    return $val['value'];
+                }, StringUtil::deserialize($element->initialValueArray, true));
+
+                break;
+            default:
+                $value = $element->initialValue;
+                break;
+        }
+
+        return $value;
+    }
+
     /**
      * Get the field label.
      *

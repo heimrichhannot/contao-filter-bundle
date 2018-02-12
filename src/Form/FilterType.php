@@ -124,9 +124,10 @@ class FilterType extends AbstractType
 
             // as we build the form at every request (even in back end mode), catch errors that might be thrown from invalid options, formats etc
             try {
-                $type->buildForm($element, $builder);
+                if (!$element->isInitial) {
+                    $type->buildForm($element, $builder);
+                }
             } catch (InvalidOptionsException $e) {
-                $foo = 'bar';
                 continue;
             }
 
@@ -177,7 +178,9 @@ class FilterType extends AbstractType
 
             // as we build the form at every request (even in back end mode), catch errors that might be thrown from invalid options, formats etc
             try {
-                $type->buildForm($element, $builder);
+                if (!$element->isInitial) {
+                    $type->buildForm($element, $builder);
+                }
             } catch (InvalidOptionsException $e) {
                 continue;
             }

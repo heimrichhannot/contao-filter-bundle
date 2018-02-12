@@ -14,7 +14,7 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Haste\Model\Relations;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
-use HeimrichHannot\FilterBundle\Filter\Type\InitialType;
+use HeimrichHannot\FilterBundle\Filter\AbstractType;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 
@@ -109,8 +109,8 @@ class FilterQueryBuilder extends QueryBuilder
     {
         $data = $config->getData();
 
-        if ('initial' === $element->type) {
-            $value = $data[$name] ?? InitialType::getInitialValue($element);
+        if ($element->isInitial) {
+            $value = $data[$name] ?? AbstractType::getInitialValue($element);
 
             if (null === $value || !$element->field) {
                 return $this;
