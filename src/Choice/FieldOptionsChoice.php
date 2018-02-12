@@ -8,6 +8,7 @@
 
 namespace HeimrichHannot\FilterBundle\Choice;
 
+use Contao\Controller;
 use Contao\StringUtil;
 use Contao\System;
 use Contao\Widget;
@@ -33,7 +34,7 @@ class FieldOptionsChoice extends AbstractChoice
 
         $options = [];
 
-        \Controller::loadDataContainer($filter['dataContainer']);
+        Controller::loadDataContainer($filter['dataContainer']);
 
         if (true === (bool) $element->customOptions) {
             $options = $this->getCustomOptions($element, $filter);

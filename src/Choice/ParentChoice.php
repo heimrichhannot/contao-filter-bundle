@@ -8,6 +8,7 @@
 
 namespace HeimrichHannot\FilterBundle\Choice;
 
+use Contao\Controller;
 use HeimrichHannot\FilterBundle\Model\FilterConfigModel;
 use HeimrichHannot\UtilsBundle\Choice\AbstractChoice;
 
@@ -32,7 +33,7 @@ class ParentChoice extends AbstractChoice
             return $choices;
         }
 
-        \Controller::loadDataContainer($filter->dataContainer);
+        Controller::loadDataContainer($filter->dataContainer);
 
         if (!isset($GLOBALS['TL_DCA'][$filter->dataContainer]['fields']['pid']['foreignKey'])) {
             return $choices;

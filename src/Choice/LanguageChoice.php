@@ -8,6 +8,7 @@
 
 namespace HeimrichHannot\FilterBundle\Choice;
 
+use Contao\Controller;
 use Contao\StringUtil;
 use Contao\System;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
@@ -44,8 +45,9 @@ class LanguageChoice extends FieldOptionsChoice
         } elseif (true === (bool) $element->customOptions) {
             $options = $this->getCustomOptions($element, $filter);
         } elseif (isset($filter['dataContainer']) && '' !== $filter['dataContainer'] && null !== $element->field) {
+            Controller::loadDataContainer($filter['dataContainer']);
+
             if (isset($GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element->field])) {
-                \Controller::loadDataContainer($filter['dataContainer']);
                 $options = $this->getDcaOptions($element, $filter, $GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element->field]);
             }
         }

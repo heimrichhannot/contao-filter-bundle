@@ -34,7 +34,7 @@ class CountryType extends ChoiceType
     /**
      * {@inheritdoc}
      */
-    protected function getChoices(FilterConfigElementModel $element)
+    public function getChoices(FilterConfigElementModel $element)
     {
         return System::getContainer()->get('huh.filter.choice.country')->getCachedChoices([$element, $this->config->getFilter()]);
     }

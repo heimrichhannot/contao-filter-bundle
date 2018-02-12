@@ -7,7 +7,7 @@ $lang = &$GLOBALS['TL_LANG']['tl_filter_config'];
  */
 $lang['title']         = ['Title', 'Please enter a title.'];
 $lang['name']          = ['Name', 'Please enter a form name.'];
-$lang['dataContainer'] = ['DataContainer', 'Choose the desired data container.'];
+$lang['dataContainer'] = ['Data container', 'Choose the desired data container.'];
 $lang['method']        = ['HTTP-Method', 'Select the form method (GET or POST).'];
 $lang['action']        = ['Action', 'Select the url, where the form data should be submitted to.'];
 $lang['renderEmpty']   = ['Render empty', 'Enable, if all form fields should be rendered without submitted/session data.'];

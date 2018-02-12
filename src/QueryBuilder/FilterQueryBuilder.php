@@ -9,14 +9,46 @@
 namespace HeimrichHannot\FilterBundle\QueryBuilder;
 
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
+use Contao\System;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Haste\Model\Relations;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
+use HeimrichHannot\FilterBundle\Filter\Type\InitialType;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
+use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 
 class FilterQueryBuilder extends QueryBuilder
 {
+    const DEFAULT_TYPE_MAPPING = [
+        'text' => DatabaseUtil::OPERATOR_LIKE,
+        'text_concat' => DatabaseUtil::OPERATOR_LIKE,
+        'textarea' => DatabaseUtil::OPERATOR_LIKE,
+        'email' => DatabaseUtil::OPERATOR_LIKE,
+        'integer' => DatabaseUtil::OPERATOR_EQUAL,
+        'money' => DatabaseUtil::OPERATOR_EQUAL,
+        'number' => DatabaseUtil::OPERATOR_EQUAL,
+        'password' => DatabaseUtil::OPERATOR_EQUAL,
+        'percent' => DatabaseUtil::OPERATOR_EQUAL,
+        'search' => DatabaseUtil::OPERATOR_LIKE,
+        'url' => DatabaseUtil::OPERATOR_LIKE,
+        'range' => 'Spanne (range)',
+        'tel' => DatabaseUtil::OPERATOR_LIKE,
+        'color' => DatabaseUtil::OPERATOR_EQUAL,
+        'choice' => DatabaseUtil::OPERATOR_EQUAL,
+        'country' => DatabaseUtil::OPERATOR_EQUAL,
+        'language' => DatabaseUtil::OPERATOR_EQUAL,
+        'locale' => DatabaseUtil::OPERATOR_EQUAL,
+        'hidden' => DatabaseUtil::OPERATOR_EQUAL,
+        'checkbox' => DatabaseUtil::OPERATOR_EQUAL,
+        'radio' => DatabaseUtil::OPERATOR_EQUAL,
+        'initial' => DatabaseUtil::OPERATOR_LIKE,
+        'date_time' => 'Datum & Zeit',
+        'date' => 'Datum',
+        'time' => 'Zeit',
+        'date_range' => 'Datumsspanne (date range)',
+    ];
+
     /**
      * @var ContaoFrameworkInterface
      */
@@ -76,13 +108,46 @@ class FilterQueryBuilder extends QueryBuilder
     public function whereWidget(FilterConfigElementModel $element, string $name, FilterConfig $config, array $dca)
     {
         $data = $config->getData();
-        $value = $data[$name];
 
-        if (null === $value || !$element->field) {
-            return $this;
+        if ('initial' === $element->type) {
+            $value = $data[$name] ?? InitialType::getInitialValue($element);
+
+            if (null === $value || !$element->field) {
+                return $this;
+            }
+
+            $operator = $element->operator;
+
+            // db value is a serialized blob
+            if (isset($dca['eval']['multiple']) && $dca['eval']['multiple']) {
+                $operator = DatabaseUtil::OPERATOR_REGEXP;
+            }
+        } else {
+            $value = $data[$name] ?? ($element->customValue ? $element->value : null);
+
+            if (null === $value || !$element->field) {
+                return $this;
+            }
+
+            $operator = static::DEFAULT_TYPE_MAPPING[$element->type] ?? '';
+
+            // db value is a serialized blob
+            if (isset($dca['eval']['multiple']) && $dca['eval']['multiple']) {
+                $operator = DatabaseUtil::OPERATOR_REGEXP;
+            }
+
+            if ($element->customOperator && $element->operator) {
+                $operator = $element->operator;
+            }
+
+            if (!$operator) {
+                return $this;
+            }
         }
 
-        $this->andWhere($this->expr()->like($element->field, $this->expr()->literal('%'.$value.'%')));
+        $this->andWhere(System::getContainer()->get('huh.utils.database')->composeWhereForQueryBuilder(
+            $this, $element->field, $operator, $dca, $value
+        ));
 
         return $this;
     }

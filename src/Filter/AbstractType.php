@@ -18,6 +18,14 @@ use Symfony\Component\Translation\TranslatorInterface;
 
 abstract class AbstractType
 {
+    const VALUE_TYPE_SCALAR = 'scalar';
+    const VALUE_TYPE_ARRAY = 'array';
+
+    const VALUE_TYPES = [
+        self::VALUE_TYPE_SCALAR,
+        self::VALUE_TYPE_ARRAY,
+    ];
+
     /**
      * @var Filter
      */
@@ -54,6 +62,23 @@ abstract class AbstractType
         }
 
         return $name;
+    }
+
+    public static function getDefaultValue(FilterConfigElementModel $element)
+    {
+        switch ($element->defaultValueType) {
+            case static::VALUE_TYPE_ARRAY:
+                $value = array_map(function ($val) {
+                    return $val['value'];
+                }, StringUtil::deserialize($element->defaultValueArray, true));
+
+                break;
+            default:
+                $value = $element->defaultValue;
+                break;
+        }
+
+        return $value;
     }
 
     /**
@@ -96,6 +121,10 @@ abstract class AbstractType
         $options = [];
 
         $options['label'] = (true === (bool) $element->hideLabel) ? false : ($this->getLabel($element, $builder) ?: $element->title);
+
+        if ($element->addDefaultValue) {
+            $options['data'] = static::getDefaultValue($element);
+        }
 
         if (true === (bool) $element->addPlaceholder && '' !== $element->placeholder) {
             $options['attr']['placeholder'] = $this->translator->trans($element->placeholder, ['%label%' => $this->translator->trans($options['label'])]);

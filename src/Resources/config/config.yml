@@ -19,6 +19,7 @@ huh:
       - {name: country, class: HeimrichHannot\FilterBundle\Filter\Type\CountryType, type: choice}
       - {name: language, class: HeimrichHannot\FilterBundle\Filter\Type\LanguageType, type: choice}
       - {name: locale, class: HeimrichHannot\FilterBundle\Filter\Type\LocaleType, type: choice}
+      - {name: parent, class: HeimrichHannot\FilterBundle\Filter\Type\ParentType, type: choice}
       - {name: button, class: HeimrichHannot\FilterBundle\Filter\Type\ButtonType, type: button}
       - {name: reset, class: HeimrichHannot\FilterBundle\Filter\Type\ResetType, type: button}
       - {name: submit, class: HeimrichHannot\FilterBundle\Filter\Type\SubmitType, type: button}

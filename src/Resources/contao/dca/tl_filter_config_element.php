@@ -6,7 +6,8 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
         'ptable'            => 'tl_filter_config',
         'enableVersioning'  => true,
         'onload_callback'   => [
-            ['tl_filter_config_element', 'checkPermission'],
+            ['huh.filter.backend.filter_config_element', 'checkPermission'],
+            ['huh.filter.backend.filter_config_element', 'prepareDefaultValueConfig'],
         ],
         'onsubmit_callback' => [
             ['huh.utils.dca', 'setDateAdded'],
@@ -31,7 +32,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'fields'                => ['sorting'],
             'headerFields'          => ['title', 'published', 'start', 'stop'],
             'panelLayout'           => 'filter;sort,search,limit',
-            'child_record_callback' => ['tl_filter_config_element', 'listElements'],
+            'child_record_callback' => ['huh.filter.backend.filter_config_element', 'listElements'],
         ],
         'global_operations' => [
             'all' => [
@@ -62,7 +63,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
                 'label'           => &$GLOBALS['TL_LANG']['tl_filter_config_element']['toggle'],
                 'icon'            => 'visible.gif',
                 'attributes'      => 'onclick="Backend.getScrollOffset();return AjaxRequest.toggleVisibility(this,%s)"',
-                'button_callback' => ['tl_filter_config_element', 'toggleIcon'],
+                'button_callback' => ['huh.filter.backend.filter_config_element', 'toggleIcon'],
             ],
             'show'   => [
                 'label' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['show'],
@@ -83,52 +84,61 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'customLanguages',
             'customLocales',
             'customValue',
+            'initialValueType',
+            'addDefaultValue',
+            'defaultValueType',
             'inputGroup',
             'published',
         ],
         'default'      => '{general_legend},title,type;{publish_legend},published;',
-        'initial'      => '{general_legend},title,type;{config_legend},field;{publish_legend},published;',
-        'text'         => '{general_legend},title,type;{config_legend},field,customName,customOperator;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
+        'initial'      => '{general_legend},title,type;{config_legend},field,operator,initialValueType;{publish_legend},published;',
+        'text'         => '{general_legend},title,type;{config_legend},field,customName,customOperator,addDefaultValue;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
         'text_concat'  => '{general_legend},title,type;{config_legend},fields,name;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
-        'textarea'     => '{general_legend},title,type;{config_legend},field,customName,customOperator;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
-        'email'        => '{general_legend},title,type;{config_legend},field,customName,customOperator;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
-        'integer'      => '{general_legend},title,type;{config_legend},field,customName,customOperator,grouping,scale,rounding_mode;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
-        'money'        => '{general_legend},title,type;{config_legend},field,customName,customOperator,currency,divisor,grouping,scale;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
-        'number'       => '{general_legend},title,type;{config_legend},field,customName,customOperator,grouping,scale,roundingMode;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
-        'password'     => '{general_legend},title,type;{config_legend},field,customName,customOperator,alwaysEmpty;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
-        'search'       => '{general_legend},title,type;{config_legend},field,customName,customOperator;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
-        'percent'      => '{general_legend},title,type;{config_legend},field,customName,customOperator,scale,percentType;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
-        'url'          => '{general_legend},title,type;{config_legend},field,customName,customOperator,defaultProtocol;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
-        'range'        => '{general_legend},title,type;{config_legend},field,customName,customOperator,min,max,step;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
-        'tel'          => '{general_legend},title,type;{config_legend},field,customName,customOperator;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
-        'color'        => '{general_legend},title,type;{config_legend},field,customName,customOperator;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
-        'choice'       => '{general_legend},title,type;{config_legend},field,customOptions,customName,customOperator,expanded,multiple;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
-        'country'      => '{general_legend},title,type;{config_legend},field,customCountries,customOptions,customName,customOperator,expanded,multiple;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
-        'language'     => '{general_legend},title,type;{config_legend},field,customLanguages,customOptions,customName,customOperator,expanded,multiple;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
-        'locale'       => '{general_legend},title,type;{config_legend},field,customLocales,customOptions,customName,customOperator,expanded,multiple;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
-        'hidden'       => '{general_legend},title,type;{config_legend},field,customName,customOperator;{expert_legend},cssClass;{publish_legend},published;',
+        'textarea'     => '{general_legend},title,type;{config_legend},field,customName,customOperator,addDefaultValue;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
+        'email'        => '{general_legend},title,type;{config_legend},field,customName,customOperator,addDefaultValue;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
+        'integer'      => '{general_legend},title,type;{config_legend},field,customName,customOperator,addDefaultValue,grouping,scale,rounding_mode;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
+        'money'        => '{general_legend},title,type;{config_legend},field,customName,customOperator,addDefaultValue,currency,divisor,grouping,scale;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
+        'number'       => '{general_legend},title,type;{config_legend},field,customName,customOperator,addDefaultValue,grouping,scale,roundingMode;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
+        'password'     => '{general_legend},title,type;{config_legend},field,customName,customOperator,addDefaultValue,alwaysEmpty;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
+        'search'       => '{general_legend},title,type;{config_legend},field,customName,customOperator,addDefaultValue;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
+        'percent'      => '{general_legend},title,type;{config_legend},field,customName,customOperator,addDefaultValue,scale,percentType;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
+        'url'          => '{general_legend},title,type;{config_legend},field,customName,customOperator,addDefaultValue,defaultProtocol;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
+        'range'        => '{general_legend},title,type;{config_legend},field,customName,customOperator,addDefaultValue,min,max,step;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
+        'tel'          => '{general_legend},title,type;{config_legend},field,customName,customOperator,addDefaultValue;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
+        'color'        => '{general_legend},title,type;{config_legend},field,customName,customOperator,addDefaultValue;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
+        'choice'       => '{general_legend},title,type;{config_legend},field,customOptions,customName,customOperator,addDefaultValue,expanded,multiple;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
+        'country'      => '{general_legend},title,type;{config_legend},field,customCountries,customOptions,customName,customOperator,addDefaultValue,expanded,multiple;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
+        'language'     => '{general_legend},title,type;{config_legend},field,customLanguages,customOptions,customName,customOperator,addDefaultValue,expanded,multiple;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
+        'locale'       => '{general_legend},title,type;{config_legend},field,customLocales,customOptions,customName,customOperator,addDefaultValue,expanded,multiple;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
+        'parent'       => '{general_legend},title,type;{config_legend},field,customOptions,customName,customOperator,addDefaultValue,expanded,multiple;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
+        'hidden'       => '{general_legend},title,type;{config_legend},field,customName,customOperator,addDefaultValue;{expert_legend},cssClass;{publish_legend},published;',
         'button'       => '{general_legend},title,type;{config_legend},name,label;{expert_legend},cssClass;{publish_legend},published;',
-        'reset'        => '{general_legend},title,type;{config_legend},customName,customOperator;{visualization_legend},customLabel,hideLabel;{expert_legend},cssClass;{publish_legend},published;',
-        'submit'       => '{general_legend},title,type;{config_legend},customName,customOperator;{visualization_legend},customLabel,hideLabel;{expert_legend},cssClass;{publish_legend},published;',
-        'checkbox'     => '{general_legend},title,type;{config_legend},field,customName,customOperator,customValue;{visualization_legend},customLabel,hideLabel;{expert_legend},cssClass;{publish_legend},published;',
-        'radio'        => '{general_legend},title,type;{config_legend},field,customName,customOperator,customValue;{visualization_legend},customLabel,hideLabel;{expert_legend},cssClass;{publish_legend},published;',
+        'reset'        => '{general_legend},title,type;{config_legend},customName;{visualization_legend},customLabel,hideLabel;{expert_legend},cssClass;{publish_legend},published;',
+        'submit'       => '{general_legend},title,type;{config_legend},customName;{visualization_legend},customLabel,hideLabel;{expert_legend},cssClass;{publish_legend},published;',
+        'checkbox'     => '{general_legend},title,type;{config_legend},field,customName,customOperator,addDefaultValue,customValue;{visualization_legend},customLabel,hideLabel;{expert_legend},cssClass;{publish_legend},published;',
+        'radio'        => '{general_legend},title,type;{config_legend},field,customName,customOperator,addDefaultValue,customValue;{visualization_legend},customLabel,hideLabel;{expert_legend},cssClass;{publish_legend},published;',
         'date'         => '{general_legend},title,type;{config_legend},field,name,customValue,dateWidget,dateFormat,html5,minDate,maxDate;{visualization_legend},customLabel,hideLabel,inputGroup,addPlaceholder;{expert_legend},cssClass;{publish_legend},published;',
         'date_time'    => '{general_legend},title,type;{config_legend},field,name,customValue,dateWidget,timeWidget,html5,dateTimeFormat,minDateTime,maxDateTime;{visualization_legend},customLabel,hideLabel,inputGroup,addPlaceholder;{expert_legend},cssClass;{publish_legend},published;',
         'time'         => '{general_legend},title,type;{config_legend},field,name,customValue,timeWidget,timeFormat,minTime,html5,maxTime;{visualization_legend},customLabel,hideLabel,inputGroup,addPlaceholder;{expert_legend},cssClass;{publish_legend},published;',
         'date_range'   => '{general_legend},title,type;{config_legend},startElement,stopElement,name;{visualization_legend},customLabel,hideLabel;{expert_legend},cssClass;{publish_legend},published;',
     ],
     'subpalettes' => [
-        'customOptions'   => 'options',
-        'addPlaceholder'  => 'placeholder',
-        'customName'      => 'name',
-        'customOperator'  => 'operator',
-        'customLabel'     => 'label',
-        'customCountries' => 'countries',
-        'customLanguages' => 'languages',
-        'customLocales'   => 'locales',
-        'customValue'     => 'value',
-        'inputGroup'      => 'inputGroupPrepend,inputGroupAppend',
-        'published'       => 'start,stop',
+        'customOptions'                                                                           => 'options',
+        'addPlaceholder'                                                                          => 'placeholder',
+        'customName'                                                                              => 'name',
+        'customOperator'                                                                          => 'operator',
+        'customLabel'                                                                             => 'label',
+        'customCountries'                                                                         => 'countries',
+        'customLanguages'                                                                         => 'languages',
+        'customLocales'                                                                           => 'locales',
+        'customValue'                                                                             => 'value',
+        'initialValueType_' . \HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_SCALAR => 'initialValue',
+        'initialValueType_' . \HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_ARRAY  => 'initialValueArray',
+        'addDefaultValue'                                                                         => 'defaultValueType',
+        'defaultValueType_' . \HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_SCALAR => 'defaultValue',
+        'defaultValueType_' . \HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_ARRAY  => 'defaultValueArray',
+        'inputGroup'                                                                              => 'inputGroupPrepend,inputGroupAppend',
+        'published'                                                                               => 'start,stop',
     ],
     'fields'      => [
         'id'                => [
@@ -233,7 +243,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['customOptions'],
             'exclude'   => true,
             'inputType' => 'checkbox',
-            'eval'      => ['submitOnChange' => true],
+            'eval'      => ['submitOnChange' => true, 'tl_class' => 'w50'],
             'sql'       => "char(1) NOT NULL default ''",
         ],
         'options'           => [
@@ -242,7 +252,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'inputType' => 'optionWizard',
             'eval'      => ['mandatory' => true, 'allowHtml' => true],
             'xlabel'    => [
-                ['tl_filter_config_element', 'optionImportWizard'],
+                ['huh.filter.backend.filter_config_element', 'optionImportWizard'],
             ],
             'sql'       => "blob NULL",
         ],
@@ -661,6 +671,87 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'eval'      => ['tl_class' => 'clr w50 wizard', 'mandatory' => true],
             'sql'       => "varchar(255) NOT NULL default ''",
         ],
+        'initialValueType'  => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['initialValueType'],
+            'exclude'   => true,
+            'filter'    => true,
+            'inputType' => 'select',
+            'options'   => \HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPES,
+            'reference' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['reference'],
+            'eval'      => ['tl_class' => 'w50 clr', 'mandatory' => true, 'includeBlankOption' => true, 'submitOnChange' => true],
+            'sql'       => "varchar(16) NOT NULL default ''"
+        ],
+        'initialValue'      => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['initialValue'],
+            'exclude'   => true,
+            'search'    => true,
+            'inputType' => 'text',
+            'eval'      => ['maxlength' => 128, 'tl_class' => 'w50', 'mandatory' => true],
+            'sql'       => "varchar(128) NOT NULL default ''"
+        ],
+        'initialValueArray' => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['initialValueArray'],
+            'inputType' => 'multiColumnEditor',
+            'eval'      => [
+                'tl_class'          => 'long clr',
+                'multiColumnEditor' => [
+                    'fields' => [
+                        'value' => [
+                            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['initialValue_value'],
+                            'exclude'   => true,
+                            'search'    => true,
+                            'inputType' => 'text',
+                            'eval'      => ['tl_class' => 'w50', 'mandatory' => true, 'groupStyle' => 'width: 200px'],
+                        ],
+                    ],
+                ],
+            ],
+            'sql'       => "blob NULL",
+        ],
+        'addDefaultValue'   => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['addDefaultValue'],
+            'exclude'   => true,
+            'inputType' => 'checkbox',
+            'eval'      => ['tl_class' => 'w50', 'submitOnChange' => true],
+            'sql'       => "char(1) NOT NULL default ''"
+        ],
+        'defaultValueType'  => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['defaultValueType'],
+            'exclude'   => true,
+            'filter'    => true,
+            'inputType' => 'select',
+            'options'   => \HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPES,
+            'reference' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['reference'],
+            'eval'      => ['tl_class' => 'w50 clr', 'mandatory' => true, 'includeBlankOption' => true, 'submitOnChange' => true],
+            'sql'       => "varchar(16) NOT NULL default ''"
+        ],
+        'defaultValue'      => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['defaultValue'],
+            'exclude'   => true,
+            'search'    => true,
+            'inputType' => 'text',
+            'eval'      => ['maxlength' => 128, 'tl_class' => 'w50', 'mandatory' => true],
+            'sql'       => "varchar(128) NOT NULL default ''"
+        ],
+        'defaultValueArray' => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['defaultValue'],
+            'inputType' => 'multiColumnEditor',
+            'eval'      => [
+                'tl_class'          => 'long clr',
+                'multiColumnEditor' => [
+                    'fields' => [
+                        'value' => [
+                            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['defaultValue_value'],
+                            'exclude'   => true,
+                            'search'    => true,
+                            'inputType' => 'text',
+                            'eval'      => ['tl_class' => 'w50', 'mandatory' => true, 'groupStyle' => 'width: 200px'],
+                        ],
+                    ],
+                ],
+            ],
+            'sql'       => "blob NULL",
+        ],
         'parents'           => [
             'label'            => &$GLOBALS['TL_LANG']['tl_filter_config_element']['parents'],
             'default'          => 'text',
@@ -701,230 +792,3 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
         ],
     ],
 ];
-
-
-class tl_filter_config_element extends \Backend
-{
-
-    public function listElements($arrRow)
-    {
-        return '<div class="tl_content_left">' . ($arrRow['title'] ?: $arrRow['id']) . ' <span style="color:#b3b3b3; padding-left:3px">[' . ($GLOBALS['TL_LANG']['tl_filter_config_element']['reference']['type'][$arrRow['type']] ?: $arrRow['type']) . ']</span></div>';
-    }
-
-    public function checkPermission()
-    {
-        $user     = \BackendUser::getInstance();
-        $database = \Database::getInstance();
-
-        if ($user->isAdmin) {
-            return;
-        }
-
-        // Set the root IDs
-        if (!is_array($user->filters) || empty($user->filters)) {
-            $root = [0];
-        } else {
-            $root = $user->filters;
-        }
-
-        $id = strlen(\Input::get('id')) ? \Input::get('id') : CURRENT_ID;
-
-        // Check current action
-        switch (\Input::get('act')) {
-            case 'paste':
-                // Allow
-                break;
-
-            case 'create':
-                if (!strlen(\Input::get('pid')) || !in_array(\Input::get('pid'), $root)) {
-                    throw new \Contao\CoreBundle\Exception\AccessDeniedException(
-                        'Not enough permissions to create filter_element items in filter_element archive ID ' . \Input::get('pid') . '.'
-                    );
-                }
-                break;
-
-            case 'cut':
-            case 'copy':
-                if (!in_array(\Input::get('pid'), $root)) {
-                    throw new \Contao\CoreBundle\Exception\AccessDeniedException(
-                        'Not enough permissions to ' . \Input::get('act') . ' filter_element item ID ' . $id . ' to filter_element archive ID ' . \Input::get('pid') . '.'
-                    );
-                }
-            // NO BREAK STATEMENT HERE
-
-            case 'edit':
-            case 'show':
-            case 'delete':
-            case 'toggle':
-            case 'feature':
-                $objArchive = $database->prepare("SELECT pid FROM tl_filter_config_element WHERE id=?")->limit(1)->execute($id);
-
-                if ($objArchive->numRows < 1) {
-                    throw new \Contao\CoreBundle\Exception\AccessDeniedException('Invalid filter_element item ID ' . $id . '.');
-                }
-
-                if (!in_array($objArchive->pid, $root)) {
-                    throw new \Contao\CoreBundle\Exception\AccessDeniedException(
-                        'Not enough permissions to ' . \Input::get('act') . ' filter_element item ID ' . $id . ' of filter_element archive ID ' . $objArchive->pid . '.'
-                    );
-                }
-                break;
-
-            case 'select':
-            case 'editAll':
-            case 'deleteAll':
-            case 'overrideAll':
-            case 'cutAll':
-            case 'copyAll':
-                if (!in_array($id, $root)) {
-                    throw new \Contao\CoreBundle\Exception\AccessDeniedException(
-                        'Not enough permissions to access filter_element archive ID ' . $id . '.'
-                    );
-                }
-
-                $objArchive = $database->prepare("SELECT id FROM tl_filter_config_element WHERE pid=?")->execute($id);
-
-                if ($objArchive->numRows < 1) {
-                    throw new \Contao\CoreBundle\Exception\AccessDeniedException('Invalid filter_element archive ID ' . $id . '.');
-                }
-
-                /** @var \Symfony\Component\HttpFoundation\Session\SessionInterface $session */
-                $session = \System::getContainer()->get('session');
-
-                $session                   = $session->all();
-                $session['CURRENT']['IDS'] = array_intersect($session['CURRENT']['IDS'], $objArchive->fetchEach('id'));
-                $session->replace($session);
-                break;
-
-            default:
-                if (strlen(\Input::get('act'))) {
-                    throw new \Contao\CoreBundle\Exception\AccessDeniedException('Invalid command "' . \Input::get('act') . '".');
-                } elseif (!in_array($id, $root)) {
-                    throw new \Contao\CoreBundle\Exception\AccessDeniedException(
-                        'Not enough permissions to access filter_element archive ID ' . $id . '.'
-                    );
-                }
-                break;
-        }
-    }
-
-    public function toggleIcon($row, $href, $label, $title, $icon, $attributes)
-    {
-        $user = \BackendUser::getInstance();
-
-        if (strlen(\Input::get('tid'))) {
-            $this->toggleVisibility(\Input::get('tid'), (\Input::get('state') == 1), (@func_get_arg(12) ?: null));
-            $this->redirect($this->getReferer());
-        }
-
-        // Check permissions AFTER checking the tid, so hacking attempts are logged
-        if (!$user->hasAccess('tl_filter_config_element::published', 'alexf')) {
-            return '';
-        }
-
-        $href .= '&amp;tid=' . $row['id'] . '&amp;state=' . ($row['published'] ? '' : 1);
-
-        if (!$row['published']) {
-            $icon = 'invisible.svg';
-        }
-
-        return '<a href="' . $this->addToUrl($href) . '" title="' . \StringUtil::specialchars($title) . '"' . $attributes . '>' . \Image::getHtml(
-                $icon,
-                $label,
-                'data-state="' . ($row['published'] ? 1 : 0) . '"'
-            ) . '</a> ';
-    }
-
-    public function toggleVisibility($intId, $blnVisible, \DataContainer $dc = null)
-    {
-        $user     = \BackendUser::getInstance();
-        $database = \Database::getInstance();
-
-        // Set the ID and action
-        \Input::setGet('id', $intId);
-        \Input::setGet('act', 'toggle');
-
-        if ($dc) {
-            $dc->id = $intId; // see #8043
-        }
-
-        // Trigger the onload_callback
-        if (is_array($GLOBALS['TL_DCA']['tl_filter_config_element']['config']['onload_callback'])) {
-            foreach ($GLOBALS['TL_DCA']['tl_filter_config_element']['config']['onload_callback'] as $callback) {
-                if (is_array($callback)) {
-                    $this->import($callback[0]);
-                    $this->{$callback[0]}->{$callback[1]}($dc);
-                } elseif (is_callable($callback)) {
-                    $callback($dc);
-                }
-            }
-        }
-
-        // Check the field access
-        if (!$user->hasAccess('tl_filter_config_element::published', 'alexf')) {
-            throw new \Contao\CoreBundle\Exception\AccessDeniedException(
-                'Not enough permissions to publish/unpublish filter_element item ID ' . $intId . '.'
-            );
-        }
-
-        // Set the current record
-        if ($dc) {
-            $objRow = $database->prepare("SELECT * FROM tl_filter_config_element WHERE id=?")->limit(1)->execute($intId);
-
-            if ($objRow->numRows) {
-                $dc->activeRecord = $objRow;
-            }
-        }
-
-        $objVersions = new \Versions('tl_filter_config_element', $intId);
-        $objVersions->initialize();
-
-        // Trigger the save_callback
-        if (is_array($GLOBALS['TL_DCA']['tl_filter_config_element']['fields']['published']['save_callback'])) {
-            foreach ($GLOBALS['TL_DCA']['tl_filter_config_element']['fields']['published']['save_callback'] as $callback) {
-                if (is_array($callback)) {
-                    $this->import($callback[0]);
-                    $blnVisible = $this->{$callback[0]}->{$callback[1]}($blnVisible, $dc);
-                } elseif (is_callable($callback)) {
-                    $blnVisible = $callback($blnVisible, $dc);
-                }
-            }
-        }
-
-        $time = time();
-
-        // Update the database
-        $database->prepare("UPDATE tl_filter_config_element SET tstamp=$time, published='" . ($blnVisible ? '1' : '') . "' WHERE id=?")->execute(
-            $intId
-        );
-
-        if ($dc) {
-            $dc->activeRecord->tstamp    = $time;
-            $dc->activeRecord->published = ($blnVisible ? '1' : '');
-        }
-
-        // Trigger the onsubmit_callback
-        if (is_array($GLOBALS['TL_DCA']['tl_filter_config_element']['config']['onsubmit_callback'])) {
-            foreach ($GLOBALS['TL_DCA']['tl_filter_config_element']['config']['onsubmit_callback'] as $callback) {
-                if (is_array($callback)) {
-                    $this->import($callback[0]);
-                    $this->{$callback[0]}->{$callback[1]}($dc);
-                } elseif (is_callable($callback)) {
-                    $callback($dc);
-                }
-            }
-        }
-
-        $objVersions->create();
-    }
-
-    /**
-     * Add a link to the option items import wizard
-     *
-     * @return string
-     */
-    public function optionImportWizard()
-    {
-        return ' <a href="' . $this->addToUrl('key=option') . '" title="' . specialchars($GLOBALS['TL_LANG']['MSC']['ow_import'][1]) . '" onclick="Backend.getScrollOffset()">' . Image::getHtml('tablewizard.gif', $GLOBALS['TL_LANG']['MSC']['ow_import'][0]) . '</a>';
-    }
-}

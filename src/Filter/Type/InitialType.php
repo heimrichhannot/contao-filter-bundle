@@ -8,6 +8,7 @@
 
 namespace HeimrichHannot\FilterBundle\Filter\Type;
 
+use Contao\StringUtil;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
 use HeimrichHannot\FilterBundle\Filter\TypeInterface;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
@@ -21,7 +22,7 @@ class InitialType extends AbstractType implements TypeInterface
      */
     public function buildQuery(FilterQueryBuilder $builder, FilterConfigElementModel $element)
     {
-        // TODO: Implement buildQuery() method.
+        $builder->whereElement($element, $this->getName($element), $this->config);
     }
 
     /**
@@ -29,6 +30,8 @@ class InitialType extends AbstractType implements TypeInterface
      */
     public function buildForm(FilterConfigElementModel $element, FormBuilderInterface $builder)
     {
+        // TODO maybe not necessary
+//        $builder->add($this->getName($element), \Symfony\Component\Form\Extension\Core\Type\TextType::class, $this->getOptions($element, $builder));
     }
 
     /**
@@ -37,5 +40,22 @@ class InitialType extends AbstractType implements TypeInterface
     public function getDefaultName(FilterConfigElementModel $element)
     {
         return null;
+    }
+
+    public static function getInitialValue(FilterConfigElementModel $element)
+    {
+        switch ($element->initialValueType) {
+            case static::VALUE_TYPE_ARRAY:
+                $value = array_map(function ($val) {
+                    return $val['value'];
+                }, StringUtil::deserialize($element->initialValueArray, true));
+
+                break;
+            default:
+                $value = $element->initialValue;
+                break;
+        }
+
+        return $value;
     }
 }

@@ -41,6 +41,18 @@ class ChoiceType extends AbstractType implements TypeInterface
         return null;
     }
 
+    /**
+     * Get the list of available choices.
+     *
+     * @param FilterConfigElementModel $element
+     *
+     * @return array|mixed
+     */
+    public function getChoices(FilterConfigElementModel $element)
+    {
+        return System::getContainer()->get('huh.filter.choice.field_options')->getCachedChoices(['element' => $element, 'filter' => $this->config->getFilter()]);
+    }
+
     protected function getOptions(FilterConfigElementModel $element, FormBuilderInterface $builder)
     {
         $options = parent::getOptions($element, $builder);
@@ -59,18 +71,13 @@ class ChoiceType extends AbstractType implements TypeInterface
         $options['expanded'] = (bool) $element->expanded;
         $options['multiple'] = (bool) $element->multiple;
 
-        return $options;
-    }
+        // forgiving array handling
+        if ($element->addDefaultValue) {
+            if ($options['multiple'] && !is_array($options['data'])) {
+                $options['data'] = [$options['data']];
+            }
+        }
 
-    /**
-     * Get the list of available choices.
-     *
-     * @param FilterConfigElementModel $element
-     *
-     * @return array|mixed
-     */
-    protected function getChoices(FilterConfigElementModel $element)
-    {
-        return System::getContainer()->get('huh.filter.choice.field_options')->getCachedChoices(['element' => $element, 'filter' => $this->config->getFilter()]);
+        return $options;
     }
 }
