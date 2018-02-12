@@ -7,6 +7,7 @@
         "php": "^7.1",
         "contao/manager-bundle": "^4.4",
         "heimrichhannot/contao-utils-bundle": "dev-master",
+        "heimrichhannot/contao-multi_column_editor": "^1.4",
         "codefog/contao-haste": "^4.18"
     },
     "require-dev": {
