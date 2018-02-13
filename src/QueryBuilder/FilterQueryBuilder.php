@@ -8,6 +8,7 @@
 
 namespace HeimrichHannot\FilterBundle\QueryBuilder;
 
+use Contao\Controller;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\System;
 use Doctrine\DBAL\Connection;
@@ -115,6 +116,9 @@ class FilterQueryBuilder extends QueryBuilder
             if (null === $value || !$element->field) {
                 return $this;
             }
+
+            // never replace non initial Inserttags (user inputs), avoid injection and never cache to avoid esi:tags
+            $value = Controller::replaceInsertTags($value, false);
 
             $operator = $element->operator;
 
