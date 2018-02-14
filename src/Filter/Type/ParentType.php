@@ -14,17 +14,11 @@ use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 
 class ParentType extends ChoiceType
 {
-    const TITLE_FIELDS = [
-        'name',
-        'title',
-    ];
-
     /** {@inheritdoc} */
     public function getChoices(FilterConfigElementModel $element)
     {
         $context = [];
         $filter = $this->config->getFilter();
-        $labelPattern = 'ID %id%';
 
         if (!isset($filter['dataContainer'])) {
             return [];
@@ -54,16 +48,8 @@ class ParentType extends ChoiceType
 
         Controller::loadDataContainer($parentTable);
 
-        foreach (static::TITLE_FIELDS as $titleField) {
-            if (isset($GLOBALS['TL_DCA'][$parentTable]['fields'][$titleField])) {
-                $labelPattern = '%'.$titleField.'%';
-                break;
-            }
-        }
-
         $choices = System::getContainer()->get('huh.utils.choice.model_instance')->getCachedChoices([
             'dataContainer' => $parentTable,
-            'labelPattern' => $labelPattern,
         ]);
 
         return array_flip($choices);
