@@ -10,12 +10,11 @@ namespace HeimrichHannot\FilterBundle\Filter\Type;
 
 use Contao\Controller;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
-use HeimrichHannot\FilterBundle\Filter\TypeInterface;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 use Symfony\Component\Form\FormBuilderInterface;
 
-class DateRangeType extends AbstractType implements TypeInterface
+class DateRangeType extends AbstractType
 {
     /**
      * @var FilterConfigElementModel

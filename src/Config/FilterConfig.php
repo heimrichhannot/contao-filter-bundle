@@ -11,14 +11,13 @@ namespace HeimrichHannot\FilterBundle\Config;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\System;
 use HeimrichHannot\FilterBundle\Entity\FilterSession;
-use HeimrichHannot\FilterBundle\Filter\TypeInterface;
+use HeimrichHannot\FilterBundle\Filter\AbstractType;
 use HeimrichHannot\FilterBundle\Form\Extension\FormButtonExtension;
 use HeimrichHannot\FilterBundle\Form\Extension\FormTypeExtension;
 use HeimrichHannot\FilterBundle\Form\FilterType;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\Forms;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
@@ -156,12 +155,10 @@ class FilterConfig
                 continue;
             }
 
-            /**
-             * @var TypeInterface
-             */
+            /** @var AbstractType $type */
             $type = new $class($this);
 
-            if (!is_subclass_of($type, \HeimrichHannot\FilterBundle\Filter\AbstractType::class) || !is_subclass_of($type, TypeInterface::class)) {
+            if (!is_subclass_of($type, AbstractType::class)) {
                 continue;
             }
 

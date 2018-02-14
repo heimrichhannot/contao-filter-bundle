@@ -12,10 +12,7 @@ use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\InsertTags;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
 use HeimrichHannot\FilterBundle\Exception\MissingFilterConfigException;
-use HeimrichHannot\FilterBundle\Filter\TypeInterface;
-use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
@@ -106,12 +103,10 @@ class FilterType extends AbstractType
                 continue;
             }
 
-            /**
-             * @var TypeInterface
-             */
+            /** @var \HeimrichHannot\FilterBundle\Filter\AbstractType $type */
             $type = new $class($this->config);
 
-            if (!is_subclass_of($type, \HeimrichHannot\FilterBundle\Filter\AbstractType::class) || !is_subclass_of($type, TypeInterface::class)) {
+            if (!is_subclass_of($type, \HeimrichHannot\FilterBundle\Filter\AbstractType::class)) {
                 continue;
             }
 
@@ -167,12 +162,10 @@ class FilterType extends AbstractType
                 continue;
             }
 
-            /**
-             * @var TypeInterface
-             */
+            /** @var \HeimrichHannot\FilterBundle\Filter\AbstractType $type */
             $type = new $class($this->config);
 
-            if (!is_subclass_of($type, \HeimrichHannot\FilterBundle\Filter\AbstractType::class) || !is_subclass_of($type, TypeInterface::class)) {
+            if (!is_subclass_of($type, \HeimrichHannot\FilterBundle\Filter\AbstractType::class)) {
                 continue;
             }
 

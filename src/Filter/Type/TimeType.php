@@ -11,12 +11,11 @@ namespace HeimrichHannot\FilterBundle\Filter\Type;
 use Contao\Date;
 use Contao\System;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
-use HeimrichHannot\FilterBundle\Filter\TypeInterface;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 use Symfony\Component\Form\FormBuilderInterface;
 
-class TimeType extends AbstractType implements TypeInterface
+class TimeType extends AbstractType
 {
     /**
      * {@inheritdoc}

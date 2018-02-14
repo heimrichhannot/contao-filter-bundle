@@ -10,12 +10,11 @@ namespace HeimrichHannot\FilterBundle\Filter\Type;
 
 use Contao\StringUtil;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
-use HeimrichHannot\FilterBundle\Filter\TypeInterface;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 use Symfony\Component\Form\FormBuilderInterface;
 
-class TextConcatType extends AbstractType implements TypeInterface
+class TextConcatType extends AbstractType
 {
     /**
      * {@inheritdoc}
