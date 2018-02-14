@@ -114,7 +114,7 @@ class DateRangeType extends AbstractType
 
             $andXB = $builder->expr()->andX();
             $andXB->add($builder->expr()->gte(':stop', $startField));
-            $andXB->add($builder->expr()->lte('stop', $stopField));
+            $andXB->add($builder->expr()->lte(':stop', $stopField));
 
             $andXC = $builder->expr()->andX();
             $andXC->add($builder->expr()->lte(':start', $startField));

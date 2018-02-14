@@ -82,6 +82,11 @@ class FilterQueryBuilder extends QueryBuilder
 
         $dca = $GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element->field];
 
+        if($dca['eval']['isCategoryField']){
+            $this->whereCategoryWidget($element, $name, $config, $dca);
+            return $this;
+        }
+
         switch ($dca['inputType']) {
             case 'cfgTags':
                 if (!isset($dca['eval']['tagsManager'])) {
@@ -181,6 +186,40 @@ class FilterQueryBuilder extends QueryBuilder
 
         $this->join($relation['reference_table'], $relation['table'], $alias, $alias.'.'.$relation['reference_field'].'='.$relation['reference_table'].'.'.$relation['reference']);
         $this->andWhere($this->expr()->in($alias.'.'.$relation['related_field'], $value));
+
+        return $this;
+    }
+
+    /**
+     * Add category widget where clause.
+     *
+     * @param FilterConfigElementModel $element
+     * @param string                   $name    The field name
+     * @param FilterConfig             $config
+     * @param array                    $dca
+     *
+     * @return $this this FilterQueryBuilder instance
+     */
+    protected function whereCategoryWidget(FilterConfigElementModel $element, string $name, FilterConfig $config, array $dca)
+    {
+        $filter = $config->getFilter();
+        $data = $config->getData();
+        $value = $data[$name];
+
+        if(null === $value){
+            return $this;
+        }
+
+        $alias = 'tl_category_association_'.$element->field;
+
+        $this->join($filter['dataContainer'], 'tl_category_association', $alias, "
+        $alias.categoryField='$element->field' AND 
+        $alias.parentTable='" . $filter['dataContainer'] . "' AND
+        $alias.entity=" . $filter['dataContainer'] . ".id
+        ");
+        $this->andWhere($this->expr()->in($alias.'.category', ":$alias"));
+
+        $this->setParameter(":$alias", $value, \PDO::PARAM_STR);
 
         return $this;
     }

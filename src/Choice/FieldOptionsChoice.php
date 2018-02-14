@@ -12,6 +12,7 @@ use Contao\Controller;
 use Contao\StringUtil;
 use Contao\System;
 use Contao\Widget;
+use HeimrichHannot\CategoriesBundle\Model\CategoryModel;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\UtilsBundle\Choice\AbstractChoice;
 
@@ -30,16 +31,17 @@ class FieldOptionsChoice extends AbstractChoice
         }
 
         $element = $context['element'];
-        $filter = $context['filter'];
+        $filter  = $context['filter'];
 
         $options = [];
 
         Controller::loadDataContainer($filter['dataContainer']);
 
-        if (true === (bool) $element->customOptions) {
+        if (true === (bool)$element->customOptions) {
             $options = $this->getCustomOptions($element, $filter);
         } elseif (isset($GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element->field])) {
-            $options = $this->getDcaOptions($element, $filter, $GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element->field]);
+            $options = $this->getDcaOptions($element, $filter,
+                $GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element->field]);
         }
 
         $translator = System::getContainer()->get('translator');
@@ -63,7 +65,7 @@ class FieldOptionsChoice extends AbstractChoice
      * Get custom options.
      *
      * @param FilterConfigElementModel $element
-     * @param array                    $filter
+     * @param array $filter
      *
      * @return array
      */
@@ -82,15 +84,20 @@ class FieldOptionsChoice extends AbstractChoice
      * Get contao dca widget options.
      *
      * @param FilterConfigElementModel $element
-     * @param array                    $filter
-     * @param array                    $dca
+     * @param array $filter
+     * @param array $dca
      *
      * @return array
      */
     protected function getDcaOptions(FilterConfigElementModel $element, array $filter, array $dca)
     {
         $options = [];
-        $dca = $GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element->field];
+        $dca     = $GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element->field];
+
+        if ($dca['eval']['isCategoryField']) {
+            $options = $this->getCategoryWidgetOptions($element, $filter, $dca);
+            return $options;
+        }
 
         switch ($dca['inputType']) {
             case 'cfgTags':
@@ -110,8 +117,8 @@ class FieldOptionsChoice extends AbstractChoice
      * Get default contao widget options.
      *
      * @param FilterConfigElementModel $element
-     * @param array                    $filter
-     * @param array                    $dca
+     * @param array $filter
+     * @param array $dca
      *
      * @return array
      */
@@ -145,8 +152,8 @@ class FieldOptionsChoice extends AbstractChoice
      * Get tag widget options.
      *
      * @param FilterConfigElementModel $element
-     * @param array                    $filter
-     * @param array                    $dca
+     * @param array $filter
+     * @param array $dca
      *
      * @return array
      */
@@ -170,4 +177,29 @@ class FieldOptionsChoice extends AbstractChoice
 
         return $options;
     }
+
+    /**
+     * Get category widget options.
+     *
+     * @param FilterConfigElementModel $element
+     * @param array $filter
+     * @param array $dca
+     *
+     * @return array
+     */
+    protected function getCategoryWidgetOptions(FilterConfigElementModel $element, array $filter, array $dca)
+    {
+        $options = [];
+
+        $categories = System::getContainer()->get('huh.categories.manager')->findByCategoryFieldAndTable($element->field,
+            $filter['dataContainer']);
+
+        /** @var CategoryModel $category */
+        foreach ($categories as $category) {
+            $options[] = ['label' => $category->frontendTitle ?: $category->title, 'value' => $category->id];
+        }
+
+        return $options;
+    }
+
 }
