@@ -8,7 +8,6 @@
 
 namespace HeimrichHannot\FilterBundle\Registry;
 
-use Contao\Controller;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\System;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
@@ -18,6 +17,7 @@ use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\Model\FilterConfigModel;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\Form\Exception\TransformationFailedException;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class FilterRegistry
 {
@@ -32,13 +32,6 @@ class FilterRegistry
     protected $session;
 
     /**
-     * Current file cache.
-     *
-     * @var FilesystemAdapter
-     */
-    protected $cache;
-
-    /**
      * All available filter configurations.
      *
      * @var FilterConfig[]
@@ -49,13 +42,12 @@ class FilterRegistry
      * Constructor.
      *
      * @param ContaoFrameworkInterface $framework
-     * @param FilterSession            $session
+     * @param FilterSession $session
      */
     public function __construct(ContaoFrameworkInterface $framework, FilterSession $session)
     {
         $this->framework = $framework;
-        $this->session = $session;
-        $this->cache = new FilesystemAdapter('huh.filter.registry', 0, \System::getContainer()->get('kernel')->getCacheDir());
+        $this->session   = $session;
     }
 
     /**
@@ -112,7 +104,7 @@ class FilterRegistry
      */
     public function getSessionKey(array $filter)
     {
-        return 'huh.filter.session.'.$filter['name'] ?: $filter['id'];
+        return 'huh.filter.session.' . $filter['name'] ?: $filter['id'];
     }
 
     /**
@@ -184,14 +176,12 @@ class FilterRegistry
 
     /**
      * @param FilterConfig $config
-     * @param mixed        $request The request to handle
+     * @param mixed $request The request to handle
      */
     protected function handleForm(FilterConfig $config, $request = null)
     {
-        $sessionKey = $config->getSessionKey();
-
         if (null === $config->getBuilder()) {
-            $config->buildForm($this->session->getData($sessionKey));
+            $config->buildForm($config->getData());
         }
 
         if (null === $config->getBuilder()) {
@@ -202,8 +192,8 @@ class FilterRegistry
             $form = $config->getBuilder()->getForm();
         } catch (TransformationFailedException $e) {
             // for instance field changed from single to multiple value, transform old session data will throw an TransformationFailedException -> clear session and build again with empty data
-            $this->session->reset($sessionKey);
-            $config->buildForm($this->session->getData($sessionKey));
+            $config->resetData();
+            $config->buildForm($config->getData());
             $form = $config->getBuilder()->getForm();
         }
 
@@ -219,26 +209,25 @@ class FilterRegistry
             }
 
             // form id must match
-            if ((int) $form->get(FilterType::FILTER_ID_NAME)->getData() !== $config->getId()) {
+            if ((int)$form->get(FilterType::FILTER_ID_NAME)->getData() !== $config->getId()) {
                 return;
             }
 
             $data = $form->getData();
-            $url = System::getContainer()->get('huh.utils.url')->removeQueryString([$form->getName()], $form->getConfig()->getAction() ?: null);
+            $url  = System::getContainer()->get('huh.utils.url')->removeQueryString([$form->getName()], $form->getConfig()->getAction() ?: null);
+
+            // do not save filter id in session
+            $config->setData($data);
 
             // allow reset, support different form configuration with same form name
             if (null !== $form->getClickedButton() && in_array($form->getClickedButton()->getName(), $config->getResetNames(), true)) {
-                $this->session->reset($sessionKey);
-                $data = [];
+                $config->resetData();
                 // redirect to same page without filter parameters
                 $url = System::getContainer()->get('huh.utils.url')->removeQueryString([$form->getName()], $request->getUri() ?: null);
             }
 
-            // do not save filter id in session
-            $this->session->setData($sessionKey, $data);
-
-            // redirect to same page without filter parameters
-            Controller::redirect($url);
+            // FIXME: find more elegant way to force redirect within contao/symfony context (Contao\Controller::redirect() wont immediately redirect)
+            System::getContainer()->get('huh.utils.url')->redirect($url);
         }
     }
 }

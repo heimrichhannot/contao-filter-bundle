@@ -62,8 +62,6 @@ class ModuleFilter extends \Contao\Module
 
         $form = $this->config->getBuilder()->getForm();
 
-        $form->handleRequest();
-
         /**
          * @var \Twig_Environment
          */

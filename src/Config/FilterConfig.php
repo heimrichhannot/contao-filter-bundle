@@ -244,6 +244,16 @@ class FilterConfig
     }
 
     /**
+     * Set the filter data
+     *
+     * @param array $data
+     */
+    public function setData(array $data = [])
+    {
+        $this->session->setData($this->getSessionKey(), $data);
+    }
+
+    /**
      * Get the filter data (e.g. form submission data).
      *
      * @return array
@@ -261,6 +271,14 @@ class FilterConfig
     public function hasData(): bool
     {
         return $this->session->hasData($this->getSessionKey());
+    }
+
+    /**
+     * Reset the filter data
+     */
+    public function resetData()
+    {
+        $this->session->reset($this->getSessionKey());
     }
 
     /**
