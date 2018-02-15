@@ -11,6 +11,7 @@ namespace HeimrichHannot\FilterBundle\Filter\Type;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
+use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 use Symfony\Component\Form\FormBuilderInterface;
 
 class HiddenType extends AbstractType
@@ -37,5 +38,13 @@ class HiddenType extends AbstractType
     public function getDefaultName(FilterConfigElementModel $element)
     {
         return null;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDefaultOperator(FilterConfigElementModel $element)
+    {
+        return DatabaseUtil::OPERATOR_EQUAL;
     }
 }

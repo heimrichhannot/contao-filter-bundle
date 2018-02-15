@@ -38,4 +38,11 @@ class SubmitType extends AbstractType
     {
         return 'submit';
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDefaultOperator(FilterConfigElementModel $element)
+    {
+    }
 }

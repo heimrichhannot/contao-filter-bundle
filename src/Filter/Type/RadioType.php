@@ -10,6 +10,7 @@ namespace HeimrichHannot\FilterBundle\Filter\Type;
 
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
+use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 use Symfony\Component\Form\FormBuilderInterface;
 
 class RadioType extends CheckboxType
@@ -19,7 +20,7 @@ class RadioType extends CheckboxType
      */
     public function buildQuery(FilterQueryBuilder $builder, FilterConfigElementModel $element)
     {
-        $builder->whereElement($element, $this->getName($element), $this->config);
+        $builder->whereElement($element, $this->getName($element), $this->config, $this->getDefaultOperator($element));
     }
 
     /**
@@ -36,5 +37,13 @@ class RadioType extends CheckboxType
     public function getDefaultName(FilterConfigElementModel $element)
     {
         return null;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDefaultOperator(FilterConfigElementModel $element)
+    {
+        return DatabaseUtil::OPERATOR_EQUAL;
     }
 }

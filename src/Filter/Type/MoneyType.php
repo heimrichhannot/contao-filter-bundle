@@ -10,6 +10,7 @@ namespace HeimrichHannot\FilterBundle\Filter\Type;
 
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
+use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 use Symfony\Component\Form\FormBuilderInterface;
 
 class MoneyType extends TextType
@@ -19,7 +20,7 @@ class MoneyType extends TextType
      */
     public function buildQuery(FilterQueryBuilder $builder, FilterConfigElementModel $element)
     {
-        $builder->whereElement($element, $this->getName($element), $this->config);
+        $builder->whereElement($element, $this->getName($element), $this->config, $this->getDefaultOperator($element));
     }
 
     /**
@@ -36,6 +37,14 @@ class MoneyType extends TextType
     public function getDefaultName(FilterConfigElementModel $element)
     {
         return null;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDefaultOperator(FilterConfigElementModel $element)
+    {
+        return DatabaseUtil::OPERATOR_EQUAL;
     }
 
     /**

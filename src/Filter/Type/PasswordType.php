@@ -10,6 +10,7 @@ namespace HeimrichHannot\FilterBundle\Filter\Type;
 
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
+use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 use Symfony\Component\Form\FormBuilderInterface;
 
 class PasswordType extends TextType
@@ -19,7 +20,7 @@ class PasswordType extends TextType
      */
     public function buildQuery(FilterQueryBuilder $builder, FilterConfigElementModel $element)
     {
-        $builder->whereElement($element, $this->getName($element), $this->config);
+        $builder->whereElement($element, $this->getName($element), $this->config, $this->getDefaultOperator($element));
     }
 
     /**
@@ -28,6 +29,14 @@ class PasswordType extends TextType
     public function buildForm(FilterConfigElementModel $element, FormBuilderInterface $builder)
     {
         $builder->add($this->getName($element), \Symfony\Component\Form\Extension\Core\Type\PasswordType::class, $this->getOptions($element, $builder));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDefaultOperator(FilterConfigElementModel $element)
+    {
+        return DatabaseUtil::OPERATOR_EQUAL;
     }
 
     /**

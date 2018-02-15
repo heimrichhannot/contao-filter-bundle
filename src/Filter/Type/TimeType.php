@@ -13,6 +13,7 @@ use Contao\System;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
+use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 use Symfony\Component\Form\FormBuilderInterface;
 
 class TimeType extends AbstractType
@@ -42,6 +43,14 @@ class TimeType extends AbstractType
     public function getDefaultName(FilterConfigElementModel $element)
     {
         return $element->name;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDefaultOperator(FilterConfigElementModel $element)
+    {
+        return DatabaseUtil::OPERATOR_EQUAL;
     }
 
     /**

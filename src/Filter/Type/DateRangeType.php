@@ -12,6 +12,7 @@ use Contao\Controller;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
+use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 use Symfony\Component\Form\FormBuilderInterface;
 
 class DateRangeType extends AbstractType
@@ -202,6 +203,14 @@ class DateRangeType extends AbstractType
     public function getStopElement(): FilterConfigElementModel
     {
         return $this->stopElement;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDefaultOperator(FilterConfigElementModel $element)
+    {
+        return DatabaseUtil::OPERATOR_LIKE;
     }
 
     /**

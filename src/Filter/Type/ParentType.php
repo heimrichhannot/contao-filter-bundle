@@ -11,6 +11,7 @@ namespace HeimrichHannot\FilterBundle\Filter\Type;
 use Contao\Controller;
 use Contao\System;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
+use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 
 class ParentType extends ChoiceType
 {
@@ -53,5 +54,13 @@ class ParentType extends ChoiceType
         ]);
 
         return array_flip($choices);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDefaultOperator(FilterConfigElementModel $element)
+    {
+        return DatabaseUtil::OPERATOR_EQUAL;
     }
 }

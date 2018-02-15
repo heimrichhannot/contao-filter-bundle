@@ -48,4 +48,11 @@ class ResetType extends AbstractType
     {
         return 'reset';
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDefaultOperator(FilterConfigElementModel $element)
+    {
+    }
 }

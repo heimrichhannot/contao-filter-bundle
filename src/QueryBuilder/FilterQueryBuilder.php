@@ -21,35 +21,6 @@ use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 
 class FilterQueryBuilder extends QueryBuilder
 {
-    const DEFAULT_TYPE_MAPPING = [
-        'text' => DatabaseUtil::OPERATOR_LIKE,
-        'text_concat' => DatabaseUtil::OPERATOR_LIKE,
-        'textarea' => DatabaseUtil::OPERATOR_LIKE,
-        'email' => DatabaseUtil::OPERATOR_LIKE,
-        'integer' => DatabaseUtil::OPERATOR_EQUAL,
-        'money' => DatabaseUtil::OPERATOR_EQUAL,
-        'number' => DatabaseUtil::OPERATOR_EQUAL,
-        'password' => DatabaseUtil::OPERATOR_EQUAL,
-        'percent' => DatabaseUtil::OPERATOR_EQUAL,
-        'search' => DatabaseUtil::OPERATOR_LIKE,
-        'url' => DatabaseUtil::OPERATOR_LIKE,
-        'range' => 'Spanne (range)',
-        'tel' => DatabaseUtil::OPERATOR_LIKE,
-        'color' => DatabaseUtil::OPERATOR_EQUAL,
-        'choice' => DatabaseUtil::OPERATOR_EQUAL,
-        'country' => DatabaseUtil::OPERATOR_EQUAL,
-        'language' => DatabaseUtil::OPERATOR_EQUAL,
-        'locale' => DatabaseUtil::OPERATOR_EQUAL,
-        'hidden' => DatabaseUtil::OPERATOR_EQUAL,
-        'checkbox' => DatabaseUtil::OPERATOR_EQUAL,
-        'radio' => DatabaseUtil::OPERATOR_EQUAL,
-        'initial' => DatabaseUtil::OPERATOR_LIKE,
-        'date_time' => 'Datum & Zeit',
-        'date' => 'Datum',
-        'time' => 'Zeit',
-        'date_range' => 'Datumsspanne (date range)',
-    ];
-
     /**
      * @var ContaoFrameworkInterface
      */
@@ -70,7 +41,7 @@ class FilterQueryBuilder extends QueryBuilder
      *
      * @return $this this FilterQueryBuilder instance
      */
-    public function whereElement(FilterConfigElementModel $element, string $name, FilterConfig $config)
+    public function whereElement(FilterConfigElementModel $element, string $name, FilterConfig $config, string $defaultOperator)
     {
         $filter = $config->getFilter();
 
@@ -82,8 +53,9 @@ class FilterQueryBuilder extends QueryBuilder
 
         $dca = $GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element->field];
 
-        if($dca['eval']['isCategoryField']){
+        if ($dca['eval']['isCategoryField']) {
             $this->whereCategoryWidget($element, $name, $config, $dca);
+
             return $this;
         }
 
@@ -95,7 +67,7 @@ class FilterQueryBuilder extends QueryBuilder
                 $this->whereTagWidget($element, $name, $config, $dca);
                 break;
             default:
-                $this->whereWidget($element, $name, $config, $dca);
+                $this->whereWidget($element, $name, $config, $dca, $defaultOperator);
         }
 
         return $this;
@@ -111,7 +83,7 @@ class FilterQueryBuilder extends QueryBuilder
      *
      * @return $this this FilterQueryBuilder instance
      */
-    public function whereWidget(FilterConfigElementModel $element, string $name, FilterConfig $config, array $dca)
+    public function whereWidget(FilterConfigElementModel $element, string $name, FilterConfig $config, array $dca, string $defaultOperator = null)
     {
         $data = $config->getData();
 
@@ -138,7 +110,7 @@ class FilterQueryBuilder extends QueryBuilder
                 return $this;
             }
 
-            $operator = static::DEFAULT_TYPE_MAPPING[$element->type] ?? '';
+            $operator = $defaultOperator;
 
             // db value is a serialized blob
             if (isset($dca['eval']['multiple']) && $dca['eval']['multiple']) {
@@ -206,7 +178,7 @@ class FilterQueryBuilder extends QueryBuilder
         $data = $config->getData();
         $value = $data[$name];
 
-        if(null === $value){
+        if (null === $value) {
             return $this;
         }
 
@@ -214,9 +186,9 @@ class FilterQueryBuilder extends QueryBuilder
 
         $this->join($filter['dataContainer'], 'tl_category_association', $alias, "
         $alias.categoryField='$element->field' AND 
-        $alias.parentTable='" . $filter['dataContainer'] . "' AND
-        $alias.entity=" . $filter['dataContainer'] . ".id
-        ");
+        $alias.parentTable='".$filter['dataContainer']."' AND
+        $alias.entity=".$filter['dataContainer'].'.id
+        ');
         $this->andWhere($this->expr()->in($alias.'.category', ":$alias"));
 
         $this->setParameter(":$alias", $value, \PDO::PARAM_STR);

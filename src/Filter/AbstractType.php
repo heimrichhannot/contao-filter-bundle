@@ -121,6 +121,15 @@ abstract class AbstractType
     abstract public function buildForm(FilterConfigElementModel $element, FormBuilderInterface $builder);
 
     /**
+     * Get the default operator for this type.
+     *
+     * @param FilterConfigElementModel $element The element data
+     *
+     * @return string|null The returned string must be an operator defined in \HeimrichHannot\UtilsBundle\Database\DatabaseUtil::OPERATORS
+     */
+    abstract public function getDefaultOperator(FilterConfigElementModel $element);
+
+    /**
      * Get the default form element name.
      *
      * @param FilterConfigElementModel $element The element data

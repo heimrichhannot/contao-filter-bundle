@@ -202,7 +202,7 @@ class FilterConfigElement
         $user = \BackendUser::getInstance();
 
         if (strlen(\Input::get('tid'))) {
-            $this->toggleVisibility(\Input::get('tid'), (1 === \Input::get('state')), (@func_get_arg(12) ?: null));
+            $this->toggleVisibility(\Input::get('tid'), ('1' === \Input::get('state')), (@func_get_arg(12) ?: null));
             Controller::redirect(Controller::getReferer());
         }
 
