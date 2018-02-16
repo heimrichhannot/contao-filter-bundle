@@ -17,7 +17,8 @@ $GLOBALS['TL_DCA']['tl_filter_config'] = [
         ],
         'sql'               => [
             'keys' => [
-                'id' => 'primary',
+                'id'                   => 'primary',
+                'start,stop,published' => 'index',
             ],
         ],
     ],
