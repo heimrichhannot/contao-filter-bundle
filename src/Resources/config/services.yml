@@ -32,6 +32,7 @@ services:
       - "@contao.framework"
       - "@doctrine.dbal.default_connection"
   huh.filter.backend.filter_config_element:
+    public: true
     class: HeimrichHannot\FilterBundle\Backend\FilterConfigElement
 
   # choices

@@ -244,7 +244,7 @@ class FilterConfig
     }
 
     /**
-     * Set the filter data
+     * Set the filter data.
      *
      * @param array $data
      */
@@ -274,7 +274,7 @@ class FilterConfig
     }
 
     /**
-     * Reset the filter data
+     * Reset the filter data.
      */
     public function resetData()
     {

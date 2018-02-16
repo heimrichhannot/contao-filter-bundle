@@ -25,22 +25,15 @@ class FilterConfigElement
         ) {
             $dca = &$GLOBALS['TL_DCA']['tl_filter_config_element'];
             $config = System::getContainer()->getParameter('huh.filter');
+            $foundType = null;
 
             foreach ($config['filter']['types'] as $type) {
                 if ($type['name'] === $filterConfigElement->type) {
-                    // skip handling for buttons
-                    if ('button' === $type['type']) {
-                        $dca['palettes'][$filterConfigElement->type] = str_replace(
-                            'isInitial', '',
-                            $dca['palettes'][$filterConfigElement->type]
-                        );
-
-                        return;
-                    }
+                    $foundType = $type['type'];
                 }
             }
 
-            if ($filterConfigElement->isInitial) {
+            if ($filterConfigElement->isInitial && isset($dca['palettes'][$foundType]) && false !== strpos($dca['palettes'][$foundType], 'isInitial')) {
                 $dca['palettes'][$filterConfigElement->type] = static::INITIAL_PALETTE;
             }
         }

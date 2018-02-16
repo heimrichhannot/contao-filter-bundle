@@ -15,9 +15,7 @@ use HeimrichHannot\FilterBundle\Entity\FilterSession;
 use HeimrichHannot\FilterBundle\Form\FilterType;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\Model\FilterConfigModel;
-use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\Form\Exception\TransformationFailedException;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class FilterRegistry
 {
@@ -42,12 +40,12 @@ class FilterRegistry
      * Constructor.
      *
      * @param ContaoFrameworkInterface $framework
-     * @param FilterSession $session
+     * @param FilterSession            $session
      */
     public function __construct(ContaoFrameworkInterface $framework, FilterSession $session)
     {
         $this->framework = $framework;
-        $this->session   = $session;
+        $this->session = $session;
     }
 
     /**
@@ -104,7 +102,7 @@ class FilterRegistry
      */
     public function getSessionKey(array $filter)
     {
-        return 'huh.filter.session.' . $filter['name'] ?: $filter['id'];
+        return 'huh.filter.session.'.$filter['name'] ?: $filter['id'];
     }
 
     /**
@@ -176,7 +174,7 @@ class FilterRegistry
 
     /**
      * @param FilterConfig $config
-     * @param mixed $request The request to handle
+     * @param mixed        $request The request to handle
      */
     protected function handleForm(FilterConfig $config, $request = null)
     {
@@ -209,12 +207,12 @@ class FilterRegistry
             }
 
             // form id must match
-            if ((int)$form->get(FilterType::FILTER_ID_NAME)->getData() !== $config->getId()) {
+            if ((int) $form->get(FilterType::FILTER_ID_NAME)->getData() !== $config->getId()) {
                 return;
             }
 
             $data = $form->getData();
-            $url  = System::getContainer()->get('huh.utils.url')->removeQueryString([$form->getName()], $form->getConfig()->getAction() ?: null);
+            $url = System::getContainer()->get('huh.utils.url')->removeQueryString([$form->getName()], $form->getConfig()->getAction() ?: null);
 
             // do not save filter id in session
             $config->setData($data);
