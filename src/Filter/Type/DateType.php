@@ -8,6 +8,7 @@
 
 namespace HeimrichHannot\FilterBundle\Filter\Type;
 
+use Contao\Controller;
 use Contao\Date;
 use Contao\System;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
@@ -80,11 +81,11 @@ class DateType extends AbstractType
 
                 if (true === $options['html5']) {
                     if ('' !== $element->minDate) {
-                        $options['attr']['min'] = Date::parse('Y-m-d', $element->minDate); // valid rfc 3339 date `YYYY-MM-DD` format must be used
+                        $options['attr']['min'] = Date::parse('Y-m-d', (int)strtotime(Controller::replaceInsertTags($element->minDate, false))); // valid rfc 3339 date `YYYY-MM-DD` format must be used
                     }
 
                     if ('' !== $element->maxDate) {
-                        $options['attr']['max'] = Date::parse('Y-m-d', $element->maxDate); // valid rfc 3339 date `YYYY-MM-DD` format must be used
+                        $options['attr']['max'] = Date::parse('Y-m-d', (int)strtotime(Controller::replaceInsertTags($element->maxDate, false))); // valid rfc 3339 date `YYYY-MM-DD` format must be used
                     }
 
                     break;
@@ -94,11 +95,11 @@ class DateType extends AbstractType
                 $options['attr']['data-date-format'] = $element->dateFormat;
 
                 if ('' !== $element->minDate) {
-                    $options['attr']['data-min-date'] = Date::parse($element->dateFormat, $element->minDate);
+                    $options['attr']['data-min-date'] = Date::parse($element->dateFormat, (int)strtotime(Controller::replaceInsertTags($element->minDate, false)));
                 }
 
                 if ('' !== $element->maxDate) {
-                    $options['attr']['data-max-date'] = Date::parse($element->dateFormat, $element->maxDate);
+                    $options['attr']['data-max-date'] = Date::parse($element->dateFormat, (int)strtotime(Controller::replaceInsertTags($element->maxDate, false)));
                 }
 
                 break;
@@ -108,11 +109,11 @@ class DateType extends AbstractType
                 $minMonth = null;
 
                 if ('' !== $element->minDate) {
-                    $minYear = Date::parse('Y', $element->minDate);
+                    $minYear = Date::parse('Y', (int)strtotime(Controller::replaceInsertTags($element->minDate, false)));
                 }
 
                 if ('' !== $element->maxDate) {
-                    $maxYear = Date::parse('Y', $element->maxDate);
+                    $maxYear = Date::parse('Y', (int)strtotime(Controller::replaceInsertTags($element->maxDate, false)));
                 }
 
                 $options['years'] = range($minYear, $maxYear, 1);

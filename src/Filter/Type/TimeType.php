@@ -8,6 +8,7 @@
 
 namespace HeimrichHannot\FilterBundle\Filter\Type;
 
+use Contao\Controller;
 use Contao\Date;
 use Contao\System;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
@@ -90,11 +91,11 @@ class TimeType extends AbstractType
 
                 if (true === $options['html5']) {
                     if ('' !== $element->minTime) {
-                        $options['attr']['min'] = Date::parse('\TH:i', $element->minTime); // valid rfc 3339 date `\TH:i` format must be used
+                        $options['attr']['min'] = Date::parse('\TH:i', (int)strtotime(Controller::replaceInsertTags($element->minTime, false))); // valid rfc 3339 date `\TH:i` format must be used
                     }
 
                     if ('' !== $element->maxTime) {
-                        $options['attr']['max'] = Date::parse('\TH:i', $element->maxTime); // valid rfc 3339 date `\TH:i` format must be used
+                        $options['attr']['max'] = Date::parse('\TH:i', (int)strtotime(Controller::replaceInsertTags($element->maxTime, false))); // valid rfc 3339 date `\TH:i` format must be used
                     }
 
                     break;
@@ -107,11 +108,11 @@ class TimeType extends AbstractType
                 $options['attr']['data-date-format'] = $element->timeFormat;
 
                 if ('' !== $element->minTime) {
-                    $options['attr']['data-min-date'] = Date::parse($element->dateFormat, $element->minTime);
+                    $options['attr']['data-min-date'] = Date::parse($element->dateFormat, (int)strtotime(Controller::replaceInsertTags($element->minTime, false)));
                 }
 
                 if ('' !== $element->maxTime) {
-                    $options['attr']['data-max-date'] = Date::parse($element->dateFormat, $element->maxTime);
+                    $options['attr']['data-max-date'] = Date::parse($element->dateFormat, (int)strtotime(Controller::replaceInsertTags($element->maxTime, false)));
                 }
 
                 break;

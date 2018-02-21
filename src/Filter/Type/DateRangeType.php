@@ -94,12 +94,12 @@ class DateRangeType extends AbstractType
                 break;
         }
 
-        $startFieldMinDate = (int)Controller::replaceInsertTags($this->startElement->{$minField}, false);
-        $startFieldMaxDate = '' === $this->startElement->{$maxField} ? 9999999999999 : (int)Controller::replaceInsertTags($this->startElement->{$maxField},
-            false);
-        $stopFieldMinDate  = (int)Controller::replaceInsertTags($this->stopElement->{$minField}, false);
-        $stopFieldMaxDate  = '' === $this->stopElement->{$maxField} ? 9999999999999 : (int)Controller::replaceInsertTags($this->stopElement->{$maxField},
-            false);
+        $startFieldMinDate = (int)strtotime(Controller::replaceInsertTags($this->startElement->{$minField}, false));
+        $startFieldMaxDate = '' === $this->startElement->{$maxField} ? 9999999999999 : (int)strtotime(Controller::replaceInsertTags($this->startElement->{$maxField},
+            false));
+        $stopFieldMinDate  = (int)strtotime(Controller::replaceInsertTags($this->stopElement->{$minField}, false));
+        $stopFieldMaxDate  = '' === $this->stopElement->{$maxField} ? 9999999999999 : (int)strtotime(Controller::replaceInsertTags($this->stopElement->{$maxField},
+            false));
 
         $start = $start < $startFieldMinDate ? $startFieldMinDate : $start;
         $start = $start > $startFieldMaxDate ? $startFieldMaxDate : $start;
@@ -107,28 +107,41 @@ class DateRangeType extends AbstractType
         $stop = $stop < $stopFieldMinDate ? $stopFieldMinDate : $stop;
         $stop = $stop > $stopFieldMaxDate ? $stopFieldMaxDate : $stop;
 
-        $or = $builder->expr()->orX();
+        if ($startField !== $stopField) {
+            $or = $builder->expr()->orX();
 
-        $andXA = $builder->expr()->andX();
-        $andXA->add($builder->expr()->gte($startField, ':start'));
-        $andXA->add($builder->expr()->lte($startField, ':stop'));
+            $andXA = $builder->expr()->andX();
+            $andXA->add($builder->expr()->gte(':start', $startField));
+            $andXA->add($builder->expr()->lte(':start', $stopField));
 
-        $andXB = $builder->expr()->andX();
-        $andXB->add($builder->expr()->gte($stopField, ':start'));
-        $andXB->add($builder->expr()->lte($stopField, ':stop'));
+            $andXB = $builder->expr()->andX();
+            $andXB->add($builder->expr()->gte(':stop', $startField));
+            $andXB->add($builder->expr()->lte(':stop', $stopField));
 
-        $andXC = $builder->expr()->andX();
-        $andXC->add($builder->expr()->lte($startField, ':start'));
-        $andXC->add($builder->expr()->gte($stopField, ':stop'));
+            $andXC = $builder->expr()->andX();
+            $andXC->add($builder->expr()->lte(':start', $startField));
+            $andXC->add($builder->expr()->gte(':stop', $stopField));
 
-        $builder->setParameter(':start', $start);
-        $builder->setParameter(':stop', $stop);
+            $builder->setParameter(':start', $start);
+            $builder->setParameter(':stop', $stop);
 
-        $or->add($andXA);
-        $or->add($andXB);
-        $or->add($andXC);
+            $or->add($andXA);
+            $or->add($andXB);
+            $or->add($andXC);
 
-        $builder->andWhere($or);
+            $builder->andWhere($or);
+        } else {
+            $andXA = $builder->expr()->andX();
+            $andXA->add($builder->expr()->lte(':start', $startField));
+            $andXA->add($builder->expr()->gte(':stop', $stopField));
+
+            $builder->andWhere($andXA);
+
+            $builder->setParameter(':start', $start);
+            $builder->setParameter(':stop', $stop);
+
+            dump($builder->getSQL());
+        }
     }
 
     /**
