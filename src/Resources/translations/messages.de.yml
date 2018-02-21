@@ -10,9 +10,15 @@ huh.filter.placeholder.to: Bis
 huh.filter.label.submit: Absenden
 huh.filter.label.search: Suche
 huh.filter.label.search_action: Suchen
+huh.filter.label.filter_action: Filtern
+huh.filter.label.filter_action_colon: Filtern:
+huh.filter.label.filter_period_colon: Zeitraum:
 huh.filter.label.reset: Zurücksetzen
 
 # input group append/prepend text
 huh.filter.input_group_text.fa_clock_o: '<span class="fa fa-clock-o"></span>'
 huh.filter.input_group_text.fa_calendar: '<span class="fa fa-calendar"></span>'
 huh.filter.input_group_text.fa_envelope: '<span class="fa fa-envelope"></span>'
+huh.filter.input_group_text.button.fa_clock_o: '<button class="btn btn-outline-secondary" type="button"><i class="fa fa-clock-o"></i></button>'
+huh.filter.input_group_text.button.fa_calendar: '<button class="btn btn-outline-secondary" type="button"><i class="fa fa-calendar"></i></button>'
+huh.filter.input_group_text.button.fa_envelope: '<button class="btn btn-outline-secondary" type="button"><i class="fa fa-envelope"></i></button>'

@@ -23,7 +23,7 @@
     {% if (input_prepend|default()) or (input_append|default()) %}
         {{ block('input_group_attributes') }}
     {% else %}
-        {% set group_attr = group_attr|merge({'class': ('form-group' ~ (group_attr.class is defined ? ' ' ~ group_attr.class : '') ~ ' ' ~ id)|trim} ) %}
+        {% set group_attr = group_attr|merge({'class': ('form-group' ~ (group_attr.class is defined ? ' ' ~ group_attr.class : '') ~ ' ' ~ id ~ ' ' ~ name)|trim} ) %}
         {% spaceless %}
             {% for attrname, attrvalue in group_attr %}{{ attrname }}="{{ attrvalue }}" {% endfor %}
         {% endspaceless %}
@@ -31,7 +31,7 @@
 {%- endblock form_group_attributes %}
 
 {% block input_group_attributes -%}
-    {% set group_attr = group_attr|merge({'class': ('input-group' ~ (group_attr.class is defined ? ' ' ~ group_attr.class : '') ~ ' ' ~ id)|trim} ) %}
+    {% set group_attr = group_attr|merge({'class': ('input-group' ~ (group_attr.class is defined ? ' ' ~ group_attr.class : '') ~ ' ' ~ id ~ ' ' ~ name)|trim} ) %}
     {% spaceless %}
         {% for attrname, attrvalue in group_attr %}{{ attrname }}="{{ attrvalue }}" {% endfor %}
     {% endspaceless %}
@@ -40,13 +40,21 @@
 {% block form_widget_simple -%}
     {% if input_prepend is not empty %}
         <div class="input-group-prepend">
-            <span class="input-group-text">{{ input_prepend|raw }}</span>
+            {% if 'btn' in input_prepend %}
+                {{ input_prepend|raw }}
+            {% else %}
+                <span class="input-group-text">{{ input_prepend|raw }}</span>
+            {% endif %}
         </div>
     {% endif %}
     {{- parent() -}}
     {% if input_append is not empty %}
         <div class="input-group-append">
-            <span class="input-group-text">{{ input_append|raw }}</span>
+            {% if 'btn' in input_append %}
+                {{ input_append|raw }}
+            {% else %}
+                <span class="input-group-text">{{ input_append|raw }}</span>
+            {% endif %}
         </div>
     {% endif %}
 {%- endblock form_widget_simple %}

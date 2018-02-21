@@ -146,7 +146,7 @@ abstract class AbstractType
      *
      * @return string
      */
-    protected function getLabel(FilterConfigElementModel $element, FormBuilderInterface $builder)
+    public function getLabel(FilterConfigElementModel $element, FormBuilderInterface $builder)
     {
         $label = '';
         $filter = $this->config->getFilter();
@@ -173,7 +173,7 @@ abstract class AbstractType
      *
      * @return array The field options
      */
-    protected function getOptions(FilterConfigElementModel $element, FormBuilderInterface $builder)
+    public function getOptions(FilterConfigElementModel $element, FormBuilderInterface $builder)
     {
         $options = [];
 

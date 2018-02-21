@@ -32,36 +32,37 @@ class DateRangeType extends AbstractType
      */
     public function buildQuery(FilterQueryBuilder $builder, FilterConfigElementModel $element)
     {
-        $data = $this->config->getData();
+        $data   = $this->config->getData();
         $filter = $this->config->getFilter();
+        $name   = $this->getName($element);
 
         \Controller::loadDataContainer($filter['dataContainer']);
 
         $this->startElement = $this->config->getElementByValue($element->startElement);
-        $this->stopElement = $this->config->getElementByValue($element->stopElement);
+        $this->stopElement  = $this->config->getElementByValue($element->stopElement);
 
         if (null === $this->startElement || null === $this->stopElement) {
             return;
         }
 
-        $startField = $this->startElement->field;
-        $stopField = $this->stopElement->field;
+        $startField = $filter['dataContainer'] . '.' . $this->startElement->field;
+        $stopField  = $filter['dataContainer'] . '.' . $this->stopElement->field;
 
         if (!$startField && !$stopField) {
             return;
         }
 
         $startName = $this->startElement->getFormName();
-        $stopName = $this->stopElement->getFormName();
+        $stopName  = $this->stopElement->getFormName();
 
         /** @var $startDate \DateTime|null */
-        $startDate = isset($data[$startName]) && $data[$startName] ? $data[$startName] : 0;
+        $startDate = isset($data[$name][$startName]) && $data[$name][$startName] ? $data[$name][$startName] : 0;
 
         /** @var $stopDate \DateTime|null */
-        $stopDate = isset($data[$stopName]) && $data[$stopName] ? $data[$stopName] : null;
+        $stopDate = isset($data[$name][$stopName]) && $data[$name][$stopName] ? $data[$name][$stopName] : null;
 
         $start = 0;
-        $stop = 9999999999999;
+        $stop  = 9999999999999;
 
         if ($startDate instanceof \DateTime) {
             $start = $startDate->getTimestamp();
@@ -93,11 +94,11 @@ class DateRangeType extends AbstractType
                 break;
         }
 
-        $startFieldMinDate = (int) Controller::replaceInsertTags($this->startElement->{$minField}, false);
-        $startFieldMaxDate = '' === $this->startElement->{$maxField} ? 9999999999999 : (int) Controller::replaceInsertTags($this->startElement->{$maxField},
+        $startFieldMinDate = (int)Controller::replaceInsertTags($this->startElement->{$minField}, false);
+        $startFieldMaxDate = '' === $this->startElement->{$maxField} ? 9999999999999 : (int)Controller::replaceInsertTags($this->startElement->{$maxField},
             false);
-        $stopFieldMinDate = (int) Controller::replaceInsertTags($this->stopElement->{$minField}, false);
-        $stopFieldMaxDate = '' === $this->stopElement->{$maxField} ? 9999999999999 : (int) Controller::replaceInsertTags($this->stopElement->{$maxField},
+        $stopFieldMinDate  = (int)Controller::replaceInsertTags($this->stopElement->{$minField}, false);
+        $stopFieldMaxDate  = '' === $this->stopElement->{$maxField} ? 9999999999999 : (int)Controller::replaceInsertTags($this->stopElement->{$maxField},
             false);
 
         $start = $start < $startFieldMinDate ? $startFieldMinDate : $start;
@@ -106,39 +107,28 @@ class DateRangeType extends AbstractType
         $stop = $stop < $stopFieldMinDate ? $stopFieldMinDate : $stop;
         $stop = $stop > $stopFieldMaxDate ? $stopFieldMaxDate : $stop;
 
-        if ($startField !== $stopField) {
-            $or = $builder->expr()->orX();
+        $or = $builder->expr()->orX();
 
-            $andXA = $builder->expr()->andX();
-            $andXA->add($builder->expr()->gte(':start', $startField));
-            $andXA->add($builder->expr()->lte(':start', $stopField));
+        $andXA = $builder->expr()->andX();
+        $andXA->add($builder->expr()->gte($startField, ':start'));
+        $andXA->add($builder->expr()->lte($startField, ':stop'));
 
-            $andXB = $builder->expr()->andX();
-            $andXB->add($builder->expr()->gte(':stop', $startField));
-            $andXB->add($builder->expr()->lte(':stop', $stopField));
+        $andXB = $builder->expr()->andX();
+        $andXB->add($builder->expr()->gte($stopField, ':start'));
+        $andXB->add($builder->expr()->lte($stopField, ':stop'));
 
-            $andXC = $builder->expr()->andX();
-            $andXC->add($builder->expr()->lte(':start', $startField));
-            $andXC->add($builder->expr()->gte(':stop', $stopField));
+        $andXC = $builder->expr()->andX();
+        $andXC->add($builder->expr()->lte($startField, ':start'));
+        $andXC->add($builder->expr()->gte($stopField, ':stop'));
 
-            $builder->setParameter(':start', $start);
-            $builder->setParameter(':stop', $stop);
+        $builder->setParameter(':start', $start);
+        $builder->setParameter(':stop', $stop);
 
-            $or->add($andXA);
-            $or->add($andXB);
-            $or->add($andXC);
+        $or->add($andXA);
+        $or->add($andXB);
+        $or->add($andXC);
 
-            $builder->andWhere($or);
-        } else {
-            $andXA = $builder->expr()->andX();
-            $andXA->add($builder->expr()->lte(':start', $startField));
-            $andXA->add($builder->expr()->gte(':stop', $stopField));
-
-            $builder->setParameter(':start', $start);
-            $builder->setParameter(':stop', $stop);
-
-            $builder->andWhere($andXA);
-        }
+        $builder->andWhere($or);
     }
 
     /**
@@ -152,7 +142,7 @@ class DateRangeType extends AbstractType
         }
 
         $this->startElement = $this->config->getElementByValue($element->startElement);
-        $this->stopElement = $this->config->getElementByValue($element->stopElement);
+        $this->stopElement  = $this->config->getElementByValue($element->stopElement);
 
         if (null === $this->startElement || null === $this->stopElement) {
             return;
@@ -163,7 +153,7 @@ class DateRangeType extends AbstractType
         }
 
         $start = $builder->get($this->startElement->getFormName());
-        $stop = $builder->get($this->stopElement->getFormName());
+        $stop  = $builder->get($this->stopElement->getFormName());
 
         $group = $builder->get($this->getName($element));
 
@@ -217,9 +207,9 @@ class DateRangeType extends AbstractType
      * Get the options for the start field.
      *
      * @param FilterConfigElementModel $element
-     * @param FormBuilderInterface     $builder
-     * @param FormBuilderInterface     $start
-     * @param FormBuilderInterface     $stop
+     * @param FormBuilderInterface $builder
+     * @param FormBuilderInterface $start
+     * @param FormBuilderInterface $stop
      *
      * @return array
      */
@@ -229,7 +219,7 @@ class DateRangeType extends AbstractType
         FormBuilderInterface $start,
         FormBuilderInterface $stop
     ) {
-        $options = $start->getOptions();
+        $options                            = $start->getOptions();
         $options['attr']['data-linked-end'] = sprintf('#%s_%s_%s', $builder->getName(), $this->getName($element),
             $stop->getName());
 
@@ -240,9 +230,9 @@ class DateRangeType extends AbstractType
      * Get the options for the stop field.
      *
      * @param FilterConfigElementModel $element
-     * @param FormBuilderInterface     $builder
-     * @param FormBuilderInterface     $start
-     * @param FormBuilderInterface     $stop
+     * @param FormBuilderInterface $builder
+     * @param FormBuilderInterface $start
+     * @param FormBuilderInterface $stop
      *
      * @return array
      */
@@ -252,7 +242,7 @@ class DateRangeType extends AbstractType
         FormBuilderInterface $start,
         FormBuilderInterface $stop
     ) {
-        $options = $stop->getOptions();
+        $options                              = $stop->getOptions();
         $options['attr']['data-linked-start'] = sprintf('#%s_%s_%s', $builder->getName(), $this->getName($element),
             $start->getName());
 

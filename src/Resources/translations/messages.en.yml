@@ -10,6 +10,9 @@ huh.filter.placeholder.to: To
 huh.filter.label.submit: Submit
 huh.filter.label.search: Search
 huh.filter.label.search_action: Search
+huh.filter.label.filter_action: Filter
+huh.filter.label.filter_action_colon: Filter:
+huh.filter.label.filter_period_colon: Period:
 huh.filter.label.reset: Reset
 
 # input group append/prepend text

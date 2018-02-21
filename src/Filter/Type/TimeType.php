@@ -56,7 +56,7 @@ class TimeType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    protected function getOptions(FilterConfigElementModel $element, FormBuilderInterface $builder)
+    public function getOptions(FilterConfigElementModel $element, FormBuilderInterface $builder)
     {
         $options = parent::getOptions($element, $builder);
 
@@ -78,7 +78,7 @@ class TimeType extends AbstractType
      *
      * @return array
      */
-    protected function addTimeWidgetOptions(array $options, FilterConfigElementModel $element, FormBuilderInterface $builder): array
+    public function addTimeWidgetOptions(array $options, FilterConfigElementModel $element, FormBuilderInterface $builder): array
     {
         $time = time();
         $type = $element->timeWidget ?: DateType::WIDGET_TYPE_CHOICE;

@@ -48,7 +48,7 @@ class ButtonType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    protected function getLabel(FilterConfigElementModel $element, FormBuilderInterface $builder)
+    public function getLabel(FilterConfigElementModel $element, FormBuilderInterface $builder)
     {
         $label = parent::getLabel($element, $builder);
 

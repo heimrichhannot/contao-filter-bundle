@@ -51,7 +51,7 @@ class CheckboxType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    protected function getOptions(FilterConfigElementModel $element, FormBuilderInterface $builder)
+    public function getOptions(FilterConfigElementModel $element, FormBuilderInterface $builder)
     {
         $options = parent::getOptions($element, $builder);
 
