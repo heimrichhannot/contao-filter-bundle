@@ -67,6 +67,11 @@ class ModuleFilter extends \Contao\Module
          */
         $twig = System::getContainer()->get('twig');
 
+        $twig->hasExtension('\Twig_Extensions_Extension_Text') ?: $twig->addExtension(new \Twig_Extensions_Extension_Text());
+        $twig->hasExtension('\Twig_Extensions_Extension_Intl') ?: $twig->addExtension(new \Twig_Extensions_Extension_Intl());
+        $twig->hasExtension('\Twig_Extensions_Extension_Array') ?: $twig->addExtension(new \Twig_Extensions_Extension_Array());
+        $twig->hasExtension('\Twig_Extensions_Extension_Date') ?: $twig->addExtension(new \Twig_Extensions_Extension_Date());
+
         $templates = System::getContainer()->get('huh.filter.choice.template')->getChoices();
 
         $this->Template->filter = $this->config;
