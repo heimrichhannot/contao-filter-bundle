@@ -94,7 +94,7 @@ class FieldOptionsChoice extends AbstractChoice
         $options = [];
         $dca = $GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element->field];
 
-        if ($dca['eval']['isCategoryField']) {
+        if (isset($dca['eval']['isCategoryField']) && $dca['eval']['isCategoryField']) {
             $options = $this->getCategoryWidgetOptions($element, $filter, $dca);
 
             return $options;
