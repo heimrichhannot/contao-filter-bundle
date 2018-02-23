@@ -9,6 +9,7 @@
 namespace HeimrichHannot\FilterBundle\Entity;
 
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
+use HeimrichHannot\FilterBundle\Form\FilterType;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class FilterSession
@@ -33,14 +34,14 @@ class FilterSession
     public function __construct(ContaoFrameworkInterface $framework, SessionInterface $session)
     {
         $this->framework = $framework;
-        $this->session = $session;
+        $this->session   = $session;
     }
 
     /**
      * Set the filter data for a given filter key.
      *
      * @param string $key
-     * @param array  $data
+     * @param array $data
      */
     public function setData(string $key, array $data = [])
     {
@@ -67,6 +68,7 @@ class FilterSession
 
     /**
      * Has the filter data for a given key.
+     * Use this function if you want to know if the form contains any user`s inputs
      *
      * @param string $key
      *
@@ -74,7 +76,18 @@ class FilterSession
      */
     public function hasData(string $key): bool
     {
-        return !empty($this->getData($key));
+        $data = $this->getData($key);
+
+        if (isset($data[FilterType::FILTER_ID_NAME])) {
+            unset($data[FilterType::FILTER_ID_NAME]);
+        }
+
+        // remove empty values
+        if (is_array($data)) {
+            $data = array_filter($data);
+        }
+
+        return !empty($data);
     }
 
     /**
