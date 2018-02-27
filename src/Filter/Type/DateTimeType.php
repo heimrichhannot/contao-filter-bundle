@@ -90,11 +90,11 @@ class DateTimeType extends AbstractType
 
                 if (true === $options['html5']) {
                     if ('' !== $element->minDate) {
-                        $options['attr']['min'] = Date::parse('Y-m-d\TH:i', (int)strtotime(Controller::replaceInsertTags($element->minDateTime, false))); // valid rfc 3339 date `YYYY-MM-DD` format must be used
+                        $options['attr']['min'] = Date::parse('Y-m-d\TH:i', (int) strtotime(Controller::replaceInsertTags($element->minDateTime, false))); // valid rfc 3339 date `YYYY-MM-DD` format must be used
                     }
 
                     if ('' !== $element->maxDate) {
-                        $options['attr']['max'] = Date::parse('Y-m-d\TH:i', (int)strtotime(Controller::replaceInsertTags($element->maxDateTime, false))); // valid rfc 3339 date `YYYY-MM-DD` format must be used
+                        $options['attr']['max'] = Date::parse('Y-m-d\TH:i', (int) strtotime(Controller::replaceInsertTags($element->maxDateTime, false))); // valid rfc 3339 date `YYYY-MM-DD` format must be used
                     }
 
                     break;
@@ -104,11 +104,11 @@ class DateTimeType extends AbstractType
                 $options['attr']['data-date-format'] = $element->dateTimeFormat;
 
                 if ('' !== $element->minDate) {
-                    $options['attr']['data-min-date'] = Date::parse($element->dateTimeFormat, (int)strtotime(Controller::replaceInsertTags($element->minDateTime, false)));
+                    $options['attr']['data-min-date'] = Date::parse($element->dateTimeFormat, (int) strtotime(Controller::replaceInsertTags($element->minDateTime, false)));
                 }
 
                 if ('' !== $element->maxDate) {
-                    $options['attr']['data-max-date'] = Date::parse($element->dateTimeFormat, (int)strtotime(Controller::replaceInsertTags($element->maxDateTime, false)));
+                    $options['attr']['data-max-date'] = Date::parse($element->dateTimeFormat, (int) strtotime(Controller::replaceInsertTags($element->maxDateTime, false)));
                 }
 
                 break;
@@ -118,11 +118,11 @@ class DateTimeType extends AbstractType
                 $minMonth = null;
 
                 if ('' !== $element->minDate) {
-                    $minYear = Date::parse('Y', (int)strtotime(Controller::replaceInsertTags($element->minDateTime, false)));
+                    $minYear = Date::parse('Y', (int) strtotime(Controller::replaceInsertTags($element->minDateTime, false)));
                 }
 
                 if ('' !== $element->maxDate) {
-                    $maxYear = Date::parse('Y', (int)strtotime(Controller::replaceInsertTags($element->maxDateTime, false)));
+                    $maxYear = Date::parse('Y', (int) strtotime(Controller::replaceInsertTags($element->maxDateTime, false)));
                 }
 
                 $options['years'] = range($minYear, $maxYear, 1);

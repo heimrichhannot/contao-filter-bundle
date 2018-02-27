@@ -62,7 +62,7 @@ class FilterType extends AbstractType
     {
         $resolver->setDefaults(
             [
-                'filter'    => null,
+                'filter' => null,
                 'framework' => null,
             ]
         );
@@ -72,7 +72,7 @@ class FilterType extends AbstractType
      * Build the form fields for the given elements.
      *
      * @param FormBuilderInterface $builder
-     * @param array $options
+     * @param array                $options
      */
     protected function buildElements(FormBuilderInterface $builder, array $options)
     {
@@ -83,7 +83,7 @@ class FilterType extends AbstractType
         }
 
         $wrappers = [];
-        $types    = \System::getContainer()->get('huh.filter.choice.type')->getCachedChoices();
+        $types = \System::getContainer()->get('huh.filter.choice.type')->getCachedChoices();
 
         if (!is_array($types) || empty($types)) {
             return;
@@ -98,7 +98,7 @@ class FilterType extends AbstractType
             }
 
             $config = $types[$element->type];
-            $class  = $config['class'];
+            $class = $config['class'];
 
             if (!class_exists($class)) {
                 continue;
@@ -113,7 +113,7 @@ class FilterType extends AbstractType
 
             // collect wrappers and render afterwards
             if (true === $config['wrapper']) {
-                $options                 = $type->getOptions($element, $builder);
+                $options = $type->getOptions($element, $builder);
                 $options['inherit_data'] = false;
                 $builder->add($builder->create($type->getName($element), FormType::class, $options)); // add the group here to maintain correct form order
                 $wrappers[] = $element;
@@ -138,9 +138,9 @@ class FilterType extends AbstractType
     /**
      * Build the wrapper form elements.
      *
-     * @param array $wrappers
+     * @param array                $wrappers
      * @param FormBuilderInterface $builder
-     * @param array $options
+     * @param array                $options
      */
     protected function buildWrapperElements(array $wrappers, FormBuilderInterface $builder, array $options)
     {
@@ -158,7 +158,7 @@ class FilterType extends AbstractType
                 continue;
             }
 
-            $type  = $types[$element->type];
+            $type = $types[$element->type];
             $class = $type['class'];
 
             if (!class_exists($class)) {

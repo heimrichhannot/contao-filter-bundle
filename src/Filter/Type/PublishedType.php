@@ -21,20 +21,20 @@ class PublishedType extends ChoiceType
     public function buildQuery(FilterQueryBuilder $builder, FilterConfigElementModel $element)
     {
         $filter = $this->config->getFilter();
-        $and    = $builder->expr()->andX();
+        $and = $builder->expr()->andX();
 
         if ($element->addStartAndStop && !$this->isPreviewMode($element->ignoreFePreview)) {
             $time = Date::floorToMinute();
 
             $orStart = $builder->expr()->orX(
-                $builder->expr()->eq($filter['dataContainer'] . '.' . $element->startField, '""'),
-                $builder->expr()->lte($filter['dataContainer'] . '.' . $element->startField, ':startField_time')
+                $builder->expr()->eq($filter['dataContainer'].'.'.$element->startField, '""'),
+                $builder->expr()->lte($filter['dataContainer'].'.'.$element->startField, ':startField_time')
             );
             $and->add($orStart);
 
             $orStop = $builder->expr()->orX(
-                $builder->expr()->eq($filter['dataContainer'] . '.' . $element->stopField, '""'),
-                $builder->expr()->gt($filter['dataContainer'] . '.' . $element->stopField, ':stopField_time')
+                $builder->expr()->eq($filter['dataContainer'].'.'.$element->stopField, '""'),
+                $builder->expr()->gt($filter['dataContainer'].'.'.$element->stopField, ':stopField_time')
             );
             $and->add($orStop);
 
@@ -42,7 +42,7 @@ class PublishedType extends ChoiceType
             $builder->setParameter(':stopField_time', $time + 60);
         }
 
-        $and->add($builder->expr()->eq($filter['dataContainer'] . '.' . $element->field, $element->invertField ? '""' : 1));
+        $and->add($builder->expr()->eq($filter['dataContainer'].'.'.$element->field, $element->invertField ? '""' : 1));
 
         $builder->andWhere($and);
     }
