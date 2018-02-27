@@ -325,6 +325,39 @@ class LanguageChoiceTest extends ContaoTestCase
     }
 
     /**
+     * Tests the language collection for custom language options without languages provided
+     */
+    public function testCollectCustomLanguagesWithoutLanguages()
+    {
+        $this->container->set('kernel', $this->kernel);
+
+        $framework = $this->mockContaoFramework();
+
+        $this->container->set('translator', new Translator('en'));
+
+        System::setContainer($this->container);
+
+        $elementProperties = [
+            'type' => 'choice',
+            'customLanguages' => true,
+        ];
+
+        $element = $this->mockClassWithProperties(FilterConfigElementModel::class, $elementProperties);
+
+        $context = [
+            $element,
+            ['id' => 1],
+        ];
+
+        System::setContainer($this->container);
+
+        $instance = new LanguageChoice($framework);
+        $choices = $instance->getChoices($context);
+
+        $this->assertEmpty($choices);
+    }
+
+    /**
      * Tests the languages collection without element.
      */
     public function testCollectWithoutElement()

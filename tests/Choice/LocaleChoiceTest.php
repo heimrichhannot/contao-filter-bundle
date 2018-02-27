@@ -460,6 +460,25 @@ class LocaleChoiceTest extends ContaoTestCase
     }
 
     /**
+     * Tests the locales collection with invalid context.
+     */
+    public function testCollectWithNoContext()
+    {
+        $this->container->set('kernel', $this->kernel);
+
+        $framework = $this->mockContaoFramework();
+
+        System::setContainer($this->container);
+
+        $instance = new LocaleChoice($framework);
+        $choices = $instance->getChoices();
+
+        System::setContainer($this->container);
+
+        $this->assertEmpty($choices);
+    }
+
+    /**
      * Tests the locales collection without filter and element.
      */
     public function testCollectWithoutFilterAndElement()
