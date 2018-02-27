@@ -34,14 +34,14 @@ class FilterSession
     public function __construct(ContaoFrameworkInterface $framework, SessionInterface $session)
     {
         $this->framework = $framework;
-        $this->session   = $session;
+        $this->session = $session;
     }
 
     /**
      * Set the filter data for a given filter key.
      *
      * @param string $key
-     * @param array $data
+     * @param array  $data
      */
     public function setData(string $key, array $data = [])
     {
@@ -68,7 +68,7 @@ class FilterSession
 
     /**
      * Has the filter data for a given key.
-     * Use this function if you want to know if the form contains any user`s inputs
+     * Use this function if you want to know if the form contains any user`s inputs.
      *
      * @param string $key
      *

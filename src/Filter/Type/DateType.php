@@ -59,6 +59,19 @@ class DateType extends AbstractType
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function getOptions(FilterConfigElementModel $element, FormBuilderInterface $builder)
+    {
+        $options = parent::getOptions($element, $builder);
+
+        $options = $this->addDateWidgetOptions($options, $element, $builder);
+        $options['widget'] = $element->dateWidget ?: static::WIDGET_TYPE_CHOICE;
+
+        return $options;
+    }
+
+    /**
      * Add the options for the date_widget property.
      *
      * @param array                    $options
@@ -81,11 +94,11 @@ class DateType extends AbstractType
 
                 if (true === $options['html5']) {
                     if ('' !== $element->minDate) {
-                        $options['attr']['min'] = Date::parse('Y-m-d', (int)strtotime(Controller::replaceInsertTags($element->minDate, false))); // valid rfc 3339 date `YYYY-MM-DD` format must be used
+                        $options['attr']['min'] = Date::parse('Y-m-d', (int) strtotime(Controller::replaceInsertTags($element->minDate, false))); // valid rfc 3339 date `YYYY-MM-DD` format must be used
                     }
 
                     if ('' !== $element->maxDate) {
-                        $options['attr']['max'] = Date::parse('Y-m-d', (int)strtotime(Controller::replaceInsertTags($element->maxDate, false))); // valid rfc 3339 date `YYYY-MM-DD` format must be used
+                        $options['attr']['max'] = Date::parse('Y-m-d', (int) strtotime(Controller::replaceInsertTags($element->maxDate, false))); // valid rfc 3339 date `YYYY-MM-DD` format must be used
                     }
 
                     break;
@@ -95,11 +108,11 @@ class DateType extends AbstractType
                 $options['attr']['data-date-format'] = $element->dateFormat;
 
                 if ('' !== $element->minDate) {
-                    $options['attr']['data-min-date'] = Date::parse($element->dateFormat, (int)strtotime(Controller::replaceInsertTags($element->minDate, false)));
+                    $options['attr']['data-min-date'] = Date::parse($element->dateFormat, (int) strtotime(Controller::replaceInsertTags($element->minDate, false)));
                 }
 
                 if ('' !== $element->maxDate) {
-                    $options['attr']['data-max-date'] = Date::parse($element->dateFormat, (int)strtotime(Controller::replaceInsertTags($element->maxDate, false)));
+                    $options['attr']['data-max-date'] = Date::parse($element->dateFormat, (int) strtotime(Controller::replaceInsertTags($element->maxDate, false)));
                 }
 
                 break;
@@ -109,11 +122,11 @@ class DateType extends AbstractType
                 $minMonth = null;
 
                 if ('' !== $element->minDate) {
-                    $minYear = Date::parse('Y', (int)strtotime(Controller::replaceInsertTags($element->minDate, false)));
+                    $minYear = Date::parse('Y', (int) strtotime(Controller::replaceInsertTags($element->minDate, false)));
                 }
 
                 if ('' !== $element->maxDate) {
-                    $maxYear = Date::parse('Y', (int)strtotime(Controller::replaceInsertTags($element->maxDate, false)));
+                    $maxYear = Date::parse('Y', (int) strtotime(Controller::replaceInsertTags($element->maxDate, false)));
                 }
 
                 $options['years'] = range($minYear, $maxYear, 1);
@@ -121,19 +134,6 @@ class DateType extends AbstractType
                 // months and days restriction must be configurable by itself
                 break;
         }
-
-        return $options;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getOptions(FilterConfigElementModel $element, FormBuilderInterface $builder)
-    {
-        $options = parent::getOptions($element, $builder);
-
-        $options = $this->addDateWidgetOptions($options, $element, $builder);
-        $options['widget'] = $element->dateWidget ?: static::WIDGET_TYPE_CHOICE;
 
         return $options;
     }
