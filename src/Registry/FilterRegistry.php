@@ -129,7 +129,7 @@ class FilterRegistry
 
         $this->initFilter($filter->row());
 
-        return $this->filters[$id];
+        return isset($this->filters[$id]) ? $this->filters[$id] : null;
     }
 
     /**
