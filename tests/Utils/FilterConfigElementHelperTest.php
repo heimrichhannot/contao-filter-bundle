@@ -123,7 +123,7 @@ class FilterConfigElementHelperTest extends ContaoTestCase
         $filterConfigElementModelAdapter->method('findPublishedByPid')->willReturn(null);
 
         $filterConfigModelProperties = ['id' => 1, 'name' => 'test', 'dataContainer' => 'tl_test'];
-        $filterConfigModel           = $this->mockClassWithProperties(FilterConfigModel::class, $filterConfigModelProperties);
+        $filterConfigModel           = $this->mockClassWithProperties(FilterConfigElementModel::class, $filterConfigModelProperties);
         $filterConfigModel->method('row')->willReturn($filterConfigModelProperties);
 
         $filterConfigModelAdapter = $this->mockAdapter(['findByPk']);
