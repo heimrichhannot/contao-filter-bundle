@@ -9,6 +9,7 @@
 namespace HeimrichHannot\FilterBundle\Backend;
 
 use Contao\Controller;
+use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\DataContainer;
 use Contao\Image;
 use Contao\System;
@@ -16,7 +17,17 @@ use HeimrichHannot\FilterBundle\Filter\Type\ChoiceType;
 
 class FilterConfigElement
 {
+    /**
+     * @var ContaoFrameworkInterface
+     */
+    protected $framework;
+
     const INITIAL_PALETTE = '{general_legend},title,type,isInitial;{config_legend},field,operator,initialValueType;{publish_legend},published;';
+
+    public function __construct(ContaoFrameworkInterface $framework)
+    {
+        $this->framework = $framework;
+    }
 
     public function modifyPalette(DataContainer $dc)
     {
