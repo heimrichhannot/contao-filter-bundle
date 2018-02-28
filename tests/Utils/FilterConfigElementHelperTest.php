@@ -29,6 +29,15 @@ use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 class FilterConfigElementHelperTest extends ContaoTestCase
 {
     /**
+     * @inheritdoc
+     */
+    public function setUp()
+    {
+        parent::setUp();
+        unset($GLOBALS['TL_DCA']['tl_filter_config_element']);
+    }
+
+    /**
      * Tests getFields() with no existing tl_filter_config_element model
      */
     public function testGetFieldsWithoutConfigElementModel()

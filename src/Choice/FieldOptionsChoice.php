@@ -35,7 +35,7 @@ class FieldOptionsChoice extends AbstractChoice
 
         $options = [];
 
-        Controller::loadDataContainer($filter['dataContainer']);
+        $this->framework->getAdapter(Controller::class)->loadDataContainer($filter['dataContainer']);
 
         if (true === (bool) $element->customOptions) {
             $options = $this->getCustomOptions($element, $filter);
@@ -100,6 +100,11 @@ class FieldOptionsChoice extends AbstractChoice
             return $options;
         }
 
+        if(!isset($dca['inputType']))
+        {
+            return $options;
+        }
+
         switch ($dca['inputType']) {
             case 'cfgTags':
                 if (!isset($dca['eval']['tagsManager'])) {
@@ -126,6 +131,11 @@ class FieldOptionsChoice extends AbstractChoice
     protected function getWidgetOptions(FilterConfigElementModel $element, array $filter, array $dca)
     {
         $options = [];
+
+        if(!isset($GLOBALS['TL_FFL'][$dca['inputType']]))
+        {
+            return $options;
+        }
 
         $class = $GLOBALS['TL_FFL'][$dca['inputType']];
 

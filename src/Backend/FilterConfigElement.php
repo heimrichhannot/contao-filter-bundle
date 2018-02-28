@@ -30,8 +30,7 @@ class FilterConfigElement
         $config    = System::getContainer()->getParameter('huh.filter');
         $foundType = null;
 
-        if(!isset($config['filter']['types']) || !is_array($config['filter']['types']))
-        {
+        if (!isset($config['filter']['types']) || !is_array($config['filter']['types'])) {
             return null;
         }
 
@@ -42,8 +41,7 @@ class FilterConfigElement
             }
         }
 
-        if(null === $foundType)
-        {
+        if (null === $foundType) {
             return null;
         }
 
@@ -54,51 +52,61 @@ class FilterConfigElement
 
     public function prepareChoiceTypes(DataContainer $dc)
     {
-        if (null !== ($filterConfigElement = System::getContainer()->get('huh.utils.model')->findModelInstanceByPk(
+        if (null === ($filterConfigElement = System::getContainer()->get('huh.utils.model')->findModelInstanceByPk(
                 'tl_filter_config_element', $dc->id))
         ) {
-            $dca    = &$GLOBALS['TL_DCA']['tl_filter_config_element'];
-            $config = System::getContainer()->getParameter('huh.filter');
-            $class  = null;
-
-            foreach ($config['filter']['types'] as $type) {
-                if ($type['name'] === $filterConfigElement->type) {
-                    $class = $type['class'];
-                    break;
-                }
-            }
-
-            // only choice types are supported
-            if (null === $class) {
-                return null;
-            }
-
-            $choiceType = new $class(System::getContainer()->get('huh.filter.registry')->findById($filterConfigElement->pid));
-
-            if (!($choiceType instanceof ChoiceType)) {
-                return null;
-            }
-
-            $options = array_flip($choiceType->getChoices($filterConfigElement));
-
-            // prepare scalar fields
-            $dca['fields']['defaultValue']['inputType']      = 'select';
-            $dca['fields']['defaultValue']['options']        = $options;
-            $dca['fields']['initialValue']['eval']['chosen'] = true;
-
-            $dca['fields']['initialValue']['inputType']      = 'select';
-            $dca['fields']['initialValue']['options']        = $options;
-            $dca['fields']['initialValue']['eval']['chosen'] = true;
-
-            // prepare array fields
-            $dca['fields']['defaultValueArray']['eval']['multiColumnEditor']['fields']['value']['inputType']      = 'select';
-            $dca['fields']['defaultValueArray']['eval']['multiColumnEditor']['fields']['value']['options']        = $options;
-            $dca['fields']['defaultValueArray']['eval']['multiColumnEditor']['fields']['value']['eval']['chosen'] = true;
-
-            $dca['fields']['initialValueArray']['eval']['multiColumnEditor']['fields']['value']['inputType']      = 'select';
-            $dca['fields']['initialValueArray']['eval']['multiColumnEditor']['fields']['value']['options']        = $options;
-            $dca['fields']['initialValueArray']['eval']['multiColumnEditor']['fields']['value']['eval']['chosen'] = true;
+            return null;
         }
+
+        $dca    = &$GLOBALS['TL_DCA']['tl_filter_config_element'];
+        $config = System::getContainer()->getParameter('huh.filter');
+        $class  = null;
+
+        if (!isset($config['filter']['types']) || !is_array($config['filter']['types'])) {
+            return null;
+        }
+
+        foreach ($config['filter']['types'] as $type) {
+            if (isset($type['name']) && $type['name'] === $filterConfigElement->type && isset($type['class'])) {
+                $class = $type['class'];
+                break;
+            }
+        }
+
+        // only choice types are supported
+        if (null === $class) {
+            return null;
+        }
+
+        if (null === ($filter = System::getContainer()->get('huh.filter.registry')->findById($filterConfigElement->pid))) {
+            return null;
+        }
+
+        $choiceType = new $class($filter);
+
+        if (!($choiceType instanceof ChoiceType)) {
+            return null;
+        }
+
+        $options = array_flip($choiceType->getChoices($filterConfigElement));
+
+        // prepare scalar fields
+        $dca['fields']['defaultValue']['inputType']      = 'select';
+        $dca['fields']['defaultValue']['options']        = $options;
+        $dca['fields']['defaultValue']['eval']['chosen'] = true;
+
+        $dca['fields']['initialValue']['inputType']      = 'select';
+        $dca['fields']['initialValue']['options']        = $options;
+        $dca['fields']['initialValue']['eval']['chosen'] = true;
+
+        // prepare array fields
+        $dca['fields']['defaultValueArray']['eval']['multiColumnEditor']['fields']['value']['inputType']      = 'select';
+        $dca['fields']['defaultValueArray']['eval']['multiColumnEditor']['fields']['value']['options']        = $options;
+        $dca['fields']['defaultValueArray']['eval']['multiColumnEditor']['fields']['value']['eval']['chosen'] = true;
+
+        $dca['fields']['initialValueArray']['eval']['multiColumnEditor']['fields']['value']['inputType']      = 'select';
+        $dca['fields']['initialValueArray']['eval']['multiColumnEditor']['fields']['value']['options']        = $options;
+        $dca['fields']['initialValueArray']['eval']['multiColumnEditor']['fields']['value']['eval']['chosen'] = true;
     }
 
     public function listElements($arrRow)
