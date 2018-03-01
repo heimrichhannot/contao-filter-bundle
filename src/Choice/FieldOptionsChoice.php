@@ -100,8 +100,7 @@ class FieldOptionsChoice extends AbstractChoice
             return $options;
         }
 
-        if(!isset($dca['inputType']))
-        {
+        if (!isset($dca['inputType'])) {
             return $options;
         }
 
@@ -132,8 +131,7 @@ class FieldOptionsChoice extends AbstractChoice
     {
         $options = [];
 
-        if(!isset($GLOBALS['TL_FFL'][$dca['inputType']]))
-        {
+        if (!isset($GLOBALS['TL_FFL'][$dca['inputType']])) {
             return $options;
         }
 
