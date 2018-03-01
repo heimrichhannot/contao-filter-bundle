@@ -5,6 +5,8 @@
 [![](https://img.shields.io/travis/heimrichhannot/contao-filter-bundle/master.svg)](https://travis-ci.org/heimrichhannot/contao-filter-bundle/)
 [![](https://img.shields.io/coveralls/heimrichhannot/contao-filter-bundle/master.svg)](https://coveralls.io/github/heimrichhannot/contao-filter-bundle)
 
+This bundle offers a generic filter module to use with arbitrary contao entities containing standard filter with initial filters and filter form types including [symfony form type representations](https://symfony.com/doc/current/reference/forms/types).
+
 ## Bootstrap 4 form snippets
 
 The following bootstrap 4 form theme snippets can be used to generate uncommon, but existing bootstrap 4 form widgets within your custom `filter_form_bootstrap4*.html.twig` template.

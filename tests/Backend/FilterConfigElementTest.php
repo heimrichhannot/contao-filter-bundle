@@ -66,7 +66,7 @@ class FilterConfigElementTest extends ContaoTestCase
 
         System::setContainer($container);
 
-        $instance = new FilterConfigElement();
+        $instance = new FilterConfigElement($framework);
 
         $this->assertNull($instance->modifyPalette($this->getDataContainerMock()));
     }
@@ -104,7 +104,7 @@ class FilterConfigElementTest extends ContaoTestCase
 
         System::setContainer($container);
 
-        $instance = new FilterConfigElement();
+        $instance = new FilterConfigElement($framework);
 
         $this->assertNull($instance->modifyPalette($this->getDataContainerMock()));
     }
@@ -142,7 +142,7 @@ class FilterConfigElementTest extends ContaoTestCase
 
         System::setContainer($container);
 
-        $instance = new FilterConfigElement();
+        $instance = new FilterConfigElement($framework);
 
         $this->assertNull($instance->modifyPalette($this->getDataContainerMock()));
     }
@@ -196,7 +196,7 @@ class FilterConfigElementTest extends ContaoTestCase
 
         System::setContainer($container);
 
-        $instance = new FilterConfigElement();
+        $instance = new FilterConfigElement($framework);
         $instance->modifyPalette($this->getDataContainerMock());
 
         $this->assertSame(FilterConfigElement::INITIAL_PALETTE, $GLOBALS['TL_DCA']['tl_filter_config_element']['palettes']['text']);
@@ -229,7 +229,7 @@ class FilterConfigElementTest extends ContaoTestCase
 
         System::setContainer($container);
 
-        $instance = new FilterConfigElement();
+        $instance = new FilterConfigElement($framework);
 
         $this->assertNull($instance->prepareChoiceTypes($this->getDataContainerMock()));
     }
@@ -267,7 +267,7 @@ class FilterConfigElementTest extends ContaoTestCase
 
         System::setContainer($container);
 
-        $instance = new FilterConfigElement();
+        $instance = new FilterConfigElement($framework);
 
         $this->assertNull($instance->prepareChoiceTypes($this->getDataContainerMock()));
     }
@@ -305,7 +305,7 @@ class FilterConfigElementTest extends ContaoTestCase
 
         System::setContainer($container);
 
-        $instance = new FilterConfigElement();
+        $instance = new FilterConfigElement($framework);
 
         $this->assertNull($instance->prepareChoiceTypes($this->getDataContainerMock()));
     }
@@ -396,7 +396,7 @@ class FilterConfigElementTest extends ContaoTestCase
         $filterChoiceFieldOptions = new FieldOptionsChoice($framework);
         $container->set('huh.filter.choice.field_options', $filterChoiceFieldOptions);
 
-        $instance = new FilterConfigElement();
+        $instance = new FilterConfigElement($framework);
 
         $this->assertNull($instance->prepareChoiceTypes($this->getDataContainerMock()));
     }
@@ -487,7 +487,7 @@ class FilterConfigElementTest extends ContaoTestCase
         $filterChoiceFieldOptions = new FieldOptionsChoice($framework);
         $container->set('huh.filter.choice.field_options', $filterChoiceFieldOptions);
 
-        $instance = new FilterConfigElement();
+        $instance = new FilterConfigElement($framework);
 
         $this->assertNull($instance->prepareChoiceTypes($this->getDataContainerMock()));
     }
@@ -682,7 +682,7 @@ class FilterConfigElementTest extends ContaoTestCase
             ],
         ];
 
-        $instance = new FilterConfigElement();
+        $instance = new FilterConfigElement($framework);
         $instance->prepareChoiceTypes($this->getDataContainerMock());
 
         $this->assertSame('select', $dca['fields']['defaultValue']['inputType']);

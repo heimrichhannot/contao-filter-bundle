@@ -37,7 +37,8 @@ services:
   huh.filter.backend.filter_config_element:
     public: true
     class: HeimrichHannot\FilterBundle\Backend\FilterConfigElement
-
+    arguments:
+      - "@contao.framework"
   # choices
   huh.filter.choice.template:
     class: HeimrichHannot\FilterBundle\Choice\TemplateChoice
