@@ -86,9 +86,8 @@ class FilterRegistry
             return null;
         }
 
-        if (null === ($config->getQueryBuilder())) {
-            $config->initQueryBuilder();
-        }
+        // always init query
+        $config->initQueryBuilder();
 
         return $config->getQueryBuilder();
     }
