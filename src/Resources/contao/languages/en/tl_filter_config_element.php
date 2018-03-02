@@ -84,18 +84,19 @@ $lang['publish_legend']       = 'Publish settings';
 /**
  * Buttons
  */
-$lang['new']    = ['New Filterelement', 'Filterelement create'];
-$lang['edit']   = ['Edit Filterelement', 'Edit Filterelement ID %s'];
-$lang['copy']   = ['Duplicate Filterelement', 'Duplicate Filterelement ID %s'];
-$lang['delete'] = ['Delete Filterelement', 'Delete Filterelement ID %s'];
-$lang['toggle'] = ['Publish/unpublish Filterelement', 'Publish/unpublish Filterelement ID %s'];
-$lang['show']   = ['Filterelement details', 'Show the details of Filterelement ID %s'];
+$lang['new']    = ['New filter element', 'Create a new filter element'];
+$lang['edit']   = ['Edit filter element', 'Edit filter element ID %s'];
+$lang['copy']   = ['Copy filter element', 'Copy filter element ID %s'];
+$lang['cut']    = ['Cut filter element', 'Cut filter element ID %s'];
+$lang['delete'] = ['Delete filter element', 'Delete filter element ID %s'];
+$lang['toggle'] = ['Publish/unpublish filter element', 'Publish/unpublish filter element ID %s'];
+$lang['show']   = ['Filter element details', 'Show the details of filter element ID %s'];
 
 /**
  * References
  */
 $lang['reference'] = [
-    'type'                                                                          => [
+    'type'                                                              => [
         'text'        => 'Text',
         'text_concat' => 'Text combined',
         'textarea'    => 'Textarea',
@@ -129,7 +130,7 @@ $lang['reference'] = [
         'time'        => 'Time',
         'date_range'  => 'Date range',
     ],
-    'roundingMode'                                                                  => [
+    'roundingMode'                                                      => [
         \Symfony\Component\Form\Extension\Core\DataTransformer\IntegerToLocalizedStringTransformer::ROUND_DOWN      => 'Down (round towards zero)',
         \Symfony\Component\Form\Extension\Core\DataTransformer\IntegerToLocalizedStringTransformer::ROUND_FLOOR     => 'Floor (round towards negative infinity)',
         \Symfony\Component\Form\Extension\Core\DataTransformer\IntegerToLocalizedStringTransformer::ROUND_UP        => 'Up (round away from zero)',
@@ -138,7 +139,7 @@ $lang['reference'] = [
         \Symfony\Component\Form\Extension\Core\DataTransformer\IntegerToLocalizedStringTransformer::ROUND_HALF_EVEN => 'Half even (round towards the "nearest neighbor". If both neighbors are equidistant, round towards the even neighbor.)',
         \Symfony\Component\Form\Extension\Core\DataTransformer\IntegerToLocalizedStringTransformer::ROUND_HALF_UP   => 'Half up (round towards the "nearest neighbor". If both neighbors are equidistant, round up.)',
     ],
-    'percentType'                                                                   => [
+    'percentType'                                                       => [
         'fractional' => 'fractional (e.g .55)',
         'integer'    => 'integer (e.g. 55)'
     ],

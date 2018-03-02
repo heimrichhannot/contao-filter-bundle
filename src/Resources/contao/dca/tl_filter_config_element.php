@@ -5,6 +5,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
         'dataContainer'     => 'Table',
         'ptable'            => 'tl_filter_config',
         'enableVersioning'  => true,
+        'switchToEdit'      => true,
         'onload_callback'   => [
             ['huh.filter.backend.filter_config_element', 'checkPermission'],
             ['huh.filter.backend.filter_config_element', 'modifyPalette'],
@@ -51,8 +52,13 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             ],
             'copy'   => [
                 'label' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['copy'],
-                'href'  => 'act=copy',
-                'icon'  => 'copy.gif',
+                'href'  => 'act=paste&amp;mode=copy',
+                'icon'  => 'copy.svg'
+            ],
+            'cut'    => [
+                'label' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['cut'],
+                'href'  => 'act=paste&amp;mode=cut',
+                'icon'  => 'cut.svg'
             ],
             'delete' => [
                 'label'      => &$GLOBALS['TL_LANG']['tl_filter_config_element']['delete'],
@@ -267,7 +273,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['operator'],
             'inputType' => 'select',
             'options'   => \HeimrichHannot\UtilsBundle\Database\DatabaseUtil::OPERATORS,
-            'reference' => &$GLOBALS['TL_LANG']['MSC']['operators'],
+            'reference' => &$GLOBALS['TL_LANG']['MSC']['databaseOperators'],
             'eval'      => ['tl_class' => 'w50', 'mandatory' => true, 'includeBlankOption' => true],
             'sql'       => "varchar(16) NOT NULL default ''"
         ],
@@ -672,7 +678,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'exclude'   => true,
             'search'    => true,
             'inputType' => 'text',
-            'eval'      => ['maxlength' => 128, 'tl_class' => 'w50', 'mandatory' => true],
+            'eval'      => ['maxlength' => 128, 'tl_class' => 'w50'],
             'sql'       => "varchar(128) NOT NULL default ''"
         ],
         'initialValueArray' => [
