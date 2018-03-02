@@ -1,9 +1,9 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2018 Heimrich & Hannot GmbH
  *
- * @author Rico Kaltofen <r.kaltofen@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @license LGPL-3.0-or-later
  */
 
 namespace HeimrichHannot\FilterBundle\Tests\Utils;
@@ -29,7 +29,7 @@ use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 class FilterConfigElementHelperTest extends ContaoTestCase
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function setUp()
     {
@@ -38,7 +38,7 @@ class FilterConfigElementHelperTest extends ContaoTestCase
     }
 
     /**
-     * Tests getFields() with no existing tl_filter_config_element model
+     * Tests getFields() with no existing tl_filter_config_element model.
      */
     public function testGetFieldsWithoutConfigElementModel()
     {
@@ -59,7 +59,7 @@ class FilterConfigElementHelperTest extends ContaoTestCase
     }
 
     /**
-     * Tests getFields() if no models exists
+     * Tests getFields() if no models exists.
      */
     public function testGetFieldsWithoutFilterConfig()
     {
@@ -69,14 +69,14 @@ class FilterConfigElementHelperTest extends ContaoTestCase
         $modelAdapter->method('getClassFromTable')->willReturn(FilterConfigElementModel::class);
 
         $filterConfigElementProperties = ['id' => 1, 'pid' => 2];
-        $filterConfigElementModel      = $this->mockClassWithProperties(FilterConfigModel::class, $filterConfigElementProperties);
+        $filterConfigElementModel = $this->mockClassWithProperties(FilterConfigModel::class, $filterConfigElementProperties);
 
         $filterConfigElementModelAdapter = $this->mockAdapter(['findByPk', 'findPublishedByPid']);
         $filterConfigElementModelAdapter->method('findByPk')->willReturn($filterConfigElementModel);
         $filterConfigElementModelAdapter->method('findPublishedByPid')->willReturn(null);
 
         $filterConfigModelProperties = ['id' => 1, 'name' => 'test'];
-        $filterConfigModel           = $this->mockClassWithProperties(FilterConfigModel::class, $filterConfigModelProperties);
+        $filterConfigModel = $this->mockClassWithProperties(FilterConfigModel::class, $filterConfigModelProperties);
         $filterConfigModel->method('row')->willReturn($filterConfigModelProperties);
 
         $filterConfigModelAdapter = $this->mockAdapter(['findByPk']);
@@ -84,8 +84,8 @@ class FilterConfigElementHelperTest extends ContaoTestCase
 
         $framework = $this->mockContaoFramework(
             [
-                Model::class                    => $modelAdapter,
-                FilterConfigModel::class        => $filterConfigModelAdapter,
+                Model::class => $modelAdapter,
+                FilterConfigModel::class => $filterConfigModelAdapter,
                 FilterConfigElementModel::class => $filterConfigElementModelAdapter,
             ]
         );
@@ -101,8 +101,8 @@ class FilterConfigElementHelperTest extends ContaoTestCase
         $containerUtil = new ContainerUtil($framework);
         $container->set('huh.utils.container', $containerUtil);
 
-        $session        = new Session(new MockArraySessionStorage());
-        $filterSession  = new FilterSession($framework, $session);
+        $session = new Session(new MockArraySessionStorage());
+        $filterSession = new FilterSession($framework, $session);
         $filterRegistry = new FilterRegistry($framework, $filterSession);
         $container->set('huh.filter.registry', $filterRegistry);
 
@@ -115,7 +115,7 @@ class FilterConfigElementHelperTest extends ContaoTestCase
     }
 
     /**
-     * Tests getFields() if no models exists
+     * Tests getFields() if no models exists.
      */
     public function testGetFieldsWithExistingChoices()
     {
@@ -125,14 +125,14 @@ class FilterConfigElementHelperTest extends ContaoTestCase
         $modelAdapter->method('getClassFromTable')->willReturn(FilterConfigElementModel::class);
 
         $filterConfigElementProperties = ['id' => 1, 'pid' => 1];
-        $filterConfigElementModel      = $this->mockClassWithProperties(FilterConfigModel::class, $filterConfigElementProperties);
+        $filterConfigElementModel = $this->mockClassWithProperties(FilterConfigModel::class, $filterConfigElementProperties);
 
         $filterConfigElementModelAdapter = $this->mockAdapter(['findByPk', 'findPublishedByPid']);
         $filterConfigElementModelAdapter->method('findByPk')->willReturn($filterConfigElementModel);
         $filterConfigElementModelAdapter->method('findPublishedByPid')->willReturn(null);
 
         $filterConfigModelProperties = ['id' => 1, 'name' => 'test', 'dataContainer' => 'tl_test'];
-        $filterConfigModel           = $this->mockClassWithProperties(FilterConfigElementModel::class, $filterConfigModelProperties);
+        $filterConfigModel = $this->mockClassWithProperties(FilterConfigElementModel::class, $filterConfigModelProperties);
         $filterConfigModel->method('row')->willReturn($filterConfigModelProperties);
 
         $filterConfigModelAdapter = $this->mockAdapter(['findByPk']);
@@ -140,8 +140,8 @@ class FilterConfigElementHelperTest extends ContaoTestCase
 
         $framework = $this->mockContaoFramework(
             [
-                Model::class                    => $modelAdapter,
-                FilterConfigModel::class        => $filterConfigModelAdapter,
+                Model::class => $modelAdapter,
+                FilterConfigModel::class => $filterConfigModelAdapter,
                 FilterConfigElementModel::class => $filterConfigElementModelAdapter,
             ]
         );
@@ -157,8 +157,8 @@ class FilterConfigElementHelperTest extends ContaoTestCase
         $containerUtil = new ContainerUtil($framework);
         $container->set('huh.utils.container', $containerUtil);
 
-        $session        = new Session(new MockArraySessionStorage());
-        $filterSession  = new FilterSession($framework, $session);
+        $session = new Session(new MockArraySessionStorage());
+        $filterSession = new FilterSession($framework, $session);
         $filterRegistry = new FilterRegistry($framework, $filterSession);
         $container->set('huh.filter.registry', $filterRegistry);
 

@@ -1,9 +1,9 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2018 Heimrich & Hannot GmbH
  *
- * @author Rico Kaltofen <r.kaltofen@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @license LGPL-3.0-or-later
  */
 
 namespace HeimrichHannot\FilterBundle\Tests\Exception;
@@ -13,7 +13,6 @@ use PHPUnit\Framework\TestCase;
 
 class MissingFilterConfigExceptionTest extends TestCase
 {
-
     /**
      * Tests the object instantiation.
      */

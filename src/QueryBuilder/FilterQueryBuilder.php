@@ -26,6 +26,11 @@ class FilterQueryBuilder extends QueryBuilder
      */
     protected $framework;
 
+    /**
+     * @var array
+     */
+    protected $contextualValues = [];
+
     public function __construct(ContaoFrameworkInterface $framework, Connection $connection)
     {
         parent::__construct($connection);
@@ -88,7 +93,7 @@ class FilterQueryBuilder extends QueryBuilder
         $data = $config->getData();
 
         if ($element->isInitial) {
-            $value = $data[$name] ?? AbstractType::getInitialValue($element);
+            $value = $data[$name] ?? AbstractType::getInitialValue($element, $this->contextualValues);
 
             if (null === $value || !$element->field) {
                 return $this;
@@ -126,11 +131,14 @@ class FilterQueryBuilder extends QueryBuilder
             }
         }
 
-        $this->andWhere(System::getContainer()->get('huh.utils.database')->composeWhereForQueryBuilder(
-            $this, $element->field, $operator, $dca, $value
-        ));
+        $this->andWhere(System::getContainer()->get('huh.utils.database')->composeWhereForQueryBuilder($this, $element->field, $operator, $dca, $value));
 
         return $this;
+    }
+
+    public function addContextualValue($elementId, $value)
+    {
+        $this->contextualValues[$elementId] = $value;
     }
 
     /**

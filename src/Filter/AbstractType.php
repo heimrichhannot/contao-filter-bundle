@@ -21,10 +21,12 @@ abstract class AbstractType
 {
     const VALUE_TYPE_SCALAR = 'scalar';
     const VALUE_TYPE_ARRAY = 'array';
+    const VALUE_TYPE_CONTEXTUAL = 'contextual';
 
     const VALUE_TYPES = [
         self::VALUE_TYPE_SCALAR,
         self::VALUE_TYPE_ARRAY,
+        self::VALUE_TYPE_CONTEXTUAL,
     ];
 
     /**
@@ -82,14 +84,21 @@ abstract class AbstractType
         return $value;
     }
 
-    public static function getInitialValue(FilterConfigElementModel $element)
+    public static function getInitialValue(FilterConfigElementModel $element, array $contextualValues = [])
     {
+        $value = null;
+
         switch ($element->initialValueType) {
             case static::VALUE_TYPE_ARRAY:
                 $value = array_map(function ($val) {
                     return $val['value'];
                 }, StringUtil::deserialize($element->initialValueArray, true));
 
+                break;
+            case static::VALUE_TYPE_CONTEXTUAL:
+                if (isset($contextualValues[$element->field])) {
+                    $value = $contextualValues[$element->field];
+                }
                 break;
             default:
                 $value = $element->initialValue;

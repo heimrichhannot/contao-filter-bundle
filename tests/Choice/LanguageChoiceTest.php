@@ -325,7 +325,7 @@ class LanguageChoiceTest extends ContaoTestCase
     }
 
     /**
-     * Tests the language collection for custom language options without languages provided
+     * Tests the language collection for custom language options without languages provided.
      */
     public function testCollectCustomLanguagesWithoutLanguages()
     {

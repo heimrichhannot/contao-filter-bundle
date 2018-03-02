@@ -9,7 +9,6 @@
 namespace HeimrichHannot\FilterBundle\Config;
 
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
-use Contao\System;
 use HeimrichHannot\FilterBundle\Entity\FilterSession;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
 use HeimrichHannot\FilterBundle\Form\Extension\FormButtonExtension;
@@ -69,10 +68,11 @@ class FilterConfig
      * @param ContaoFrameworkInterface $framework
      * @param FilterSession            $session
      */
-    public function __construct(ContaoFrameworkInterface $framework, FilterSession $session)
+    public function __construct(ContaoFrameworkInterface $framework, FilterSession $session, FilterQueryBuilder $queryBuilder)
     {
         $this->framework = $framework;
         $this->session = $session;
+        $this->queryBuilder = $queryBuilder;
     }
 
     /**
@@ -129,8 +129,6 @@ class FilterConfig
 
     public function initQueryBuilder()
     {
-        $this->queryBuilder = System::getContainer()->get('huh.filter.query_builder');
-
         $this->queryBuilder->from($this->getFilter()['dataContainer']);
 
         if (null === $this->getElements()) {
@@ -321,6 +319,11 @@ class FilterConfig
     public function getFramework(): ContaoFrameworkInterface
     {
         return $this->framework;
+    }
+
+    public function addContextualValue($elementId, $values)
+    {
+        $this->queryBuilder->addContextualValue($elementId, $values);
     }
 
     /**

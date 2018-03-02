@@ -26,9 +26,11 @@ services:
     arguments:
       - "@contao.framework"
       - "@huh.filter.session"
+      - "@huh.filter.query_builder"
   huh.filter.query_builder:
     class: HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder
     shared: false
+    public: false
     arguments:
       - "@contao.framework"
       - "@doctrine.dbal.default_connection"

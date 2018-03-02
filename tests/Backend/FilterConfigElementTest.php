@@ -1,13 +1,12 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2018 Heimrich & Hannot GmbH
  *
- * @author Rico Kaltofen <r.kaltofen@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @license LGPL-3.0-or-later
  */
 
 namespace HeimrichHannot\FilterBundle\Tests\Backend;
-
 
 use Contao\Controller;
 use Contao\DataContainer;
@@ -32,7 +31,7 @@ use Symfony\Component\Translation\Translator;
 class FilterConfigElementTest extends ContaoTestCase
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function setUp()
     {
@@ -41,7 +40,7 @@ class FilterConfigElementTest extends ContaoTestCase
     }
 
     /**
-     * Tests modifyPalette() without existing tl_filter_config_element model
+     * Tests modifyPalette() without existing tl_filter_config_element model.
      */
     public function testModifyPaletteWithoutFilterConfigElementModel()
     {
@@ -55,7 +54,7 @@ class FilterConfigElementTest extends ContaoTestCase
 
         $framework = $this->mockContaoFramework(
             [
-                Model::class                    => $modelAdapter,
+                Model::class => $modelAdapter,
                 FilterConfigElementModel::class => $filterConfigElementModelAdapter,
             ]
         );
@@ -73,7 +72,7 @@ class FilterConfigElementTest extends ContaoTestCase
     }
 
     /**
-     * Tests modifyPalette() without any existing huh.filter types
+     * Tests modifyPalette() without any existing huh.filter types.
      */
     public function testModifyPaletteWithoutFilterTypes()
     {
@@ -83,7 +82,7 @@ class FilterConfigElementTest extends ContaoTestCase
         $modelAdapter->method('getClassFromTable')->willReturn(FilterConfigElementModel::class);
 
         $filterConfigElementProperties = ['id' => 1, 'pid' => 1];
-        $filterConfigElementModel      = $this->mockClassWithProperties(FilterConfigElementModel::class, $filterConfigElementProperties);
+        $filterConfigElementModel = $this->mockClassWithProperties(FilterConfigElementModel::class, $filterConfigElementProperties);
 
         $filterConfigElementModelAdapter = $this->mockAdapter(['findByPk', 'findPublishedByPid']);
         $filterConfigElementModelAdapter->method('findByPk')->willReturn($filterConfigElementModel);
@@ -91,7 +90,7 @@ class FilterConfigElementTest extends ContaoTestCase
 
         $framework = $this->mockContaoFramework(
             [
-                Model::class                    => $modelAdapter,
+                Model::class => $modelAdapter,
                 FilterConfigElementModel::class => $filterConfigElementModelAdapter,
             ]
         );
@@ -111,7 +110,7 @@ class FilterConfigElementTest extends ContaoTestCase
     }
 
     /**
-     * Tests modifyPalette() without found huh.filter type
+     * Tests modifyPalette() without found huh.filter type.
      */
     public function testModifyPaletteWithoutFoundFilterType()
     {
@@ -121,7 +120,7 @@ class FilterConfigElementTest extends ContaoTestCase
         $modelAdapter->method('getClassFromTable')->willReturn(FilterConfigElementModel::class);
 
         $filterConfigElementProperties = ['id' => 1, 'pid' => 1, 'type' => 'text'];
-        $filterConfigElementModel      = $this->mockClassWithProperties(FilterConfigElementModel::class, $filterConfigElementProperties);
+        $filterConfigElementModel = $this->mockClassWithProperties(FilterConfigElementModel::class, $filterConfigElementProperties);
 
         $filterConfigElementModelAdapter = $this->mockAdapter(['findByPk', 'findPublishedByPid']);
         $filterConfigElementModelAdapter->method('findByPk')->willReturn($filterConfigElementModel);
@@ -129,7 +128,7 @@ class FilterConfigElementTest extends ContaoTestCase
 
         $framework = $this->mockContaoFramework(
             [
-                Model::class                    => $modelAdapter,
+                Model::class => $modelAdapter,
                 FilterConfigElementModel::class => $filterConfigElementModelAdapter,
             ]
         );
@@ -148,9 +147,8 @@ class FilterConfigElementTest extends ContaoTestCase
         $this->assertNull($instance->modifyPalette($this->getDataContainerMock()));
     }
 
-
     /**
-     * Tests modifyPalette() on successfully switch type palette with initial palette
+     * Tests modifyPalette() on successfully switch type palette with initial palette.
      */
     public function testModifyInitialPalette()
     {
@@ -160,7 +158,7 @@ class FilterConfigElementTest extends ContaoTestCase
         $modelAdapter->method('getClassFromTable')->willReturn(FilterConfigElementModel::class);
 
         $filterConfigElementProperties = ['id' => 1, 'pid' => 1, 'type' => 'text', 'isInitial' => true];
-        $filterConfigElementModel      = $this->mockClassWithProperties(FilterConfigElementModel::class, $filterConfigElementProperties);
+        $filterConfigElementModel = $this->mockClassWithProperties(FilterConfigElementModel::class, $filterConfigElementProperties);
 
         $filterConfigElementModelAdapter = $this->mockAdapter(['findByPk', 'findPublishedByPid']);
         $filterConfigElementModelAdapter->method('findByPk')->willReturn($filterConfigElementModel);
@@ -168,13 +166,13 @@ class FilterConfigElementTest extends ContaoTestCase
 
         $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'palettes' => [
-                'text' => '{general_legend},title,type,isInitial;{config_legend},field,customName,customOperator,addDefaultValue;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;'
-            ]
+                'text' => '{general_legend},title,type,isInitial;{config_legend},field,customName,customOperator,addDefaultValue;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
+            ],
         ];
 
         $framework = $this->mockContaoFramework(
             [
-                Model::class                    => $modelAdapter,
+                Model::class => $modelAdapter,
                 FilterConfigElementModel::class => $filterConfigElementModelAdapter,
             ]
         );
@@ -188,12 +186,12 @@ class FilterConfigElementTest extends ContaoTestCase
             'filter' => [
                 'types' => [
                     [
-                        'name'  => 'text',
+                        'name' => 'text',
                         'class' => 'HeimrichHannot\FilterBundle\Filter\Type\TextType',
-                        'type'  => 'text'
-                    ]
-                ]
-            ]
+                        'type' => 'text',
+                    ],
+                ],
+            ],
         ]);
 
         System::setContainer($container);
@@ -201,11 +199,11 @@ class FilterConfigElementTest extends ContaoTestCase
         $instance = new FilterConfigElement($framework);
         $instance->modifyPalette($this->getDataContainerMock());
 
-        $this->assertEquals(FilterConfigElement::INITIAL_PALETTE, $GLOBALS['TL_DCA']['tl_filter_config_element']['palettes']['text']);
+        $this->assertSame(FilterConfigElement::INITIAL_PALETTE, $GLOBALS['TL_DCA']['tl_filter_config_element']['palettes']['text']);
     }
 
     /**
-     * Tests prepareChoiceTypes() without existing tl_filter_config_element model
+     * Tests prepareChoiceTypes() without existing tl_filter_config_element model.
      */
     public function testPrepareChoiceTypesWithoutFilterConfigElementModel()
     {
@@ -219,7 +217,7 @@ class FilterConfigElementTest extends ContaoTestCase
 
         $framework = $this->mockContaoFramework(
             [
-                Model::class                    => $modelAdapter,
+                Model::class => $modelAdapter,
                 FilterConfigElementModel::class => $filterConfigElementModelAdapter,
             ]
         );
@@ -237,7 +235,7 @@ class FilterConfigElementTest extends ContaoTestCase
     }
 
     /**
-     * Tests prepareChoiceTypes() without any existing huh.filter types
+     * Tests prepareChoiceTypes() without any existing huh.filter types.
      */
     public function testPrepareChoiceTypesWithoutFilterTypes()
     {
@@ -247,7 +245,7 @@ class FilterConfigElementTest extends ContaoTestCase
         $modelAdapter->method('getClassFromTable')->willReturn(FilterConfigElementModel::class);
 
         $filterConfigElementProperties = ['id' => 1, 'pid' => 1];
-        $filterConfigElementModel      = $this->mockClassWithProperties(FilterConfigElementModel::class, $filterConfigElementProperties);
+        $filterConfigElementModel = $this->mockClassWithProperties(FilterConfigElementModel::class, $filterConfigElementProperties);
 
         $filterConfigElementModelAdapter = $this->mockAdapter(['findByPk', 'findPublishedByPid']);
         $filterConfigElementModelAdapter->method('findByPk')->willReturn($filterConfigElementModel);
@@ -255,7 +253,7 @@ class FilterConfigElementTest extends ContaoTestCase
 
         $framework = $this->mockContaoFramework(
             [
-                Model::class                    => $modelAdapter,
+                Model::class => $modelAdapter,
                 FilterConfigElementModel::class => $filterConfigElementModelAdapter,
             ]
         );
@@ -275,7 +273,7 @@ class FilterConfigElementTest extends ContaoTestCase
     }
 
     /**
-     * Tests prepareChoiceTypes() without found huh.filter type
+     * Tests prepareChoiceTypes() without found huh.filter type.
      */
     public function testPrepareChoiceTypesWithoutFoundFilterClass()
     {
@@ -285,7 +283,7 @@ class FilterConfigElementTest extends ContaoTestCase
         $modelAdapter->method('getClassFromTable')->willReturn(FilterConfigElementModel::class);
 
         $filterConfigElementProperties = ['id' => 1, 'pid' => 1, 'type' => 'text'];
-        $filterConfigElementModel      = $this->mockClassWithProperties(FilterConfigElementModel::class, $filterConfigElementProperties);
+        $filterConfigElementModel = $this->mockClassWithProperties(FilterConfigElementModel::class, $filterConfigElementProperties);
 
         $filterConfigElementModelAdapter = $this->mockAdapter(['findByPk', 'findPublishedByPid']);
         $filterConfigElementModelAdapter->method('findByPk')->willReturn($filterConfigElementModel);
@@ -293,7 +291,7 @@ class FilterConfigElementTest extends ContaoTestCase
 
         $framework = $this->mockContaoFramework(
             [
-                Model::class                    => $modelAdapter,
+                Model::class => $modelAdapter,
                 FilterConfigElementModel::class => $filterConfigElementModelAdapter,
             ]
         );
@@ -312,9 +310,8 @@ class FilterConfigElementTest extends ContaoTestCase
         $this->assertNull($instance->prepareChoiceTypes($this->getDataContainerMock()));
     }
 
-
     /**
-     * Tests prepareChoiceTypes() without any existing huh.filter types
+     * Tests prepareChoiceTypes() without any existing huh.filter types.
      */
     public function testPrepareChoiceWithoutFilter()
     {
@@ -324,14 +321,14 @@ class FilterConfigElementTest extends ContaoTestCase
         $modelAdapter->method('getClassFromTable')->willReturn(FilterConfigElementModel::class);
 
         $filterConfigModelProperties = ['id' => 1, 'name' => 'test', 'dataContainer' => 'tl_test'];
-        $filterConfigModel           = $this->mockClassWithProperties(FilterConfigElementModel::class, $filterConfigModelProperties);
+        $filterConfigModel = $this->mockClassWithProperties(FilterConfigElementModel::class, $filterConfigModelProperties);
         $filterConfigModel->method('row')->willReturn($filterConfigModelProperties);
 
         $filterConfigModelAdapter = $this->mockAdapter(['findByPk']);
         $filterConfigModelAdapter->method('findByPk')->willReturn($filterConfigModel);
 
         $filterConfigElementProperties = ['id' => 1, 'pid' => 1, 'type' => 'choice'];
-        $filterConfigElementModel      = $this->mockClassWithProperties(FilterConfigElementModel::class, $filterConfigElementProperties);
+        $filterConfigElementModel = $this->mockClassWithProperties(FilterConfigElementModel::class, $filterConfigElementProperties);
 
         $filterConfigElementModelAdapter = $this->mockAdapter(['findByPk', 'findPublishedByPid']);
         $filterConfigElementModelAdapter->method('findByPk')->willReturn($filterConfigElementModel);
@@ -344,9 +341,9 @@ class FilterConfigElementTest extends ContaoTestCase
 
         $framework = $this->mockContaoFramework(
             [
-                Controller::class               => $controllerAdapter,
-                Model::class                    => $modelAdapter,
-                FilterConfigModel::class        => $filterConfigModelAdapter,
+                Controller::class => $controllerAdapter,
+                Model::class => $modelAdapter,
+                FilterConfigModel::class => $filterConfigModelAdapter,
                 FilterConfigElementModel::class => $filterConfigElementModelAdapter,
             ]
         );
@@ -356,8 +353,8 @@ class FilterConfigElementTest extends ContaoTestCase
         $modelsUtil = new ModelUtil($framework);
         $container->set('huh.utils.model', $modelsUtil);
 
-        $session        = new Session(new MockArraySessionStorage());
-        $filterSession  = new FilterSession($framework, $session);
+        $session = new Session(new MockArraySessionStorage());
+        $filterSession = new FilterSession($framework, $session);
         $filterRegistry = new FilterRegistry($framework, $filterSession);
         $container->set('huh.filter.registry', $filterRegistry);
 
@@ -377,12 +374,12 @@ class FilterConfigElementTest extends ContaoTestCase
             'filter' => [
                 'types' => [
                     [
-                        'name'  => 'choice',
+                        'name' => 'choice',
                         'class' => 'HeimrichHannot\FilterBundle\Filter\Type\ChoiceType',
-                        'type'  => 'choice'
-                    ]
-                ]
-            ]
+                        'type' => 'choice',
+                    ],
+                ],
+            ],
         ]);
 
         $kernel = $this->mockAdapter(['getCacheDir', 'isDebug']);
@@ -405,7 +402,7 @@ class FilterConfigElementTest extends ContaoTestCase
     }
 
     /**
-     * Tests prepareChoiceTypes() with existing huh.filter but type is not instance of ChoiceType
+     * Tests prepareChoiceTypes() with existing huh.filter but type is not instance of ChoiceType.
      */
     public function testPrepareChoiceForNonChoiceType()
     {
@@ -415,14 +412,14 @@ class FilterConfigElementTest extends ContaoTestCase
         $modelAdapter->method('getClassFromTable')->willReturn(FilterConfigElementModel::class);
 
         $filterConfigModelProperties = ['id' => 1, 'name' => 'test', 'dataContainer' => 'tl_test'];
-        $filterConfigModel           = $this->mockClassWithProperties(FilterConfigElementModel::class, $filterConfigModelProperties);
+        $filterConfigModel = $this->mockClassWithProperties(FilterConfigElementModel::class, $filterConfigModelProperties);
         $filterConfigModel->method('row')->willReturn($filterConfigModelProperties);
 
         $filterConfigModelAdapter = $this->mockAdapter(['findByPk']);
         $filterConfigModelAdapter->method('findByPk')->willReturn($filterConfigModel);
 
         $filterConfigElementProperties = ['id' => 1, 'pid' => 1, 'type' => 'text'];
-        $filterConfigElementModel      = $this->mockClassWithProperties(FilterConfigElementModel::class, $filterConfigElementProperties);
+        $filterConfigElementModel = $this->mockClassWithProperties(FilterConfigElementModel::class, $filterConfigElementProperties);
 
         $filterConfigElementModelAdapter = $this->mockAdapter(['findByPk', 'findPublishedByPid']);
         $filterConfigElementModelAdapter->method('findByPk')->willReturn($filterConfigElementModel);
@@ -435,9 +432,9 @@ class FilterConfigElementTest extends ContaoTestCase
 
         $framework = $this->mockContaoFramework(
             [
-                Controller::class               => $controllerAdapter,
-                Model::class                    => $modelAdapter,
-                FilterConfigModel::class        => $filterConfigModelAdapter,
+                Controller::class => $controllerAdapter,
+                Model::class => $modelAdapter,
+                FilterConfigModel::class => $filterConfigModelAdapter,
                 FilterConfigElementModel::class => $filterConfigElementModelAdapter,
             ]
         );
@@ -447,8 +444,8 @@ class FilterConfigElementTest extends ContaoTestCase
         $modelsUtil = new ModelUtil($framework);
         $container->set('huh.utils.model', $modelsUtil);
 
-        $session        = new Session(new MockArraySessionStorage());
-        $filterSession  = new FilterSession($framework, $session);
+        $session = new Session(new MockArraySessionStorage());
+        $filterSession = new FilterSession($framework, $session);
         $filterRegistry = new FilterRegistry($framework, $filterSession);
         $container->set('huh.filter.registry', $filterRegistry);
 
@@ -468,12 +465,12 @@ class FilterConfigElementTest extends ContaoTestCase
             'filter' => [
                 'types' => [
                     [
-                        'name'  => 'text',
+                        'name' => 'text',
                         'class' => 'HeimrichHannot\FilterBundle\Filter\Type\TextType',
-                        'type'  => 'text'
-                    ]
-                ]
-            ]
+                        'type' => 'text',
+                    ],
+                ],
+            ],
         ]);
 
         $kernel = $this->mockAdapter(['getCacheDir', 'isDebug']);
@@ -496,7 +493,7 @@ class FilterConfigElementTest extends ContaoTestCase
     }
 
     /**
-     * Tests prepareChoiceTypes() for valid choice type
+     * Tests prepareChoiceTypes() for valid choice type.
      */
     public function testPrepareChoiceForValidChoiceType()
     {
@@ -506,24 +503,24 @@ class FilterConfigElementTest extends ContaoTestCase
         $modelAdapter->method('getClassFromTable')->willReturn(FilterConfigElementModel::class);
 
         $filterConfigModelProperties = ['id' => 1, 'name' => 'test', 'dataContainer' => 'tl_test'];
-        $filterConfigModel           = $this->mockClassWithProperties(FilterConfigElementModel::class, $filterConfigModelProperties);
+        $filterConfigModel = $this->mockClassWithProperties(FilterConfigElementModel::class, $filterConfigModelProperties);
         $filterConfigModel->method('row')->willReturn($filterConfigModelProperties);
 
         $GLOBALS['TL_FFL']['select'] = FormSelectMenu::class;
 
         $GLOBALS['TL_DCA']['tl_test']['fields']['test'] = [
-            'label'            => 'foo',
-            'inputType'        => 'select',
-            'options'          => ['foo', 'bar'],
+            'label' => 'foo',
+            'inputType' => 'select',
+            'options' => ['foo', 'bar'],
             'options_callback' => null,
-            'eval'             => [
-                'submitOnChange'     => false,
-                'allowHtml'          => false,
-                'rte'                => false,
-                'preserveTags'       => false,
-                'isAssociative'      => true,
+            'eval' => [
+                'submitOnChange' => false,
+                'allowHtml' => false,
+                'rte' => false,
+                'preserveTags' => false,
+                'isAssociative' => true,
                 'includeBlankOption' => false,
-                'sql'                => '',
+                'sql' => '',
             ],
         ];
 
@@ -531,7 +528,7 @@ class FilterConfigElementTest extends ContaoTestCase
         $filterConfigModelAdapter->method('findByPk')->willReturn($filterConfigModel);
 
         $filterConfigElementProperties = ['id' => 1, 'pid' => 1, 'type' => 'choice', 'field' => 'test'];
-        $filterConfigElementModel      = $this->mockClassWithProperties(FilterConfigElementModel::class, $filterConfigElementProperties);
+        $filterConfigElementModel = $this->mockClassWithProperties(FilterConfigElementModel::class, $filterConfigElementProperties);
 
         $filterConfigElementModelAdapter = $this->mockAdapter(['findByPk', 'findPublishedByPid']);
         $filterConfigElementModelAdapter->method('findByPk')->willReturn($filterConfigElementModel);
@@ -544,9 +541,9 @@ class FilterConfigElementTest extends ContaoTestCase
 
         $framework = $this->mockContaoFramework(
             [
-                Controller::class               => $controllerAdapter,
-                Model::class                    => $modelAdapter,
-                FilterConfigModel::class        => $filterConfigModelAdapter,
+                Controller::class => $controllerAdapter,
+                Model::class => $modelAdapter,
+                FilterConfigModel::class => $filterConfigModelAdapter,
                 FilterConfigElementModel::class => $filterConfigElementModelAdapter,
             ]
         );
@@ -556,8 +553,8 @@ class FilterConfigElementTest extends ContaoTestCase
         $modelsUtil = new ModelUtil($framework);
         $container->set('huh.utils.model', $modelsUtil);
 
-        $session        = new Session(new MockArraySessionStorage());
-        $filterSession  = new FilterSession($framework, $session);
+        $session = new Session(new MockArraySessionStorage());
+        $filterSession = new FilterSession($framework, $session);
         $filterRegistry = new FilterRegistry($framework, $filterSession);
         $container->set('huh.filter.registry', $filterRegistry);
 
@@ -577,12 +574,12 @@ class FilterConfigElementTest extends ContaoTestCase
             'filter' => [
                 'types' => [
                     [
-                        'name'  => 'choice',
+                        'name' => 'choice',
                         'class' => 'HeimrichHannot\FilterBundle\Filter\Type\ChoiceType',
-                        'type'  => 'choice'
-                    ]
-                ]
-            ]
+                        'type' => 'choice',
+                    ],
+                ],
+            ],
         ]);
 
         $kernel = $this->mockAdapter(['getCacheDir', 'isDebug']);
@@ -602,110 +599,110 @@ class FilterConfigElementTest extends ContaoTestCase
         $dca = &$GLOBALS['TL_DCA']['tl_filter_config_element'];
 
         $dca['fields'] = [
-            'initialValueType'  => [
-                'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['initialValueType'],
-                'exclude'   => true,
-                'filter'    => true,
+            'initialValueType' => [
+                'label' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['initialValueType'],
+                'exclude' => true,
+                'filter' => true,
                 'inputType' => 'select',
-                'options'   => \HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPES,
+                'options' => \HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPES,
                 'reference' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['reference'],
-                'eval'      => ['tl_class' => 'w50 clr', 'mandatory' => true, 'includeBlankOption' => true, 'submitOnChange' => true],
-                'sql'       => "varchar(16) NOT NULL default ''"
+                'eval' => ['tl_class' => 'w50 clr', 'mandatory' => true, 'includeBlankOption' => true, 'submitOnChange' => true],
+                'sql' => "varchar(16) NOT NULL default ''",
             ],
-            'initialValue'      => [
-                'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['initialValue'],
-                'exclude'   => true,
-                'search'    => true,
+            'initialValue' => [
+                'label' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['initialValue'],
+                'exclude' => true,
+                'search' => true,
                 'inputType' => 'text',
-                'eval'      => ['maxlength' => 128, 'tl_class' => 'w50', 'mandatory' => true],
-                'sql'       => "varchar(128) NOT NULL default ''"
+                'eval' => ['maxlength' => 128, 'tl_class' => 'w50', 'mandatory' => true],
+                'sql' => "varchar(128) NOT NULL default ''",
             ],
             'initialValueArray' => [
-                'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['initialValue'],
+                'label' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['initialValue'],
                 'inputType' => 'multiColumnEditor',
-                'eval'      => [
-                    'tl_class'          => 'long clr',
+                'eval' => [
+                    'tl_class' => 'long clr',
                     'multiColumnEditor' => [
                         'fields' => [
                             'value' => [
-                                'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['initialValue_value'],
-                                'exclude'   => true,
-                                'search'    => true,
+                                'label' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['initialValue_value'],
+                                'exclude' => true,
+                                'search' => true,
                                 'inputType' => 'text',
-                                'eval'      => ['tl_class' => 'w50', 'mandatory' => true, 'groupStyle' => 'width: 200px'],
+                                'eval' => ['tl_class' => 'w50', 'mandatory' => true, 'groupStyle' => 'width: 200px'],
                             ],
                         ],
                     ],
                 ],
-                'sql'       => "blob NULL",
+                'sql' => 'blob NULL',
             ],
-            'addDefaultValue'   => [
-                'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['addDefaultValue'],
-                'exclude'   => true,
+            'addDefaultValue' => [
+                'label' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['addDefaultValue'],
+                'exclude' => true,
                 'inputType' => 'checkbox',
-                'eval'      => ['tl_class' => 'w50', 'submitOnChange' => true],
-                'sql'       => "char(1) NOT NULL default ''"
+                'eval' => ['tl_class' => 'w50', 'submitOnChange' => true],
+                'sql' => "char(1) NOT NULL default ''",
             ],
-            'defaultValueType'  => [
-                'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['defaultValueType'],
-                'exclude'   => true,
-                'filter'    => true,
+            'defaultValueType' => [
+                'label' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['defaultValueType'],
+                'exclude' => true,
+                'filter' => true,
                 'inputType' => 'select',
-                'options'   => \HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPES,
+                'options' => \HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPES,
                 'reference' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['reference'],
-                'eval'      => ['tl_class' => 'w50 clr', 'mandatory' => true, 'includeBlankOption' => true, 'submitOnChange' => true],
-                'sql'       => "varchar(16) NOT NULL default ''"
+                'eval' => ['tl_class' => 'w50 clr', 'mandatory' => true, 'includeBlankOption' => true, 'submitOnChange' => true],
+                'sql' => "varchar(16) NOT NULL default ''",
             ],
-            'defaultValue'      => [
-                'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['defaultValue'],
-                'exclude'   => true,
-                'search'    => true,
+            'defaultValue' => [
+                'label' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['defaultValue'],
+                'exclude' => true,
+                'search' => true,
                 'inputType' => 'text',
-                'eval'      => ['maxlength' => 128, 'tl_class' => 'w50', 'mandatory' => true],
-                'sql'       => "varchar(128) NOT NULL default ''"
+                'eval' => ['maxlength' => 128, 'tl_class' => 'w50', 'mandatory' => true],
+                'sql' => "varchar(128) NOT NULL default ''",
             ],
             'defaultValueArray' => [
-                'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['defaultValue'],
+                'label' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['defaultValue'],
                 'inputType' => 'multiColumnEditor',
-                'eval'      => [
-                    'tl_class'          => 'long clr',
+                'eval' => [
+                    'tl_class' => 'long clr',
                     'multiColumnEditor' => [
                         'fields' => [
                             'value' => [
-                                'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['defaultValue_value'],
-                                'exclude'   => true,
-                                'search'    => true,
+                                'label' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['defaultValue_value'],
+                                'exclude' => true,
+                                'search' => true,
                                 'inputType' => 'text',
-                                'eval'      => ['tl_class' => 'w50', 'mandatory' => true, 'groupStyle' => 'width: 200px'],
+                                'eval' => ['tl_class' => 'w50', 'mandatory' => true, 'groupStyle' => 'width: 200px'],
                             ],
                         ],
                     ],
                 ],
-                'sql'       => "blob NULL",
+                'sql' => 'blob NULL',
             ],
         ];
 
         $instance = new FilterConfigElement($framework);
         $instance->prepareChoiceTypes($this->getDataContainerMock());
 
-        $this->assertEquals('select', $dca['fields']['defaultValue']['inputType']);
+        $this->assertSame('select', $dca['fields']['defaultValue']['inputType']);
         $this->assertNotEmpty($dca['fields']['defaultValue']['options']);
-        $this->assertEquals(['foo', 'bar'], $dca['fields']['defaultValue']['options']);
+        $this->assertSame(['foo', 'bar'], $dca['fields']['defaultValue']['options']);
         $this->assertTrue($dca['fields']['defaultValue']['eval']['chosen']);
 
-        $this->assertEquals('select', $dca['fields']['initialValue']['inputType']);
+        $this->assertSame('select', $dca['fields']['initialValue']['inputType']);
         $this->assertNotEmpty($dca['fields']['initialValue']['options']);
-        $this->assertEquals(['foo', 'bar'], $dca['fields']['initialValue']['options']);
+        $this->assertSame(['foo', 'bar'], $dca['fields']['initialValue']['options']);
         $this->assertTrue($dca['fields']['initialValue']['eval']['chosen']);
 
-        $this->assertEquals('select', $dca['fields']['defaultValueArray']['eval']['multiColumnEditor']['fields']['value']['inputType']);
+        $this->assertSame('select', $dca['fields']['defaultValueArray']['eval']['multiColumnEditor']['fields']['value']['inputType']);
         $this->assertNotEmpty($dca['fields']['defaultValueArray']['eval']['multiColumnEditor']['fields']['value']['options']);
-        $this->assertEquals(['foo', 'bar'], $dca['fields']['defaultValueArray']['eval']['multiColumnEditor']['fields']['value']['options']);
+        $this->assertSame(['foo', 'bar'], $dca['fields']['defaultValueArray']['eval']['multiColumnEditor']['fields']['value']['options']);
         $this->assertTrue($dca['fields']['defaultValueArray']['eval']['multiColumnEditor']['fields']['value']['eval']['chosen']);
 
-        $this->assertEquals('select', $dca['fields']['initialValueArray']['eval']['multiColumnEditor']['fields']['value']['inputType']);
+        $this->assertSame('select', $dca['fields']['initialValueArray']['eval']['multiColumnEditor']['fields']['value']['inputType']);
         $this->assertNotEmpty($dca['fields']['initialValueArray']['eval']['multiColumnEditor']['fields']['value']['options']);
-        $this->assertEquals(['foo', 'bar'], $dca['fields']['initialValueArray']['eval']['multiColumnEditor']['fields']['value']['options']);
+        $this->assertSame(['foo', 'bar'], $dca['fields']['initialValueArray']['eval']['multiColumnEditor']['fields']['value']['options']);
         $this->assertTrue($dca['fields']['initialValueArray']['eval']['multiColumnEditor']['fields']['value']['eval']['chosen']);
     }
 
