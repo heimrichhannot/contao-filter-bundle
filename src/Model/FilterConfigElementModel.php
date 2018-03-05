@@ -49,7 +49,7 @@ namespace HeimrichHannot\FilterBundle\Model;
  * @method int                                                                               countByStart($val, array $opt = [])
  * @method int                                                                               countByStop($val, array $opt = [])
  */
-class FilterConfigElementModel extends \Model
+class FilterConfigElementModel extends \Model implements \JsonSerializable
 {
     protected static $strTable = 'tl_filter_config_element';
 
@@ -140,4 +140,15 @@ class FilterConfigElementModel extends \Model
     {
         return $this->formName;
     }
+
+    /**
+     * Required by HeimrichHannot\UtilsBundle\Choice\AbstractChoice to create custom cache key
+     * @inheritDoc
+     */
+    public function jsonSerialize()
+    {
+        return get_object_vars($this);
+    }
+
+
 }

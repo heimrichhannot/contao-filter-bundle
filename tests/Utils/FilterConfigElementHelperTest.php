@@ -12,10 +12,13 @@ use Contao\DataContainer;
 use Contao\Model;
 use Contao\System;
 use Contao\TestCase\ContaoTestCase;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Driver\Mysqli\Driver;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
 use HeimrichHannot\FilterBundle\Entity\FilterSession;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\Model\FilterConfigModel;
+use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 use HeimrichHannot\FilterBundle\Registry\FilterRegistry;
 use HeimrichHannot\FilterBundle\Util\FilterConfigElementHelper;
 use HeimrichHannot\UtilsBundle\Choice\FieldChoice;
@@ -106,7 +109,9 @@ class FilterConfigElementHelperTest extends ContaoTestCase
         $filterRegistry = new FilterRegistry($framework, $filterSession);
         $container->set('huh.filter.registry', $filterRegistry);
 
-        $filterConfig = new FilterConfig($framework, $filterSession);
+        $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
+
+        $filterConfig = new FilterConfig($framework, $filterSession, $queryBuilder);
         $container->set('huh.filter.config', $filterConfig);
 
         System::setContainer($container);
@@ -162,7 +167,9 @@ class FilterConfigElementHelperTest extends ContaoTestCase
         $filterRegistry = new FilterRegistry($framework, $filterSession);
         $container->set('huh.filter.registry', $filterRegistry);
 
-        $filterConfig = new FilterConfig($framework, $filterSession);
+        $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
+
+        $filterConfig = new FilterConfig($framework, $filterSession, $queryBuilder);
         $container->set('huh.filter.config', $filterConfig);
 
         $fs = new Filesystem();

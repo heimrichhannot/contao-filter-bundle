@@ -14,12 +14,15 @@ use Contao\FormSelectMenu;
 use Contao\Model;
 use Contao\System;
 use Contao\TestCase\ContaoTestCase;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Driver\Mysqli\Driver;
 use HeimrichHannot\FilterBundle\Backend\FilterConfigElement;
 use HeimrichHannot\FilterBundle\Choice\FieldOptionsChoice;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
 use HeimrichHannot\FilterBundle\Entity\FilterSession;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\Model\FilterConfigModel;
+use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 use HeimrichHannot\FilterBundle\Registry\FilterRegistry;
 use HeimrichHannot\UtilsBundle\Container\ContainerUtil;
 use HeimrichHannot\UtilsBundle\Model\ModelUtil;
@@ -358,7 +361,9 @@ class FilterConfigElementTest extends ContaoTestCase
         $filterRegistry = new FilterRegistry($framework, $filterSession);
         $container->set('huh.filter.registry', $filterRegistry);
 
-        $filterConfig = new FilterConfig($framework, $filterSession);
+        $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
+
+        $filterConfig = new FilterConfig($framework, $filterSession, $queryBuilder);
         $container->set('huh.filter.config', $filterConfig);
 
         $requestStack = new RequestStack();
@@ -449,7 +454,10 @@ class FilterConfigElementTest extends ContaoTestCase
         $filterRegistry = new FilterRegistry($framework, $filterSession);
         $container->set('huh.filter.registry', $filterRegistry);
 
-        $filterConfig = new FilterConfig($framework, $filterSession);
+        $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
+
+        $filterConfig = new FilterConfig($framework, $filterSession, $queryBuilder);
+
         $container->set('huh.filter.config', $filterConfig);
 
         $requestStack = new RequestStack();
@@ -558,7 +566,9 @@ class FilterConfigElementTest extends ContaoTestCase
         $filterRegistry = new FilterRegistry($framework, $filterSession);
         $container->set('huh.filter.registry', $filterRegistry);
 
-        $filterConfig = new FilterConfig($framework, $filterSession);
+        $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
+
+        $filterConfig = new FilterConfig($framework, $filterSession, $queryBuilder);
         $container->set('huh.filter.config', $filterConfig);
 
         $requestStack = new RequestStack();

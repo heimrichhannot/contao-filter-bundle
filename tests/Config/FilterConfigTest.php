@@ -10,8 +10,11 @@ namespace HeimrichHannot\FilterBundle\Tests\Config;
 
 use Contao\InsertTags;
 use Contao\TestCase\ContaoTestCase;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Driver\Mysqli\Driver;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
 use HeimrichHannot\FilterBundle\Entity\FilterSession;
+use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 use Symfony\Component\Form\FormBuilder;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
@@ -26,7 +29,9 @@ class FilterConfigTest extends ContaoTestCase
         $framework = $this->mockContaoFramework([]);
         $session = new MockArraySessionStorage();
 
-        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)));
+        $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
+
+        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
 
         $this->assertInstanceOf('HeimrichHannot\FilterBundle\Config\FilterConfig', $config);
     }
@@ -39,7 +44,8 @@ class FilterConfigTest extends ContaoTestCase
         $framework = $this->mockContaoFramework([]);
         $session = new MockArraySessionStorage();
 
-        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)));
+        $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
+        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
         $config->init('test', []);
 
         $this->assertSame('test', $config->getSessionKey());
@@ -55,7 +61,8 @@ class FilterConfigTest extends ContaoTestCase
         $framework = $this->mockContaoFramework([]);
         $session = new MockArraySessionStorage();
 
-        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)));
+        $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
+        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
         $config->buildForm();
 
         $this->assertNull($config->getBuilder(), $config);
@@ -76,7 +83,8 @@ class FilterConfigTest extends ContaoTestCase
         $framework = $this->mockContaoFramework([]);
         $session = new MockArraySessionStorage();
 
-        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)));
+        $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
+        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
         $config->init('test', $filter);
         $config->buildForm();
 
@@ -103,7 +111,8 @@ class FilterConfigTest extends ContaoTestCase
         $framework = $this->mockContaoFramework($adapters);
         $session = new MockArraySessionStorage();
 
-        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)));
+        $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
+        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
         $config->init('test', $filter);
         $config->buildForm();
 
