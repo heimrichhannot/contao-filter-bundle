@@ -1,14 +1,38 @@
 language: php
-php:
-- 7.1
-- 7.2
+
+git:
+  depth: 1
+
+cache:
+  directories:
+    - $HOME/.composer/cache
+
+sudo: false
+
 env:
-- CONTAO_VERSION="4.4.*"
-- CONTAO_VERSION="4.5.*"
+  global:
+    - COMPOSER_ALLOW_XDEBUG=0
+
+matrix:
+  include:
+    # Latest dependencies with all PHP versions
+    - php: 7.1
+    - php: 7.2
+
+    # Generate the coverage with the latest PHP version
+    - php: 7.2
+      env: COVERAGE='--exclude-group contao3 --coverage-clover build/logs/clover.xml'
+
+    # Lowest dependencies with the oldest and latest PHP versions
+    - php: 7.1
+      env: COMPOSER_FLAGS='--prefer-lowest --prefer-stable' SYMFONY_DEPRECATIONS_HELPER='weak_vendors'
+    - php: 7.2
+      env: COMPOSER_FLAGS='--prefer-lowest --prefer-stable' SYMFONY_DEPRECATIONS_HELPER='weak_vendors'
+  fast_finish: true
 
 install:
-- composer require contao/core-bundle:${CONTAO_VERSION}
-sudo: false
+  - if [[ "$COMPOSER_FLAGS" == *"--prefer-lowest"* ]]; then composer update --no-interaction --quiet; fi
+  - composer update $COMPOSER_FLAGS --no-interaction --no-suggest
 
 notifications:
   email:
@@ -22,7 +46,7 @@ notifications:
 before_script:
 - travis_wait composer install --no-interaction
 script:
-- mkdir -p build/logs
-- php vendor/bin/phpunit --coverage-clover build/logs/clover.xml
+  - if [[ $COVERAGE ]]; then mkdir -p build/logs; fi
+  - php vendor/bin/phpunit $COVERAGE
 after_script:
-- php vendor/bin/coveralls
+  - if [[ $COVERAGE ]]; then php vendor/bin/coveralls; fi
