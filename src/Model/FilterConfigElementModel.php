@@ -143,12 +143,10 @@ class FilterConfigElementModel extends \Model implements \JsonSerializable
 
     /**
      * Required by HeimrichHannot\UtilsBundle\Choice\AbstractChoice to create custom cache key
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function jsonSerialize()
     {
         return get_object_vars($this);
     }
-
-
 }
