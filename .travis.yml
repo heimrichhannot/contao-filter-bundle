@@ -7,7 +7,7 @@ env:
 - CONTAO_VERSION="4.5.*"
 
 install:
-- composer require contao/manager-bundle:${CONTAO_VERSION}
+- composer require contao/core-bundle:${CONTAO_VERSION}
 sudo: false
 
 notifications:
