@@ -9,6 +9,7 @@
 namespace HeimrichHannot\FilterBundle\Choice;
 
 use Contao\Controller;
+use Contao\StringUtil;
 use Contao\System;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use Symfony\Component\Intl\Intl;
@@ -85,7 +86,7 @@ class LocaleChoice extends FieldOptionsChoice
             return [];
         }
 
-        $options = deserialize($element->locales, true);
+        $options = StringUtil::deserialize($element->locales, true);
 
         $all = Intl::getLocaleBundle()->getLocaleNames();
 
