@@ -1,13 +1,12 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2018 Heimrich & Hannot GmbH
  *
- * @author Rico Kaltofen <r.kaltofen@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @license LGPL-3.0-or-later
  */
 
 namespace HeimrichHannot\FilterBundle\Tests\Filter\Type;
-
 
 use Contao\System;
 use Contao\TestCase\ContaoTestCase;
@@ -18,13 +17,12 @@ use HeimrichHannot\FilterBundle\Entity\FilterSession;
 use HeimrichHannot\FilterBundle\Filter\Type\DateRangeType;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 use HeimrichHannot\Haste\InsertTags\InsertTags;
-use Symfony\Component\Translation\Translator;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
+use Symfony\Component\Translation\Translator;
 
 class DateRangeTypeTest extends ContaoTestCase
 {
-
     /**
      * Tests the object instantiation.
      */
@@ -34,14 +32,14 @@ class DateRangeTypeTest extends ContaoTestCase
         $container->set('translator', new Translator('en'));
         System::setContainer($container);
 
-        $insertTagAdapter            = $this->mockConfiguredAdapter(['replace' => '/test']);
+        $insertTagAdapter = $this->mockConfiguredAdapter(['replace' => '/test']);
         $adapters[InsertTags::class] = $insertTagAdapter;
 
         $framework = $this->mockContaoFramework($adapters);
-        $session   = new MockArraySessionStorage();
+        $session = new MockArraySessionStorage();
 
         $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
 
         $instance = new DateRangeType($config);
 
