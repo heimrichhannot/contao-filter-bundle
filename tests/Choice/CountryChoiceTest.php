@@ -17,6 +17,7 @@ use HeimrichHannot\FilterBundle\ContaoManager\Plugin;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use PHPUnit\Framework\MockObject\Matcher\InvokedRecorder;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Translation\Translator;
 
 class CountryChoiceTest extends ContaoTestCase
@@ -27,7 +28,7 @@ class CountryChoiceTest extends ContaoTestCase
     private $container;
 
     /**
-     * @var ContaoKernel
+     * @var Kernel
      */
     private $kernel;
 
@@ -51,7 +52,7 @@ class CountryChoiceTest extends ContaoTestCase
         $this->container->setParameter('kernel.debug', true);
         $this->container->setParameter('kernel.default_locale', 'de');
 
-        $this->kernel = $this->createMock(ContaoKernel::class);
+        $this->kernel = $this->createMock(Kernel::class);
         $this->kernel->method('getContainer')->willReturn($this->container);
 
         $plugin = new Plugin();

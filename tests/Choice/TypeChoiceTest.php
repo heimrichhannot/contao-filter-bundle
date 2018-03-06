@@ -17,6 +17,7 @@ use HeimrichHannot\FilterBundle\Choice\TypeChoice;
 use HeimrichHannot\FilterBundle\ContaoManager\Plugin;
 use PHPUnit\Framework\MockObject\Matcher\InvokedRecorder;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\HttpKernel\Kernel;
 
 class TypeChoiceTest extends ContaoTestCase
 {
@@ -26,7 +27,7 @@ class TypeChoiceTest extends ContaoTestCase
     private $container;
 
     /**
-     * @var ContaoKernel
+     * @var Kernel
      */
     private $kernel;
 
@@ -45,7 +46,7 @@ class TypeChoiceTest extends ContaoTestCase
         $this->container = $this->mockContainer();
         $this->container->setParameter('kernel.debug', true);
 
-        $this->kernel = $this->createMock(ContaoKernel::class);
+        $this->kernel = $this->createMock(Kernel::class);
         $this->kernel->method('getContainer')->willReturn($this->container);
 
         $plugin = new Plugin();
