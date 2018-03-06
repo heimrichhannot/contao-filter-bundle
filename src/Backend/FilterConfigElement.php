@@ -17,12 +17,11 @@ use HeimrichHannot\FilterBundle\Filter\Type\ChoiceType;
 
 class FilterConfigElement
 {
+    const INITIAL_PALETTE = '{general_legend},title,type,isInitial;{config_legend},field,operator,initialValueType;{publish_legend},published;';
     /**
      * @var ContaoFrameworkInterface
      */
     protected $framework;
-
-    const INITIAL_PALETTE = '{general_legend},title,type,isInitial;{config_legend},field,operator,initialValueType;{publish_legend},published;';
 
     public function __construct(ContaoFrameworkInterface $framework)
     {
