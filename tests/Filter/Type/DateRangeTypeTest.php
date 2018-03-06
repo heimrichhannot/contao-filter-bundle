@@ -17,7 +17,6 @@ use HeimrichHannot\FilterBundle\Config\FilterConfig;
 use HeimrichHannot\FilterBundle\Entity\FilterSession;
 use HeimrichHannot\FilterBundle\Filter\Type\DateRangeType;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
-use HeimrichHannot\Haste\InsertTags\InsertTags;
 use Symfony\Component\Translation\Translator;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
@@ -34,10 +33,7 @@ class DateRangeTypeTest extends ContaoTestCase
         $container->set('translator', new Translator('en'));
         System::setContainer($container);
 
-        $insertTagAdapter            = $this->mockConfiguredAdapter(['replace' => '/test']);
-        $adapters[InsertTags::class] = $insertTagAdapter;
-
-        $framework = $this->mockContaoFramework($adapters);
+        $framework = $this->mockContaoFramework();
         $session   = new MockArraySessionStorage();
 
         $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
