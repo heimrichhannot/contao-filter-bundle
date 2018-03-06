@@ -9,14 +9,13 @@
 namespace HeimrichHannot\FilterBundle\Test\Choice;
 
 use Contao\DataContainer;
-use Contao\ManagerBundle\HttpKernel\ContaoKernel;
 use Contao\ManagerPlugin\PluginLoader;
 use Contao\System;
 use Contao\TestCase\ContaoTestCase;
 use HeimrichHannot\FilterBundle\Choice\TemplateChoice;
 use HeimrichHannot\FilterBundle\Choice\TypeChoice;
 use HeimrichHannot\FilterBundle\ContaoManager\Plugin;
-use PHPUnit\Framework\MockObject\Matcher\InvokedRecorder;
+use PHPUnit\Framework\MockObject\Matcher\Invocation;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Kernel;
 
@@ -176,12 +175,12 @@ class TemplateChoiceTest extends ContaoTestCase
     /**
      * Mocks the plugin loader.
      *
-     * @param InvokedRecorder $expects
+     * @param Invocation $expects
      * @param array           $plugins
      *
      * @return PluginLoader|\PHPUnit_Framework_MockObject_MockObject
      */
-    private function mockPluginLoader(InvokedRecorder $expects, array $plugins = [])
+    private function mockPluginLoader(Invocation $expects, array $plugins = [])
     {
         $pluginLoader = $this->createMock(PluginLoader::class);
 

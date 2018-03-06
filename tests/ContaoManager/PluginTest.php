@@ -16,7 +16,7 @@ use Contao\ManagerPlugin\PluginLoader;
 use Contao\TestCase\ContaoTestCase;
 use HeimrichHannot\FilterBundle\ContaoManager\Plugin;
 use HeimrichHannot\FilterBundle\HeimrichHannotContaoFilterBundle;
-use PHPUnit\Framework\MockObject\Matcher\InvokedRecorder;
+use PHPUnit\Framework\MockObject\Matcher\Invocation;
 
 /**
  * Test the plugin class
@@ -136,12 +136,12 @@ class PluginTest extends ContaoTestCase
     /**
      * Mocks the plugin loader.
      *
-     * @param InvokedRecorder $expects
+     * @param Invocation $expects
      * @param array           $plugins
      *
      * @return PluginLoader|\PHPUnit_Framework_MockObject_MockObject
      */
-    private function mockPluginLoader(InvokedRecorder $expects, array $plugins = [])
+    private function mockPluginLoader(Invocation $expects, array $plugins = [])
     {
         $pluginLoader = $this->createMock(PluginLoader::class);
 
