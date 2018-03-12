@@ -19,7 +19,7 @@ matrix:
     - php: 7.2
       env: CONTAO_VERSION='4.5.*'
     - php: 7.2
-      env: COVERAGE=1 UPDATEDOC=1 CONTAO_VERSION='4.5.*'
+      env: UPDATEDOC=1 CONTAO_VERSION='4.5.*'
   allow_failures:
     - env: COVERAGE=1 UPDATEDOC=1 DEFAULT=0
   fast_finish: true
