@@ -14,7 +14,6 @@ use Contao\System;
 use Contao\TestCase\ContaoTestCase;
 use HeimrichHannot\FilterBundle\Choice\TypeChoice;
 use HeimrichHannot\FilterBundle\ContaoManager\Plugin;
-use PHPUnit\Framework\MockObject\Matcher\Invocation;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Kernel;
 
@@ -163,12 +162,12 @@ class TypeChoiceTest extends ContaoTestCase
     /**
      * Mocks the plugin loader.
      *
-     * @param Invocation $expects
+     * @param \PHPUnit_Framework_MockObject_Matcher_InvokedCount $expects
      * @param array      $plugins
      *
      * @return PluginLoader|\PHPUnit_Framework_MockObject_MockObject
      */
-    private function mockPluginLoader(Invocation $expects, array $plugins = [])
+    private function mockPluginLoader(\PHPUnit_Framework_MockObject_Matcher_InvokedCount $expects, array $plugins = [])
     {
         $pluginLoader = $this->createMock(PluginLoader::class);
 

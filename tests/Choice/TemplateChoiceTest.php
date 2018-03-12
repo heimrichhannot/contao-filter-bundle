@@ -175,12 +175,12 @@ class TemplateChoiceTest extends ContaoTestCase
     /**
      * Mocks the plugin loader.
      *
-     * @param Invocation $expects
+     * @param \PHPUnit_Framework_MockObject_Matcher_InvokedCount $expects
      * @param array      $plugins
      *
      * @return PluginLoader|\PHPUnit_Framework_MockObject_MockObject
      */
-    private function mockPluginLoader(Invocation $expects, array $plugins = [])
+    private function mockPluginLoader(\PHPUnit_Framework_MockObject_Matcher_InvokedCount $expects, array $plugins = [])
     {
         $pluginLoader = $this->createMock(PluginLoader::class);
 

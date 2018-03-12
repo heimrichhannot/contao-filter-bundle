@@ -26,23 +26,27 @@ class ElementChoice extends AbstractChoice
 
         $context = $this->getContext();
 
-        if (!isset($context['pid'])) {
+        if (!isset($context['pid']) || $context['pid'] < 1) {
             return $choices;
         }
 
-        $context['types'] = is_array($context['types']) ? $context['types'] : [];
+        $context['types'] = isset($context['types']) && is_array($context['types']) ? $context['types'] : [];
 
         /**
          * @var FilterConfigElementModel
          */
         $adapter = $this->framework->getAdapter(FilterConfigElementModel::class);
 
+        if (null === $adapter) {
+            return $choices;
+        }
+
         if (null === ($elements = $adapter->findPublishedByPidAndTypes($context['pid'], $context['types']))) {
             return $choices;
         }
 
         while ($elements->next()) {
-            $choices[$elements->id] = $elements->name.'['.$elements->type.']';
+            $choices[$elements->id] = $elements->name . '[' . $elements->type . ']';
         }
 
         return $choices;
