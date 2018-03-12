@@ -26,14 +26,14 @@ class ElementChoice extends AbstractChoice
 
         $context = $this->getContext();
 
-        if (!isset($context['pid']) || $context['pid'] < 1) {
+        if (!isset($context['pid']) || !is_numeric($context['pid']) || $context['pid'] < 1) {
             return $choices;
         }
 
         $context['types'] = isset($context['types']) && is_array($context['types']) ? $context['types'] : [];
 
         /**
-         * @var FilterConfigElementModel
+         * @var $adapter FilterConfigElementModel
          */
         $adapter = $this->framework->getAdapter(FilterConfigElementModel::class);
 
@@ -45,8 +45,9 @@ class ElementChoice extends AbstractChoice
             return $choices;
         }
 
-        while ($elements->next()) {
-            $choices[$elements->id] = $elements->name . '[' . $elements->type . ']';
+        foreach ($elements as $element)
+        {
+            $choices[$element->id] = $element->name . ' [' . $element->type . ']';
         }
 
         return $choices;

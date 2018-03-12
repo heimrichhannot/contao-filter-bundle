@@ -45,11 +45,6 @@ services:
     public: true
     arguments:
       - "@contao.framework"
-  huh.filter.choice.parent:
-    class: HeimrichHannot\FilterBundle\Choice\ParentChoice
-    public: true
-    arguments:
-      - "@contao.framework"
   huh.filter.choice.type:
     class: HeimrichHannot\FilterBundle\Choice\TypeChoice
     public: true

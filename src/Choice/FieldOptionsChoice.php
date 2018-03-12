@@ -15,6 +15,7 @@ use Contao\Widget;
 use HeimrichHannot\CategoriesBundle\Model\CategoryModel;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\UtilsBundle\Choice\AbstractChoice;
+use Symfony\Component\Translation\Translator;
 
 class FieldOptionsChoice extends AbstractChoice
 {
@@ -31,19 +32,31 @@ class FieldOptionsChoice extends AbstractChoice
         }
 
         $element = $context['element'];
-        $filter = $context['filter'];
+        $filter  = $context['filter'];
 
         $options = [];
 
-        $this->framework->getAdapter(Controller::class)->loadDataContainer($filter['dataContainer']);
+        /** @var Controller $controller */
+        $controller = $this->framework->getAdapter(Controller::class);
 
-        if (true === (bool) $element->customOptions) {
+        if (null === $controller) {
+            return $choices;
+        }
+
+        $controller->loadDataContainer($filter['dataContainer']);
+
+        if (!isset($GLOBALS['TL_DCA'][$filter['dataContainer']])) {
+            return $choices;
+        }
+
+        if (true === (bool)$element->customOptions) {
             $options = $this->getCustomOptions($element, $filter);
         } elseif (isset($GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element->field])) {
             $options = $this->getDcaOptions($element, $filter,
                 $GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element->field]);
         }
 
+        /** @var Translator $translator */
         $translator = System::getContainer()->get('translator');
 
         foreach ($options as $option) {
@@ -65,7 +78,7 @@ class FieldOptionsChoice extends AbstractChoice
      * Get custom options.
      *
      * @param FilterConfigElementModel $element
-     * @param array                    $filter
+     * @param array $filter
      *
      * @return array
      */
@@ -84,15 +97,15 @@ class FieldOptionsChoice extends AbstractChoice
      * Get contao dca widget options.
      *
      * @param FilterConfigElementModel $element
-     * @param array                    $filter
-     * @param array                    $dca
+     * @param array $filter
+     * @param array $dca
      *
      * @return array
      */
     protected function getDcaOptions(FilterConfigElementModel $element, array $filter, array $dca)
     {
         $options = [];
-        $dca = $GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element->field];
+        $dca     = $GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element->field];
 
         if (isset($dca['eval']['isCategoryField']) && $dca['eval']['isCategoryField']) {
             $options = $this->getCategoryWidgetOptions($element, $filter, $dca);
@@ -122,8 +135,8 @@ class FieldOptionsChoice extends AbstractChoice
      * Get default contao widget options.
      *
      * @param FilterConfigElementModel $element
-     * @param array                    $filter
-     * @param array                    $dca
+     * @param array $filter
+     * @param array $dca
      *
      * @return array
      */
@@ -161,8 +174,8 @@ class FieldOptionsChoice extends AbstractChoice
      * Get tag widget options.
      *
      * @param FilterConfigElementModel $element
-     * @param array                    $filter
-     * @param array                    $dca
+     * @param array $filter
+     * @param array $dca
      *
      * @return array
      */
@@ -191,14 +204,18 @@ class FieldOptionsChoice extends AbstractChoice
      * Get category widget options.
      *
      * @param FilterConfigElementModel $element
-     * @param array                    $filter
-     * @param array                    $dca
+     * @param array $filter
+     * @param array $dca
      *
      * @return array
      */
     protected function getCategoryWidgetOptions(FilterConfigElementModel $element, array $filter, array $dca)
     {
         $options = [];
+
+        if (!System::getContainer()->has('huh.categories.manager')) {
+            return $options;
+        }
 
         $categories = System::getContainer()->get('huh.categories.manager')->findByCategoryFieldAndTable($element->field,
             $filter['dataContainer']);

@@ -130,19 +130,6 @@ class HeimrichHannotContaoFilterExtensionTest extends TestCase
     }
 
     /**
-     * Tests the huh.filter.choice.parent service.
-     */
-    public function testRegistersTheFilterChoiceParent()
-    {
-        $this->assertTrue($this->container->has('huh.filter.choice.parent'));
-
-        $definition = $this->container->getDefinition('huh.filter.choice.parent');
-
-        $this->assertSame(ParentChoice::class, $definition->getClass());
-        $this->assertSame('contao.framework', (string) $definition->getArgument(0));
-    }
-
-    /**
      * Tests the huh.filter.choice.type service.
      */
     public function testRegistersTheFilterChoiceType()

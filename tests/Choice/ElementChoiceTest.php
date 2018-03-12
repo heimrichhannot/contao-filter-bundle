@@ -16,7 +16,6 @@ use HeimrichHannot\FilterBundle\ContaoManager\Plugin;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Kernel;
-use Symfony\Component\Translation\Translator;
 
 class ElementChoiceTest extends ContaoTestCase
 {
@@ -57,12 +56,12 @@ class ElementChoiceTest extends ContaoTestCase
 
         $containerBuilder = new \Contao\ManagerPlugin\Config\ContainerBuilder($this->mockPluginLoader($this->never()), []);
 
-        $config = $plugin->getExtensionConfig('huh_filter', [[]], $containerBuilder);
+        $config                 = $plugin->getExtensionConfig('huh_filter', [[]], $containerBuilder);
         $this->config['filter'] = $config['huh']['filter'];
 
         // required within Contao\Widget::getAttributesFromDca()
         if (!\function_exists('array_is_assoc')) {
-            include_once __DIR__.'/../../vendor/contao/core-bundle/src/Resources/contao/helper/functions.php';
+            include_once __DIR__ . '/../../vendor/contao/core-bundle/src/Resources/contao/helper/functions.php';
         }
     }
 
@@ -77,9 +76,121 @@ class ElementChoiceTest extends ContaoTestCase
         System::setContainer($this->container);
 
         $framework = $this->mockContaoFramework();
-        $instance = new ElementChoice($framework);
+        $instance  = new ElementChoice($framework);
 
         $this->assertInstanceOf('HeimrichHannot\FilterBundle\Choice\ElementChoice', $instance);
+    }
+
+    /**
+     * Tests the element collection with valid context and elements
+     */
+    public function testCollectElementsWithContextAndElements()
+    {
+        $this->container->set('kernel', $this->kernel);
+
+
+        $filterConfigDateElement = $this->mockClassWithProperties(FilterConfigElementModel::class, [
+            'id'   => 1,
+            'pid'  => 1,
+            'type' => 'date',
+            'name' => 'testDate'
+        ]);
+
+        $filterConfigTimeElement = $this->mockClassWithProperties(FilterConfigElementModel::class, [
+            'id'   => 2,
+            'pid'  => 1,
+            'type' => 'time',
+            'name' => 'testTime'
+        ]);
+
+
+        $filterConfigElementAdapter = $this->mockAdapter(['findPublishedByPidAndTypes']);
+        $filterConfigElementAdapter->method('findPublishedByPidAndTypes')->willReturn([
+            $filterConfigDateElement,
+            $filterConfigTimeElement
+        ]);
+
+        $framework = $this->mockContaoFramework([FilterConfigElementModel::class => $filterConfigElementAdapter]);
+
+        System::setContainer($this->container);
+
+        $context = ['pid' => 1, 'types' => ['date']];
+
+        $instance = new ElementChoice($framework);
+        $choices  = $instance->getChoices($context);
+
+        System::setContainer($this->container);
+
+        $this->assertNotEmpty($choices);
+        $this->assertCount(2, $choices);
+        $this->assertEquals('testDate [date]', $choices[1]);
+        $this->assertEquals('testTime [time]', $choices[2]);
+    }
+
+    /**
+     * Tests the element collection with invalid context.
+     */
+    public function testCollectWithNoElements()
+    {
+        $this->container->set('kernel', $this->kernel);
+
+        $filterConfigElementAdapter = $this->mockAdapter(['findPublishedByPidAndTypes']);
+        $filterConfigElementAdapter->method('findPublishedByPidAndTypes')->willReturn(null);
+
+        $framework = $this->mockContaoFramework([FilterConfigElementModel::class => $filterConfigElementAdapter]);
+
+        System::setContainer($this->container);
+
+        $context = ['pid' => 1, 'types' => ['date']];
+
+        $instance = new ElementChoice($framework);
+        $choices  = $instance->getChoices($context);
+
+        System::setContainer($this->container);
+
+        $this->assertEmpty($choices);
+    }
+
+    /**
+     * Tests the element collection without model adapter
+     */
+    public function testCollectWithNoAdapter()
+    {
+        $this->container->set('kernel', $this->kernel);
+
+        $framework = $this->mockContaoFramework();
+
+        System::setContainer($this->container);
+
+        $context = ['pid' => 1, 'types' => ['date']];
+
+        $instance = new ElementChoice($framework);
+        $choices  = $instance->getChoices($context);
+
+        System::setContainer($this->container);
+
+        $this->assertEmpty($choices);
+    }
+
+    /**
+     * Tests the element collection with invalid pid
+     */
+    public function testCollectWithInvalidPid()
+    {
+        $this->container->set('kernel', $this->kernel);
+
+        $framework = $this->mockContaoFramework();
+
+        System::setContainer($this->container);
+
+        $context = ['pid' => 0];
+
+        $instance = new ElementChoice($framework);
+        $choices  = $instance->getChoices($context);
+
+        System::setContainer($this->container);
+
+        $this->assertEmpty($choices);
     }
 
     /**
@@ -96,7 +207,7 @@ class ElementChoiceTest extends ContaoTestCase
         $context = ['pid' => []];
 
         $instance = new ElementChoice($framework);
-        $choices = $instance->getChoices($context);
+        $choices  = $instance->getChoices($context);
 
         System::setContainer($this->container);
 
@@ -117,7 +228,7 @@ class ElementChoiceTest extends ContaoTestCase
         $context = [];
 
         $instance = new ElementChoice($framework);
-        $choices = $instance->getChoices($context);
+        $choices  = $instance->getChoices($context);
 
         System::setContainer($this->container);
 
@@ -129,14 +240,14 @@ class ElementChoiceTest extends ContaoTestCase
      */
     protected function getFixturesDir(): string
     {
-        return __DIR__.DIRECTORY_SEPARATOR.'Fixtures';
+        return __DIR__ . DIRECTORY_SEPARATOR . 'Fixtures';
     }
 
     /**
      * Mocks the plugin loader.
      *
      * @param \PHPUnit_Framework_MockObject_Matcher_InvokedCount $expects
-     * @param array      $plugins
+     * @param array $plugins
      *
      * @return PluginLoader|\PHPUnit_Framework_MockObject_MockObject
      */
