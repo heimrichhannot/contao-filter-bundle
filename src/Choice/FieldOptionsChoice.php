@@ -12,7 +12,6 @@ use Contao\Controller;
 use Contao\StringUtil;
 use Contao\System;
 use Contao\Widget;
-use HeimrichHannot\CategoriesBundle\Model\CategoryModel;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\UtilsBundle\Choice\AbstractChoice;
 use Symfony\Component\Translation\Translator;
@@ -183,14 +182,22 @@ class FieldOptionsChoice extends AbstractChoice
     {
         $options = [];
 
+        if (!System::getContainer()->has('codefog_tags.manager_registry')) {
+            return $options;
+        }
+
         /**
-         * @var \Codefog\TagsBundle\Manager\ManagerInterface
+         * @var $tagsManager \Codefog\TagsBundle\Manager\ManagerInterface
          */
         $tagsManager = System::getContainer()->get('codefog_tags.manager_registry')->get(
             $dca['eval']['tagsManager']
         );
 
         $tags = $tagsManager->findMultiple();
+
+        if (null === $tags) {
+            return $options;
+        }
 
         /** @var \Codefog\TagsBundle\Tag $tag */
         foreach ($tags as $tag) {
@@ -217,10 +224,11 @@ class FieldOptionsChoice extends AbstractChoice
             return $options;
         }
 
-        $categories = System::getContainer()->get('huh.categories.manager')->findByCategoryFieldAndTable($element->field,
-            $filter['dataContainer']);
+        if (null === ($categories = System::getContainer()->get('huh.categories.manager')->findByCategoryFieldAndTable($element->field, $filter['dataContainer']))) {
+            return $options;
+        }
 
-        /** @var CategoryModel $category */
+        /** @var \HeimrichHannot\CategoriesBundle\Model\CategoryModel $category */
         foreach ($categories as $category) {
             $options[] = ['label' => $category->frontendTitle ?: $category->title, 'value' => $category->id];
         }

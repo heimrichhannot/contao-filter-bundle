@@ -21,6 +21,8 @@
     "php-http/message-factory": "^1.0.2",
     "php-coveralls/php-coveralls": "^2.0",
     "symfony/phpunit-bridge": "^3.2",
+    "heimrichhannot/contao-categories-bundle": "^1.0-beta",
+    "codefog/tags-bundle": "^2.0",
     "symfony/form": "~3.4|~4.0"
   },
   "conflict": {

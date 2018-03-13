@@ -8,10 +8,14 @@
 
 namespace HeimrichHannot\FilterBundle\Test\Choice;
 
+use Codefog\TagsBundle\Manager\DefaultManager;
+use Codefog\TagsBundle\ManagerRegistry;
+use Codefog\TagsBundle\Model\TagModel;
 use Contao\Controller;
 use Contao\ManagerPlugin\PluginLoader;
 use Contao\System;
 use Contao\TestCase\ContaoTestCase;
+use HeimrichHannot\CategoriesBundle\Model\CategoryModel;
 use HeimrichHannot\FilterBundle\Choice\FieldOptionsChoice;
 use HeimrichHannot\FilterBundle\ContaoManager\Plugin;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
@@ -39,7 +43,7 @@ class FieldOptionsChoiceTest extends ContaoTestCase
     /**
      * {@inheritdoc}
      */
-    public function setUp(): void
+    public function setUp()
     {
         parent::setUp();
 
@@ -84,6 +88,443 @@ class FieldOptionsChoiceTest extends ContaoTestCase
         $instance  = new FieldOptionsChoice($framework);
 
         $this->assertInstanceOf('HeimrichHannot\FilterBundle\Choice\FieldOptionsChoice', $instance);
+    }
+
+    /**
+     * Tests the field options choices based on tag field without tag manager service
+     */
+    public function testCollectTagOptionsWithTranslation()
+    {
+        $translator = new Translator('de');
+        $translator->getCatalogue()->add(['message.tag.tagA' => 'Translated tag A']);
+        $this->container->set('translator', $translator);
+        $this->container->set('kernel', $this->kernel);
+
+        $controllerAdapter = $this->mockAdapter(['loadDataContainer']);
+        $controllerAdapter->method('loadDataContainer')->willReturn(null);
+
+        $tagModelA = $this->mockAdapter(['getName', 'getValue']);
+        $tagModelA->method('getName')->willReturn('message.tag.tagA');
+        $tagModelA->method('getValue')->willReturn(1);
+
+        $tagModelB = $this->mockAdapter(['getName', 'getValue']);
+        $tagModelB->method('getName')->willReturn('Tag B');
+        $tagModelB->method('getValue')->willReturn(2);
+
+        $tagModelAdapter = $this->mockAdapter(['findByCriteria']);
+        $tagModelAdapter->method('findByCriteria')->willReturn([$tagModelA, $tagModelB]);
+
+        $framework = $this->mockContaoFramework([
+            Controller::class => $controllerAdapter,
+            TagModel::class   => $tagModelAdapter
+        ]);
+
+        $defaultManagerAdapter = $this->mockAdapter(['findMultiple']);
+        $defaultManagerAdapter->method('findMultiple')->willReturn([$tagModelA, $tagModelB]);
+
+        $tagManagerRegistry = $this->mockAdapter(['get']);
+        $tagManagerRegistry->method('get')->willReturn($defaultManagerAdapter);
+
+        $this->container->set('codefog_tags.manager_registry', $tagManagerRegistry);
+
+        System::setContainer($this->container);
+
+        $GLOBALS['TL_DCA']['tl_test'] = [
+            'fields' => [
+                'test' => [
+                    'label'     => ['foo', 'bar'],
+                    'inputType' => 'cfgTags',
+                    'eval'      => [
+                        'submitOnChange'     => false,
+                        'allowHtml'          => false,
+                        'rte'                => false,
+                        'preserveTags'       => false,
+                        'isAssociative'      => false,
+                        'includeBlankOption' => false,
+                        'sql'                => '',
+                        'tagsManager'        => 'tag_manager.test'
+                    ],
+                ]
+            ]
+        ];
+
+        $elementModel = $this->mockClassWithProperties(FilterConfigElementModel::class, [
+            'field' => 'test'
+        ]);
+
+        $context = [
+            'filter'  => ['dataContainer' => 'tl_test'],
+            'element' => $elementModel
+        ];
+
+        $instance = new FieldOptionsChoice($framework);
+        $choices  = $instance->getChoices($context);
+
+        System::setContainer($this->container);
+
+        $this->assertNotEmpty($choices);
+        $this->assertEquals(['Translated tag A' => 1, 'Tag B' => 2], $choices);
+    }
+
+    /**
+     * Tests the field options choices based on tag field without tags
+     */
+    public function testCollectTagOptionsWithoutTags()
+    {
+        $translator = new Translator('de');
+        $this->container->set('translator', $translator);
+        $this->container->set('kernel', $this->kernel);
+
+        $controllerAdapter = $this->mockAdapter(['loadDataContainer']);
+        $controllerAdapter->method('loadDataContainer')->willReturn(null);
+
+        $tagModelAdapter = $this->mockAdapter(['findByCriteria']);
+        $tagModelAdapter->method('findByCriteria')->willReturn(null);
+
+        $framework = $this->mockContaoFramework([
+            Controller::class => $controllerAdapter,
+            TagModel::class   => $tagModelAdapter
+        ]);
+
+        $defaultManagerAdapter = $this->mockAdapter(['findMultiple']);
+        $defaultManagerAdapter->method('findMultiple')->willReturn(null);
+
+        $tagManagerRegistry = $this->mockAdapter(['get']);
+        $tagManagerRegistry->method('get')->willReturn($defaultManagerAdapter);
+
+        $this->container->set('codefog_tags.manager_registry', $tagManagerRegistry);
+
+        System::setContainer($this->container);
+
+        $GLOBALS['TL_DCA']['tl_test'] = [
+            'fields' => [
+                'test' => [
+                    'label'     => ['foo', 'bar'],
+                    'inputType' => 'cfgTags',
+                    'eval'      => [
+                        'submitOnChange'     => false,
+                        'allowHtml'          => false,
+                        'rte'                => false,
+                        'preserveTags'       => false,
+                        'isAssociative'      => false,
+                        'includeBlankOption' => false,
+                        'sql'                => '',
+                        'tagsManager'        => 'tag_manager.test'
+                    ],
+                ]
+            ]
+        ];
+
+        $elementModel = $this->mockClassWithProperties(FilterConfigElementModel::class, [
+            'field' => 'test'
+        ]);
+
+        $context = [
+            'filter'  => ['dataContainer' => 'tl_test'],
+            'element' => $elementModel
+        ];
+
+        $instance = new FieldOptionsChoice($framework);
+        $choices  = $instance->getChoices($context);
+
+        System::setContainer($this->container);
+
+        $this->assertEmpty($choices);
+    }
+
+    /**
+     * Tests the field options choices based on tag field without tag manager service
+     */
+    public function testCollectTagOptionsWithoutTagManager()
+    {
+        $translator = new Translator('de');
+        $this->container->set('translator', $translator);
+        $this->container->set('kernel', $this->kernel);
+
+        $controllerAdapter = $this->mockAdapter(['loadDataContainer']);
+        $controllerAdapter->method('loadDataContainer')->willReturn(null);
+
+        $tagModelAdapter = $this->mockAdapter(['findByCriteria']);
+        $tagModelAdapter->method('findByCriteria')->willReturn(null);
+
+        $framework = $this->mockContaoFramework([
+            Controller::class => $controllerAdapter,
+            TagModel::class   => $tagModelAdapter
+        ]);
+
+        $tagManagerRegistry = $this->mockAdapter(['get']);
+        $tagManagerRegistry->method('get')->willReturn(new DefaultManager($framework, 'tl_test', 'test'));
+
+        $this->container->set('codefog_tags.manager_registry', $tagManagerRegistry);
+
+        System::setContainer($this->container);
+
+        $GLOBALS['TL_DCA']['tl_test'] = [
+            'fields' => [
+                'test' => [
+                    'label'     => ['foo', 'bar'],
+                    'inputType' => 'cfgTags',
+                    'eval'      => [
+                        'submitOnChange'     => false,
+                        'allowHtml'          => false,
+                        'rte'                => false,
+                        'preserveTags'       => false,
+                        'isAssociative'      => false,
+                        'includeBlankOption' => false,
+                        'sql'                => '',
+                        'tagsManager'        => 'tag_manager.test'
+                    ],
+                ]
+            ]
+        ];
+
+        $elementModel = $this->mockClassWithProperties(FilterConfigElementModel::class, [
+            'field' => 'test'
+        ]);
+
+        $context = [
+            'filter'  => ['dataContainer' => 'tl_test'],
+            'element' => $elementModel
+        ];
+
+        $instance = new FieldOptionsChoice($framework);
+        $choices  = $instance->getChoices($context);
+
+        System::setContainer($this->container);
+
+        $this->assertEmpty($choices);
+    }
+
+    /**
+     * Tests the field options choices based on tag field without codefog_tags.manager_registry service
+     */
+    public function testCollectTagOptionsWithoutTagsManagerRegistryService()
+    {
+        $translator = new Translator('de');
+        $this->container->set('translator', $translator);
+        $this->container->set('kernel', $this->kernel);
+
+        $controllerAdapter = $this->mockAdapter(['loadDataContainer']);
+        $controllerAdapter->method('loadDataContainer')->willReturn(null);
+
+        $framework = $this->mockContaoFramework([Controller::class => $controllerAdapter]);
+
+        System::setContainer($this->container);
+
+        $GLOBALS['TL_DCA']['tl_test'] = [
+            'fields' => [
+                'test' => [
+                    'label'     => ['foo', 'bar'],
+                    'inputType' => 'cfgTags',
+                    'eval'      => [
+                        'submitOnChange'     => false,
+                        'allowHtml'          => false,
+                        'rte'                => false,
+                        'preserveTags'       => false,
+                        'isAssociative'      => false,
+                        'includeBlankOption' => false,
+                        'sql'                => '',
+                        'tagsManager'        => 'tag_manager.test'
+                    ],
+                ]
+            ]
+        ];
+
+        $elementModel = $this->mockClassWithProperties(FilterConfigElementModel::class, [
+            'field' => 'test'
+        ]);
+
+        $context = [
+            'filter'  => ['dataContainer' => 'tl_test'],
+            'element' => $elementModel
+        ];
+
+        $instance = new FieldOptionsChoice($framework);
+        $choices  = $instance->getChoices($context);
+
+        System::setContainer($this->container);
+
+        $this->assertEmpty($choices);
+    }
+
+    /**
+     * Tests the field options choices based on tag field without tagsManager in eval set
+     */
+    public function testCollectTagOptionsWithoutTagManagerEval()
+    {
+        $translator = new Translator('de');
+        $this->container->set('translator', $translator);
+        $this->container->set('kernel', $this->kernel);
+
+        $controllerAdapter = $this->mockAdapter(['loadDataContainer']);
+        $controllerAdapter->method('loadDataContainer')->willReturn(null);
+
+        $framework = $this->mockContaoFramework([Controller::class => $controllerAdapter]);
+
+        System::setContainer($this->container);
+
+        $GLOBALS['TL_DCA']['tl_test'] = [
+            'fields' => [
+                'test' => [
+                    'label'     => ['foo', 'bar'],
+                    'inputType' => 'cfgTags',
+                    'eval'      => [
+                        'submitOnChange'     => false,
+                        'allowHtml'          => false,
+                        'rte'                => false,
+                        'preserveTags'       => false,
+                        'isAssociative'      => false,
+                        'includeBlankOption' => false,
+                        'sql'                => '',
+                    ],
+                ]
+            ]
+        ];
+
+        $elementModel = $this->mockClassWithProperties(FilterConfigElementModel::class, [
+            'field' => 'test'
+        ]);
+
+        $context = [
+            'filter'  => ['dataContainer' => 'tl_test'],
+            'element' => $elementModel
+        ];
+
+        $instance = new FieldOptionsChoice($framework);
+        $choices  = $instance->getChoices($context);
+
+        System::setContainer($this->container);
+
+        $this->assertEmpty($choices);
+    }
+
+    /**
+     * Tests the field options choices based on category field with categories and translation
+     */
+    public function testCollectCategoryOptionsWithTranslation()
+    {
+        $translator = new Translator('de');
+        $translator->getCatalogue()->add(['message.categoryA.frontendTitle' => 'Frontend Title Category A']);
+        $this->container->set('translator', $translator);
+        $this->container->set('kernel', $this->kernel);
+
+        $controllerAdapter = $this->mockAdapter(['loadDataContainer']);
+        $controllerAdapter->method('loadDataContainer')->willReturn(null);
+
+        $categoryA = $this->mockClassWithProperties(CategoryModel::class, [
+            'id'            => 1,
+            'frontendTitle' => 'message.categoryA.frontendTitle',
+            'title'         => 'Category A',
+        ]);
+
+        $categoryB = $this->mockClassWithProperties(CategoryModel::class, [
+            'id'            => 2,
+            'frontendTitle' => 'Frontend Title Category B',
+            'title'         => 'Category B',
+        ]);
+
+        $categoryAdapter = $this->mockAdapter(['findByCategoryFieldAndTable']);
+        $categoryAdapter->method('findByCategoryFieldAndTable')->willReturn([
+            $categoryA,
+            $categoryB
+        ]);
+        $this->container->set('huh.categories.manager', $categoryAdapter);
+
+        $framework = $this->mockContaoFramework([Controller::class => $controllerAdapter]);
+
+        System::setContainer($this->container);
+
+        $GLOBALS['TL_DCA']['tl_test'] = [
+            'fields' => [
+                'test' => [
+                    'label'     => ['foo', 'bar'],
+                    'inputType' => 'select',
+                    'eval'      => [
+                        'submitOnChange'     => false,
+                        'allowHtml'          => false,
+                        'rte'                => false,
+                        'preserveTags'       => false,
+                        'isAssociative'      => false,
+                        'includeBlankOption' => false,
+                        'sql'                => '',
+                        'isCategoryField'    => true,
+                    ],
+                ]
+            ]
+        ];
+
+        $elementModel = $this->mockClassWithProperties(FilterConfigElementModel::class, [
+            'field' => 'test'
+        ]);
+
+        $context = [
+            'filter'  => ['dataContainer' => 'tl_test'],
+            'element' => $elementModel
+        ];
+
+        $instance = new FieldOptionsChoice($framework);
+        $choices  = $instance->getChoices($context);
+
+        System::setContainer($this->container);
+
+        $this->assertNotEmpty($choices);
+        $this->assertEquals(['Frontend Title Category A' => 1, 'Frontend Title Category B' => 2], $choices);
+    }
+
+    /**
+     * Tests the field options choices based on category field without existing categories
+     */
+    public function testCollectCategoryOptionsWithoutCategories()
+    {
+        $translator = new Translator('de');
+        $this->container->set('translator', $translator);
+        $this->container->set('kernel', $this->kernel);
+
+        $controllerAdapter = $this->mockAdapter(['loadDataContainer']);
+        $controllerAdapter->method('loadDataContainer')->willReturn(null);
+
+        $categoryAdapter = $this->mockAdapter(['findByCategoryFieldAndTable']);
+        $categoryAdapter->method('findByCategoryFieldAndTable')->willReturn(null);
+        $this->container->set('huh.categories.manager', $categoryAdapter);
+
+        $framework = $this->mockContaoFramework([Controller::class => $controllerAdapter]);
+
+        System::setContainer($this->container);
+
+        $GLOBALS['TL_DCA']['tl_test'] = [
+            'fields' => [
+                'test' => [
+                    'label'     => ['foo', 'bar'],
+                    'inputType' => 'select',
+                    'eval'      => [
+                        'submitOnChange'     => false,
+                        'allowHtml'          => false,
+                        'rte'                => false,
+                        'preserveTags'       => false,
+                        'isAssociative'      => false,
+                        'includeBlankOption' => false,
+                        'sql'                => '',
+                        'isCategoryField'    => true,
+                    ],
+                ]
+            ]
+        ];
+
+        $elementModel = $this->mockClassWithProperties(FilterConfigElementModel::class, [
+            'field' => 'test'
+        ]);
+
+        $context = [
+            'filter'  => ['dataContainer' => 'tl_test'],
+            'element' => $elementModel
+        ];
+
+        $instance = new FieldOptionsChoice($framework);
+        $choices  = $instance->getChoices($context);
+
+        System::setContainer($this->container);
+
+        $this->assertEmpty($choices);
     }
 
     /**
