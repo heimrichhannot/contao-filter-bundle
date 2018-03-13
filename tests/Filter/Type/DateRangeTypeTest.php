@@ -13,9 +13,11 @@ use Contao\TestCase\ContaoTestCase;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\Mysqli\Driver;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
+use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\Session\FilterSession;
 use HeimrichHannot\FilterBundle\Filter\Type\DateRangeType;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
+use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 use Symfony\Component\Translation\Translator;
@@ -32,13 +34,51 @@ class DateRangeTypeTest extends ContaoTestCase
         System::setContainer($container);
 
         $framework = $this->mockContaoFramework();
-        $session = new MockArraySessionStorage();
+        $session   = new MockArraySessionStorage();
 
         $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
 
         $instance = new DateRangeType($config);
 
         $this->assertInstanceOf('HeimrichHannot\FilterBundle\Filter\Type\DateRangeType', $instance);
+    }
+
+    /**
+     * Test getDefaultOperator()
+     */
+    public function testGetDefaultOperator()
+    {
+        $framework = $this->mockContaoFramework();
+        $session   = new MockArraySessionStorage();
+
+        $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
+        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+
+        /** @var FilterConfigElementModel $element */
+        $element = $this->mockClassWithProperties(FilterConfigElementModel::class, []);
+
+        $instance = new DateRangeType($config);
+
+        $this->assertEquals(DatabaseUtil::OPERATOR_LIKE, $instance->getDefaultOperator($element));
+    }
+
+    /**
+     * Test getDefaultName()
+     */
+    public function testGetDefaultName()
+    {
+        $framework = $this->mockContaoFramework();
+        $session   = new MockArraySessionStorage();
+
+        $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
+        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+
+        /** @var FilterConfigElementModel $element */
+        $element = $this->mockClassWithProperties(FilterConfigElementModel::class, ['name' => 'test']);
+
+        $instance = new DateRangeType($config);
+
+        $this->assertEquals('test', $instance->getDefaultName($element));
     }
 }
