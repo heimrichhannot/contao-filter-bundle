@@ -8,6 +8,9 @@
 
 namespace HeimrichHannot\FilterBundle\Model;
 
+use Contao\Model;
+use Contao\System;
+
 /**
  * Reads and writes filter.
  *
@@ -133,7 +136,7 @@ class FilterConfigElementModel extends \Model implements \JsonSerializable
      * @param int $intLimit An optional limit
      * @param array $arrOptions An optional options array
      *
-     * @return \Model\Collection|FilterConfigElementModel[]|FilterConfigElementModel|null A collection of models or null if there are no filter elements
+     * @return \Contao\Model\Collection|FilterConfigElementModel[]|FilterConfigElementModel|null A collection of models or null if there are no filter elements
      */
     public function findPublishedByPid($intId, $intLimit = 0, array $arrOptions = [])
     {
@@ -153,7 +156,15 @@ class FilterConfigElementModel extends \Model implements \JsonSerializable
             $arrOptions['limit'] = $intLimit;
         }
 
-        return static::findBy($arrColumns, $intId, $arrOptions);
+        /** @var Model $adapter */
+        $adapter = System::getContainer()->get('contao.framework')->getAdapter(Model::class);
+
+        if(null === $adapter)
+        {
+            return null;
+        }
+
+        return $adapter->findBy($arrColumns, $intId, $arrOptions);
     }
 
     /**
@@ -164,7 +175,7 @@ class FilterConfigElementModel extends \Model implements \JsonSerializable
      * @param int $intLimit An optional limit
      * @param array $arrOptions An optional options array
      *
-     * @return \Model\Collection|FilterConfigElementModel[]|FilterConfigElementModel|null A collection of models or null if there are no filter elements
+     * @return \Contao\Model\Collection|FilterConfigElementModel[]|FilterConfigElementModel|null A collection of models or null if there are no filter elements
      */
     public function findPublishedByPidAndTypes($intId, array $types = [], $intLimit = 0, array $arrOptions = [])
     {
@@ -188,7 +199,15 @@ class FilterConfigElementModel extends \Model implements \JsonSerializable
             $arrColumns[] = \Database::getInstance()->findInSet("$t.type", $types);
         }
 
-        return static::findBy($arrColumns, $intId, $arrOptions);
+        /** @var Model $adapter */
+        $adapter = System::getContainer()->get('contao.framework')->getAdapter(Model::class);
+
+        if(null === $adapter)
+        {
+            return null;
+        }
+
+        return $adapter->findBy($arrColumns, $intId, $arrOptions);
     }
 
     /**
