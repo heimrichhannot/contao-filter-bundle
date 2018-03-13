@@ -41,13 +41,4 @@ class FilterConfigElementModelTest extends ContaoTestCase
         $this->kernel->method('getContainer')->willReturn($this->container);
     }
 
-    /**
-     * Tests the object instantiation.
-     */
-    public function testCanBeInstantiated()
-    {
-        $instance = new \HeimrichHannot\FilterBundle\Model\FilterConfigElementModel();
-
-        $this->assertInstanceOf('HeimrichHannot\FilterBundle\Model\FilterConfigElementModel', $instance);
-    }
 }
