@@ -17,7 +17,7 @@ use HeimrichHannot\FilterBundle\Choice\TemplateChoice;
 use HeimrichHannot\FilterBundle\Choice\TypeChoice;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
 use HeimrichHannot\FilterBundle\DependencyInjection\HeimrichHannotContaoFilterExtension;
-use HeimrichHannot\FilterBundle\Entity\FilterSession;
+use HeimrichHannot\FilterBundle\Session\FilterSession;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 use HeimrichHannot\FilterBundle\Registry\FilterRegistry;
 use PHPUnit\Framework\TestCase;

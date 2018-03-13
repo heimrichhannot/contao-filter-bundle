@@ -14,7 +14,7 @@ services:
       - "@contao.framework"
       - "@huh.filter.session"
   huh.filter.session:
-    class: HeimrichHannot\FilterBundle\Entity\FilterSession
+    class: HeimrichHannot\FilterBundle\Session\FilterSession
     public: true
     arguments:
       - "@contao.framework"
