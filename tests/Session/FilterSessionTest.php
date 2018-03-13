@@ -10,7 +10,6 @@ namespace HeimrichHannot\FilterBundle\Tests\Session;
 
 
 use Contao\ManagerPlugin\Config\ContainerBuilder;
-use Contao\System;
 use Contao\TestCase\ContaoTestCase;
 use HeimrichHannot\FilterBundle\Form\FilterType;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -28,11 +27,6 @@ class FilterSessionTest extends ContaoTestCase
      * @var Kernel
      */
     private $kernel;
-
-    /**
-     * @var array
-     */
-    private $config;
 
     /**
      * {@inheritdoc}
