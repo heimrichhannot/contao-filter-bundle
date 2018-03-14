@@ -8,6 +8,7 @@
 
 namespace HeimrichHannot\FilterBundle\Choice;
 
+use HeimrichHannot\FilterBundle\Filter\AbstractType;
 use HeimrichHannot\UtilsBundle\Choice\AbstractChoice;
 
 class TypeChoice extends AbstractChoice
@@ -32,8 +33,14 @@ class TypeChoice extends AbstractChoice
                 continue;
             }
 
+            $r = new \ReflectionClass($type['class']);
+
+            if (!$r->isSubclassOf(AbstractType::class)) {
+                continue;
+            }
+
             if ($groupChoices) {
-                $group = $type['type'];
+                $group             = $type['type'];
                 $choices[$group][] = $type['name'];
                 continue;
             }

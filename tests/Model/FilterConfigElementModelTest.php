@@ -14,10 +14,19 @@ use Contao\Model;
 use Contao\System;
 use Contao\TestCase\ContaoTestCase;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Driver\Mysqli\Driver;
 use Doctrine\DBAL\Platforms\MySqlPlatform;
 use Doctrine\DBAL\Schema\MySqlSchemaManager;
+use HeimrichHannot\FilterBundle\Choice\TypeChoice;
+use HeimrichHannot\FilterBundle\Config\FilterConfig;
+use HeimrichHannot\FilterBundle\Filter\Type\DateTimeType;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
+use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
+use HeimrichHannot\FilterBundle\Session\FilterSession;
+use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 use Symfony\Component\HttpKernel\Kernel;
+use Symfony\Component\Translation\Translator;
 
 class FilterConfigElementModelTest extends ContaoTestCase
 {
@@ -245,6 +254,193 @@ class FilterConfigElementModelTest extends ContaoTestCase
 
         $this->assertNotNull($result);
         $this->assertEquals($modelA, $result[0]);
+    }
+
+    /**
+     * Test getFormName() without huh.filter.choice.type service
+     */
+    public function testGetFormNameWithoutTypeChoiceService()
+    {
+        $model       = new FilterConfigElementModel();
+        $model->id   = 1;
+        $model->pid  = 1;
+        $model->type = 'date';
+
+        $framework = $this->mockContaoFramework();
+        $session   = new MockArraySessionStorage();
+
+        $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
+        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+
+        $this->assertNull($model->getFormName($config));
+    }
+
+    /**
+     * Test getFormName() without types in huh.filter.choice.type service
+     */
+    public function testGetFormNameWithoutTypeChoices()
+    {
+        $model       = new FilterConfigElementModel();
+        $model->id   = 1;
+        $model->pid  = 1;
+        $model->type = 'date';
+
+        $framework = $this->mockContaoFramework();
+        $session   = new MockArraySessionStorage();
+
+        $container = $this->mockContainer();
+        $container->setParameter('kernel.debug', true);
+
+        $kernel = $this->createMock(Kernel::class);
+        $kernel->method('getContainer')->willReturn($container);
+
+        $container->set('kernel', $kernel);
+
+        $container->setParameter('huh.filter', []);
+
+        System::setContainer($container);
+        $container->set('huh.filter.choice.type', new TypeChoice($framework));
+
+        $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
+        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+
+        $this->assertNull($model->getFormName($config));
+    }
+
+    /**
+     * Test getFormName() without current type
+     */
+    public function testGetFormNameWithoutType()
+    {
+        $model       = new FilterConfigElementModel();
+        $model->id   = 1;
+        $model->pid  = 1;
+        $model->type = 'date';
+
+        $framework = $this->mockContaoFramework();
+        $session   = new MockArraySessionStorage();
+
+        $container = $this->mockContainer();
+        $container->setParameter('kernel.debug', true);
+
+        $kernel = $this->createMock(Kernel::class);
+        $kernel->method('getContainer')->willReturn($container);
+
+        $container->set('kernel', $kernel);
+
+        $container->setParameter('huh.filter', [
+            'filter' => [
+                'types' => [
+                    [
+                        'name'  => 'date_time',
+                        'class' => 'HeimrichHannot\FilterBundle\Filter\Type\DateTimeType',
+                        'type'  => 'date',
+                    ]
+                ]
+            ]
+        ]);
+
+        System::setContainer($container);
+        $container->set('huh.filter.choice.type', new TypeChoice($framework));
+
+        $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
+        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+
+        $this->assertNull($model->getFormName($config));
+    }
+
+    /**
+     * Test getFormName() without type name
+     */
+    public function testGetFormNameWithoutNoName()
+    {
+        $model       = new FilterConfigElementModel();
+        $model->id   = 1;
+        $model->pid  = 1;
+        $model->type = 'date';
+
+        $framework = $this->mockContaoFramework();
+        $session   = new MockArraySessionStorage();
+
+        $container = $this->mockContainer();
+        $container->setParameter('kernel.debug', true);
+
+        $kernel = $this->createMock(Kernel::class);
+        $kernel->method('getContainer')->willReturn($container);
+
+        $container->set('kernel', $kernel);
+
+        $container->setParameter('huh.filter', [
+            'filter' => [
+                'types' => [
+                    [
+                        'name'  => 'date',
+                        'class' => 'HeimrichHannot\FilterBundle\Filter\Type\DateType',
+                        'type'  => 'date',
+                    ]
+                ]
+            ]
+        ]);
+
+        $container->setParameter('kernel.default_locale', 'de');
+        $container->set('translator', new Translator('en'));
+
+        System::setContainer($container);
+        $container->set('huh.filter.choice.type', new TypeChoice($framework));
+
+        $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
+        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+
+        $this->assertNull($model->getFormName($config));
+    }
+
+    /**
+     * Test getFormName()
+     */
+    public function testGetFormName()
+    {
+        $model       = new FilterConfigElementModel();
+        $model->id   = 1;
+        $model->pid  = 1;
+        $model->name = 'start';
+        $model->type = 'date';
+
+        $framework = $this->mockContaoFramework();
+        $session   = new MockArraySessionStorage();
+
+        $container = $this->mockContainer();
+        $container->setParameter('kernel.debug', true);
+
+        $kernel = $this->createMock(Kernel::class);
+        $kernel->method('getContainer')->willReturn($container);
+
+        $container->set('kernel', $kernel);
+
+        $container->setParameter('huh.filter', [
+            'filter' => [
+                'types' => [
+                    [
+                        'name'  => 'date',
+                        'class' => 'HeimrichHannot\FilterBundle\Filter\Type\DateType',
+                        'type'  => 'date',
+                    ]
+                ]
+            ]
+        ]);
+
+        $container->setParameter('kernel.default_locale', 'de');
+        $container->set('translator', new Translator('en'));
+
+        System::setContainer($container);
+        $container->set('huh.filter.choice.type', new TypeChoice($framework));
+
+        $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
+        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+
+        $this->assertEquals('start', $model->getFormName($config));
+
+        // cache test
+        $this->assertEquals('start', $model->getFormName($config));
     }
 
     /**

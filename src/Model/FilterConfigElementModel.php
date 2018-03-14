@@ -221,6 +221,11 @@ class FilterConfigElementModel extends \Model implements \JsonSerializable
             return $this->formName;
         }
 
+        if(!\System::getContainer()->has('huh.filter.choice.type'))
+        {
+            return null;
+        }
+
         $types = \System::getContainer()->get('huh.filter.choice.type')->getCachedChoices();
 
         if (!is_array($types) || empty($types)) {
@@ -234,16 +239,8 @@ class FilterConfigElementModel extends \Model implements \JsonSerializable
         $type  = $types[$this->type];
         $class = $type['class'];
 
-        if (!class_exists($class)) {
-            return null;
-        }
-
         /** @var AbstractType $type */
         $type = new $class($config);
-
-        if (!is_subclass_of($type, AbstractType::class)) {
-            return null;
-        }
 
         if (null === ($name = $type->getName($this))) {
             return null;
@@ -251,7 +248,7 @@ class FilterConfigElementModel extends \Model implements \JsonSerializable
 
         $this->formName = $name;
 
-        return $name;
+        return $this->formName;
     }
 
     /**
