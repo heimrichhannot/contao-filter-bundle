@@ -10,6 +10,8 @@ namespace HeimrichHannot\FilterBundle\Model;
 
 use Contao\Model;
 use Contao\System;
+use HeimrichHannot\FilterBundle\Config\FilterConfig;
+use HeimrichHannot\FilterBundle\Filter\AbstractType;
 
 /**
  * Reads and writes filter.
@@ -159,8 +161,7 @@ class FilterConfigElementModel extends \Model implements \JsonSerializable
         /** @var Model $adapter */
         $adapter = System::getContainer()->get('contao.framework')->getAdapter(Model::class);
 
-        if(null === $adapter)
-        {
+        if (null === $adapter) {
             return null;
         }
 
@@ -202,8 +203,7 @@ class FilterConfigElementModel extends \Model implements \JsonSerializable
         /** @var Model $adapter */
         $adapter = System::getContainer()->get('contao.framework')->getAdapter(Model::class);
 
-        if(null === $adapter)
-        {
+        if (null === $adapter) {
             return null;
         }
 
@@ -211,21 +211,47 @@ class FilterConfigElementModel extends \Model implements \JsonSerializable
     }
 
     /**
-     * Set the form element name for the current model.
-     *
-     * @param string $name
-     */
-    public function setElementFormName(string $name)
-    {
-        $this->formName = $name;
-    }
-
-    /**
+     * Get the element form name
+     * @param $config FilterConfig Current filter config
      * @return string|null
      */
-    public function getFormName()
+    public function getFormName(FilterConfig $config)
     {
-        return $this->formName;
+        if (null !== $this->formName) {
+            return $this->formName;
+        }
+
+        $types = \System::getContainer()->get('huh.filter.choice.type')->getCachedChoices();
+
+        if (!is_array($types) || empty($types)) {
+            return null;
+        }
+
+        if (!isset($types[$this->type])) {
+            return null;
+        }
+
+        $type  = $types[$this->type];
+        $class = $type['class'];
+
+        if (!class_exists($class)) {
+            return null;
+        }
+
+        /** @var AbstractType $type */
+        $type = new $class($config);
+
+        if (!is_subclass_of($type, AbstractType::class)) {
+            return null;
+        }
+
+        if (null === ($name = $type->getName($this))) {
+            return null;
+        }
+
+        $this->formName = $name;
+
+        return $name;
     }
 
     /**

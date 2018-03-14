@@ -248,16 +248,6 @@ class FilterConfigElementModelTest extends ContaoTestCase
     }
 
     /**
-     * Test setElementFormName()
-     */
-    public function testSetElementFormName()
-    {
-        $filterConfigElementModel = new FilterConfigElementModel();
-        $filterConfigElementModel->setElementFormName('test');
-        $this->assertEquals('test', $filterConfigElementModel->getFormName());
-    }
-
-    /**
      * Test jsonSerialize()
      */
     public function testJsonSerialize()

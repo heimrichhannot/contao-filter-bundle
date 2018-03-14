@@ -62,7 +62,7 @@ class DateTimeType extends AbstractType
         $options = parent::getOptions($element, $builder);
 
         $options = $this->addDateWidgetOptions($options, $element, $builder);
-        $options['widget'] = $element->dateWidget ?: static::WIDGET_TYPE_CHOICE;
+        $options['widget'] = $element->dateWidget ?: DateType::WIDGET_TYPE_CHOICE;
 
         return $options;
     }
