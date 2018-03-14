@@ -30,7 +30,7 @@ abstract class AbstractType
     ];
 
     /**
-     * @var Filter
+     * @var FilterConfig
      */
     protected $config;
 
