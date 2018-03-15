@@ -36,7 +36,7 @@ class RadioType extends CheckboxType
      */
     public function getDefaultName(FilterConfigElementModel $element)
     {
-        return null;
+        return $element->name;
     }
 
     /**

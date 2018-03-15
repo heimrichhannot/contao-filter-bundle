@@ -405,7 +405,7 @@ class DateTimeTypeTest extends ContaoTestCase
                 'types' => [
                     [
                         'name'  => 'date_time',
-                        'class' => 'HeimrichHannot\FilterBundle\Filter\Type\DateTimeType',
+                        'class' => DateTimeType::class,
                         'type'  => 'date',
                     ]
                 ]
@@ -445,7 +445,7 @@ class DateTimeTypeTest extends ContaoTestCase
                 'types' => [
                     [
                         'name'  => 'date_time',
-                        'class' => 'HeimrichHannot\FilterBundle\Filter\Type\DateTimeType',
+                        'class' => DateTimeType::class,
                         'type'  => 'date',
                     ]
                 ]
@@ -500,7 +500,7 @@ class DateTimeTypeTest extends ContaoTestCase
                 'types' => [
                     [
                         'name'  => 'date_time',
-                        'class' => 'HeimrichHannot\FilterBundle\Filter\Type\DateTimeType',
+                        'class' => DateTimeType::class,
                         'type'  => 'date',
                     ]
                 ]
@@ -557,7 +557,7 @@ class DateTimeTypeTest extends ContaoTestCase
                 'types' => [
                     [
                         'name'  => 'date_time',
-                        'class' => 'HeimrichHannot\FilterBundle\Filter\Type\DateTimeType',
+                        'class' => DateTimeType::class,
                         'type'  => 'date',
                     ]
                 ]
@@ -614,7 +614,7 @@ class DateTimeTypeTest extends ContaoTestCase
                 'types' => [
                     [
                         'name'  => 'date_time',
-                        'class' => 'HeimrichHannot\FilterBundle\Filter\Type\DateTimeType',
+                        'class' => DateTimeType::class,
                         'type'  => 'date',
                     ]
                 ]
@@ -672,7 +672,7 @@ class DateTimeTypeTest extends ContaoTestCase
                 'types' => [
                     [
                         'name'  => 'date_time',
-                        'class' => 'HeimrichHannot\FilterBundle\Filter\Type\DateTimeType',
+                        'class' => DateTimeType::class,
                         'type'  => 'date',
                     ]
                 ]

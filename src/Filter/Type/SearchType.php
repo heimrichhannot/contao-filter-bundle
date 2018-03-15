@@ -37,7 +37,7 @@ class SearchType extends AbstractType
      */
     public function getDefaultName(FilterConfigElementModel $element)
     {
-        return null;
+        return $element->name;
     }
 
     /**

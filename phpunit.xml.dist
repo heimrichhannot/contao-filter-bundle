@@ -18,6 +18,7 @@
 
     <testsuites>
         <testsuite name="Unit Tests">
+            <!--<file>./tests/Filter/Type/CheckboxTypeTest.php</file>-->
             <directory>./tests</directory>
         </testsuite>
     </testsuites>

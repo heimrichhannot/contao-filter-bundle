@@ -24,6 +24,49 @@ class TimeType extends AbstractType
      */
     public function buildQuery(FilterQueryBuilder $builder, FilterConfigElementModel $element)
     {
+        $data   = $this->config->getData();
+        $filter = $this->config->getFilter();
+        $name   = $this->getName($element);
+
+        Controller::loadDataContainer($filter['dataContainer']);
+
+        if (!isset($GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element->field])) {
+            return;
+        }
+
+        $field = $filter['dataContainer'] . '.' . $element->field;
+        $value = isset($data[$name]) && $data[$name] ? $data[$name] : 0;
+
+        if ($element->isInitial) {
+            $value = $data[$name] ?? $this->getInitialValue($element, $builder->getContextualValues());
+
+            // replace insertTags only for initial values (sql-injection protection)
+            $value = System::getContainer()->get('huh.utils.date')->getTimeStamp($value, true);
+        }
+
+        /** @var $startDate \DateTime|null */
+        $value = System::getContainer()->get('huh.utils.date')->getTimeStamp($value, false);
+
+        $minDate = $this->getMinDate($element);
+        $maxDate = $this->getMaxDate($element);
+
+        $start = $value;
+        $stop  = $value;
+
+        $start = $start < $minDate ? $minDate : $start;
+        $start = $start > $maxDate ? $maxDate : $start;
+
+        $stop = $stop < $minDate ? $minDate : $stop;
+        $stop = $stop > $maxDate ? $maxDate : $stop;
+
+        $andXA = $builder->expr()->andX();
+        $andXA->add($builder->expr()->lte(':start', $field));
+        $andXA->add($builder->expr()->gte(':stop', $field));
+
+        $builder->andWhere($andXA);
+
+        $builder->setParameter(':start', $start);
+        $builder->setParameter(':stop', $stop);
     }
 
     /**
@@ -86,33 +129,34 @@ class TimeType extends AbstractType
 
         switch ($type) {
             case DateType::WIDGET_TYPE_SINGLE_TEXT:
+                $element->timeFormat = $element->timeFormat ?: 'H:i';
                 $options['html5'] = (bool) $element->html5;
-                $options['format'] = $options['attr']['format'] = System::getContainer()->get('huh.utils.date')->transformPhpDateFormatToRFC3339($element->timeFormat);
+                $options['attr']['format'] = System::getContainer()->get('huh.utils.date')->transformPhpDateFormatToRFC3339($element->timeFormat);
 
                 if (true === $options['html5']) {
-                    if ('' !== $element->minTime) {
-                        $options['attr']['min'] = Date::parse('\TH:i', (int) strtotime(Controller::replaceInsertTags($element->minTime, false))); // valid rfc 3339 date `\TH:i` format must be used
+                    if ($element->minTime) {
+                        $options['attr']['min'] = Date::parse('\TH:i', System::getContainer()->get('huh.utils.date')->getTimeStamp($element->minTime)); // valid rfc 3339 date `\TH:i` format must be used
                     }
 
-                    if ('' !== $element->maxTime) {
-                        $options['attr']['max'] = Date::parse('\TH:i', (int) strtotime(Controller::replaceInsertTags($element->maxTime, false))); // valid rfc 3339 date `\TH:i` format must be used
+                    if ($element->maxTime) {
+                        $options['attr']['max'] = Date::parse('\TH:i', System::getContainer()->get('huh.utils.date')->getTimeStamp($element->maxTime)); // valid rfc 3339 date `\TH:i` format must be used
                     }
 
                     break;
                 }
 
-                $options['group_attr']['class'] .= ' timepicker';
+                $options['group_attr']['class'] = 'timepicker';
                 $options['attr']['data-enable-time'] = 'true';
                 $options['attr']['data-no-calendar'] = 'true';
 
                 $options['attr']['data-date-format'] = $element->timeFormat;
 
-                if ('' !== $element->minTime) {
-                    $options['attr']['data-min-date'] = Date::parse($element->dateFormat, (int) strtotime(Controller::replaceInsertTags($element->minTime, false)));
+                if ($element->minTime) {
+                    $options['attr']['data-min-date'] = Date::parse($element->timeFormat, System::getContainer()->get('huh.utils.date')->getTimeStamp($element->minTime));
                 }
 
-                if ('' !== $element->maxTime) {
-                    $options['attr']['data-max-date'] = Date::parse($element->dateFormat, (int) strtotime(Controller::replaceInsertTags($element->maxTime, false)));
+                if ($element->maxTime) {
+                    $options['attr']['data-max-date'] = Date::parse($element->timeFormat, System::getContainer()->get('huh.utils.date')->getTimeStamp($element->maxTime));
                 }
 
                 break;

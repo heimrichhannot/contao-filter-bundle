@@ -36,7 +36,7 @@ class MoneyType extends TextType
      */
     public function getDefaultName(FilterConfigElementModel $element)
     {
-        return null;
+        return $element->name;
     }
 
     /**

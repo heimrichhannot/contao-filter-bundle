@@ -17,6 +17,7 @@ use Doctrine\DBAL\Driver\Mysqli\Driver;
 use HeimrichHannot\FilterBundle\Choice\TypeChoice;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
 use HeimrichHannot\FilterBundle\Filter\Type\DateType;
+use HeimrichHannot\FilterBundle\Filter\Type\TimeType;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\Session\FilterSession;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
@@ -28,7 +29,7 @@ use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Translation\Translator;
 
-class DateTypeTest extends ContaoTestCase
+class TimeTypeTest extends ContaoTestCase
 {
     /**
      * @var ContainerBuilder
@@ -107,9 +108,9 @@ class DateTypeTest extends ContaoTestCase
         $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
         $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
 
-        $type = new DateType($config);
+        $type = new TimeType($config);
 
-        $this->assertInstanceOf('HeimrichHannot\FilterBundle\Filter\Type\DateType', $type);
+        $this->assertInstanceOf('HeimrichHannot\FilterBundle\Filter\Type\TimeType', $type);
     }
 
     /**
@@ -126,7 +127,7 @@ class DateTypeTest extends ContaoTestCase
         /** @var FilterConfigElementModel $element */
         $element = $this->mockClassWithProperties(FilterConfigElementModel::class, []);
 
-        $type = new DateType($config);
+        $type = new TimeType($config);
 
         $this->assertEquals(DatabaseUtil::OPERATOR_EQUAL, $type->getDefaultOperator($element));
     }
@@ -145,7 +146,7 @@ class DateTypeTest extends ContaoTestCase
         $range       = new FilterConfigElementModel();
         $range->name = 'test';
 
-        $type = new DateType($config);
+        $type = new TimeType($config);
 
         $this->assertEquals('test', $type->getDefaultName($range));
     }
@@ -165,8 +166,8 @@ class DateTypeTest extends ContaoTestCase
             'filter' => [
                 'types' => [
                     [
-                        'name'  => 'date',
-                        'class' => DateType::class,
+                        'name'  => 'time',
+                        'class' => TimeType::class,
                         'type'  => 'date'
                     ]
                 ]
@@ -202,8 +203,8 @@ class DateTypeTest extends ContaoTestCase
             'filter' => [
                 'types' => [
                     [
-                        'name'  => 'date',
-                        'class' => DateType::class,
+                        'name'  => 'time',
+                        'class' => TimeType::class,
                         'type'  => 'date'
                     ]
                 ]
@@ -217,19 +218,16 @@ class DateTypeTest extends ContaoTestCase
         $filter = ['name' => 'test', 'dataContainer' => 'tl_test'];
 
         $element       = new FilterConfigElementModel();
-        $element->type = 'date';
+        $element->type = 'time';
         $element->name = 'start';
 
         $config->init('test', $filter, [$element]);
         $config->buildForm();
 
-        $year = date('Y', time());
-
         $this->assertEquals(2, $config->getBuilder()->count()); // f_id element always exists
         $this->assertTrue($config->getBuilder()->has('start'));
-        $this->assertInstanceOf(\Symfony\Component\Form\Extension\Core\Type\DateType::class, $config->getBuilder()->get('start')->getType()->getInnerType());
+        $this->assertInstanceOf(\Symfony\Component\Form\Extension\Core\Type\TimeType::class, $config->getBuilder()->get('start')->getType()->getInnerType());
         $this->assertEquals(DateType::WIDGET_TYPE_CHOICE, $config->getBuilder()->get('start')->getForm()->getConfig()->getOption('widget'));
-        $this->assertEquals(range($year - 5, $year + 5), $config->getBuilder()->get('start')->getForm()->getConfig()->getOption('years'));
     }
 
     /**
@@ -247,8 +245,8 @@ class DateTypeTest extends ContaoTestCase
             'filter' => [
                 'types' => [
                     [
-                        'name'  => 'date',
-                        'class' => DateType::class,
+                        'name'  => 'time',
+                        'class' => TimeType::class,
                         'type'  => 'date'
                     ]
                 ]
@@ -266,19 +264,18 @@ class DateTypeTest extends ContaoTestCase
         $filter = ['name' => 'test', 'dataContainer' => 'tl_test'];
 
         $element          = new FilterConfigElementModel();
-        $element->type    = 'date';
+        $element->type    = 'time';
         $element->name    = 'start';
-        $element->minDate = '{{date::d.m.Y}}';
-        $element->maxDate = '12.12.2100 12:34';
+        $element->minTime = '11:34';
+        $element->maxTime = '23:34';
 
         $config->init('test', $filter, [$element]);
         $config->buildForm();
 
         $this->assertEquals(2, $config->getBuilder()->count()); // f_id element always exists
         $this->assertTrue($config->getBuilder()->has('start'));
-        $this->assertInstanceOf(\Symfony\Component\Form\Extension\Core\Type\DateType::class, $config->getBuilder()->get('start')->getType()->getInnerType());
+        $this->assertInstanceOf(\Symfony\Component\Form\Extension\Core\Type\TimeType::class, $config->getBuilder()->get('start')->getType()->getInnerType());
         $this->assertEquals(DateType::WIDGET_TYPE_CHOICE, $config->getBuilder()->get('start')->getForm()->getConfig()->getOption('widget'));
-        $this->assertEquals(range(Date::parse('Y', time()), 2100), $config->getBuilder()->get('start')->getForm()->getConfig()->getOption('years'));
     }
 
     /**
@@ -296,8 +293,8 @@ class DateTypeTest extends ContaoTestCase
             'filter' => [
                 'types' => [
                     [
-                        'name'  => 'date',
-                        'class' => DateType::class,
+                        'name'  => 'time',
+                        'class' => TimeType::class,
                         'type'  => 'date'
                     ]
                 ]
@@ -315,24 +312,24 @@ class DateTypeTest extends ContaoTestCase
         $filter = ['name' => 'test', 'dataContainer' => 'tl_test'];
 
         $element             = new FilterConfigElementModel();
-        $element->type       = 'date';
+        $element->type       = 'time';
         $element->name       = 'start';
-        $element->minDate    = '{{date::d.m.Y}}';
-        $element->maxDate    = '12.12.2100 12:34';
-        $element->dateWidget = DateType::WIDGET_TYPE_SINGLE_TEXT;
+        $element->minTime    = '{{date::H:i}}';
+        $element->maxTime    = '23:49';
+        $element->timeWidget = DateType::WIDGET_TYPE_SINGLE_TEXT;
 
         $config->init('test', $filter, [$element]);
         $config->buildForm();
 
         $this->assertEquals(2, $config->getBuilder()->count()); // f_id element always exists
         $this->assertTrue($config->getBuilder()->has('start'));
-        $this->assertInstanceOf(\Symfony\Component\Form\Extension\Core\Type\DateType::class, $config->getBuilder()->get('start')->getType()->getInnerType());
+        $this->assertInstanceOf(\Symfony\Component\Form\Extension\Core\Type\TimeType::class, $config->getBuilder()->get('start')->getType()->getInnerType());
         $this->assertEquals(DateType::WIDGET_TYPE_SINGLE_TEXT, $config->getBuilder()->get('start')->getForm()->getConfig()->getOption('widget'));
-        $this->assertEquals('datepicker', $config->getBuilder()->get('start')->getForm()->getConfig()->getOption('group_attr')['class']);
-        $this->assertFalse((bool)$config->getBuilder()->get('start')->getForm()->getConfig()->getOption('attr')['data-enable-time']);
-        $this->assertEquals('d.m.Y', $config->getBuilder()->get('start')->getForm()->getConfig()->getOption('attr')['data-date-format']);
-        $this->assertEquals(Date::parse('d.m.Y', time()), $config->getBuilder()->get('start')->getForm()->getConfig()->getOption('attr')['data-min-date']);
-        $this->assertEquals('12.12.2100', $config->getBuilder()->get('start')->getForm()->getConfig()->getOption('attr')['data-max-date']);
+        $this->assertEquals('timepicker', $config->getBuilder()->get('start')->getForm()->getConfig()->getOption('group_attr')['class']);
+        $this->assertTrue((bool)$config->getBuilder()->get('start')->getForm()->getConfig()->getOption('attr')['data-enable-time']);
+        $this->assertEquals('H:i', $config->getBuilder()->get('start')->getForm()->getConfig()->getOption('attr')['data-date-format']);
+        $this->assertEquals(Date::parse('H:i', time()), $config->getBuilder()->get('start')->getForm()->getConfig()->getOption('attr')['data-min-date']);
+        $this->assertEquals('23:49', $config->getBuilder()->get('start')->getForm()->getConfig()->getOption('attr')['data-max-date']);
     }
 
     /**
@@ -350,8 +347,8 @@ class DateTypeTest extends ContaoTestCase
             'filter' => [
                 'types' => [
                     [
-                        'name'  => 'date',
-                        'class' => DateType::class,
+                        'name'  => 'time',
+                        'class' => TimeType::class,
                         'type'  => 'date'
                     ]
                 ]
@@ -369,11 +366,11 @@ class DateTypeTest extends ContaoTestCase
         $filter = ['name' => 'test', 'dataContainer' => 'tl_test'];
 
         $element             = new FilterConfigElementModel();
-        $element->type       = 'date';
+        $element->type       = 'time';
         $element->name       = 'start';
-        $element->minDate    = '{{date::d.m.Y}}';
-        $element->maxDate    = '12.12.2100 12:34';
-        $element->dateWidget = DateType::WIDGET_TYPE_SINGLE_TEXT;
+        $element->minTime    = '{{date::H:i}}';
+        $element->maxTime    = '23:59';
+        $element->timeWidget = DateType::WIDGET_TYPE_SINGLE_TEXT;
         $element->html5      = true;
 
         $config->init('test', $filter, [$element]);
@@ -381,11 +378,11 @@ class DateTypeTest extends ContaoTestCase
 
         $this->assertEquals(2, $config->getBuilder()->count()); // f_id element always exists
         $this->assertTrue($config->getBuilder()->has('start'));
-        $this->assertInstanceOf(\Symfony\Component\Form\Extension\Core\Type\DateType::class, $config->getBuilder()->get('start')->getType()->getInnerType());
+        $this->assertInstanceOf(\Symfony\Component\Form\Extension\Core\Type\TimeType::class, $config->getBuilder()->get('start')->getType()->getInnerType());
         $this->assertEquals(DateType::WIDGET_TYPE_SINGLE_TEXT, $config->getBuilder()->get('start')->getForm()->getConfig()->getOption('widget'));
         $this->assertTrue((bool)$config->getBuilder()->get('start')->getForm()->getConfig()->getOption('html5'));
-        $this->assertEquals(Date::parse('Y-m-d', time()), $config->getBuilder()->get('start')->getForm()->getConfig()->getOption('attr')['min']);
-        $this->assertEquals(Date::parse('Y-m-d', System::getContainer()->get('huh.utils.date')->getTimeStamp('12.12.2100')), $config->getBuilder()->get('start')->getForm()->getConfig()->getOption('attr')['max']);
+        $this->assertEquals(Date::parse('\TH:i', time()), $config->getBuilder()->get('start')->getForm()->getConfig()->getOption('attr')['min']);
+        $this->assertEquals(Date::parse('\TH:i', System::getContainer()->get('huh.utils.date')->getTimeStamp('23:59')), $config->getBuilder()->get('start')->getForm()->getConfig()->getOption('attr')['max']);
     }
 
     /**
@@ -403,8 +400,8 @@ class DateTypeTest extends ContaoTestCase
             'filter' => [
                 'types' => [
                     [
-                        'name'  => 'date',
-                        'class' => DateType::class,
+                        'name'  => 'time',
+                        'class' => TimeType::class,
                         'type'  => 'date',
                     ]
                 ]
@@ -418,7 +415,7 @@ class DateTypeTest extends ContaoTestCase
 
         $start       = new FilterConfigElementModel();
         $start->id   = 2;
-        $start->type = 'date';
+        $start->type = 'time';
         $start->name = 'start';
 
         $config->init('test', $filter, [$start]);
@@ -443,8 +440,8 @@ class DateTypeTest extends ContaoTestCase
             'filter' => [
                 'types' => [
                     [
-                        'name'  => 'date',
-                        'class' => DateType::class,
+                        'name'  => 'time',
+                        'class' => TimeType::class,
                         'type'  => 'date',
                     ]
                 ]
@@ -454,7 +451,7 @@ class DateTypeTest extends ContaoTestCase
         $GLOBALS['TL_DCA']['tl_test']['fields']['start'] = [
             'inputType' => 'text',
             'label'     => ['start', ''],
-            'eval'      => ['rgxp' => 'date', 'datepicker' => true, 'tl_class' => 'w50 wizard']
+            'eval'      => ['rgxp' => 'time', 'datepicker' => true, 'tl_class' => 'w50 wizard']
         ];
 
         $this->container->set('huh.utils.database', new DatabaseUtil($framework));
@@ -466,16 +463,16 @@ class DateTypeTest extends ContaoTestCase
 
         $start          = new FilterConfigElementModel();
         $start->id      = 2;
-        $start->type    = 'date';
+        $start->type    = 'time';
         $start->name    = 'start';
         $start->field   = 'start';
-        $start->minDate = '{{date::d.m.Y}}';
-        $start->maxDate = '12.12.2100';
+        $start->minTime = '{{date::H:i}}';
+        $start->maxTime = '23:59';
 
         $config->init('test', $filter, [$start]);
         $config->initQueryBuilder();
 
-        $minDate = System::getContainer()->get('huh.utils.date')->getTimeStamp('{{date::d.m.Y}}');
+        $minDate = System::getContainer()->get('huh.utils.date')->getTimeStamp('{{date::d.m.Y H:i}}');
 
         $this->assertNotEmpty($config->getQueryBuilder()->getParameters());
         $this->assertNotEmpty($config->getQueryBuilder()->getQueryPart('where'));
@@ -498,8 +495,8 @@ class DateTypeTest extends ContaoTestCase
             'filter' => [
                 'types' => [
                     [
-                        'name'  => 'date',
-                        'class' => DateType::class,
+                        'name'  => 'time',
+                        'class' => TimeType::class,
                         'type'  => 'date',
                     ]
                 ]
@@ -509,7 +506,7 @@ class DateTypeTest extends ContaoTestCase
         $GLOBALS['TL_DCA']['tl_test']['fields']['start'] = [
             'inputType' => 'text',
             'label'     => ['start', ''],
-            'eval'      => ['rgxp' => 'date', 'datepicker' => true, 'tl_class' => 'w50 wizard']
+            'eval'      => ['rgxp' => 'time', 'datepicker' => true, 'tl_class' => 'w50 wizard']
         ];
 
         $this->container->set('huh.utils.database', new DatabaseUtil($framework));
@@ -521,18 +518,18 @@ class DateTypeTest extends ContaoTestCase
 
         $start          = new FilterConfigElementModel();
         $start->id      = 2;
-        $start->type    = 'date';
+        $start->type    = 'time';
         $start->name    = 'start';
         $start->field   = 'start';
-        $start->minDate = '{{date::d.m.Y}}';
-        $start->maxDate = '12.12.2100';
+        $start->minTime = '11:30';
+        $start->maxTime = '23:59';
 
 
         $config->init('test', $filter, [$start]);
-        $config->setData(['start' => '01.01.1981']);
+        $config->setData(['start' => '09:20']);
         $config->initQueryBuilder();
 
-        $minDate = System::getContainer()->get('huh.utils.date')->getTimeStamp('{{date::d.m.Y}}');
+        $minDate = System::getContainer()->get('huh.utils.date')->getTimeStamp('11:30');
 
         $this->assertNotEmpty($config->getQueryBuilder()->getParameters());
         $this->assertNotEmpty($config->getQueryBuilder()->getQueryPart('where'));
@@ -555,8 +552,8 @@ class DateTypeTest extends ContaoTestCase
             'filter' => [
                 'types' => [
                     [
-                        'name'  => 'date',
-                        'class' => DateType::class,
+                        'name'  => 'time',
+                        'class' => TimeType::class,
                         'type'  => 'date',
                     ]
                 ]
@@ -566,7 +563,7 @@ class DateTypeTest extends ContaoTestCase
         $GLOBALS['TL_DCA']['tl_test']['fields']['start'] = [
             'inputType' => 'text',
             'label'     => ['start', ''],
-            'eval'      => ['rgxp' => 'date', 'datepicker' => true, 'tl_class' => 'w50 wizard']
+            'eval'      => ['rgxp' => 'time', 'datepicker' => true, 'tl_class' => 'w50 wizard']
         ];
 
         $this->container->set('huh.utils.database', new DatabaseUtil($framework));
@@ -578,18 +575,18 @@ class DateTypeTest extends ContaoTestCase
 
         $start          = new FilterConfigElementModel();
         $start->id      = 2;
-        $start->type    = 'date';
+        $start->type    = 'time';
         $start->name    = 'start';
         $start->field   = 'start';
-        $start->minDate = '{{date::d.m.Y}}';
-        $start->maxDate = '12.12.2100';
+        $start->minTime = '{{date::H:i}}';
+        $start->maxTime = '12.12.2100 11:48';
 
 
         $config->init('test', $filter, [$start]);
-        $config->setData(['start' => '12.12.2101']);
+        $config->setData(['start' => '12.12.2100 11:50']);
         $config->initQueryBuilder();
 
-        $maxDate = System::getContainer()->get('huh.utils.date')->getTimeStamp('12.12.2100');
+        $maxDate = System::getContainer()->get('huh.utils.date')->getTimeStamp('12.12.2100 11:48');
 
         $this->assertNotEmpty($config->getQueryBuilder()->getParameters());
         $this->assertNotEmpty($config->getQueryBuilder()->getQueryPart('where'));
@@ -612,8 +609,8 @@ class DateTypeTest extends ContaoTestCase
             'filter' => [
                 'types' => [
                     [
-                        'name'  => 'date',
-                        'class' => DateType::class,
+                        'name'  => 'time',
+                        'class' => TimeType::class,
                         'type'  => 'date',
                     ]
                 ]
@@ -623,7 +620,7 @@ class DateTypeTest extends ContaoTestCase
         $GLOBALS['TL_DCA']['tl_test']['fields']['start'] = [
             'inputType' => 'text',
             'label'     => ['start', ''],
-            'eval'      => ['rgxp' => 'date', 'datepicker' => true, 'tl_class' => 'w50 wizard']
+            'eval'      => ['rgxp' => 'time', 'datepicker' => true, 'tl_class' => 'w50 wizard']
         ];
 
         $this->container->set('huh.utils.database', new DatabaseUtil($framework));
@@ -635,19 +632,19 @@ class DateTypeTest extends ContaoTestCase
 
         $start               = new FilterConfigElementModel();
         $start->id           = 2;
-        $start->type         = 'date';
+        $start->type         = 'time';
         $start->name         = 'start';
         $start->field        = 'start';
-        $start->minDate      = '{{date::d.m.Y}}';
-        $start->maxDate      = '12.12.2100';
+        $start->minTime      = '{{date::H:i}}';
+        $start->maxTime      = '12.12.2100 11:48';
         $start->isInitial    = true;
-        $start->initialValue = '12.12.2095';
+        $start->initialValue = '12.12.2095 11:11';
 
         $config->init('test', $filter, [$start]);
-        $config->setData(['start' => '12.12.2095']);
+        $config->setData(['start' => '12.12.2095 11:50']);
         $config->initQueryBuilder();
 
-        $value = System::getContainer()->get('huh.utils.date')->getTimeStamp('12.12.2095');
+        $value = System::getContainer()->get('huh.utils.date')->getTimeStamp('12.12.2095 11:50');
 
         $this->assertNotEmpty($config->getQueryBuilder()->getParameters());
         $this->assertNotEmpty($config->getQueryBuilder()->getQueryPart('where'));
@@ -670,8 +667,8 @@ class DateTypeTest extends ContaoTestCase
             'filter' => [
                 'types' => [
                     [
-                        'name'  => 'date',
-                        'class' => DateType::class,
+                        'name'  => 'time',
+                        'class' => TimeType::class,
                         'type'  => 'date',
                     ]
                 ]
@@ -681,7 +678,7 @@ class DateTypeTest extends ContaoTestCase
         $GLOBALS['TL_DCA']['tl_test']['fields']['start'] = [
             'inputType' => 'text',
             'label'     => ['start', ''],
-            'eval'      => ['rgxp' => 'date', 'datepicker' => true, 'tl_class' => 'w50 wizard']
+            'eval'      => ['rgxp' => 'time', 'datepicker' => true, 'tl_class' => 'w50 wizard']
         ];
 
         $this->container->set('huh.utils.database', new DatabaseUtil($framework));
@@ -693,18 +690,18 @@ class DateTypeTest extends ContaoTestCase
 
         $start          = new FilterConfigElementModel();
         $start->id      = 2;
-        $start->type    = 'date';
+        $start->type    = 'time';
         $start->name    = 'start';
         $start->field   = 'start';
-        $start->minDate = '{{date::d.m.Y}}';
-        $start->maxDate = '12.12.2100';
+        $start->minTime = '{{date::H:i}}';
+        $start->maxTime = '12.12.2100 23:11';
 
 
         $config->init('test', $filter, [$start]);
-        $config->setData(['start' => '12.12.2099']);
+        $config->setData(['start' => '12.12.2099 11:11']);
         $config->initQueryBuilder();
 
-        $value = System::getContainer()->get('huh.utils.date')->getTimeStamp('12.12.2099');
+        $value = System::getContainer()->get('huh.utils.date')->getTimeStamp('12.12.2099 11:11');
 
         $this->assertNotEmpty($config->getQueryBuilder()->getParameters());
         $this->assertNotEmpty($config->getQueryBuilder()->getQueryPart('where'));

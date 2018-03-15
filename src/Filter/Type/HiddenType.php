@@ -37,7 +37,7 @@ class HiddenType extends AbstractType
      */
     public function getDefaultName(FilterConfigElementModel $element)
     {
-        return null;
+        return $element->name;
     }
 
     /**
