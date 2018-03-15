@@ -24,6 +24,49 @@ class DateTimeType extends AbstractType
      */
     public function buildQuery(FilterQueryBuilder $builder, FilterConfigElementModel $element)
     {
+        $data   = $this->config->getData();
+        $filter = $this->config->getFilter();
+        $name   = $this->getName($element);
+
+        Controller::loadDataContainer($filter['dataContainer']);
+
+        if (!isset($GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element->field])) {
+            return;
+        }
+
+        $field = $filter['dataContainer'] . '.' . $element->field;
+        $value = isset($data[$name]) && $data[$name] ? $data[$name] : 0;
+
+        if ($element->isInitial) {
+            $value = $data[$name] ?? $this->getInitialValue($element, $builder->getContextualValues());
+
+            // replace insertTags only for initial values (sql-injection protection)
+            $value = System::getContainer()->get('huh.utils.date')->getTimeStamp($value, true);
+        }
+
+        /** @var $startDate \DateTime|null */
+        $value = System::getContainer()->get('huh.utils.date')->getTimeStamp($value, false);
+
+        $minDate = $this->getMinDate($element);
+        $maxDate = $this->getMaxDate($element);
+
+        $start = $value;
+        $stop  = $value;
+
+        $start = $start < $minDate ? $minDate : $start;
+        $start = $start > $maxDate ? $maxDate : $start;
+
+        $stop = $stop < $minDate ? $minDate : $stop;
+        $stop = $stop > $maxDate ? $maxDate : $stop;
+
+        $andXA = $builder->expr()->andX();
+        $andXA->add($builder->expr()->lte(':start', $field));
+        $andXA->add($builder->expr()->gte(':stop', $field));
+
+        $builder->andWhere($andXA);
+
+        $builder->setParameter(':start', $start);
+        $builder->setParameter(':stop', $stop);
     }
 
     /**
@@ -51,7 +94,7 @@ class DateTimeType extends AbstractType
      */
     public function getDefaultOperator(FilterConfigElementModel $element)
     {
-        return DatabaseUtil::OPERATOR_LIKE;
+        return DatabaseUtil::OPERATOR_EQUAL;
     }
 
     /**
@@ -61,7 +104,7 @@ class DateTimeType extends AbstractType
     {
         $options = parent::getOptions($element, $builder);
 
-        $options = $this->addDateWidgetOptions($options, $element, $builder);
+        $options           = $this->addDateWidgetOptions($options, $element, $builder);
         $options['widget'] = $element->dateWidget ?: DateType::WIDGET_TYPE_CHOICE;
 
         return $options;
@@ -70,9 +113,9 @@ class DateTimeType extends AbstractType
     /**
      * Add the options for the date_widget property.
      *
-     * @param array                    $options
+     * @param array $options
      * @param FilterConfigElementModel $element
-     * @param FormBuilderInterface     $builder
+     * @param FormBuilderInterface $builder
      *
      * @throws \Exception
      *
@@ -85,49 +128,50 @@ class DateTimeType extends AbstractType
 
         switch ($type) {
             case DateType::WIDGET_TYPE_SINGLE_TEXT:
-                $options['html5'] = (bool) $element->html5;
-                $options['format'] = System::getContainer()->get('huh.utils.date')->transformPhpDateFormatToRFC3339($element->dateTimeFormat);
+                $element->dateTimeFormat = $element->dateTimeFormat ?: 'd.m.Y H:i';
+                $options['html5']        = (bool)$element->html5;
+                $options['format']       = System::getContainer()->get('huh.utils.date')->transformPhpDateFormatToRFC3339($element->dateTimeFormat);
 
                 if (true === $options['html5']) {
-                    if ('' !== $element->minDate) {
-                        $options['attr']['min'] = Date::parse('Y-m-d\TH:i', (int) strtotime(Controller::replaceInsertTags($element->minDateTime, false))); // valid rfc 3339 date `YYYY-MM-DD` format must be used
+                    if ($element->minDateTime) {
+                        $options['attr']['min'] = Date::parse('Y-m-d\TH:i', System::getContainer()->get('huh.utils.date')->getTimeStamp($element->minDateTime)); // valid rfc 3339 date `YYYY-MM-DD` format must be used
                     }
 
-                    if ('' !== $element->maxDate) {
-                        $options['attr']['max'] = Date::parse('Y-m-d\TH:i', (int) strtotime(Controller::replaceInsertTags($element->maxDateTime, false))); // valid rfc 3339 date `YYYY-MM-DD` format must be used
+                    if ($element->maxDateTime) {
+                        $options['attr']['max'] = Date::parse('Y-m-d\TH:i', System::getContainer()->get('huh.utils.date')->getTimeStamp($element->maxDateTime)); // valid rfc 3339 date `YYYY-MM-DD` format must be used
                     }
 
                     break;
                 }
-                $options['group_attr']['class'] .= ' datepicker timepicker';
+                $options['group_attr']['class']      = 'datepicker timepicker';
                 $options['attr']['data-enable-time'] = 'true';
                 $options['attr']['data-date-format'] = $element->dateTimeFormat;
 
-                if ('' !== $element->minDate) {
-                    $options['attr']['data-min-date'] = Date::parse($element->dateTimeFormat, (int) strtotime(Controller::replaceInsertTags($element->minDateTime, false)));
+                if ($element->minDateTime) {
+                    $options['attr']['data-min-date'] = Date::parse($element->dateTimeFormat, System::getContainer()->get('huh.utils.date')->getTimeStamp($element->minDateTime));
                 }
 
-                if ('' !== $element->maxDate) {
-                    $options['attr']['data-max-date'] = Date::parse($element->dateTimeFormat, (int) strtotime(Controller::replaceInsertTags($element->maxDateTime, false)));
+                if ($element->maxDateTime) {
+                    $options['attr']['data-max-date'] = Date::parse($element->dateTimeFormat, System::getContainer()->get('huh.utils.date')->getTimeStamp($element->maxDateTime));
                 }
 
                 break;
             case DateType::WIDGET_TYPE_CHOICE:
-                $minYear = Date::parse('Y', strtotime('-5 year', $time));
-                $maxYear = Date::parse('Y', strtotime('+5 year', $time));
+                $minYear  = Date::parse('Y', strtotime('-5 year', $time));
+                $maxYear  = Date::parse('Y', strtotime('+5 year', $time));
                 $minMonth = null;
 
-                if ('' !== $element->minDate) {
-                    $minYear = Date::parse('Y', (int) strtotime(Controller::replaceInsertTags($element->minDateTime, false)));
+                if ($element->minDateTime) {
+                    $minYear = Date::parse('Y', System::getContainer()->get('huh.utils.date')->getTimeStamp($element->minDateTime));
                 }
 
-                if ('' !== $element->maxDate) {
-                    $maxYear = Date::parse('Y', (int) strtotime(Controller::replaceInsertTags($element->maxDateTime, false)));
+                if ($element->maxDateTime) {
+                    $maxYear = Date::parse('Y', System::getContainer()->get('huh.utils.date')->getTimeStamp($element->maxDateTime));
                 }
 
                 $options['years'] = range($minYear, $maxYear, 1);
 
-                // months and days restriction must be configurable by itself
+                // months and days restriction cant be configured from min and max date
                 break;
         }
 

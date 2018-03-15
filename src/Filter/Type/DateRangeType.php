@@ -8,7 +8,6 @@
 
 namespace HeimrichHannot\FilterBundle\Filter\Type;
 
-use Contao\Config;
 use Contao\Controller;
 use Contao\System;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
@@ -38,7 +37,7 @@ class DateRangeType extends AbstractType
         $filter = $this->config->getFilter();
         $name   = $this->getName($element);
 
-        \Controller::loadDataContainer($filter['dataContainer']);
+        Controller::loadDataContainer($filter['dataContainer']);
 
         $this->startElement = $this->config->getElementByValue($element->startElement);
         $this->stopElement  = $this->config->getElementByValue($element->stopElement);
@@ -58,13 +57,26 @@ class DateRangeType extends AbstractType
         $stopName  = $this->stopElement->getFormName($this->config);
 
         /** @var $startDate \DateTime|null */
-        $startDate = isset($data[$name][$startName]) && $data[$name][$startName] ? $data[$name][$startName] : 0;
+        $startDate = $startDate = $data[$name][$startName] ?? 0;
+
+        if ($this->startElement->isInitial) {
+            $startDate = $data[$name][$startName] ?? $this->getInitialValue($this->startElement, $builder->getContextualValues());
+
+            // replace insertTags only for initial values (sql-injection protection)
+            $startDate = System::getContainer()->get('huh.utils.date')->getTimeStamp($startDate, true);
+        }
 
         /** @var $stopDate \DateTime|null */
-        $stopDate = isset($data[$name][$stopName]) && $data[$name][$stopName] ? $data[$name][$stopName] : 9999999999999;
+        $stopDate = $data[$name][$stopName] ?? 9999999999999;
 
-        $start = System::getContainer()->get('huh.utils.date')->getTimeStamp($startDate);
-        $stop  = System::getContainer()->get('huh.utils.date')->getTimeStamp($stopDate);
+        if ($this->stopElement->isInitial) {
+            $stopDate = $data[$name][$stopName] ?? $this->getInitialValue($this->stopElement, $builder->getContextualValues());
+            // replace insertTags only for initial values (sql-injection protection)
+            $stopDate = System::getContainer()->get('huh.utils.date')->getTimeStamp($stopDate, true);
+        }
+
+        $start = System::getContainer()->get('huh.utils.date')->getTimeStamp($startDate, false) ?? 0;
+        $stop  = System::getContainer()->get('huh.utils.date')->getTimeStamp($stopDate, false) ?? 9999999999999;
 
         $startFieldMinDate = $this->getMinDate($this->startElement);
         $startFieldMaxDate = $this->getMaxDate($this->startElement);
@@ -110,65 +122,6 @@ class DateRangeType extends AbstractType
             $builder->setParameter(':start', $start);
             $builder->setParameter(':stop', $stop);
         }
-    }
-
-
-    /**
-     * Get min date for given element and type
-     * @param FilterConfigElementModel $element
-     *
-     * @return int The min date as timestamp
-     */
-    protected function getMinDate(FilterConfigElementModel $element)
-    {
-        $field = null;
-
-        switch ($element->type) {
-            case 'time':
-                $field = 'minTime';
-                break;
-            case 'date':
-                $field = 'minDate';
-                break;
-            case 'date_time':
-                $field = 'minDateTime';
-                break;
-        }
-
-        if (null === $field || !isset($element->{$field}) || '' === $element->{$field}) {
-            return 0;
-        }
-
-        return System::getContainer()->get('huh.utils.date')->getTimeStamp($element->{$field});
-    }
-
-    /**
-     * Get max date for given element and type
-     * @param FilterConfigElementModel $element
-     *
-     * @return int The max date as timestamp
-     */
-    protected function getMaxDate(FilterConfigElementModel $element)
-    {
-        $field = null;
-
-        switch ($element->type) {
-            case 'time':
-                $field = 'maxTime';
-                break;
-            case 'date':
-                $field = 'maxDate';
-                break;
-            case 'date_time':
-                $field = 'maxDateTime';
-                break;
-        }
-
-        if (null === $field || !isset($element->{$field}) || '' === $element->{$field}) {
-            return 9999999999999;
-        }
-
-        return System::getContainer()->get('huh.utils.date')->getTimeStamp($element->{$field});
     }
 
     /**

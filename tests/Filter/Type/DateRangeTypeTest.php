@@ -9,8 +9,6 @@
 namespace HeimrichHannot\FilterBundle\Tests\Filter\Type;
 
 use Contao\CoreBundle\Config\ResourceFinder;
-use Contao\CoreBundle\Framework\ContaoFramework;
-use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\System;
 use Contao\TestCase\ContaoTestCase;
 use Doctrine\DBAL\Connection;
@@ -398,7 +396,7 @@ class DateRangeTypeTest extends ContaoTestCase
     }
 
     /**
-     * Test buildForm() without start or stop element
+     * Test buildQuery() without start or stop element
      */
     public function testBuildQueryWithoutElements()
     {
@@ -659,6 +657,90 @@ class DateRangeTypeTest extends ContaoTestCase
 
         $this->assertEquals(1511022657, $config->getQueryBuilder()->getParameter(':start'));
         $this->assertEquals(9999999999999, $config->getQueryBuilder()->getParameter(':stop'));
+    }
+
+    /**
+     * Test buildQuery() statement with different start stop fields initial values and start is time
+     */
+    public function testBuildQueryWithDifferentStartStopFieldsInitialAndMinMaxStartTime()
+    {
+        $framework = $this->mockContaoFramework();
+        $session   = new MockArraySessionStorage();
+
+        $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
+        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+
+        $this->container->setParameter('huh.filter', [
+            'filter' => [
+                'types' => [
+                    [
+                        'name'    => 'date_range',
+                        'class'   => 'HeimrichHannot\FilterBundle\Filter\Type\DateRangeType',
+                        'type'    => 'date',
+                        'wrapper' => true
+                    ],
+                    [
+                        'name'  => 'date',
+                        'class' => 'HeimrichHannot\FilterBundle\Filter\Type\DateType',
+                        'type'  => 'date',
+                    ],
+                    [
+                        'name'  => 'date_time',
+                        'class' => 'HeimrichHannot\FilterBundle\Filter\Type\DateTimeType',
+                        'type'  => 'date',
+                    ]
+                ]
+            ]
+        ]);
+
+        $this->container->set('huh.utils.date', new DateUtil($framework));
+        $this->container->set('huh.filter.choice.type', new TypeChoice($framework));
+        System::setContainer($this->container);
+
+        // Prevent "undefined index" errors
+        $errorReporting = error_reporting();
+        error_reporting($errorReporting & ~E_NOTICE);
+
+        $filter = ['name' => 'test', 'dataContainer' => 'tl_test'];
+
+        $range               = new FilterConfigElementModel();
+        $range->id           = 1;
+        $range->name         = 'range';
+        $range->type         = 'date_range';
+        $range->startElement = 2;
+        $range->stopElement  = 3;
+
+        $start               = new FilterConfigElementModel();
+        $start->id           = 2;
+        $start->type         = 'date';
+        $start->name         = 'start';
+        $start->field        = 'start';
+        $start->minDate      = '1511022657';
+        $start->maxDate      = '1811321500';
+        $start->isInitial    = true;
+        $start->initialValue = '{{date::d.m.Y}}';
+
+        $stop               = new FilterConfigElementModel();
+        $stop->id           = 3;
+        $stop->type         = 'date_time';
+        $stop->name         = 'stop';
+        $stop->field        = 'stop';
+        $stop->minDateTime  = '1511022657';
+        $stop->maxDateTime  = '1811321500';
+        $stop->isInitial    = true;
+        $stop->initialValue = '1711321500';
+
+        $config->init('test', $filter, [$range, $start, $stop]);
+        $config->initQueryBuilder();
+
+        $this->assertNotEmpty($config->getQueryBuilder()->getParameters());
+        $this->assertNotEmpty($config->getQueryBuilder()->getQueryPart('where'));
+        $this->assertEquals('SELECT  FROM tl_test WHERE ((:start >= tl_test.start) AND (:start <= tl_test.stop)) OR ((:stop >= tl_test.start) AND (:stop <= tl_test.stop)) OR ((:start <= tl_test.start) AND (:stop >= tl_test.stop))', $config->getQueryBuilder()->getSQL());
+
+        $start = System::getContainer()->get('huh.utils.date')->getTimeStamp('{{date::d.m.Y}}');
+
+        $this->assertEquals($start, $config->getQueryBuilder()->getParameter(':start'));
+        $this->assertEquals(1711321500, $config->getQueryBuilder()->getParameter(':stop'));
     }
 
 

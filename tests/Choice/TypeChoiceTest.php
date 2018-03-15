@@ -132,6 +132,27 @@ class TypeChoiceTest extends ContaoTestCase
     }
 
     /**
+     * Tests the type collection with existing types but missing text type class.
+     */
+    public function testCollectWithExistingTypeWithIllegalTypeClass()
+    {
+        $config = $this->config;
+        $config['filter']['types'][0]['class'] = 'HeimrichHannot\FilterBundle\Test\Filter\Type\IllegalTypeClass';
+
+        $this->container->set('kernel', $this->kernel);
+        $this->container->setParameter('huh.filter', $config);
+
+        System::setContainer($this->container);
+
+        $framework = $this->mockContaoFramework();
+        $instance = new TypeChoice($framework);
+        $choices = $instance->getChoices();
+
+        $this->assertNotEmpty($choices);
+        $this->assertArrayNotHasKey('text', $choices);
+    }
+
+    /**
      * Tests the type collection with existing types and data container context, should return opt groups.
      */
     public function testCollectWithExistingTypesWithDataContainerContext()

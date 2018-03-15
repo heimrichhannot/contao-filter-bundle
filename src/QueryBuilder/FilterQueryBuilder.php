@@ -203,4 +203,12 @@ class FilterQueryBuilder extends QueryBuilder
 
         return $this;
     }
+
+    /**
+     * @return array
+     */
+    public function getContextualValues(): array
+    {
+        return $this->contextualValues;
+    }
 }

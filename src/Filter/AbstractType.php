@@ -226,4 +226,62 @@ abstract class AbstractType
 
         return $options;
     }
+
+    /**
+     * Get min date for given element and type
+     * @param FilterConfigElementModel $element
+     *
+     * @return int The min date as timestamp
+     */
+    protected function getMinDate(FilterConfigElementModel $element)
+    {
+        $field = null;
+
+        switch ($element->type) {
+            case 'time':
+                $field = 'minTime';
+                break;
+            case 'date':
+                $field = 'minDate';
+                break;
+            case 'date_time':
+                $field = 'minDateTime';
+                break;
+        }
+
+        if (null === $field || !isset($element->{$field}) || '' === $element->{$field}) {
+            return 0;
+        }
+
+        return System::getContainer()->get('huh.utils.date')->getTimeStamp($element->{$field});
+    }
+
+    /**
+     * Get max date for given element and type
+     * @param FilterConfigElementModel $element
+     *
+     * @return int The max date as timestamp
+     */
+    protected function getMaxDate(FilterConfigElementModel $element)
+    {
+        $field = null;
+
+        switch ($element->type) {
+            case 'time':
+                $field = 'maxTime';
+                break;
+            case 'date':
+                $field = 'maxDate';
+                break;
+            case 'date_time':
+                $field = 'maxDateTime';
+                break;
+        }
+
+        if (null === $field || !isset($element->{$field}) || '' === $element->{$field}) {
+            return 9999999999999;
+        }
+
+        return System::getContainer()->get('huh.utils.date')->getTimeStamp($element->{$field});
+    }
 }
