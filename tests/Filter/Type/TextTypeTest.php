@@ -15,7 +15,7 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\Mysqli\Driver;
 use HeimrichHannot\FilterBundle\Choice\TypeChoice;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
-use HeimrichHannot\FilterBundle\Filter\Type\CheckboxType;
+use HeimrichHannot\FilterBundle\Filter\Type\TextType;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\Session\FilterSession;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
@@ -26,7 +26,7 @@ use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Translation\Translator;
 
-class CheckboxTypeTest extends ContaoTestCase
+class TextTypeTest extends ContaoTestCase
 {
     /**
      * @var ContainerBuilder
@@ -105,9 +105,9 @@ class CheckboxTypeTest extends ContaoTestCase
         $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
         $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
 
-        $type = new CheckboxType($config);
+        $type = new TextType($config);
 
-        $this->assertInstanceOf('HeimrichHannot\FilterBundle\Filter\Type\CheckboxType', $type);
+        $this->assertInstanceOf('HeimrichHannot\FilterBundle\Filter\Type\TextType', $type);
     }
 
     /**
@@ -124,9 +124,9 @@ class CheckboxTypeTest extends ContaoTestCase
         /** @var FilterConfigElementModel $element */
         $element = $this->mockClassWithProperties(FilterConfigElementModel::class, []);
 
-        $type = new CheckboxType($config);
+        $type = new TextType($config);
 
-        $this->assertEquals(DatabaseUtil::OPERATOR_EQUAL, $type->getDefaultOperator($element));
+        $this->assertEquals(DatabaseUtil::OPERATOR_LIKE, $type->getDefaultOperator($element));
     }
 
     /**
@@ -143,7 +143,7 @@ class CheckboxTypeTest extends ContaoTestCase
         $range       = new FilterConfigElementModel();
         $range->name = 'test';
 
-        $type = new CheckboxType($config);
+        $type = new TextType($config);
 
         $this->assertEquals('test', $type->getDefaultName($range));
     }
@@ -163,9 +163,9 @@ class CheckboxTypeTest extends ContaoTestCase
             'filter' => [
                 'types' => [
                     [
-                        'name'  => 'checkbox',
-                        'class' => CheckboxType::class,
-                        'type'  => 'other'
+                        'name'  => 'text',
+                        'class' => TextType::class,
+                        'type'  => 'text'
                     ]
                 ]
             ]
@@ -177,7 +177,7 @@ class CheckboxTypeTest extends ContaoTestCase
         $filter = ['name' => 'test', 'dataContainer' => 'tl_test'];
 
         $element       = new FilterConfigElementModel();
-        $element->type = 'checkbox';
+        $element->type = 'text';
 
         $config->init('test', $filter, [$element]);
         $config->buildForm();
@@ -200,9 +200,9 @@ class CheckboxTypeTest extends ContaoTestCase
             'filter' => [
                 'types' => [
                     [
-                        'name'  => 'checkbox',
-                        'class' => CheckboxType::class,
-                        'type'  => 'other'
+                        'name'  => 'text',
+                        'class' => TextType::class,
+                        'type'  => 'text'
                     ]
                 ]
             ]
@@ -214,7 +214,7 @@ class CheckboxTypeTest extends ContaoTestCase
         $filter = ['name' => 'test', 'dataContainer' => 'tl_test'];
 
         $element        = new FilterConfigElementModel();
-        $element->type  = 'checkbox';
+        $element->type  = 'text';
         $element->field = 'test';
 
         $config->init('test', $filter, [$element]);
@@ -222,7 +222,7 @@ class CheckboxTypeTest extends ContaoTestCase
 
         $this->assertEquals(2, $config->getBuilder()->count()); // f_id element always exists
         $this->assertTrue($config->getBuilder()->has('test'));
-        $this->assertInstanceOf(\Symfony\Component\Form\Extension\Core\Type\CheckboxType::class, $config->getBuilder()->get('test')->getType()->getInnerType());
+        $this->assertInstanceOf(\Symfony\Component\Form\Extension\Core\Type\TextType::class, $config->getBuilder()->get('test')->getType()->getInnerType());
     }
 
     /**
@@ -240,9 +240,9 @@ class CheckboxTypeTest extends ContaoTestCase
             'filter' => [
                 'types' => [
                     [
-                        'name'  => 'checkbox',
-                        'class' => CheckboxType::class,
-                        'type'  => 'other'
+                        'name'  => 'text',
+                        'class' => TextType::class,
+                        'type'  => 'text'
                     ]
                 ]
             ]
@@ -254,7 +254,7 @@ class CheckboxTypeTest extends ContaoTestCase
         $filter = ['name' => 'test', 'dataContainer' => 'tl_test'];
 
         $element              = new FilterConfigElementModel();
-        $element->type        = 'checkbox';
+        $element->type        = 'text';
         $element->field       = 'test';
         $element->customValue = true;
         $element->value       = 'myCustomValue';
@@ -264,7 +264,7 @@ class CheckboxTypeTest extends ContaoTestCase
 
         $this->assertEquals(2, $config->getBuilder()->count()); // f_id element always exists
         $this->assertTrue($config->getBuilder()->has('test'));
-        $this->assertInstanceOf(\Symfony\Component\Form\Extension\Core\Type\CheckboxType::class, $config->getBuilder()->get('test')->getType()->getInnerType());
+        $this->assertInstanceOf(\Symfony\Component\Form\Extension\Core\Type\TextType::class, $config->getBuilder()->get('test')->getType()->getInnerType());
     }
 
     /**
@@ -282,9 +282,9 @@ class CheckboxTypeTest extends ContaoTestCase
             'filter' => [
                 'types' => [
                     [
-                        'name'  => 'checkbox',
-                        'class' => CheckboxType::class,
-                        'type'  => 'other'
+                        'name'  => 'text',
+                        'class' => TextType::class,
+                        'type'  => 'text'
                     ]
                 ]
             ]
@@ -297,7 +297,7 @@ class CheckboxTypeTest extends ContaoTestCase
 
         $element       = new FilterConfigElementModel();
         $element->id   = 2;
-        $element->type = 'checkbox';
+        $element->type = 'text';
         $element->name = 'test';
 
         $config->init('test', $filter, [$element]);
@@ -322,9 +322,9 @@ class CheckboxTypeTest extends ContaoTestCase
             'filter' => [
                 'types' => [
                     [
-                        'name'  => 'checkbox',
-                        'class' => CheckboxType::class,
-                        'type'  => 'other'
+                        'name'  => 'text',
+                        'class' => TextType::class,
+                        'type'  => 'text'
                     ]
                 ]
             ]
@@ -346,7 +346,7 @@ class CheckboxTypeTest extends ContaoTestCase
 
         $element        = new FilterConfigElementModel();
         $element->id    = 2;
-        $element->type  = 'checkbox';
+        $element->type  = 'text';
         $element->field = 'test';
 
         $config->init('test', $filter, [$element]);
@@ -355,8 +355,8 @@ class CheckboxTypeTest extends ContaoTestCase
 
         $this->assertNotEmpty($config->getQueryBuilder()->getParameters());
         $this->assertNotEmpty($config->getQueryBuilder()->getQueryPart('where'));
-        $this->assertEquals('SELECT  FROM tl_test WHERE test = :test', $config->getQueryBuilder()->getSQL());
-        $this->assertEquals([':test' => 1], $config->getQueryBuilder()->getParameters());
+        $this->assertEquals('SELECT  FROM tl_test WHERE test LIKE :test', $config->getQueryBuilder()->getSQL());
+        $this->assertEquals([':test' => '%1%'], $config->getQueryBuilder()->getParameters());
     }
 
     /**

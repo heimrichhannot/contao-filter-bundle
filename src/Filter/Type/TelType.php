@@ -14,37 +14,13 @@ use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 use Symfony\Component\Form\FormBuilderInterface;
 
-class TelType extends AbstractType
+class TelType extends TextType
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function buildQuery(FilterQueryBuilder $builder, FilterConfigElementModel $element)
-    {
-        $builder->whereElement($element, $this->getName($element), $this->config, $this->getDefaultOperator($element));
-    }
-
     /**
      * {@inheritdoc}
      */
     public function buildForm(FilterConfigElementModel $element, FormBuilderInterface $builder)
     {
         $builder->add($this->getName($element), \Symfony\Component\Form\Extension\Core\Type\TelType::class, $this->getOptions($element, $builder));
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getDefaultName(FilterConfigElementModel $element)
-    {
-        return $element->name;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getDefaultOperator(FilterConfigElementModel $element)
-    {
-        return DatabaseUtil::OPERATOR_LIKE;
     }
 }

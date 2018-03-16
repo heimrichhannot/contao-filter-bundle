@@ -466,13 +466,13 @@ class TimeTypeTest extends ContaoTestCase
         $start->type    = 'time';
         $start->name    = 'start';
         $start->field   = 'start';
-        $start->minTime = '{{date::H:i}}';
+        $start->minTime = '11:45';
         $start->maxTime = '23:59';
 
         $config->init('test', $filter, [$start]);
         $config->initQueryBuilder();
 
-        $minDate = System::getContainer()->get('huh.utils.date')->getTimeStamp('{{date::d.m.Y H:i}}');
+        $minDate = System::getContainer()->get('huh.utils.date')->getTimeStamp('11:45');
 
         $this->assertNotEmpty($config->getQueryBuilder()->getParameters());
         $this->assertNotEmpty($config->getQueryBuilder()->getQueryPart('where'));

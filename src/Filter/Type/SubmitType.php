@@ -20,7 +20,6 @@ class SubmitType extends AbstractType
      */
     public function buildQuery(FilterQueryBuilder $builder, FilterConfigElementModel $element)
     {
-        // TODO: Implement buildQuery() method.
     }
 
     /**

@@ -15,18 +15,17 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\Mysqli\Driver;
 use HeimrichHannot\FilterBundle\Choice\TypeChoice;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
-use HeimrichHannot\FilterBundle\Filter\Type\CheckboxType;
+use HeimrichHannot\FilterBundle\Filter\Type\SubmitType;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\Session\FilterSession;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
-use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Translation\Translator;
 
-class CheckboxTypeTest extends ContaoTestCase
+class SubmitTypeTest extends ContaoTestCase
 {
     /**
      * @var ContainerBuilder
@@ -105,9 +104,9 @@ class CheckboxTypeTest extends ContaoTestCase
         $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
         $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
 
-        $type = new CheckboxType($config);
+        $type = new SubmitType($config);
 
-        $this->assertInstanceOf('HeimrichHannot\FilterBundle\Filter\Type\CheckboxType', $type);
+        $this->assertInstanceOf('HeimrichHannot\FilterBundle\Filter\Type\SubmitType', $type);
     }
 
     /**
@@ -124,9 +123,9 @@ class CheckboxTypeTest extends ContaoTestCase
         /** @var FilterConfigElementModel $element */
         $element = $this->mockClassWithProperties(FilterConfigElementModel::class, []);
 
-        $type = new CheckboxType($config);
+        $type = new SubmitType($config);
 
-        $this->assertEquals(DatabaseUtil::OPERATOR_EQUAL, $type->getDefaultOperator($element));
+        $this->assertNull($type->getDefaultOperator($element));
     }
 
     /**
@@ -143,9 +142,9 @@ class CheckboxTypeTest extends ContaoTestCase
         $range       = new FilterConfigElementModel();
         $range->name = 'test';
 
-        $type = new CheckboxType($config);
+        $type = new SubmitType($config);
 
-        $this->assertEquals('test', $type->getDefaultName($range));
+        $this->assertEquals('submit', $type->getDefaultName($range));
     }
 
     /**
@@ -163,9 +162,9 @@ class CheckboxTypeTest extends ContaoTestCase
             'filter' => [
                 'types' => [
                     [
-                        'name'  => 'checkbox',
-                        'class' => CheckboxType::class,
-                        'type'  => 'other'
+                        'name'  => 'submit',
+                        'class' => SubmitType::class,
+                        'type'  => 'button'
                     ]
                 ]
             ]
@@ -177,18 +176,20 @@ class CheckboxTypeTest extends ContaoTestCase
         $filter = ['name' => 'test', 'dataContainer' => 'tl_test'];
 
         $element       = new FilterConfigElementModel();
-        $element->type = 'checkbox';
+        $element->type = 'submit';
 
         $config->init('test', $filter, [$element]);
         $config->buildForm();
 
-        $this->assertEquals(1, $config->getBuilder()->count()); // f_id element always exists
+        $this->assertEquals(2, $config->getBuilder()->count()); // f_id element always exists
+        $this->assertFalse($config->getBuilder()->has('test'));
+        $this->assertInstanceOf(\Symfony\Component\Form\Extension\Core\Type\SubmitType::class, $config->getBuilder()->get('submit')->getType()->getInnerType());
     }
 
     /**
-     * Test buildForm() with field name
+     * Test buildForm() with name
      */
-    public function testBuildFormWithFieldName()
+    public function testBuildFormWithName()
     {
         $framework = $this->mockContaoFramework();
         $session   = new MockArraySessionStorage();
@@ -200,9 +201,9 @@ class CheckboxTypeTest extends ContaoTestCase
             'filter' => [
                 'types' => [
                     [
-                        'name'  => 'checkbox',
-                        'class' => CheckboxType::class,
-                        'type'  => 'other'
+                        'name'  => 'submit',
+                        'class' => SubmitType::class,
+                        'type'  => 'button'
                     ]
                 ]
             ]
@@ -213,22 +214,22 @@ class CheckboxTypeTest extends ContaoTestCase
 
         $filter = ['name' => 'test', 'dataContainer' => 'tl_test'];
 
-        $element        = new FilterConfigElementModel();
-        $element->type  = 'checkbox';
-        $element->field = 'test';
+        $element       = new FilterConfigElementModel();
+        $element->type = 'submit';
+        $element->name = 'test';
 
         $config->init('test', $filter, [$element]);
         $config->buildForm();
 
         $this->assertEquals(2, $config->getBuilder()->count()); // f_id element always exists
-        $this->assertTrue($config->getBuilder()->has('test'));
-        $this->assertInstanceOf(\Symfony\Component\Form\Extension\Core\Type\CheckboxType::class, $config->getBuilder()->get('test')->getType()->getInnerType());
+        $this->assertFalse($config->getBuilder()->has('test'));
+        $this->assertInstanceOf(\Symfony\Component\Form\Extension\Core\Type\SubmitType::class, $config->getBuilder()->get('submit')->getType()->getInnerType());
     }
 
     /**
-     * Test buildForm() with custom value
+     * Test buildForm() with custom label
      */
-    public function testBuildFormWithCustomValue()
+    public function testBuildFormWithLabel()
     {
         $framework = $this->mockContaoFramework();
         $session   = new MockArraySessionStorage();
@@ -240,9 +241,9 @@ class CheckboxTypeTest extends ContaoTestCase
             'filter' => [
                 'types' => [
                     [
-                        'name'  => 'checkbox',
-                        'class' => CheckboxType::class,
-                        'type'  => 'other'
+                        'name'  => 'submit',
+                        'class' => SubmitType::class,
+                        'type'  => 'button'
                     ]
                 ]
             ]
@@ -254,61 +255,22 @@ class CheckboxTypeTest extends ContaoTestCase
         $filter = ['name' => 'test', 'dataContainer' => 'tl_test'];
 
         $element              = new FilterConfigElementModel();
-        $element->type        = 'checkbox';
-        $element->field       = 'test';
-        $element->customValue = true;
-        $element->value       = 'myCustomValue';
+        $element->type        = 'submit';
+        $element->name        = 'test';
+        $element->customLabel = true;
+        $element->label       = 'Button label';
 
         $config->init('test', $filter, [$element]);
         $config->buildForm();
 
         $this->assertEquals(2, $config->getBuilder()->count()); // f_id element always exists
-        $this->assertTrue($config->getBuilder()->has('test'));
-        $this->assertInstanceOf(\Symfony\Component\Form\Extension\Core\Type\CheckboxType::class, $config->getBuilder()->get('test')->getType()->getInnerType());
+        $this->assertFalse($config->getBuilder()->has('test'));
+        $this->assertInstanceOf(\Symfony\Component\Form\Extension\Core\Type\SubmitType::class, $config->getBuilder()->get('submit')->getType()->getInnerType());
+        $this->assertEquals('Button label', $config->getBuilder()->get('submit')->getForm()->getConfig()->getOption('label'));
     }
 
     /**
-     * Test buildQuery() without dca field
-     */
-    public function testBuildQueryWithoutDcaField()
-    {
-        $framework = $this->mockContaoFramework();
-        $session   = new MockArraySessionStorage();
-
-        $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
-
-        $this->container->setParameter('huh.filter', [
-            'filter' => [
-                'types' => [
-                    [
-                        'name'  => 'checkbox',
-                        'class' => CheckboxType::class,
-                        'type'  => 'other'
-                    ]
-                ]
-            ]
-        ]);
-
-        $this->container->set('huh.filter.choice.type', new TypeChoice($framework));
-        System::setContainer($this->container);
-
-        $filter = ['name' => 'test', 'dataContainer' => 'tl_test'];
-
-        $element       = new FilterConfigElementModel();
-        $element->id   = 2;
-        $element->type = 'checkbox';
-        $element->name = 'test';
-
-        $config->init('test', $filter, [$element]);
-        $config->initQueryBuilder();
-
-        $this->assertEmpty($config->getQueryBuilder()->getParameters());
-        $this->assertEmpty($config->getQueryBuilder()->getQueryPart('where'));
-    }
-
-    /**
-     * Test buildQuery() without dca field
+     * Test buildQuery()
      */
     public function testBuildQuery()
     {
@@ -322,41 +284,29 @@ class CheckboxTypeTest extends ContaoTestCase
             'filter' => [
                 'types' => [
                     [
-                        'name'  => 'checkbox',
-                        'class' => CheckboxType::class,
-                        'type'  => 'other'
+                        'name'  => 'submit',
+                        'class' => SubmitType::class,
+                        'type'  => 'button',
                     ]
                 ]
             ]
         ]);
 
-        $GLOBALS['TL_DCA']['tl_test']['fields']['test'] = [
-            'inputType' => 'checkbox',
-        ];
-
-        $this->container->set('huh.utils.database', new DatabaseUtil($framework));
         $this->container->set('huh.filter.choice.type', new TypeChoice($framework));
         System::setContainer($this->container);
 
         $filter = ['name' => 'test', 'dataContainer' => 'tl_test'];
 
-        // Prevent "undefined index" errors
-        $errorReporting = error_reporting();
-        error_reporting($errorReporting & ~E_NOTICE);
-
-        $element        = new FilterConfigElementModel();
-        $element->id    = 2;
-        $element->type  = 'checkbox';
-        $element->field = 'test';
+        $element       = new FilterConfigElementModel();
+        $element->id   = 2;
+        $element->type = 'submit';
+        $element->name = 'start';
 
         $config->init('test', $filter, [$element]);
-        $config->setData(['test' => 1]);
         $config->initQueryBuilder();
 
-        $this->assertNotEmpty($config->getQueryBuilder()->getParameters());
-        $this->assertNotEmpty($config->getQueryBuilder()->getQueryPart('where'));
-        $this->assertEquals('SELECT  FROM tl_test WHERE test = :test', $config->getQueryBuilder()->getSQL());
-        $this->assertEquals([':test' => 1], $config->getQueryBuilder()->getParameters());
+        $this->assertEmpty($config->getQueryBuilder()->getParameters());
+        $this->assertEmpty($config->getQueryBuilder()->getQueryPart('where'));
     }
 
     /**

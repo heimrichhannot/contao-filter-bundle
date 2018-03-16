@@ -14,38 +14,14 @@ use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 use Symfony\Component\Form\FormBuilderInterface;
 
-class UrlType extends AbstractType
+class UrlType extends TextType
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function buildQuery(FilterQueryBuilder $builder, FilterConfigElementModel $element)
-    {
-        $builder->whereElement($element, $this->getName($element), $this->config, $this->getDefaultOperator($element));
-    }
-
     /**
      * {@inheritdoc}
      */
     public function buildForm(FilterConfigElementModel $element, FormBuilderInterface $builder)
     {
         $builder->add($this->getName($element), \Symfony\Component\Form\Extension\Core\Type\UrlType::class, $this->getOptions($element, $builder));
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getDefaultName(FilterConfigElementModel $element)
-    {
-        return null;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getDefaultOperator(FilterConfigElementModel $element)
-    {
-        return DatabaseUtil::OPERATOR_LIKE;
     }
 
     /**
