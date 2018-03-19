@@ -19,14 +19,6 @@ class LocaleType extends ChoiceType
     /**
      * {@inheritdoc}
      */
-    public function buildQuery(FilterQueryBuilder $builder, FilterConfigElementModel $element)
-    {
-        $builder->whereElement($element, $this->getName($element), $this->config, $this->getDefaultOperator($element));
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function buildForm(FilterConfigElementModel $element, FormBuilderInterface $builder)
     {
         $builder->add($this->getName($element), \Symfony\Component\Form\Extension\Core\Type\LocaleType::class, $this->getOptions($element, $builder));
@@ -37,14 +29,10 @@ class LocaleType extends ChoiceType
      */
     public function getChoices(FilterConfigElementModel $element)
     {
-        return System::getContainer()->get('huh.filter.choice.locale')->getCachedChoices([$element, $this->config->getFilter()]);
-    }
+        if (!System::getContainer()->has('huh.filter.choice.locale')) {
+            return [];
+        }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getDefaultOperator(FilterConfigElementModel $element)
-    {
-        return DatabaseUtil::OPERATOR_EQUAL;
+        return System::getContainer()->get('huh.filter.choice.locale')->getCachedChoices([$element, $this->config->getFilter()]);
     }
 }

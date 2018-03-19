@@ -15,17 +15,18 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\Mysqli\Driver;
 use HeimrichHannot\FilterBundle\Choice\TypeChoice;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
-use HeimrichHannot\FilterBundle\Filter\Type\ResetType;
+use HeimrichHannot\FilterBundle\Filter\Type\PublishedType;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\Session\FilterSession;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
+use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Translation\Translator;
 
-class ResetTypeTest extends ContaoTestCase
+class PublishedTypeTest extends ContaoTestCase
 {
     /**
      * @var ContainerBuilder
@@ -104,9 +105,9 @@ class ResetTypeTest extends ContaoTestCase
         $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
         $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
 
-        $type = new ResetType($config);
+        $type = new PublishedType($config);
 
-        $this->assertInstanceOf('HeimrichHannot\FilterBundle\Filter\Type\ResetType', $type);
+        $this->assertInstanceOf('HeimrichHannot\FilterBundle\Filter\Type\PublishedType', $type);
     }
 
     /**
@@ -123,34 +124,15 @@ class ResetTypeTest extends ContaoTestCase
         /** @var FilterConfigElementModel $element */
         $element = $this->mockClassWithProperties(FilterConfigElementModel::class, []);
 
-        $type = new ResetType($config);
+        $type = new PublishedType($config);
 
-        $this->assertNull($type->getDefaultOperator($element));
+        $this->assertEquals(DatabaseUtil::OPERATOR_LIKE, $type->getDefaultOperator($element));
     }
 
     /**
-     * Test getDefaultName()
+     * Test buildForm() with field name
      */
-    public function testGetDefaultName()
-    {
-        $framework = $this->mockContaoFramework();
-        $session   = new MockArraySessionStorage();
-
-        $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
-
-        $range       = new FilterConfigElementModel();
-        $range->name = 'test';
-
-        $type = new ResetType($config);
-
-        $this->assertEquals('reset', $type->getDefaultName($range));
-    }
-
-    /**
-     * Test buildForm() without name
-     */
-    public function testBuildFormWithoutName()
+    public function testBuildFormWithFieldName()
     {
         $framework = $this->mockContaoFramework();
         $session   = new MockArraySessionStorage();
@@ -162,9 +144,9 @@ class ResetTypeTest extends ContaoTestCase
             'filter' => [
                 'types' => [
                     [
-                        'name'  => 'reset',
-                        'class' => ResetType::class,
-                        'type'  => 'button'
+                        'name'  => 'visible',
+                        'class' => PublishedType::class,
+                        'type'  => 'text'
                     ]
                 ]
             ]
@@ -175,19 +157,21 @@ class ResetTypeTest extends ContaoTestCase
 
         $filter = ['name' => 'test', 'dataContainer' => 'tl_test'];
 
-        $element       = new FilterConfigElementModel();
-        $element->type = 'reset';
+        $element        = new FilterConfigElementModel();
+        $element->type  = 'visible';
+        $element->field = 'test';
 
         $config->init('test', $filter, [$element]);
         $config->buildForm();
 
         $this->assertEquals(1, $config->getBuilder()->count()); // f_id element always exists
+        $this->assertFalse($config->getBuilder()->has('test'));
     }
 
     /**
-     * Test buildForm() with name
+     * Test buildQuery() without dca field
      */
-    public function testBuildFormWithName()
+    public function testBuildQueryWithoutDcaField()
     {
         $framework = $this->mockContaoFramework();
         $session   = new MockArraySessionStorage();
@@ -199,94 +183,9 @@ class ResetTypeTest extends ContaoTestCase
             'filter' => [
                 'types' => [
                     [
-                        'name'  => 'reset',
-                        'class' => ResetType::class,
-                        'type'  => 'button'
-                    ]
-                ]
-            ]
-        ]);
-
-        $this->container->set('huh.filter.choice.type', new TypeChoice($framework));
-        System::setContainer($this->container);
-
-        $filter = ['name' => 'test', 'dataContainer' => 'tl_test'];
-
-        $element       = new FilterConfigElementModel();
-        $element->type = 'reset';
-        $element->name = 'test';
-
-        $config->init('test', $filter, [$element]);
-        $config->setData(['foo' => 'bar']); // data is required to display reset button
-        $config->buildForm();
-
-        $this->assertEquals(2, $config->getBuilder()->count()); // f_id element always exists
-        $this->assertTrue($config->getBuilder()->has('reset'));
-        $this->assertInstanceOf(\Symfony\Component\Form\Extension\Core\Type\SubmitType::class, $config->getBuilder()->get('reset')->getType()->getInnerType());
-    }
-
-    /**
-     * Test buildForm() with custom label
-     */
-    public function testBuildFormWithLabel()
-    {
-        $framework = $this->mockContaoFramework();
-        $session   = new MockArraySessionStorage();
-
-        $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
-
-        $this->container->setParameter('huh.filter', [
-            'filter' => [
-                'types' => [
-                    [
-                        'name'  => 'reset',
-                        'class' => ResetType::class,
-                        'type'  => 'button'
-                    ]
-                ]
-            ]
-        ]);
-
-        $this->container->set('huh.filter.choice.type', new TypeChoice($framework));
-        System::setContainer($this->container);
-
-        $filter = ['name' => 'test', 'dataContainer' => 'tl_test'];
-
-        $element              = new FilterConfigElementModel();
-        $element->type        = 'reset';
-        $element->name        = 'test';
-        $element->customLabel = true;
-        $element->label       = 'Button label';
-
-        $config->init('test', $filter, [$element]);
-        $config->setData(['foo' => 'bar']); // data is required to display reset button
-        $config->buildForm();
-
-        $this->assertEquals(2, $config->getBuilder()->count()); // f_id element always exists
-        $this->assertTrue($config->getBuilder()->has('reset'));
-        $this->assertInstanceOf(\Symfony\Component\Form\Extension\Core\Type\SubmitType::class, $config->getBuilder()->get('reset')->getType()->getInnerType());
-        $this->assertEquals('Button label', $config->getBuilder()->get('reset')->getForm()->getConfig()->getOption('label'));
-    }
-
-    /**
-     * Test buildQuery()
-     */
-    public function testBuildQuery()
-    {
-        $framework = $this->mockContaoFramework();
-        $session   = new MockArraySessionStorage();
-
-        $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
-
-        $this->container->setParameter('huh.filter', [
-            'filter' => [
-                'types' => [
-                    [
-                        'name'  => 'reset',
-                        'class' => ResetType::class,
-                        'type'  => 'button',
+                        'name'  => 'visible',
+                        'class' => PublishedType::class,
+                        'type'  => 'text'
                     ]
                 ]
             ]
@@ -299,14 +198,174 @@ class ResetTypeTest extends ContaoTestCase
 
         $element       = new FilterConfigElementModel();
         $element->id   = 2;
-        $element->type = 'reset';
-        $element->name = 'start';
+        $element->type = 'visible';
+        $element->name = 'test';
 
         $config->init('test', $filter, [$element]);
         $config->initQueryBuilder();
 
         $this->assertEmpty($config->getQueryBuilder()->getParameters());
         $this->assertEmpty($config->getQueryBuilder()->getQueryPart('where'));
+    }
+
+    /**
+     * Test buildQuery() without start stop
+     */
+    public function testBuildQueryWithoutStartStop()
+    {
+        $framework = $this->mockContaoFramework();
+        $session   = new MockArraySessionStorage();
+
+        $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
+        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+
+        $this->container->setParameter('huh.filter', [
+            'filter' => [
+                'types' => [
+                    [
+                        'name'  => 'visible',
+                        'class' => PublishedType::class,
+                        'type'  => 'other'
+                    ]
+                ]
+            ]
+        ]);
+
+        $GLOBALS['TL_DCA']['tl_test']['fields']['published'] = [
+            'inputType' => 'checkbox',
+        ];
+
+        $this->container->set('huh.utils.database', new DatabaseUtil($framework));
+        $this->container->set('huh.filter.choice.type', new TypeChoice($framework));
+        System::setContainer($this->container);
+
+        $filter = ['name' => 'test', 'dataContainer' => 'tl_test'];
+
+        // Prevent "undefined index" errors
+        $errorReporting = error_reporting();
+        error_reporting($errorReporting & ~E_NOTICE);
+
+        $element        = new FilterConfigElementModel();
+        $element->id    = 2;
+        $element->type  = 'visible';
+        $element->field = 'published';
+
+        $config->init('test', $filter, [$element]);
+        $config->setData(['published' => 1]);
+        $config->initQueryBuilder();
+
+        $this->assertEmpty($config->getQueryBuilder()->getParameters());
+        $this->assertNotEmpty($config->getQueryBuilder()->getQueryPart('where'));
+        $this->assertEquals('SELECT  FROM tl_test WHERE tl_test.published = 1', $config->getQueryBuilder()->getSQL());
+    }
+
+    /**
+     * Test buildQuery() with start stop
+     */
+    public function testBuildQueryWithStartStop()
+    {
+        $framework = $this->mockContaoFramework();
+        $session   = new MockArraySessionStorage();
+
+        $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
+        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+
+        $this->container->setParameter('huh.filter', [
+            'filter' => [
+                'types' => [
+                    [
+                        'name'  => 'visible',
+                        'class' => PublishedType::class,
+                        'type'  => 'other'
+                    ]
+                ]
+            ]
+        ]);
+
+        $GLOBALS['TL_DCA']['tl_test']['fields']['published'] = [
+            'inputType' => 'checkbox',
+        ];
+
+        $this->container->set('huh.utils.database', new DatabaseUtil($framework));
+        $this->container->set('huh.filter.choice.type', new TypeChoice($framework));
+        System::setContainer($this->container);
+
+        $filter = ['name' => 'test', 'dataContainer' => 'tl_test'];
+
+        // Prevent "undefined index" errors
+        $errorReporting = error_reporting();
+        error_reporting($errorReporting & ~E_NOTICE);
+
+        $element                  = new FilterConfigElementModel();
+        $element->id              = 2;
+        $element->type            = 'visible';
+        $element->field           = 'published';
+        $element->addStartAndStop = true;
+        $element->startField      = 'start';
+        $element->stopField       = 'stop';
+
+        $config->init('test', $filter, [$element]);
+        $config->setData(['published' => 1]);
+        $config->initQueryBuilder();
+
+        $this->assertNotEmpty($config->getQueryBuilder()->getParameters());
+        $this->assertNotEmpty($config->getQueryBuilder()->getQueryPart('where'));
+        $this->assertEquals('SELECT  FROM tl_test WHERE ((tl_test.start = "") OR (tl_test.start <= :startField_time)) AND ((tl_test.stop = "") OR (tl_test.stop > :stopField_time)) AND (tl_test.published = 1)', $config->getQueryBuilder()->getSQL());
+    }
+
+    /**
+     * Test buildQuery() with start stop and active frontend preview
+     */
+    public function testBuildQueryWithStartStopAndPreview()
+    {
+        $framework = $this->mockContaoFramework();
+        $session   = new MockArraySessionStorage();
+
+        $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
+        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+
+        $this->container->setParameter('huh.filter', [
+            'filter' => [
+                'types' => [
+                    [
+                        'name'  => 'visible',
+                        'class' => PublishedType::class,
+                        'type'  => 'other'
+                    ]
+                ]
+            ]
+        ]);
+
+        $GLOBALS['TL_DCA']['tl_test']['fields']['published'] = [
+            'inputType' => 'checkbox',
+        ];
+
+        $this->container->set('huh.utils.database', new DatabaseUtil($framework));
+        $this->container->set('huh.filter.choice.type', new TypeChoice($framework));
+        System::setContainer($this->container);
+
+        $filter = ['name' => 'test', 'dataContainer' => 'tl_test'];
+
+        // Prevent "undefined index" errors
+        $errorReporting = error_reporting();
+        error_reporting($errorReporting & ~E_NOTICE);
+
+        $element                  = new FilterConfigElementModel();
+        $element->id              = 2;
+        $element->type            = 'visible';
+        $element->field           = 'published';
+        $element->addStartAndStop = true;
+        $element->startField      = 'start';
+        $element->stopField       = 'stop';
+        $element->ignoreFePreview = true;
+
+        $config->init('test', $filter, [$element]);
+        $config->setData(['published' => 1]);
+        $config->initQueryBuilder();
+
+        $this->assertNotEmpty($config->getQueryBuilder()->getParameters());
+        $this->assertNotEmpty($config->getQueryBuilder()->getQueryPart('where'));
+        $this->assertEquals('SELECT  FROM tl_test WHERE ((tl_test.start = "") OR (tl_test.start <= :startField_time)) AND ((tl_test.stop = "") OR (tl_test.stop > :stopField_time)) AND (tl_test.published = 1)', $config->getQueryBuilder()->getSQL());
     }
 
     /**

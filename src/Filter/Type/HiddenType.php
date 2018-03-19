@@ -21,7 +21,7 @@ class HiddenType extends AbstractType
      */
     public function buildQuery(FilterQueryBuilder $builder, FilterConfigElementModel $element)
     {
-        // TODO: Implement buildQuery() method.
+        $builder->whereElement($element, $this->getName($element), $this->config, $this->getDefaultOperator($element));
     }
 
     /**

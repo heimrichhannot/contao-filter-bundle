@@ -17,15 +17,16 @@ class ParentType extends ChoiceType
     /** {@inheritdoc} */
     public function getChoices(FilterConfigElementModel $element)
     {
+        $choices = [];
         $context = [];
-        $filter = $this->config->getFilter();
+        $filter  = $this->config->getFilter();
 
         if (!isset($filter['dataContainer'])) {
-            return [];
+            return $choices;
         }
 
         $context['dataContainer'] = $table = $filter['dataContainer'];
-        $parentTable = null;
+        $parentTable              = null;
 
         switch ($table) {
             case 'tl_member':
@@ -36,7 +37,7 @@ class ParentType extends ChoiceType
                 Controller::loadDataContainer($table);
 
                 if (isset($GLOBALS['TL_DCA'][$table]['fields']['pid']['foreignKey'])) {
-                    $foreignKey = explode('.', $GLOBALS['TL_DCA'][$table]['fields']['pid']['foreignKey']);
+                    $foreignKey  = explode('.', $GLOBALS['TL_DCA'][$table]['fields']['pid']['foreignKey']);
                     $parentTable = $foreignKey[0];
                 }
                 break;
@@ -48,9 +49,11 @@ class ParentType extends ChoiceType
 
         Controller::loadDataContainer($parentTable);
 
-        $choices = System::getContainer()->get('huh.utils.choice.model_instance')->getCachedChoices([
-            'dataContainer' => $parentTable,
-        ]);
+        if (System::getContainer()->has('huh.utils.choice.model_instance')) {
+            $choices = System::getContainer()->get('huh.utils.choice.model_instance')->getCachedChoices([
+                'dataContainer' => $parentTable,
+            ]);
+        }
 
         return array_flip($choices);
     }

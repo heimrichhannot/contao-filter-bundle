@@ -10,20 +10,10 @@ namespace HeimrichHannot\FilterBundle\Filter\Type;
 
 use Contao\System;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
-use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
-use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 use Symfony\Component\Form\FormBuilderInterface;
 
 class CountryType extends ChoiceType
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function buildQuery(FilterQueryBuilder $builder, FilterConfigElementModel $element)
-    {
-        $builder->whereElement($element, $this->getName($element), $this->config, $this->getDefaultOperator($element));
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -37,14 +27,10 @@ class CountryType extends ChoiceType
      */
     public function getChoices(FilterConfigElementModel $element)
     {
-        return System::getContainer()->get('huh.filter.choice.country')->getCachedChoices([$element, $this->config->getFilter()]);
-    }
+        if (!System::getContainer()->has('huh.filter.choice.country')) {
+            return [];
+        }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getDefaultOperator(FilterConfigElementModel $element)
-    {
-        return DatabaseUtil::OPERATOR_EQUAL;
+        return System::getContainer()->get('huh.filter.choice.country')->getCachedChoices([$element, $this->config->getFilter()]);
     }
 }

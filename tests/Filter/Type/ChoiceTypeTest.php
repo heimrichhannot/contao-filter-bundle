@@ -13,19 +13,21 @@ use Contao\System;
 use Contao\TestCase\ContaoTestCase;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\Mysqli\Driver;
+use HeimrichHannot\FilterBundle\Choice\FieldOptionsChoice;
 use HeimrichHannot\FilterBundle\Choice\TypeChoice;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
-use HeimrichHannot\FilterBundle\Filter\Type\ResetType;
+use HeimrichHannot\FilterBundle\Filter\Type\ChoiceType;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\Session\FilterSession;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
+use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Translation\Translator;
 
-class ResetTypeTest extends ContaoTestCase
+class ChoiceTypeTest extends ContaoTestCase
 {
     /**
      * @var ContainerBuilder
@@ -104,9 +106,9 @@ class ResetTypeTest extends ContaoTestCase
         $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
         $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
 
-        $type = new ResetType($config);
+        $type = new ChoiceType($config);
 
-        $this->assertInstanceOf('HeimrichHannot\FilterBundle\Filter\Type\ResetType', $type);
+        $this->assertInstanceOf('HeimrichHannot\FilterBundle\Filter\Type\ChoiceType', $type);
     }
 
     /**
@@ -123,9 +125,9 @@ class ResetTypeTest extends ContaoTestCase
         /** @var FilterConfigElementModel $element */
         $element = $this->mockClassWithProperties(FilterConfigElementModel::class, []);
 
-        $type = new ResetType($config);
+        $type = new ChoiceType($config);
 
-        $this->assertNull($type->getDefaultOperator($element));
+        $this->assertEquals(DatabaseUtil::OPERATOR_EQUAL, $type->getDefaultOperator($element));
     }
 
     /**
@@ -142,9 +144,36 @@ class ResetTypeTest extends ContaoTestCase
         $range       = new FilterConfigElementModel();
         $range->name = 'test';
 
-        $type = new ResetType($config);
+        $type = new ChoiceType($config);
 
-        $this->assertEquals('reset', $type->getDefaultName($range));
+        $this->assertEquals('test', $type->getDefaultName($range));
+    }
+
+    /**
+     * Test getDefaultName()
+     */
+    public function testGetChoices()
+    {
+        $framework = $this->mockContaoFramework();
+        $session   = new MockArraySessionStorage();
+
+        $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
+        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+
+        $element       = new FilterConfigElementModel();
+        $element->type = 'choice';
+
+        $filter = ['name' => 'test', 'dataContainer' => 'tl_test'];
+
+        $config->init('test', $filter, [$element]);
+
+        $fieldOptionsChoice = new FieldOptionsChoice($this->mockContaoFramework());
+        $this->container->set('huh.filter.choice.field_options', $fieldOptionsChoice);
+        System::setContainer($this->container);
+
+        $type = new ChoiceType($config);
+
+        $this->assertEmpty($type->getChoices($element));
     }
 
     /**
@@ -162,9 +191,9 @@ class ResetTypeTest extends ContaoTestCase
             'filter' => [
                 'types' => [
                     [
-                        'name'  => 'reset',
-                        'class' => ResetType::class,
-                        'type'  => 'button'
+                        'name'  => 'choice',
+                        'class' => ChoiceType::class,
+                        'type'  => 'choice'
                     ]
                 ]
             ]
@@ -176,7 +205,7 @@ class ResetTypeTest extends ContaoTestCase
         $filter = ['name' => 'test', 'dataContainer' => 'tl_test'];
 
         $element       = new FilterConfigElementModel();
-        $element->type = 'reset';
+        $element->type = 'choice';
 
         $config->init('test', $filter, [$element]);
         $config->buildForm();
@@ -185,9 +214,9 @@ class ResetTypeTest extends ContaoTestCase
     }
 
     /**
-     * Test buildForm() with name
+     * Test buildForm() with field name
      */
-    public function testBuildFormWithName()
+    public function testBuildFormWithFieldName()
     {
         $framework = $this->mockContaoFramework();
         $session   = new MockArraySessionStorage();
@@ -199,9 +228,143 @@ class ResetTypeTest extends ContaoTestCase
             'filter' => [
                 'types' => [
                     [
-                        'name'  => 'reset',
-                        'class' => ResetType::class,
-                        'type'  => 'button'
+                        'name'  => 'choice',
+                        'class' => ChoiceType::class,
+                        'type'  => 'choice'
+                    ]
+                ]
+            ]
+        ]);
+
+        $this->container->set('huh.filter.choice.type', new TypeChoice($framework));
+        System::setContainer($this->container);
+
+        $filter = ['name' => 'test', 'dataContainer' => 'tl_test'];
+
+        $element        = new FilterConfigElementModel();
+        $element->type  = 'choice';
+        $element->field = 'test';
+
+        $config->init('test', $filter, [$element]);
+        $config->buildForm();
+
+        $this->assertEquals(2, $config->getBuilder()->count()); // f_id element always exists
+        $this->assertTrue($config->getBuilder()->has('test'));
+        $this->assertInstanceOf(\Symfony\Component\Form\Extension\Core\Type\ChoiceType::class, $config->getBuilder()->get('test')->getType()->getInnerType());
+    }
+
+    /**
+     * Test buildForm() with non array default values
+     */
+    public function testBuildFormWithNonArrayDefaultValues()
+    {
+        $framework = $this->mockContaoFramework();
+        $session   = new MockArraySessionStorage();
+
+        $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
+        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+
+        $this->container->setParameter('huh.filter', [
+            'filter' => [
+                'types' => [
+                    [
+                        'name'  => 'choice',
+                        'class' => ChoiceType::class,
+                        'type'  => 'choice'
+                    ]
+                ]
+            ]
+        ]);
+
+        $this->container->set('huh.filter.choice.type', new TypeChoice($framework));
+        System::setContainer($this->container);
+
+        $filter = ['name' => 'test', 'dataContainer' => 'tl_test'];
+
+        $element                  = new FilterConfigElementModel();
+        $element->type            = 'choice';
+        $element->field           = 'test';
+        $element->addDefaultValue = true;
+        $element->defaultValue    = '123';
+        $element->addDefaultValue = true;
+        $element->multiple        = true;
+
+        $config->init('test', $filter, [$element]);
+        $config->buildForm();
+
+        $this->assertEquals(2, $config->getBuilder()->count()); // f_id element always exists
+        $this->assertTrue($config->getBuilder()->has('test'));
+        $this->assertInstanceOf(\Symfony\Component\Form\Extension\Core\Type\ChoiceType::class, $config->getBuilder()->get('test')->getType()->getInnerType());
+        $this->assertEquals(['123'], $config->getBuilder()->get('test')->getForm()->getConfig()->getOption('data'));
+    }
+
+    /**
+     * Test buildForm() with field name
+     */
+    public function testBuildFormWithPlaceholder()
+    {
+        $framework = $this->mockContaoFramework();
+        $session   = new MockArraySessionStorage();
+
+        $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
+        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+
+        $this->container->setParameter('huh.filter', [
+            'filter' => [
+                'types' => [
+                    [
+                        'name'  => 'choice',
+                        'class' => ChoiceType::class,
+                        'type'  => 'choice'
+                    ]
+                ]
+            ]
+        ]);
+
+        $this->container->set('huh.filter.choice.type', new TypeChoice($framework));
+        System::setContainer($this->container);
+
+        $filter = ['name' => 'test', 'dataContainer' => 'tl_test'];
+
+        $translator = new Translator('en');
+        $translator->getCatalogue()->add(['message.test_placholder' => 'test placeholder']);
+        $this->container->set('translator', $translator);
+
+        $element                 = new FilterConfigElementModel();
+        $element->type           = 'choice';
+        $element->field          = 'test';
+        $element->addPlaceholder = true;
+        $element->placeholder    = 'message.test_placholder';
+
+        $config->init('test', $filter, [$element]);
+        $config->buildForm();
+
+        $this->assertEquals(2, $config->getBuilder()->count()); // f_id element always exists
+        $this->assertTrue($config->getBuilder()->has('test'));
+        $this->assertInstanceOf(\Symfony\Component\Form\Extension\Core\Type\ChoiceType::class, $config->getBuilder()->get('test')->getType()->getInnerType());
+        $this->assertEquals('test placeholder', $config->getBuilder()->get('test')->getForm()->getConfig()->getOption('placeholder'));
+        $this->assertEquals('test placeholder', $config->getBuilder()->get('test')->getForm()->getConfig()->getOption('attr')['data-placeholder']);
+        $this->assertArrayNotHasKey('placeholder', $config->getBuilder()->get('test')->getForm()->getConfig()->getOption('attr'));
+    }
+
+    /**
+     * Test buildQuery() without dca field
+     */
+    public function testBuildQueryWithoutDcaField()
+    {
+        $framework = $this->mockContaoFramework();
+        $session   = new MockArraySessionStorage();
+
+        $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
+        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+
+        $this->container->setParameter('huh.filter', [
+            'filter' => [
+                'types' => [
+                    [
+                        'name'  => 'choice',
+                        'class' => ChoiceType::class,
+                        'type'  => 'choice'
                     ]
                 ]
             ]
@@ -213,60 +376,15 @@ class ResetTypeTest extends ContaoTestCase
         $filter = ['name' => 'test', 'dataContainer' => 'tl_test'];
 
         $element       = new FilterConfigElementModel();
-        $element->type = 'reset';
+        $element->id   = 2;
+        $element->type = 'choice';
         $element->name = 'test';
 
         $config->init('test', $filter, [$element]);
-        $config->setData(['foo' => 'bar']); // data is required to display reset button
-        $config->buildForm();
+        $config->initQueryBuilder();
 
-        $this->assertEquals(2, $config->getBuilder()->count()); // f_id element always exists
-        $this->assertTrue($config->getBuilder()->has('reset'));
-        $this->assertInstanceOf(\Symfony\Component\Form\Extension\Core\Type\SubmitType::class, $config->getBuilder()->get('reset')->getType()->getInnerType());
-    }
-
-    /**
-     * Test buildForm() with custom label
-     */
-    public function testBuildFormWithLabel()
-    {
-        $framework = $this->mockContaoFramework();
-        $session   = new MockArraySessionStorage();
-
-        $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
-
-        $this->container->setParameter('huh.filter', [
-            'filter' => [
-                'types' => [
-                    [
-                        'name'  => 'reset',
-                        'class' => ResetType::class,
-                        'type'  => 'button'
-                    ]
-                ]
-            ]
-        ]);
-
-        $this->container->set('huh.filter.choice.type', new TypeChoice($framework));
-        System::setContainer($this->container);
-
-        $filter = ['name' => 'test', 'dataContainer' => 'tl_test'];
-
-        $element              = new FilterConfigElementModel();
-        $element->type        = 'reset';
-        $element->name        = 'test';
-        $element->customLabel = true;
-        $element->label       = 'Button label';
-
-        $config->init('test', $filter, [$element]);
-        $config->setData(['foo' => 'bar']); // data is required to display reset button
-        $config->buildForm();
-
-        $this->assertEquals(2, $config->getBuilder()->count()); // f_id element always exists
-        $this->assertTrue($config->getBuilder()->has('reset'));
-        $this->assertInstanceOf(\Symfony\Component\Form\Extension\Core\Type\SubmitType::class, $config->getBuilder()->get('reset')->getType()->getInnerType());
-        $this->assertEquals('Button label', $config->getBuilder()->get('reset')->getForm()->getConfig()->getOption('label'));
+        $this->assertEmpty($config->getQueryBuilder()->getParameters());
+        $this->assertEmpty($config->getQueryBuilder()->getQueryPart('where'));
     }
 
     /**
@@ -284,29 +402,41 @@ class ResetTypeTest extends ContaoTestCase
             'filter' => [
                 'types' => [
                     [
-                        'name'  => 'reset',
-                        'class' => ResetType::class,
-                        'type'  => 'button',
+                        'name'  => 'choice',
+                        'class' => ChoiceType::class,
+                        'type'  => 'choice'
                     ]
                 ]
             ]
         ]);
 
+        $GLOBALS['TL_DCA']['tl_test']['fields']['test'] = [
+            'inputType' => 'select',
+        ];
+
+        $this->container->set('huh.utils.database', new DatabaseUtil($framework));
         $this->container->set('huh.filter.choice.type', new TypeChoice($framework));
         System::setContainer($this->container);
 
         $filter = ['name' => 'test', 'dataContainer' => 'tl_test'];
 
-        $element       = new FilterConfigElementModel();
-        $element->id   = 2;
-        $element->type = 'reset';
-        $element->name = 'start';
+        // Prevent "undefined index" errors
+        $errorReporting = error_reporting();
+        error_reporting($errorReporting & ~E_NOTICE);
+
+        $element        = new FilterConfigElementModel();
+        $element->id    = 2;
+        $element->type  = 'choice';
+        $element->field = 'test';
 
         $config->init('test', $filter, [$element]);
+        $config->setData(['test' => 1]);
         $config->initQueryBuilder();
 
-        $this->assertEmpty($config->getQueryBuilder()->getParameters());
-        $this->assertEmpty($config->getQueryBuilder()->getQueryPart('where'));
+        $this->assertNotEmpty($config->getQueryBuilder()->getParameters());
+        $this->assertNotEmpty($config->getQueryBuilder()->getQueryPart('where'));
+        $this->assertEquals('SELECT  FROM tl_test WHERE test = :test', $config->getQueryBuilder()->getSQL());
+        $this->assertEquals([':test' => '1'], $config->getQueryBuilder()->getParameters());
     }
 
     /**

@@ -15,17 +15,18 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\Mysqli\Driver;
 use HeimrichHannot\FilterBundle\Choice\TypeChoice;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
-use HeimrichHannot\FilterBundle\Filter\Type\ResetType;
+use HeimrichHannot\FilterBundle\Filter\Type\TextConcatType;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\Session\FilterSession;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
+use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Translation\Translator;
 
-class ResetTypeTest extends ContaoTestCase
+class TextConcatTypeTest extends ContaoTestCase
 {
     /**
      * @var ContainerBuilder
@@ -104,9 +105,9 @@ class ResetTypeTest extends ContaoTestCase
         $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
         $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
 
-        $type = new ResetType($config);
+        $type = new TextConcatType($config);
 
-        $this->assertInstanceOf('HeimrichHannot\FilterBundle\Filter\Type\ResetType', $type);
+        $this->assertInstanceOf('HeimrichHannot\FilterBundle\Filter\Type\TextConcatType', $type);
     }
 
     /**
@@ -123,9 +124,9 @@ class ResetTypeTest extends ContaoTestCase
         /** @var FilterConfigElementModel $element */
         $element = $this->mockClassWithProperties(FilterConfigElementModel::class, []);
 
-        $type = new ResetType($config);
+        $type = new TextConcatType($config);
 
-        $this->assertNull($type->getDefaultOperator($element));
+        $this->assertEquals(DatabaseUtil::OPERATOR_LIKE, $type->getDefaultOperator($element));
     }
 
     /**
@@ -142,9 +143,9 @@ class ResetTypeTest extends ContaoTestCase
         $range       = new FilterConfigElementModel();
         $range->name = 'test';
 
-        $type = new ResetType($config);
+        $type = new TextConcatType($config);
 
-        $this->assertEquals('reset', $type->getDefaultName($range));
+        $this->assertEquals('test', $type->getDefaultName($range));
     }
 
     /**
@@ -162,9 +163,9 @@ class ResetTypeTest extends ContaoTestCase
             'filter' => [
                 'types' => [
                     [
-                        'name'  => 'reset',
-                        'class' => ResetType::class,
-                        'type'  => 'button'
+                        'name'  => 'text_concat',
+                        'class' => TextConcatType::class,
+                        'type'  => 'text'
                     ]
                 ]
             ]
@@ -176,7 +177,7 @@ class ResetTypeTest extends ContaoTestCase
         $filter = ['name' => 'test', 'dataContainer' => 'tl_test'];
 
         $element       = new FilterConfigElementModel();
-        $element->type = 'reset';
+        $element->type = 'text_concat';
 
         $config->init('test', $filter, [$element]);
         $config->buildForm();
@@ -185,9 +186,9 @@ class ResetTypeTest extends ContaoTestCase
     }
 
     /**
-     * Test buildForm() with name
+     * Test buildForm() with field name
      */
-    public function testBuildFormWithName()
+    public function testBuildFormWithFieldName()
     {
         $framework = $this->mockContaoFramework();
         $session   = new MockArraySessionStorage();
@@ -199,9 +200,49 @@ class ResetTypeTest extends ContaoTestCase
             'filter' => [
                 'types' => [
                     [
-                        'name'  => 'reset',
-                        'class' => ResetType::class,
-                        'type'  => 'button'
+                        'name'  => 'text_concat',
+                        'class' => TextConcatType::class,
+                        'type'  => 'text'
+                    ]
+                ]
+            ]
+        ]);
+
+        $this->container->set('huh.filter.choice.type', new TypeChoice($framework));
+        System::setContainer($this->container);
+
+        $filter = ['name' => 'test', 'dataContainer' => 'tl_test'];
+
+        $element        = new FilterConfigElementModel();
+        $element->type  = 'text_concat';
+        $element->field = 'test';
+
+        $config->init('test', $filter, [$element]);
+        $config->buildForm();
+
+        $this->assertEquals(2, $config->getBuilder()->count()); // f_id element always exists
+        $this->assertTrue($config->getBuilder()->has('test'));
+        $this->assertInstanceOf(\Symfony\Component\Form\Extension\Core\Type\TextType::class, $config->getBuilder()->get('test')->getType()->getInnerType());
+    }
+
+    /**
+     * Test buildQuery() without dca field
+     */
+    public function testBuildQueryWithoutDcaField()
+    {
+        $framework = $this->mockContaoFramework();
+        $session   = new MockArraySessionStorage();
+
+        $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
+        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+
+        $this->container->setParameter('huh.filter', [
+            'filter' => [
+                'types' => [
+                    [
+                        'name'  => 'text_concat',
+                        'class' => TextConcatType::class,
+                        'type'  => 'text'
                     ]
                 ]
             ]
@@ -213,22 +254,21 @@ class ResetTypeTest extends ContaoTestCase
         $filter = ['name' => 'test', 'dataContainer' => 'tl_test'];
 
         $element       = new FilterConfigElementModel();
-        $element->type = 'reset';
+        $element->id   = 2;
+        $element->type = 'text_concat';
         $element->name = 'test';
 
         $config->init('test', $filter, [$element]);
-        $config->setData(['foo' => 'bar']); // data is required to display reset button
-        $config->buildForm();
+        $config->initQueryBuilder();
 
-        $this->assertEquals(2, $config->getBuilder()->count()); // f_id element always exists
-        $this->assertTrue($config->getBuilder()->has('reset'));
-        $this->assertInstanceOf(\Symfony\Component\Form\Extension\Core\Type\SubmitType::class, $config->getBuilder()->get('reset')->getType()->getInnerType());
+        $this->assertEmpty($config->getQueryBuilder()->getParameters());
+        $this->assertEmpty($config->getQueryBuilder()->getQueryPart('where'));
     }
 
     /**
-     * Test buildForm() with custom label
+     * Test buildQuery() without fields
      */
-    public function testBuildFormWithLabel()
+    public function testBuildQueryWithoutFields()
     {
         $framework = $this->mockContaoFramework();
         $session   = new MockArraySessionStorage();
@@ -240,37 +280,91 @@ class ResetTypeTest extends ContaoTestCase
             'filter' => [
                 'types' => [
                     [
-                        'name'  => 'reset',
-                        'class' => ResetType::class,
-                        'type'  => 'button'
+                        'name'  => 'text_concat',
+                        'class' => TextConcatType::class,
+                        'type'  => 'text'
                     ]
                 ]
             ]
         ]);
 
+        $GLOBALS['TL_DCA']['tl_test']['fields']['test'] = [
+            'inputType' => 'checkbox',
+        ];
+
+        $this->container->set('huh.utils.database', new DatabaseUtil($framework));
         $this->container->set('huh.filter.choice.type', new TypeChoice($framework));
         System::setContainer($this->container);
 
         $filter = ['name' => 'test', 'dataContainer' => 'tl_test'];
 
-        $element              = new FilterConfigElementModel();
-        $element->type        = 'reset';
-        $element->name        = 'test';
-        $element->customLabel = true;
-        $element->label       = 'Button label';
+        // Prevent "undefined index" errors
+        $errorReporting = error_reporting();
+        error_reporting($errorReporting & ~E_NOTICE);
+
+        $element       = new FilterConfigElementModel();
+        $element->id   = 2;
+        $element->type = 'text_concat';
+        $element->name = 'test';
 
         $config->init('test', $filter, [$element]);
-        $config->setData(['foo' => 'bar']); // data is required to display reset button
-        $config->buildForm();
+        $config->setData(['test' => 1]);
+        $config->initQueryBuilder();
 
-        $this->assertEquals(2, $config->getBuilder()->count()); // f_id element always exists
-        $this->assertTrue($config->getBuilder()->has('reset'));
-        $this->assertInstanceOf(\Symfony\Component\Form\Extension\Core\Type\SubmitType::class, $config->getBuilder()->get('reset')->getType()->getInnerType());
-        $this->assertEquals('Button label', $config->getBuilder()->get('reset')->getForm()->getConfig()->getOption('label'));
+        $this->assertEmpty($config->getQueryBuilder()->getParameters());
+        $this->assertEmpty($config->getQueryBuilder()->getQueryPart('where'));
     }
 
     /**
-     * Test buildQuery()
+     * Test buildQuery() without data
+     */
+    public function testBuildQueryWithoutData()
+    {
+        $framework = $this->mockContaoFramework();
+        $session   = new MockArraySessionStorage();
+
+        $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
+        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+
+        $this->container->setParameter('huh.filter', [
+            'filter' => [
+                'types' => [
+                    [
+                        'name'  => 'text_concat',
+                        'class' => TextConcatType::class,
+                        'type'  => 'text'
+                    ]
+                ]
+            ]
+        ]);
+
+        $GLOBALS['TL_DCA']['tl_test']['fields']['test'] = [
+            'inputType' => 'checkbox',
+        ];
+
+        $this->container->set('huh.utils.database', new DatabaseUtil($framework));
+        $this->container->set('huh.filter.choice.type', new TypeChoice($framework));
+        System::setContainer($this->container);
+
+        $filter = ['name' => 'test', 'dataContainer' => 'tl_test'];
+
+        // Prevent "undefined index" errors
+        $errorReporting = error_reporting();
+        error_reporting($errorReporting & ~E_NOTICE);
+
+        $element       = new FilterConfigElementModel();
+        $element->id   = 2;
+        $element->type = 'text_concat';
+
+        $config->init('test', $filter, [$element]);
+        $config->initQueryBuilder();
+
+        $this->assertEmpty($config->getQueryBuilder()->getParameters());
+        $this->assertEmpty($config->getQueryBuilder()->getQueryPart('where'));
+    }
+
+    /**
+     * Test buildQuery() without dca field
      */
     public function testBuildQuery()
     {
@@ -284,29 +378,46 @@ class ResetTypeTest extends ContaoTestCase
             'filter' => [
                 'types' => [
                     [
-                        'name'  => 'reset',
-                        'class' => ResetType::class,
-                        'type'  => 'button',
+                        'name'  => 'text_concat',
+                        'class' => TextConcatType::class,
+                        'type'  => 'text'
                     ]
                 ]
             ]
         ]);
 
+        $GLOBALS['TL_DCA']['tl_test']['fields']['first_name'] = [
+            'inputType' => 'checkbox',
+        ];
+
+        $GLOBALS['TL_DCA']['tl_test']['fields']['last_name'] = [
+            'inputType' => 'checkbox',
+        ];
+
+        $this->container->set('huh.utils.database', new DatabaseUtil($framework));
         $this->container->set('huh.filter.choice.type', new TypeChoice($framework));
         System::setContainer($this->container);
 
         $filter = ['name' => 'test', 'dataContainer' => 'tl_test'];
 
-        $element       = new FilterConfigElementModel();
-        $element->id   = 2;
-        $element->type = 'reset';
-        $element->name = 'start';
+        // Prevent "undefined index" errors
+        $errorReporting = error_reporting();
+        error_reporting($errorReporting & ~E_NOTICE);
+
+        $element         = new FilterConfigElementModel();
+        $element->id     = 2;
+        $element->type   = 'text_concat';
+        $element->name   = 'name';
+        $element->fields = ['first_name', 'last_name'];
 
         $config->init('test', $filter, [$element]);
+        $config->setData(['name' => 'John Doe']);
         $config->initQueryBuilder();
 
-        $this->assertEmpty($config->getQueryBuilder()->getParameters());
-        $this->assertEmpty($config->getQueryBuilder()->getQueryPart('where'));
+        $this->assertNotEmpty($config->getQueryBuilder()->getParameters());
+        $this->assertNotEmpty($config->getQueryBuilder()->getQueryPart('where'));
+        $this->assertEquals('SELECT  FROM tl_test WHERE CONCAT(first_name," ",last_name) LIKE :name', $config->getQueryBuilder()->getSQL());
+        $this->assertEquals([':name' => '%John Doe%'], $config->getQueryBuilder()->getParameters());
     }
 
     /**
