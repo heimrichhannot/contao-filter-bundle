@@ -177,14 +177,12 @@ class ResetTypeTest extends ContaoTestCase
         $filter = ['name' => 'test', 'dataContainer' => 'tl_test'];
 
         $element       = new FilterConfigElementModel();
-        $element->type = 'submit';
+        $element->type = 'reset';
 
         $config->init('test', $filter, [$element]);
         $config->buildForm();
 
-        $this->assertEquals(2, $config->getBuilder()->count()); // f_id element always exists
-        $this->assertFalse($config->getBuilder()->has('submit'));
-        $this->assertInstanceOf(\Symfony\Component\Form\Extension\Core\Type\SubmitType::class, $config->getBuilder()->get('submit')->getType()->getInnerType());
+        $this->assertEquals(1, $config->getBuilder()->count()); // f_id element always exists
     }
 
     /**
