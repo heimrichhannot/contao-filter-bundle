@@ -20,7 +20,6 @@ class ResetType extends AbstractType
      */
     public function buildQuery(FilterQueryBuilder $builder, FilterConfigElementModel $element)
     {
-        // TODO: Implement buildQuery() method.
     }
 
     /**
@@ -30,7 +29,7 @@ class ResetType extends AbstractType
     {
         $filter = $this->config->getFilter();
 
-        if (!$this->config->hasData() || true === (bool) $filter['renderEmpty']) {
+        if (!$this->config->hasData() || (isset($filter['renderEmpty']) && true === (bool)$filter['renderEmpty'])) {
             return;
         }
 

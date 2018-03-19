@@ -200,8 +200,8 @@ class ResetTypeTest extends ContaoTestCase
             'filter' => [
                 'types' => [
                     [
-                        'name'  => 'submit',
-                        'class' => SubmitType::class,
+                        'name'  => 'reset',
+                        'class' => ResetType::class,
                         'type'  => 'button'
                     ]
                 ]
@@ -214,15 +214,16 @@ class ResetTypeTest extends ContaoTestCase
         $filter = ['name' => 'test', 'dataContainer' => 'tl_test'];
 
         $element       = new FilterConfigElementModel();
-        $element->type = 'submit';
+        $element->type = 'reset';
         $element->name = 'test';
 
         $config->init('test', $filter, [$element]);
+        $config->setData(['foo' => 'bar']); // data is required to display reset button
         $config->buildForm();
 
         $this->assertEquals(2, $config->getBuilder()->count()); // f_id element always exists
-        $this->assertFalse($config->getBuilder()->has('test'));
-        $this->assertInstanceOf(\Symfony\Component\Form\Extension\Core\Type\SubmitType::class, $config->getBuilder()->get('submit')->getType()->getInnerType());
+        $this->assertTrue($config->getBuilder()->has('reset'));
+        $this->assertInstanceOf(\Symfony\Component\Form\Extension\Core\Type\SubmitType::class, $config->getBuilder()->get('reset')->getType()->getInnerType());
     }
 
     /**
@@ -240,8 +241,8 @@ class ResetTypeTest extends ContaoTestCase
             'filter' => [
                 'types' => [
                     [
-                        'name'  => 'submit',
-                        'class' => SubmitType::class,
+                        'name'  => 'reset',
+                        'class' => ResetType::class,
                         'type'  => 'button'
                     ]
                 ]
@@ -254,18 +255,19 @@ class ResetTypeTest extends ContaoTestCase
         $filter = ['name' => 'test', 'dataContainer' => 'tl_test'];
 
         $element              = new FilterConfigElementModel();
-        $element->type        = 'submit';
+        $element->type        = 'reset';
         $element->name        = 'test';
         $element->customLabel = true;
         $element->label       = 'Button label';
 
         $config->init('test', $filter, [$element]);
+        $config->setData(['foo' => 'bar']); // data is required to display reset button
         $config->buildForm();
 
         $this->assertEquals(2, $config->getBuilder()->count()); // f_id element always exists
-        $this->assertFalse($config->getBuilder()->has('test'));
-        $this->assertInstanceOf(\Symfony\Component\Form\Extension\Core\Type\SubmitType::class, $config->getBuilder()->get('submit')->getType()->getInnerType());
-        $this->assertEquals('Button label', $config->getBuilder()->get('submit')->getForm()->getConfig()->getOption('label'));
+        $this->assertTrue($config->getBuilder()->has('reset'));
+        $this->assertInstanceOf(\Symfony\Component\Form\Extension\Core\Type\SubmitType::class, $config->getBuilder()->get('reset')->getType()->getInnerType());
+        $this->assertEquals('Button label', $config->getBuilder()->get('reset')->getForm()->getConfig()->getOption('label'));
     }
 
     /**
@@ -283,8 +285,8 @@ class ResetTypeTest extends ContaoTestCase
             'filter' => [
                 'types' => [
                     [
-                        'name'  => 'submit',
-                        'class' => SubmitType::class,
+                        'name'  => 'reset',
+                        'class' => ResetType::class,
                         'type'  => 'button',
                     ]
                 ]
@@ -298,7 +300,7 @@ class ResetTypeTest extends ContaoTestCase
 
         $element       = new FilterConfigElementModel();
         $element->id   = 2;
-        $element->type = 'submit';
+        $element->type = 'reset';
         $element->name = 'start';
 
         $config->init('test', $filter, [$element]);
