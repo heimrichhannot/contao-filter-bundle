@@ -169,7 +169,7 @@ class TemplateChoiceTest extends ContaoTestCase
         $this->assertArrayHasKey('button', $choices);
         $this->assertSame('button', $choices['button'][0]);
         $this->assertArrayHasKey('other', $choices);
-        $this->assertSame('hidden', $choices['other'][0]);
+        $this->assertSame('visible', $choices['other'][0]);
     }
 
     /**
