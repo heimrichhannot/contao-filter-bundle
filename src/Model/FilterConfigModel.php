@@ -98,7 +98,7 @@ class FilterConfigModel extends \Model
         }
 
         /** @var Model $adapter */
-        $adapter = System::getContainer()->get('contao.framework')->getAdapter(Model::class);
+        $adapter = System::getContainer()->get('contao.framework')->getAdapter(static::class);
 
         if (null === $adapter) {
             return null;

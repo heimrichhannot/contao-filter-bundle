@@ -1,0 +1,6 @@
+huh_filter:
+    path: /_filter
+    defaults:
+        _scope: frontend
+        _token_check: true
+        _controller: "HeimrichHannotFilterBundle:Frontend:submit"

@@ -159,7 +159,7 @@ class FilterConfigElementModel extends \Model implements \JsonSerializable
         }
 
         /** @var Model $adapter */
-        $adapter = System::getContainer()->get('contao.framework')->getAdapter(Model::class);
+        $adapter = System::getContainer()->get('contao.framework')->getAdapter(static::class);
 
         if (null === $adapter) {
             return null;
@@ -201,7 +201,7 @@ class FilterConfigElementModel extends \Model implements \JsonSerializable
         }
 
         /** @var Model $adapter */
-        $adapter = System::getContainer()->get('contao.framework')->getAdapter(Model::class);
+        $adapter = System::getContainer()->get('contao.framework')->getAdapter(static::class);
 
         if (null === $adapter) {
             return null;
