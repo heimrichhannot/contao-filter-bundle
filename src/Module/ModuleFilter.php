@@ -10,7 +10,7 @@ namespace HeimrichHannot\FilterBundle\Module;
 
 use Contao\System;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
-use HeimrichHannot\FilterBundle\Registry\FilterRegistry;
+use HeimrichHannot\FilterBundle\Manager\FilterManager;
 use Patchwork\Utf8;
 
 class ModuleFilter extends \Contao\Module
@@ -35,14 +35,12 @@ class ModuleFilter extends \Contao\Module
             return $objTemplate->parse();
         }
 
-        if (!System::getContainer()->has('huh.filter.registry') || !$this->objModel->filter) {
+        if (!System::getContainer()->has('huh.filter.manager') || !$this->objModel->filter) {
             return '';
         }
 
-        /**
-         * @var FilterRegistry
-         */
-        $registry = System::getContainer()->get('huh.filter.registry');
+        /** @var FilterManager $registry */
+        $registry = System::getContainer()->get('huh.filter.manager');
 
         if (null === ($this->config = $registry->findById($this->objModel->filter))) {
             return '';

@@ -10,6 +10,7 @@ namespace HeimrichHannot\FilterBundle\Form;
 
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\InsertTags;
+use Contao\System;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
 use HeimrichHannot\FilterBundle\Exception\MissingFilterConfigException;
 use Symfony\Component\Form\AbstractType;
@@ -21,7 +22,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class FilterType extends AbstractType
 {
-    const FILTER_ID_NAME = 'f_id';
+    const FILTER_ID_NAME       = 'f_id';
+    const FILTER_REFERRER_NAME = 'f_ref';
 
     /**
      * @var FilterConfig|null
@@ -52,8 +54,13 @@ class FilterType extends AbstractType
             $builder->setMethod($filter['method']);
         }
 
+        $request = System::getContainer()->get('request_stack')->getCurrentRequest();
+
         // always add a hidden field with the filter id
         $builder->add(static::FILTER_ID_NAME, HiddenType::class, ['attr' => ['value' => $this->config->getId()]]);
+
+        // always add a hidden field with the referrer url (required by reset for example to redirect back to user action page)
+        $builder->add(static::FILTER_REFERRER_NAME, HiddenType::class, ['attr' => ['value' => $request->getUri()]]);
 
         $this->buildElements($builder, $options);
     }
@@ -186,28 +193,19 @@ class FilterType extends AbstractType
     }
 
     /**
-     * Get the action based on current filter action.
-     *
-     * @return string
+     * Get the form action url to internal filter_frontend_submit action
      */
     protected function getAction()
     {
+        $router = System::getContainer()->get('router');
+
         $filter = $this->config->getFilter();
 
-        if (!isset($filter['action'])) {
-            return '';
+        if(!isset($filter['id']))
+        {
+            return null;
         }
 
-        /**
-         * @var InsertTags
-         */
-        $insertTagAdapter = $this->framework->createInstance(InsertTags::class);
-
-        // while unit testing, the mock object cant be instantiated
-        if (null === $insertTagAdapter) {
-            $insertTagAdapter = $this->framework->getAdapter(InsertTags::class);
-        }
-
-        return urldecode($insertTagAdapter->replace($filter['action']));
+        return $router->generate('filter_frontend_submit', ['id' => $filter['id']]);
     }
 }

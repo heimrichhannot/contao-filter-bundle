@@ -44,7 +44,7 @@ class DateTimeType extends AbstractType
             $value = System::getContainer()->get('huh.utils.date')->getTimeStamp($value, true);
         }
 
-        /** @var $startDate \DateTime|null */
+        /** @var \DateTime|null $startDate */
         $value = System::getContainer()->get('huh.utils.date')->getTimeStamp($value, false);
 
         $minDate = $this->getMinDate($element);

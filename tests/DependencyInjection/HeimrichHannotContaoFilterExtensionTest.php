@@ -19,7 +19,7 @@ use HeimrichHannot\FilterBundle\Config\FilterConfig;
 use HeimrichHannot\FilterBundle\DependencyInjection\HeimrichHannotContaoFilterExtension;
 use HeimrichHannot\FilterBundle\Session\FilterSession;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
-use HeimrichHannot\FilterBundle\Registry\FilterRegistry;
+use HeimrichHannot\FilterBundle\Manager\FilterManager;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
@@ -61,15 +61,15 @@ class HeimrichHannotContaoFilterExtensionTest extends TestCase
     }
 
     /**
-     * Tests the huh.filter.registry service.
+     * Tests the huh.filter.manager service.
      */
-    public function testRegistersTheFilterRegistry()
+    public function testRegistersTheFilterManager()
     {
-        $this->assertTrue($this->container->has('huh.filter.registry'));
+        $this->assertTrue($this->container->has('huh.filter.manager'));
 
-        $definition = $this->container->getDefinition('huh.filter.registry');
+        $definition = $this->container->getDefinition('huh.filter.manager');
 
-        $this->assertSame(FilterRegistry::class, $definition->getClass());
+        $this->assertSame(FilterManager::class, $definition->getClass());
         $this->assertSame('contao.framework', (string) $definition->getArgument(0));
         $this->assertSame('huh.filter.session', (string) $definition->getArgument(1));
     }

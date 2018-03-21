@@ -21,9 +21,12 @@ use HeimrichHannot\FilterBundle\Session\FilterSession;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 use Symfony\Component\HttpKernel\Kernel;
+use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Translation\Translator;
 
 class PublishedTypeTest extends ContaoTestCase
@@ -85,6 +88,19 @@ class PublishedTypeTest extends ContaoTestCase
         $this->container->setParameter('kernel.debug', true);
         $this->container->setParameter('kernel.default_locale', 'de');
         $this->container->set('translator', new Translator('en'));
+
+        $request = new Request();
+
+        $requestStack = new RequestStack();
+        $requestStack->push($request);
+        $this->container->set('request_stack', $requestStack);
+
+        $router = $this->createMock(RouterInterface::class);
+        $router->method('generate')->with('filter_frontend_submit', $this->anything())->will($this->returnCallback(function ($route, $params = []) {
+            return '/_filter/submit/1';
+        }));
+
+        $this->container->set('router', $router);
 
         $this->kernel = $this->createMock(Kernel::class);
         $this->kernel->method('getContainer')->willReturn($this->container);
@@ -164,7 +180,7 @@ class PublishedTypeTest extends ContaoTestCase
         $config->init('test', $filter, [$element]);
         $config->buildForm();
 
-        $this->assertEquals(1, $config->getBuilder()->count()); // f_id element always exists
+        $this->assertEquals(2, $config->getBuilder()->count());  // f_id and f_ref element always exists
         $this->assertFalse($config->getBuilder()->has('test'));
     }
 

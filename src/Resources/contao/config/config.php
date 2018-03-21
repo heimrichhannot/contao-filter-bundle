@@ -30,8 +30,3 @@ array_insert(
         'filter' => 'HeimrichHannot\FilterBundle\Module\ModuleFilter',
     ]
 );
-
-/**
- * Hooks
- */
-$GLOBALS['TL_HOOKS']['initializeSystem']['huh.filter.registry'] = ['huh.filter.registry', 'init'];

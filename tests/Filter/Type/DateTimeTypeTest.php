@@ -24,9 +24,12 @@ use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 use HeimrichHannot\UtilsBundle\Date\DateUtil;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 use Symfony\Component\HttpKernel\Kernel;
+use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Translation\Translator;
 
 class DateTimeTypeTest extends ContaoTestCase
@@ -88,6 +91,19 @@ class DateTimeTypeTest extends ContaoTestCase
         $this->container->setParameter('kernel.debug', true);
         $this->container->setParameter('kernel.default_locale', 'de');
         $this->container->set('translator', new Translator('en'));
+
+        $request = new Request();
+
+        $requestStack = new RequestStack();
+        $requestStack->push($request);
+        $this->container->set('request_stack', $requestStack);
+
+        $router = $this->createMock(RouterInterface::class);
+        $router->method('generate')->with('filter_frontend_submit', $this->anything())->will($this->returnCallback(function ($route, $params = []) {
+            return '/_filter/submit/1';
+        }));
+
+        $this->container->set('router', $router);
 
         $this->kernel = $this->createMock(Kernel::class);
         $this->kernel->method('getContainer')->willReturn($this->container);
@@ -185,7 +201,7 @@ class DateTimeTypeTest extends ContaoTestCase
         $config->init('test', $filter, [$element]);
         $config->buildForm();
 
-        $this->assertEquals(1, $config->getBuilder()->count()); // f_id element always exists
+        $this->assertEquals(2, $config->getBuilder()->count());  // f_id and f_ref element always exists
     }
 
     /**
@@ -226,7 +242,7 @@ class DateTimeTypeTest extends ContaoTestCase
 
         $year = date('Y', time());
 
-        $this->assertEquals(2, $config->getBuilder()->count()); // f_id element always exists
+        $this->assertEquals(3, $config->getBuilder()->count());  // f_id and f_ref element always exists
         $this->assertTrue($config->getBuilder()->has('start'));
         $this->assertInstanceOf(\Symfony\Component\Form\Extension\Core\Type\DateTimeType::class, $config->getBuilder()->get('start')->getType()->getInnerType());
         $this->assertEquals(DateType::WIDGET_TYPE_CHOICE, $config->getBuilder()->get('start')->getForm()->getConfig()->getOption('date_widget'));
@@ -275,7 +291,7 @@ class DateTimeTypeTest extends ContaoTestCase
         $config->init('test', $filter, [$element]);
         $config->buildForm();
 
-        $this->assertEquals(2, $config->getBuilder()->count()); // f_id element always exists
+        $this->assertEquals(3, $config->getBuilder()->count());  // f_id and f_ref element always exists
         $this->assertTrue($config->getBuilder()->has('start'));
         $this->assertInstanceOf(\Symfony\Component\Form\Extension\Core\Type\DateTimeType::class, $config->getBuilder()->get('start')->getType()->getInnerType());
         $this->assertEquals(DateType::WIDGET_TYPE_CHOICE, $config->getBuilder()->get('start')->getForm()->getConfig()->getOption('date_widget'));
@@ -325,7 +341,7 @@ class DateTimeTypeTest extends ContaoTestCase
         $config->init('test', $filter, [$element]);
         $config->buildForm();
 
-        $this->assertEquals(2, $config->getBuilder()->count()); // f_id element always exists
+        $this->assertEquals(3, $config->getBuilder()->count());  // f_id and f_ref element always exists
         $this->assertTrue($config->getBuilder()->has('start'));
         $this->assertInstanceOf(\Symfony\Component\Form\Extension\Core\Type\DateTimeType::class, $config->getBuilder()->get('start')->getType()->getInnerType());
         $this->assertEquals(DateType::WIDGET_TYPE_SINGLE_TEXT, $config->getBuilder()->get('start')->getForm()->getConfig()->getOption('date_widget'));
@@ -380,7 +396,7 @@ class DateTimeTypeTest extends ContaoTestCase
         $config->init('test', $filter, [$element]);
         $config->buildForm();
 
-        $this->assertEquals(2, $config->getBuilder()->count()); // f_id element always exists
+        $this->assertEquals(3, $config->getBuilder()->count());  // f_id and f_ref element always exists
         $this->assertTrue($config->getBuilder()->has('start'));
         $this->assertInstanceOf(\Symfony\Component\Form\Extension\Core\Type\DateTimeType::class, $config->getBuilder()->get('start')->getType()->getInnerType());
         $this->assertEquals(DateType::WIDGET_TYPE_SINGLE_TEXT, $config->getBuilder()->get('start')->getForm()->getConfig()->getOption('date_widget'));

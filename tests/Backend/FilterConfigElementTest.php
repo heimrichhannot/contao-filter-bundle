@@ -23,7 +23,7 @@ use HeimrichHannot\FilterBundle\Session\FilterSession;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\Model\FilterConfigModel;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
-use HeimrichHannot\FilterBundle\Registry\FilterRegistry;
+use HeimrichHannot\FilterBundle\Manager\FilterManager;
 use HeimrichHannot\UtilsBundle\Container\ContainerUtil;
 use HeimrichHannot\UtilsBundle\Model\ModelUtil;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -358,8 +358,8 @@ class FilterConfigElementTest extends ContaoTestCase
 
         $session = new Session(new MockArraySessionStorage());
         $filterSession = new FilterSession($framework, $session);
-        $filterRegistry = new FilterRegistry($framework, $filterSession);
-        $container->set('huh.filter.registry', $filterRegistry);
+        $filterManager = new FilterManager($framework, $filterSession);
+        $container->set('huh.filter.manager', $filterManager);
 
         $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
 
@@ -451,8 +451,8 @@ class FilterConfigElementTest extends ContaoTestCase
 
         $session = new Session(new MockArraySessionStorage());
         $filterSession = new FilterSession($framework, $session);
-        $filterRegistry = new FilterRegistry($framework, $filterSession);
-        $container->set('huh.filter.registry', $filterRegistry);
+        $filterManager = new FilterManager($framework, $filterSession);
+        $container->set('huh.filter.manager', $filterManager);
 
         $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
 
@@ -563,8 +563,8 @@ class FilterConfigElementTest extends ContaoTestCase
 
         $session = new Session(new MockArraySessionStorage());
         $filterSession = new FilterSession($framework, $session);
-        $filterRegistry = new FilterRegistry($framework, $filterSession);
-        $container->set('huh.filter.registry', $filterRegistry);
+        $filterManager = new FilterManager($framework, $filterSession);
+        $container->set('huh.filter.manager', $filterManager);
 
         $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
 

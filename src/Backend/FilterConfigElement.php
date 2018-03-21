@@ -88,7 +88,7 @@ class FilterConfigElement
             return null;
         }
 
-        if (null === ($filter = System::getContainer()->get('huh.filter.registry')->findById($filterConfigElement->pid))) {
+        if (null === ($filter = System::getContainer()->get('huh.filter.manager')->findById($filterConfigElement->pid))) {
             return null;
         }
 

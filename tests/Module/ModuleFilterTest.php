@@ -21,14 +21,16 @@ use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\Model\FilterConfigModel;
 use HeimrichHannot\FilterBundle\Module\ModuleFilter;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
-use HeimrichHannot\FilterBundle\Registry\FilterRegistry;
+use HeimrichHannot\FilterBundle\Manager\FilterManager;
 use HeimrichHannot\FilterBundle\Session\FilterSession;
 use HeimrichHannot\UtilsBundle\Container\ContainerUtil;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 use Symfony\Component\HttpKernel\Kernel;
+use Symfony\Component\Routing\RouterInterface;
 
 class ModuleFilterTest extends ContaoTestCase
 {
@@ -170,7 +172,7 @@ class ModuleFilterTest extends ContaoTestCase
 
         $framework = $this->mockContaoFramework([FilterConfigModel::class => $filterConfigAdapter]);
 
-        $this->container->set('huh.filter.registry', new FilterRegistry($framework, new FilterSession($framework, $session)));
+        $this->container->set('huh.filter.manager', new FilterManager($framework, new FilterSession($framework, $session)));
         System::setContainer($this->container);
 
         if (!defined('TL_MODE')) {
@@ -220,6 +222,19 @@ class ModuleFilterTest extends ContaoTestCase
 
         $this->container->set('twig', $twig);
 
+        $request = new Request();
+
+        $requestStack = new RequestStack();
+        $requestStack->push($request);
+        $this->container->set('request_stack', $requestStack);
+
+        $router = $this->createMock(RouterInterface::class);
+        $router->method('generate')->with('filter_frontend_submit', $this->anything())->will($this->returnCallback(function ($route, $params = []) {
+            return '/_filter/submit/1';
+        }));
+
+        $this->container->set('router', $router);
+
         /** @var Connection $connection */
         $connection         = $this->container->get('database_connection');
         $session            = new Session(new MockArraySessionStorage());
@@ -227,7 +242,7 @@ class ModuleFilterTest extends ContaoTestCase
         $filterQueryBuilder = new FilterQueryBuilder($framework, $connection);
 
         $this->container->set('huh.filter.config', new FilterConfig($framework, $filterSession, $filterQueryBuilder));
-        $this->container->set('huh.filter.registry', new FilterRegistry($framework, $filterSession));
+        $this->container->set('huh.filter.manager', new FilterManager($framework, $filterSession));
         System::setContainer($this->container);
 
         if (!defined('TL_MODE')) {

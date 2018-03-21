@@ -56,7 +56,7 @@ class DateRangeType extends AbstractType
         $startName = $this->startElement->getFormName($this->config);
         $stopName  = $this->stopElement->getFormName($this->config);
 
-        /** @var $startDate \DateTime|null */
+        /** @var \DateTime|null $startDate */
         $startDate = $startDate = $data[$name][$startName] ?? 0;
 
         if ($this->startElement->isInitial) {
@@ -66,7 +66,7 @@ class DateRangeType extends AbstractType
             $startDate = System::getContainer()->get('huh.utils.date')->getTimeStamp($startDate, true);
         }
 
-        /** @var $stopDate \DateTime|null */
+        /** @var \DateTime|null $stopDate */
         $stopDate = $data[$name][$stopName] ?? 9999999999999;
 
         if ($this->stopElement->isInitial) {

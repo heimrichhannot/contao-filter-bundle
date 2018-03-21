@@ -19,15 +19,17 @@ use HeimrichHannot\FilterBundle\Session\FilterSession;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\Model\FilterConfigModel;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
-use HeimrichHannot\FilterBundle\Registry\FilterRegistry;
+use HeimrichHannot\FilterBundle\Manager\FilterManager;
 use HeimrichHannot\FilterBundle\Util\FilterConfigElementHelper;
 use HeimrichHannot\UtilsBundle\Choice\FieldChoice;
 use HeimrichHannot\UtilsBundle\Container\ContainerUtil;
+use HeimrichHannot\UtilsBundle\Dca\DcaUtil;
 use HeimrichHannot\UtilsBundle\Model\ModelUtil;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
+use Symfony\Component\HttpKernel\Kernel;
 
 class FilterConfigElementHelperTest extends ContaoTestCase
 {
@@ -78,7 +80,7 @@ class FilterConfigElementHelperTest extends ContaoTestCase
         $filterConfigElementModelAdapter->method('findByPk')->willReturn($filterConfigElementModel);
         $filterConfigElementModelAdapter->method('findPublishedByPid')->willReturn(null);
 
-        $filterConfigModelProperties = ['id' => 1, 'name' => 'test'];
+        $filterConfigModelProperties = ['id' => 1, 'name' => 'test', 'dataContainer' => 'tl_test'];
         $filterConfigModel = $this->mockClassWithProperties(FilterConfigModel::class, $filterConfigModelProperties);
         $filterConfigModel->method('row')->willReturn($filterConfigModelProperties);
 
@@ -106,15 +108,23 @@ class FilterConfigElementHelperTest extends ContaoTestCase
 
         $session = new Session(new MockArraySessionStorage());
         $filterSession = new FilterSession($framework, $session);
-        $filterRegistry = new FilterRegistry($framework, $filterSession);
-        $container->set('huh.filter.registry', $filterRegistry);
+        $filterManager = new FilterManager($framework, $filterSession);
+        $container->set('huh.filter.manager', $filterManager);
 
         $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
 
         $filterConfig = new FilterConfig($framework, $filterSession, $queryBuilder);
         $container->set('huh.filter.config', $filterConfig);
 
+        $kernel = $this->createMock(Kernel::class);
+        $kernel->method('getContainer')->willReturn($container);
+
+        $container->set('kernel', $kernel);
+
         System::setContainer($container);
+
+        $container->set('huh.utils.dca', new DcaUtil($framework));
+        $container->set('huh.utils.choice.field', new FieldChoice($framework));
 
         $this->assertEmpty(FilterConfigElementHelper::getFields($this->getDataContainerMock()));
     }
@@ -164,8 +174,8 @@ class FilterConfigElementHelperTest extends ContaoTestCase
 
         $session = new Session(new MockArraySessionStorage());
         $filterSession = new FilterSession($framework, $session);
-        $filterRegistry = new FilterRegistry($framework, $filterSession);
-        $container->set('huh.filter.registry', $filterRegistry);
+        $filterManager = new FilterManager($framework, $filterSession);
+        $container->set('huh.filter.manager', $filterManager);
 
         $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
 

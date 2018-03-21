@@ -7,8 +7,8 @@ services:
     class: HeimrichHannot\FilterBundle\Form\Extension\FormButtonExtension
     tags:
       - {name: form.type_extension, extended_type: Symfony\Component\Form\Extension\Core\Type\ButtonType}
-  huh.filter.registry:
-    class: HeimrichHannot\FilterBundle\Registry\FilterRegistry
+  huh.filter.manager:
+    class: HeimrichHannot\FilterBundle\Manager\FilterManager
     public: true
     arguments:
       - "@contao.framework"

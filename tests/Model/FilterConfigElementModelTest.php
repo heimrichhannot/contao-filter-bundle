@@ -104,7 +104,7 @@ class FilterConfigElementModelTest extends ContaoTestCase
             $modelA
         ]);
 
-        $framework = $this->mockContaoFramework([Model::class => $modelAdapter]);
+        $framework = $this->mockContaoFramework([FilterConfigElementModel::class => $modelAdapter]);
 
         $this->container->set('contao.framework', $framework);
 
@@ -132,7 +132,7 @@ class FilterConfigElementModelTest extends ContaoTestCase
             $modelA
         ]);
 
-        $framework = $this->mockContaoFramework([Model::class => $modelAdapter]);
+        $framework = $this->mockContaoFramework([FilterConfigElementModel::class => $modelAdapter]);
 
         $this->container->set('contao.framework', $framework);
 
@@ -214,7 +214,7 @@ class FilterConfigElementModelTest extends ContaoTestCase
             $modelA
         ]);
 
-        $framework = $this->mockContaoFramework([Model::class => $modelAdapter]);
+        $framework = $this->mockContaoFramework([FilterConfigElementModel::class => $modelAdapter]);
 
         $this->container->set('contao.framework', $framework);
 
@@ -243,7 +243,7 @@ class FilterConfigElementModelTest extends ContaoTestCase
             $modelA
         ]);
 
-        $framework = $this->mockContaoFramework([Model::class => $modelAdapter]);
+        $framework = $this->mockContaoFramework([FilterConfigElementModel::class => $modelAdapter]);
 
         $this->container->set('contao.framework', $framework);
 

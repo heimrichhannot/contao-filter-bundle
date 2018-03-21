@@ -93,7 +93,7 @@ class FilterConfigModelTest extends ContaoTestCase
         $modelAdapter = $this->mockAdapter(['findBy']);
         $modelAdapter->method('findBy')->willReturn([$modelA]);
 
-        $framework = $this->mockContaoFramework([Model::class => $modelAdapter]);
+        $framework = $this->mockContaoFramework([FilterConfigModel::class => $modelAdapter]);
 
         $this->container->set('contao.framework', $framework);
 

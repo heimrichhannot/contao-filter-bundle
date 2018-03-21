@@ -9,6 +9,8 @@
 namespace HeimrichHannot\FilterBundle\Config;
 
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
+use Contao\InsertTags;
+use Contao\System;
 use HeimrichHannot\FilterBundle\Session\FilterSession;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
 use HeimrichHannot\FilterBundle\Form\Extension\FormButtonExtension;
@@ -16,8 +18,10 @@ use HeimrichHannot\FilterBundle\Form\Extension\FormTypeExtension;
 use HeimrichHannot\FilterBundle\Form\FilterType;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
+use Symfony\Component\Form\Exception\TransformationFailedException;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Forms;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
 class FilterConfig
@@ -162,6 +166,89 @@ class FilterConfig
 
             $type->buildQuery($this->queryBuilder, $element);
         }
+    }
+
+    /**
+     * @param mixed $request The request to handle
+     * @return RedirectResponse|null
+     */
+    public function handleForm($request = null): ?RedirectResponse
+    {
+        if (null === $this->getBuilder()) {
+            $this->buildForm($this->getData());
+        }
+
+        if (null === $this->getBuilder()) {
+            return null;
+        }
+
+        try {
+            $form = $this->getBuilder()->getForm();
+        } catch (TransformationFailedException $e) {
+            // for instance field changed from single to multiple value, transform old session data will throw an TransformationFailedException -> clear session and build again with empty data
+            $this->resetData();
+            $this->buildForm($this->getData());
+            $form = $this->getBuilder()->getForm();
+        }
+
+        $form->handleRequest($request);
+
+        // redirect back to tl_filter_config.action or given referrer
+        $url = $this->getUrl() ?: $form->get(FilterType::FILTER_REFERRER_NAME)->getData();
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            if (!$form->has(FilterType::FILTER_ID_NAME)) {
+                return null;
+            }
+
+            // form id must match
+            if ((int)$form->get(FilterType::FILTER_ID_NAME)->getData() !== $this->getId()) {
+                return null;
+            }
+
+            $data = $form->getData();
+            $url  = System::getContainer()->get('huh.utils.url')->removeQueryString([$form->getName()], $url ?: null);
+
+            // do not save filter id in session
+            $this->setData($data);
+
+            // allow reset, support different form configuration with same form name
+            if (null !== $form->getClickedButton() && in_array($form->getClickedButton()->getName(), $this->getResetNames(), true)) {
+                $this->resetData();
+                // redirect to referrer page without filter parameters
+                $url = System::getContainer()->get('huh.utils.url')->removeQueryString([$form->getName()], $form->get(FilterType::FILTER_REFERRER_NAME)->getData() ?: null);
+            }
+
+            return new RedirectResponse($url, 303);
+        }
+
+        return null;
+    }
+
+    /**
+     * Get the redirect url based on current filter action.
+     *
+     * @return string
+     */
+    protected function getUrl()
+    {
+        $filter = $this->getFilter();
+
+        if (!isset($filter['action'])) {
+            return '';
+        }
+
+        /**
+         * @var InsertTags
+         */
+        $insertTagAdapter = $this->framework->createInstance(InsertTags::class);
+
+        // while unit testing, the mock object cant be instantiated
+        if (null === $insertTagAdapter) {
+            $insertTagAdapter = $this->framework->getAdapter(InsertTags::class);
+        }
+
+        return '/' . urldecode($insertTagAdapter->replace($filter['action']));
     }
 
     /**

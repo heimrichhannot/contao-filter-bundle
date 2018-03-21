@@ -19,7 +19,7 @@ class FilterConfigElementHelper
             return [];
         }
 
-        if (null === ($filterConfig = System::getContainer()->get('huh.filter.registry')->findById($model->pid))) {
+        if (null === ($filterConfig = System::getContainer()->get('huh.filter.manager')->findById($model->pid))) {
             return [];
         }
 
