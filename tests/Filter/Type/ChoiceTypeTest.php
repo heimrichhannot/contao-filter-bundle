@@ -162,7 +162,7 @@ class ChoiceTypeTest extends ContaoTestCase
 
         $type = new ChoiceType($config);
 
-        $this->assertEquals('test', $type->getDefaultName($range));
+        $this->assertNull($type->getDefaultName($range)); // customName must be active
     }
 
     /**
@@ -391,10 +391,11 @@ class ChoiceTypeTest extends ContaoTestCase
 
         $filter = ['name' => 'test', 'dataContainer' => 'tl_test'];
 
-        $element       = new FilterConfigElementModel();
-        $element->id   = 2;
-        $element->type = 'choice';
-        $element->name = 'test';
+        $element             = new FilterConfigElementModel();
+        $element->id         = 2;
+        $element->type       = 'choice';
+        $element->name       = 'test';
+        $element->customName = true;
 
         $config->init('test', $filter, [$element]);
         $config->initQueryBuilder();

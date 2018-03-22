@@ -38,7 +38,7 @@ class ChoiceType extends AbstractType
      */
     public function getDefaultName(FilterConfigElementModel $element)
     {
-        return $element->name;
+        return null;
     }
 
     /**

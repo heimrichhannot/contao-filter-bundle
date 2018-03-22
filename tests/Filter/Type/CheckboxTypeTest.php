@@ -161,7 +161,7 @@ class CheckboxTypeTest extends ContaoTestCase
 
         $type = new CheckboxType($config);
 
-        $this->assertEquals('test', $type->getDefaultName($range));
+        $this->assertNull($type->getDefaultName($range)); // customName must be active
     }
 
     /**
@@ -311,10 +311,11 @@ class CheckboxTypeTest extends ContaoTestCase
 
         $filter = ['name' => 'test', 'dataContainer' => 'tl_test'];
 
-        $element       = new FilterConfigElementModel();
-        $element->id   = 2;
-        $element->type = 'checkbox';
-        $element->name = 'test';
+        $element             = new FilterConfigElementModel();
+        $element->id         = 2;
+        $element->type       = 'checkbox';
+        $element->name       = 'test';
+        $element->customName = true;
 
         $config->init('test', $filter, [$element]);
         $config->initQueryBuilder();

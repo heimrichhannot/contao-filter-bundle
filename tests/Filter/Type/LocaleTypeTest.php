@@ -165,7 +165,7 @@ class LocaleTypeTest extends ContaoTestCase
 
         $type = new LocaleType($config);
 
-        $this->assertEquals('test', $type->getDefaultName($range));
+        $this->assertNull($type->getDefaultName($range)); // customName must be active
     }
 
     /**
@@ -399,10 +399,11 @@ class LocaleTypeTest extends ContaoTestCase
 
         $filter = ['name' => 'test', 'dataContainer' => 'tl_test'];
 
-        $element       = new FilterConfigElementModel();
-        $element->id   = 2;
-        $element->type = 'locale';
-        $element->name = 'test';
+        $element             = new FilterConfigElementModel();
+        $element->id         = 2;
+        $element->type       = 'locale';
+        $element->name       = 'test';
+        $element->customName = true;
 
         $config->init('test', $filter, [$element]);
         $config->initQueryBuilder();

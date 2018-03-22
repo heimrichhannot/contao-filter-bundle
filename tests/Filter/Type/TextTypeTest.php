@@ -161,7 +161,7 @@ class TextTypeTest extends ContaoTestCase
 
         $type = new TextType($config);
 
-        $this->assertEquals('test', $type->getDefaultName($range));
+        $this->assertNull($type->getDefaultName($range)); // customName must be active
     }
 
     /**
@@ -311,10 +311,11 @@ class TextTypeTest extends ContaoTestCase
 
         $filter = ['name' => 'test', 'dataContainer' => 'tl_test'];
 
-        $element       = new FilterConfigElementModel();
-        $element->id   = 2;
-        $element->type = 'text';
-        $element->name = 'test';
+        $element             = new FilterConfigElementModel();
+        $element->id         = 2;
+        $element->type       = 'text';
+        $element->name       = 'test';
+        $element->customName = true;
 
         $config->init('test', $filter, [$element]);
         $config->initQueryBuilder();
