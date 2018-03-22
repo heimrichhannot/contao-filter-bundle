@@ -29,6 +29,14 @@ class FilterManager
      */
     protected $session;
 
+
+    /**
+     * All available filter configurations cache
+     *
+     * @var FilterConfig[]
+     */
+    protected $filters;
+
     /**
      * Constructor.
      *
@@ -81,6 +89,10 @@ class FilterManager
      */
     public function findById(int $id)
     {
+        if (isset($this->filters[$id])) {
+            return $this->filters[$id];
+        }
+
         /**
          * @var FilterConfigModel
          */
@@ -90,9 +102,9 @@ class FilterManager
             return null;
         }
 
-        $config = $this->getConfig($filter->row());
+        $this->filters[$id] = $this->getConfig($filter->row());
 
-        return $config ?: null;
+        return isset($this->filters[$id]) ? $this->filters[$id] : null;
     }
 
     /**
