@@ -50,6 +50,9 @@ class DateRangeType extends AbstractType
             return;
         }
 
+        $builder->addSkip($this->startElement);
+        $builder->addSkip($this->stopElement);
+
         $startField = $filter['dataContainer'] . '.' . $this->startElement->field;
         $stopField  = $filter['dataContainer'] . '.' . $this->stopElement->field;
 

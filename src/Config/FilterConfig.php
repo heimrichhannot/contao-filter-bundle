@@ -150,10 +150,11 @@ class FilterConfig
                 continue;
             }
 
-            $type  = $types[$element->type];
-            $class = $type['class'];
+            $config = $types[$element->type];
+            $class  = $config['class'];
+            $skip   = $this->queryBuilder->getSkip();
 
-            if (!class_exists($class)) {
+            if (!class_exists($class) || isset($skip[$element->id])) {
                 continue;
             }
 
