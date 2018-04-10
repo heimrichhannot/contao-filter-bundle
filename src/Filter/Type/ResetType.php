@@ -29,7 +29,7 @@ class ResetType extends AbstractType
     {
         $filter = $this->config->getFilter();
 
-        if (!$this->config->hasData() || (isset($filter['renderEmpty']) && true === (bool)$filter['renderEmpty'])) {
+        if (!$this->config->hasData() || (isset($filter['renderEmpty']) && true === (bool) $filter['renderEmpty'])) {
             return;
         }
 

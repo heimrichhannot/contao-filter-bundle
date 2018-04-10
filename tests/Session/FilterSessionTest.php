@@ -1,13 +1,12 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2018 Heimrich & Hannot GmbH
  *
- * @author Rico Kaltofen <r.kaltofen@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @license LGPL-3.0-or-later
  */
 
 namespace HeimrichHannot\FilterBundle\Tests\Session;
-
 
 use Contao\ManagerPlugin\Config\ContainerBuilder;
 use Contao\TestCase\ContaoTestCase;
@@ -54,7 +53,7 @@ class FilterSessionTest extends ContaoTestCase
     }
 
     /**
-     * Test setData()
+     * Test setData().
      */
     public function testSetData()
     {
@@ -63,11 +62,11 @@ class FilterSessionTest extends ContaoTestCase
         $instance = new \HeimrichHannot\FilterBundle\Session\FilterSession($this->mockContaoFramework(), $session);
         $instance->setData('test', ['foo' => 'bar']);
 
-        $this->assertEquals(['foo' => 'bar'], $instance->getData('test'));
+        $this->assertSame(['foo' => 'bar'], $instance->getData('test'));
     }
 
     /**
-     * Test hasData() with FilterType::FILTER_ID_NAME only
+     * Test hasData() with FilterType::FILTER_ID_NAME only.
      */
     public function testHasDataWithFilterIdFieldOnly()
     {
@@ -80,7 +79,7 @@ class FilterSessionTest extends ContaoTestCase
     }
 
     /**
-     * Test hasData() with FilterType::FILTER_ID_NAME set and data
+     * Test hasData() with FilterType::FILTER_ID_NAME set and data.
      */
     public function testHasData()
     {
@@ -93,7 +92,7 @@ class FilterSessionTest extends ContaoTestCase
     }
 
     /**
-     * Test reset()
+     * Test reset().
      */
     public function testReset()
     {
@@ -102,7 +101,7 @@ class FilterSessionTest extends ContaoTestCase
         $instance = new \HeimrichHannot\FilterBundle\Session\FilterSession($this->mockContaoFramework(), $session);
         $instance->setData('test', ['foo' => 'bar', FilterType::FILTER_ID_NAME => 'test_1']);
 
-        $this->assertEquals( ['foo' => 'bar', FilterType::FILTER_ID_NAME => 'test_1'], $instance->getData('test'));
+        $this->assertSame(['foo' => 'bar', FilterType::FILTER_ID_NAME => 'test_1'], $instance->getData('test'));
 
         $instance->reset('test');
 

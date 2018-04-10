@@ -8,14 +8,13 @@
 
 namespace HeimrichHannot\FilterBundle\Tests\Config;
 
-use Contao\InsertTags;
 use Contao\System;
 use Contao\TestCase\ContaoTestCase;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\Mysqli\Driver;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
-use HeimrichHannot\FilterBundle\Session\FilterSession;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
+use HeimrichHannot\FilterBundle\Session\FilterSession;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Form\FormBuilder;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,7 +30,6 @@ class FilterConfigTest extends ContaoTestCase
      */
     private $container;
 
-
     protected function setUp()
     {
         parent::setUp();
@@ -39,7 +37,7 @@ class FilterConfigTest extends ContaoTestCase
         $request = new Request();
 
         $this->container = $this->mockContainer();
-        $requestStack    = new RequestStack();
+        $requestStack = new RequestStack();
         $requestStack->push($request);
         $this->container->set('request_stack', $requestStack);
 
@@ -57,7 +55,7 @@ class FilterConfigTest extends ContaoTestCase
     public function testCanBeInstantiated()
     {
         $framework = $this->mockContaoFramework([]);
-        $session   = new MockArraySessionStorage();
+        $session = new MockArraySessionStorage();
 
         $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
 
@@ -72,10 +70,10 @@ class FilterConfigTest extends ContaoTestCase
     public function testInit()
     {
         $framework = $this->mockContaoFramework([]);
-        $session   = new MockArraySessionStorage();
+        $session = new MockArraySessionStorage();
 
         $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
         $config->init('test', []);
 
         $this->assertSame('test', $config->getSessionKey());
@@ -89,10 +87,10 @@ class FilterConfigTest extends ContaoTestCase
     public function testBuildFormWithNotFilter()
     {
         $framework = $this->mockContaoFramework([]);
-        $session   = new MockArraySessionStorage();
+        $session = new MockArraySessionStorage();
 
         $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
         $config->buildForm();
 
         $this->assertNull($config->getBuilder(), $config);
@@ -104,19 +102,19 @@ class FilterConfigTest extends ContaoTestCase
     public function testBuildFormWithoutElementsAndAction()
     {
         $filter = [
-            'id'            => 1,
+            'id' => 1,
             'dataContainer' => 'tl_member',
-            'name'          => 'test_form',
-            'method'        => 'GET',
+            'name' => 'test_form',
+            'method' => 'GET',
         ];
 
         System::setContainer($this->container);
 
         $framework = $this->mockContaoFramework([]);
-        $session   = new MockArraySessionStorage();
+        $session = new MockArraySessionStorage();
 
         $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
         $config->init('test', $filter);
         $config->buildForm();
 
@@ -130,20 +128,20 @@ class FilterConfigTest extends ContaoTestCase
     public function testBuildFormWithInsertTagActionAndWithoutElements()
     {
         $filter = [
-            'id'            => 1,
+            'id' => 1,
             'dataContainer' => 'tl_member',
-            'name'          => 'test_form',
-            'method'        => 'GET',
-            'action'        => '{{env::path}}',
+            'name' => 'test_form',
+            'method' => 'GET',
+            'action' => '{{env::path}}',
         ];
 
         System::setContainer($this->container);
 
         $framework = $this->mockContaoFramework();
-        $session   = new MockArraySessionStorage();
+        $session = new MockArraySessionStorage();
 
         $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
         $config->init('test', $filter);
         $config->buildForm();
 

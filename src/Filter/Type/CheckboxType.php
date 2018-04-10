@@ -55,7 +55,7 @@ class CheckboxType extends AbstractType
     {
         $options = parent::getOptions($element, $builder);
 
-        if (true === (bool)$element->customValue) {
+        if (true === (bool) $element->customValue) {
             $options['value'] = $element->value;
         }
 

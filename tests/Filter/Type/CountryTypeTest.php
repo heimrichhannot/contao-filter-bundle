@@ -19,8 +19,8 @@ use HeimrichHannot\FilterBundle\Choice\TypeChoice;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
 use HeimrichHannot\FilterBundle\Filter\Type\CountryType;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
-use HeimrichHannot\FilterBundle\Session\FilterSession;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
+use HeimrichHannot\FilterBundle\Session\FilterSession;
 use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpFoundation\Request;
@@ -43,7 +43,6 @@ class CountryTypeTest extends ContaoTestCase
      */
     private $kernel;
 
-
     protected function setUp()
     {
         parent::setUp();
@@ -52,37 +51,35 @@ class CountryTypeTest extends ContaoTestCase
             \define('TL_ROOT', $this->getFixturesDir());
         }
 
-        $GLOBALS['TL_LANGUAGE']    = 'en';
+        $GLOBALS['TL_LANGUAGE'] = 'en';
         $GLOBALS['TL_LANG']['MSC'] = ['test' => 'bar'];
 
         $GLOBALS['TL_DCA']['tl_test'] = [
             'config' => [
                 'dataContainer' => 'Table',
-                'sql'           => [
+                'sql' => [
                     'keys' => [
                     ],
                 ],
             ],
             'fields' => [
-
-            ]
+            ],
         ];
 
         $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'config' => [
                 'dataContainer' => 'Table',
-                'sql'           => [
+                'sql' => [
                     'keys' => [
                     ],
                 ],
             ],
             'fields' => [
-
-            ]
+            ],
         ];
 
         $finder = new ResourceFinder([
-            $this->getFixturesDir() . '/vendor/contao/core-bundle/Resources/contao',
+            $this->getFixturesDir().'/vendor/contao/core-bundle/Resources/contao',
         ]);
 
         $this->container = $this->mockContainer();
@@ -118,10 +115,10 @@ class CountryTypeTest extends ContaoTestCase
         System::setContainer($this->container);
 
         $framework = $this->mockContaoFramework();
-        $session   = new MockArraySessionStorage();
+        $session = new MockArraySessionStorage();
 
         $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
 
         $type = new CountryType($config);
 
@@ -129,36 +126,36 @@ class CountryTypeTest extends ContaoTestCase
     }
 
     /**
-     * Test getDefaultOperator()
+     * Test getDefaultOperator().
      */
     public function testGetDefaultOperator()
     {
         $framework = $this->mockContaoFramework();
-        $session   = new MockArraySessionStorage();
+        $session = new MockArraySessionStorage();
 
         $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
 
         /** @var FilterConfigElementModel $element */
         $element = $this->mockClassWithProperties(FilterConfigElementModel::class, []);
 
         $type = new CountryType($config);
 
-        $this->assertEquals(DatabaseUtil::OPERATOR_EQUAL, $type->getDefaultOperator($element));
+        $this->assertSame(DatabaseUtil::OPERATOR_EQUAL, $type->getDefaultOperator($element));
     }
 
     /**
-     * Test getDefaultName()
+     * Test getDefaultName().
      */
     public function testGetDefaultName()
     {
         $framework = $this->mockContaoFramework();
-        $session   = new MockArraySessionStorage();
+        $session = new MockArraySessionStorage();
 
         $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
 
-        $range       = new FilterConfigElementModel();
+        $range = new FilterConfigElementModel();
         $range->name = 'test';
 
         $type = new CountryType($config);
@@ -167,17 +164,17 @@ class CountryTypeTest extends ContaoTestCase
     }
 
     /**
-     * Test getDefaultName()
+     * Test getDefaultName().
      */
     public function testGetChoices()
     {
         $framework = $this->mockContaoFramework();
-        $session   = new MockArraySessionStorage();
+        $session = new MockArraySessionStorage();
 
         $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
 
-        $element       = new FilterConfigElementModel();
+        $element = new FilterConfigElementModel();
         $element->type = 'choice';
 
         $filter = ['name' => 'test', 'dataContainer' => 'tl_test'];
@@ -194,26 +191,26 @@ class CountryTypeTest extends ContaoTestCase
     }
 
     /**
-     * Test buildForm() without name
+     * Test buildForm() without name.
      */
     public function testBuildFormWithoutName()
     {
         $framework = $this->mockContaoFramework();
-        $session   = new MockArraySessionStorage();
+        $session = new MockArraySessionStorage();
 
         $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
 
         $this->container->setParameter('huh.filter', [
             'filter' => [
                 'types' => [
                     [
-                        'name'  => 'country',
+                        'name' => 'country',
                         'class' => CountryType::class,
-                        'type'  => 'choice'
-                    ]
-                ]
-            ]
+                        'type' => 'choice',
+                    ],
+                ],
+            ],
         ]);
 
         $this->container->set('huh.filter.choice.type', new TypeChoice($framework));
@@ -221,36 +218,36 @@ class CountryTypeTest extends ContaoTestCase
 
         $filter = ['name' => 'test', 'dataContainer' => 'tl_test'];
 
-        $element       = new FilterConfigElementModel();
+        $element = new FilterConfigElementModel();
         $element->type = 'choice';
 
         $config->init('test', $filter, [$element]);
         $config->buildForm();
 
-        $this->assertEquals(2, $config->getBuilder()->count());  // f_id and f_ref element always exists
+        $this->assertSame(2, $config->getBuilder()->count());  // f_id and f_ref element always exists
     }
 
     /**
-     * Test buildForm() with field name
+     * Test buildForm() with field name.
      */
     public function testBuildFormWithFieldName()
     {
         $framework = $this->mockContaoFramework();
-        $session   = new MockArraySessionStorage();
+        $session = new MockArraySessionStorage();
 
         $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
 
         $this->container->setParameter('huh.filter', [
             'filter' => [
                 'types' => [
                     [
-                        'name'  => 'country',
+                        'name' => 'country',
                         'class' => CountryType::class,
-                        'type'  => 'choice'
-                    ]
-                ]
-            ]
+                        'type' => 'choice',
+                    ],
+                ],
+            ],
         ]);
 
         $this->container->set('huh.filter.choice.type', new TypeChoice($framework));
@@ -259,43 +256,43 @@ class CountryTypeTest extends ContaoTestCase
 
         $filter = ['name' => 'test', 'dataContainer' => 'tl_test'];
 
-        $element                  = new FilterConfigElementModel();
-        $element->type            = 'country';
-        $element->field           = 'test';
+        $element = new FilterConfigElementModel();
+        $element->type = 'country';
+        $element->field = 'test';
         $element->customCountries = true;
-        $element->countries       = ['DE', 'CA'];
+        $element->countries = ['DE', 'CA'];
 
         $config->init('test', $filter, [$element]);
         $config->buildForm();
 
-        $this->assertEquals(3, $config->getBuilder()->count());  // f_id and f_ref element always exists
+        $this->assertSame(3, $config->getBuilder()->count());  // f_id and f_ref element always exists
         $this->assertTrue($config->getBuilder()->has('test'));
         $this->assertInstanceOf(\Symfony\Component\Form\Extension\Core\Type\CountryType::class, $config->getBuilder()->get('test')->getType()->getInnerType());
         $this->assertNotEmpty($config->getBuilder()->get('test')->getForm()->getConfig()->getOption('choices'));
-        $this->assertEquals(['Canada' => 'CA', 'Germany' => 'DE'], $config->getBuilder()->get('test')->getForm()->getConfig()->getOption('choices'));
+        $this->assertSame(['Canada' => 'CA', 'Germany' => 'DE'], $config->getBuilder()->get('test')->getForm()->getConfig()->getOption('choices'));
     }
 
     /**
-     * Test buildForm() with non array default values
+     * Test buildForm() with non array default values.
      */
     public function testBuildFormWithNonArrayDefaultValues()
     {
         $framework = $this->mockContaoFramework();
-        $session   = new MockArraySessionStorage();
+        $session = new MockArraySessionStorage();
 
         $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
 
         $this->container->setParameter('huh.filter', [
             'filter' => [
                 'types' => [
                     [
-                        'name'  => 'country',
+                        'name' => 'country',
                         'class' => CountryType::class,
-                        'type'  => 'choice'
-                    ]
-                ]
-            ]
+                        'type' => 'choice',
+                    ],
+                ],
+            ],
         ]);
 
         $this->container->set('huh.filter.choice.type', new TypeChoice($framework));
@@ -303,44 +300,44 @@ class CountryTypeTest extends ContaoTestCase
 
         $filter = ['name' => 'test', 'dataContainer' => 'tl_test'];
 
-        $element                  = new FilterConfigElementModel();
-        $element->type            = 'country';
-        $element->field           = 'test';
+        $element = new FilterConfigElementModel();
+        $element->type = 'country';
+        $element->field = 'test';
         $element->addDefaultValue = true;
-        $element->defaultValue    = '123';
+        $element->defaultValue = '123';
         $element->addDefaultValue = true;
-        $element->multiple        = true;
+        $element->multiple = true;
 
         $config->init('test', $filter, [$element]);
         $config->buildForm();
 
-        $this->assertEquals(3, $config->getBuilder()->count());  // f_id and f_ref element always exists
+        $this->assertSame(3, $config->getBuilder()->count());  // f_id and f_ref element always exists
         $this->assertTrue($config->getBuilder()->has('test'));
         $this->assertInstanceOf(\Symfony\Component\Form\Extension\Core\Type\CountryType::class, $config->getBuilder()->get('test')->getType()->getInnerType());
-        $this->assertEquals(['123'], $config->getBuilder()->get('test')->getForm()->getConfig()->getOption('data'));
+        $this->assertSame(['123'], $config->getBuilder()->get('test')->getForm()->getConfig()->getOption('data'));
     }
 
     /**
-     * Test buildForm() with field name
+     * Test buildForm() with field name.
      */
     public function testBuildFormWithPlaceholder()
     {
         $framework = $this->mockContaoFramework();
-        $session   = new MockArraySessionStorage();
+        $session = new MockArraySessionStorage();
 
         $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
 
         $this->container->setParameter('huh.filter', [
             'filter' => [
                 'types' => [
                     [
-                        'name'  => 'country',
+                        'name' => 'country',
                         'class' => CountryType::class,
-                        'type'  => 'choice'
-                    ]
-                ]
-            ]
+                        'type' => 'choice',
+                    ],
+                ],
+            ],
         ]);
 
         $this->container->set('huh.filter.choice.type', new TypeChoice($framework));
@@ -352,44 +349,44 @@ class CountryTypeTest extends ContaoTestCase
         $translator->getCatalogue()->add(['message.test_placholder' => 'test placeholder']);
         $this->container->set('translator', $translator);
 
-        $element                 = new FilterConfigElementModel();
-        $element->type           = 'country';
-        $element->field          = 'test';
+        $element = new FilterConfigElementModel();
+        $element->type = 'country';
+        $element->field = 'test';
         $element->addPlaceholder = true;
-        $element->placeholder    = 'message.test_placholder';
+        $element->placeholder = 'message.test_placholder';
 
         $config->init('test', $filter, [$element]);
         $config->buildForm();
 
-        $this->assertEquals(3, $config->getBuilder()->count());  // f_id and f_ref element always exists
+        $this->assertSame(3, $config->getBuilder()->count());  // f_id and f_ref element always exists
         $this->assertTrue($config->getBuilder()->has('test'));
         $this->assertInstanceOf(\Symfony\Component\Form\Extension\Core\Type\CountryType::class, $config->getBuilder()->get('test')->getType()->getInnerType());
-        $this->assertEquals('test placeholder', $config->getBuilder()->get('test')->getForm()->getConfig()->getOption('placeholder'));
-        $this->assertEquals('test placeholder', $config->getBuilder()->get('test')->getForm()->getConfig()->getOption('attr')['data-placeholder']);
+        $this->assertSame('test placeholder', $config->getBuilder()->get('test')->getForm()->getConfig()->getOption('placeholder'));
+        $this->assertSame('test placeholder', $config->getBuilder()->get('test')->getForm()->getConfig()->getOption('attr')['data-placeholder']);
         $this->assertArrayNotHasKey('placeholder', $config->getBuilder()->get('test')->getForm()->getConfig()->getOption('attr'));
     }
 
     /**
-     * Test buildQuery() without dca field
+     * Test buildQuery() without dca field.
      */
     public function testBuildQueryWithoutDcaField()
     {
         $framework = $this->mockContaoFramework();
-        $session   = new MockArraySessionStorage();
+        $session = new MockArraySessionStorage();
 
         $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
 
         $this->container->setParameter('huh.filter', [
             'filter' => [
                 'types' => [
                     [
-                        'name'  => 'country',
+                        'name' => 'country',
                         'class' => CountryType::class,
-                        'type'  => 'choice'
-                    ]
-                ]
-            ]
+                        'type' => 'choice',
+                    ],
+                ],
+            ],
         ]);
 
         $this->container->set('huh.filter.choice.type', new TypeChoice($framework));
@@ -397,10 +394,10 @@ class CountryTypeTest extends ContaoTestCase
 
         $filter = ['name' => 'test', 'dataContainer' => 'tl_test'];
 
-        $element             = new FilterConfigElementModel();
-        $element->id         = 2;
-        $element->type       = 'country';
-        $element->name       = 'test';
+        $element = new FilterConfigElementModel();
+        $element->id = 2;
+        $element->type = 'country';
+        $element->name = 'test';
         $element->customName = true;
 
         $config->init('test', $filter, [$element]);
@@ -411,26 +408,26 @@ class CountryTypeTest extends ContaoTestCase
     }
 
     /**
-     * Test buildQuery()
+     * Test buildQuery().
      */
     public function testBuildQuery()
     {
         $framework = $this->mockContaoFramework();
-        $session   = new MockArraySessionStorage();
+        $session = new MockArraySessionStorage();
 
         $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
 
         $this->container->setParameter('huh.filter', [
             'filter' => [
                 'types' => [
                     [
-                        'name'  => 'country',
+                        'name' => 'country',
                         'class' => CountryType::class,
-                        'type'  => 'choice'
-                    ]
-                ]
-            ]
+                        'type' => 'choice',
+                    ],
+                ],
+            ],
         ]);
 
         $GLOBALS['TL_DCA']['tl_test']['fields']['test'] = [
@@ -448,9 +445,9 @@ class CountryTypeTest extends ContaoTestCase
         $errorReporting = error_reporting();
         error_reporting($errorReporting & ~E_NOTICE);
 
-        $element        = new FilterConfigElementModel();
-        $element->id    = 2;
-        $element->type  = 'country';
+        $element = new FilterConfigElementModel();
+        $element->id = 2;
+        $element->type = 'country';
         $element->field = 'test';
 
         $config->init('test', $filter, [$element]);
@@ -459,8 +456,8 @@ class CountryTypeTest extends ContaoTestCase
 
         $this->assertNotEmpty($config->getQueryBuilder()->getParameters());
         $this->assertNotEmpty($config->getQueryBuilder()->getQueryPart('where'));
-        $this->assertEquals('SELECT  FROM tl_test WHERE test = :test', $config->getQueryBuilder()->getSQL());
-        $this->assertEquals([':test' => '1'], $config->getQueryBuilder()->getParameters());
+        $this->assertSame('SELECT  FROM tl_test WHERE test = :test', $config->getQueryBuilder()->getSQL());
+        $this->assertSame([':test' => '1'], $config->getQueryBuilder()->getParameters());
     }
 
     /**
@@ -468,6 +465,6 @@ class CountryTypeTest extends ContaoTestCase
      */
     protected function getFixturesDir(): string
     {
-        return __DIR__ . DIRECTORY_SEPARATOR . '../..' . DIRECTORY_SEPARATOR . 'Fixtures';
+        return __DIR__.DIRECTORY_SEPARATOR.'../..'.DIRECTORY_SEPARATOR.'Fixtures';
     }
 }

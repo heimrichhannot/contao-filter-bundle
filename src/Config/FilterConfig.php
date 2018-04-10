@@ -11,13 +11,13 @@ namespace HeimrichHannot\FilterBundle\Config;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\InsertTags;
 use Contao\System;
-use HeimrichHannot\FilterBundle\Session\FilterSession;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
 use HeimrichHannot\FilterBundle\Form\Extension\FormButtonExtension;
 use HeimrichHannot\FilterBundle\Form\Extension\FormTypeExtension;
 use HeimrichHannot\FilterBundle\Form\FilterType;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
+use HeimrichHannot\FilterBundle\Session\FilterSession;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Forms;
@@ -70,27 +70,27 @@ class FilterConfig
      * Constructor.
      *
      * @param ContaoFrameworkInterface $framework
-     * @param FilterSession $session
+     * @param FilterSession            $session
      */
     public function __construct(ContaoFrameworkInterface $framework, FilterSession $session, FilterQueryBuilder $queryBuilder)
     {
-        $this->framework    = $framework;
-        $this->session      = $session;
+        $this->framework = $framework;
+        $this->session = $session;
         $this->queryBuilder = $queryBuilder;
     }
 
     /**
      * Init the filter based on its model.
      *
-     * @param string $sessionKey
-     * @param array $filter
+     * @param string                                                   $sessionKey
+     * @param array                                                    $filter
      * @param \Contao\Model\Collection|FilterConfigElementModel[]|null $elements
      */
     public function init(string $sessionKey, array $filter, $elements = null)
     {
         $this->sessionKey = $sessionKey;
-        $this->filter     = $filter;
-        $this->elements   = $elements;
+        $this->filter = $filter;
+        $this->elements = $elements;
     }
 
     /**
@@ -122,7 +122,7 @@ class FilterConfig
             $options['attr']['class'] = implode(' ', $cssClass);
         }
 
-        if (isset($this->filter['renderEmpty']) && true === (bool)$this->filter['renderEmpty']) {
+        if (isset($this->filter['renderEmpty']) && true === (bool) $this->filter['renderEmpty']) {
             $data = [];
         }
 
@@ -151,8 +151,8 @@ class FilterConfig
             }
 
             $config = $types[$element->type];
-            $class  = $config['class'];
-            $skip   = $this->queryBuilder->getSkip();
+            $class = $config['class'];
+            $skip = $this->queryBuilder->getSkip();
 
             if (!class_exists($class) || isset($skip[$element->id])) {
                 continue;
@@ -171,6 +171,7 @@ class FilterConfig
 
     /**
      * @param mixed $request The request to handle
+     *
      * @return RedirectResponse|null
      */
     public function handleForm($request = null): ?RedirectResponse
@@ -203,12 +204,12 @@ class FilterConfig
             }
 
             // form id must match
-            if ((int)$form->get(FilterType::FILTER_ID_NAME)->getData() !== $this->getId()) {
+            if ((int) $form->get(FilterType::FILTER_ID_NAME)->getData() !== $this->getId()) {
                 return null;
             }
 
             $data = $form->getData();
-            $url  = System::getContainer()->get('huh.utils.url')->removeQueryString([$form->getName()], $url ?: null);
+            $url = System::getContainer()->get('huh.utils.url')->removeQueryString([$form->getName()], $url ?: null);
 
             // do not save filter id in session
             $this->setData($data);
@@ -224,32 +225,6 @@ class FilterConfig
         }
 
         return null;
-    }
-
-    /**
-     * Get the redirect url based on current filter action.
-     *
-     * @return string
-     */
-    protected function getUrl()
-    {
-        $filter = $this->getFilter();
-
-        if (!isset($filter['action'])) {
-            return '';
-        }
-
-        /**
-         * @var InsertTags
-         */
-        $insertTagAdapter = $this->framework->createInstance(InsertTags::class);
-
-        // while unit testing, the mock object cant be instantiated
-        if (null === $insertTagAdapter) {
-            $insertTagAdapter = $this->framework->getAdapter(InsertTags::class);
-        }
-
-        return '/' . urldecode($insertTagAdapter->replace($filter['action']));
     }
 
     /**
@@ -271,8 +246,8 @@ class FilterConfig
     /**
      * Get a specific element by its value.
      *
-     * @param mixed $value The to search within $key
-     * @param string $key The array key
+     * @param mixed  $value The to search within $key
+     * @param string $key   The array key
      *
      * @return FilterConfigElementModel|null
      */
@@ -287,7 +262,7 @@ class FilterConfig
         }
 
         foreach ($this->getElements() as $element) {
-            if (null === $element->{$key} || (string)$element->{$key} !== (string)$value) {
+            if (null === $element->{$key} || (string) $element->{$key} !== (string) $value) {
                 continue;
             }
 
@@ -415,12 +390,38 @@ class FilterConfig
     }
 
     /**
+     * Get the redirect url based on current filter action.
+     *
+     * @return string
+     */
+    protected function getUrl()
+    {
+        $filter = $this->getFilter();
+
+        if (!isset($filter['action'])) {
+            return '';
+        }
+
+        /**
+         * @var InsertTags
+         */
+        $insertTagAdapter = $this->framework->createInstance(InsertTags::class);
+
+        // while unit testing, the mock object cant be instantiated
+        if (null === $insertTagAdapter) {
+            $insertTagAdapter = $this->framework->getAdapter(InsertTags::class);
+        }
+
+        return '/'.urldecode($insertTagAdapter->replace($filter['action']));
+    }
+
+    /**
      * Maps the data of the current forms and update builder data.
      */
     protected function mapFormsToData()
     {
-        $data             = [];
-        $forms            = $this->builder->getForm();
+        $data = [];
+        $forms = $this->builder->getForm();
         $propertyAccessor = PropertyAccess::createPropertyAccessor();
 
         /*
@@ -428,7 +429,7 @@ class FilterConfig
          */
         foreach ($forms as $form) {
             $propertyPath = $form->getPropertyPath();
-            $config       = $form->getConfig();
+            $config = $form->getConfig();
 
             // Write-back is disabled if the form is not synchronized (transformation failed),
             // if the form was not submitted and if the form is disabled (modification not allowed)

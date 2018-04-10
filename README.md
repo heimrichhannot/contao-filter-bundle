@@ -17,7 +17,7 @@ Replace `categories` with the name of your custom field. Remove `onchange` handl
 Select fallback can be used on small devices, if too many options, display/hide, using `@media` breakpoints. 
 
 ```
-{% if(form.categories|default()) %}
+{% if(form.categories is defined) %}
     <div class="disable-hidden-inputs {{ ('form-group' ~ ' ' ~ form.categories.vars.id ~ ' ' ~ form.categories.vars.name ~ ' ' ~ form.categories.vars.attr.class)|trim }}">
         {{ form_label(form.categories) }}
         {% do form.categories.setRendered %}

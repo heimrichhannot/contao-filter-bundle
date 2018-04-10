@@ -33,7 +33,7 @@ class ElementChoice extends AbstractChoice
         $context['types'] = isset($context['types']) && is_array($context['types']) ? $context['types'] : [];
 
         /**
-         * @var $adapter FilterConfigElementModel
+         * @var FilterConfigElementModel
          */
         $adapter = $this->framework->getAdapter(FilterConfigElementModel::class);
 
@@ -45,9 +45,8 @@ class ElementChoice extends AbstractChoice
             return $choices;
         }
 
-        foreach ($elements as $element)
-        {
-            $choices[$element->id] = $element->name . ' [' . $element->type . ']';
+        foreach ($elements as $element) {
+            $choices[$element->id] = $element->name.' ['.$element->type.']';
         }
 
         return $choices;

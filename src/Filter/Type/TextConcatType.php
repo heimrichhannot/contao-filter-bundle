@@ -22,24 +22,33 @@ class TextConcatType extends AbstractType
      */
     public function buildQuery(FilterQueryBuilder $builder, FilterConfigElementModel $element)
     {
-        $data  = $this->config->getData();
-        $name  = $this->getName($element);
+        $data = $this->config->getData();
+        $filter = $this->config->getFilter();
+        $name = $this->getName($element);
 
         if (!isset($data[$name])) {
             return;
         }
 
-        $wildcard = ':' . $name;
-        $fields   = StringUtil::deserialize($element->fields, true);
+        $wildcard = ':'.$name;
+        $fields = StringUtil::deserialize($element->fields, true);
 
         if (empty($fields)) {
             return;
         }
 
-        $concat = 'CONCAT(' . implode('," ",', $fields) . ')';
+        $concat = 'CONCAT('.implode(
+                '," ",',
+                array_map(
+                    function ($field) use ($filter) {
+                        return 'COALESCE('.$filter['dataContainer'].'.'.$field.', "")';
+                    },
+                    $fields
+                )
+            ).')';
 
         $builder->andWhere($builder->expr()->like($concat, $wildcard));
-        $builder->setParameter($wildcard, '%' . $data[$name] . '%');
+        $builder->setParameter($wildcard, '%'.$data[$name].'%');
     }
 
     /**

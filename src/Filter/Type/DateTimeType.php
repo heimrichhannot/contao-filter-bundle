@@ -24,9 +24,9 @@ class DateTimeType extends AbstractType
      */
     public function buildQuery(FilterQueryBuilder $builder, FilterConfigElementModel $element)
     {
-        $data   = $this->config->getData();
+        $data = $this->config->getData();
         $filter = $this->config->getFilter();
-        $name   = $this->getName($element);
+        $name = $this->getName($element);
 
         Controller::loadDataContainer($filter['dataContainer']);
 
@@ -34,7 +34,7 @@ class DateTimeType extends AbstractType
             return;
         }
 
-        $field = $filter['dataContainer'] . '.' . $element->field;
+        $field = $filter['dataContainer'].'.'.$element->field;
         $value = isset($data[$name]) && $data[$name] ? $data[$name] : 0;
 
         if ($element->isInitial) {
@@ -51,7 +51,7 @@ class DateTimeType extends AbstractType
         $maxDate = $this->getMaxDate($element);
 
         $start = $value;
-        $stop  = $value;
+        $stop = $value;
 
         $start = $start < $minDate ? $minDate : $start;
         $start = $start > $maxDate ? $maxDate : $start;
@@ -104,7 +104,7 @@ class DateTimeType extends AbstractType
     {
         $options = parent::getOptions($element, $builder);
 
-        $options           = $this->addDateWidgetOptions($options, $element, $builder);
+        $options = $this->addDateWidgetOptions($options, $element, $builder);
         $options['widget'] = $element->dateWidget ?: DateType::WIDGET_TYPE_CHOICE;
 
         return $options;
@@ -113,9 +113,9 @@ class DateTimeType extends AbstractType
     /**
      * Add the options for the date_widget property.
      *
-     * @param array $options
+     * @param array                    $options
      * @param FilterConfigElementModel $element
-     * @param FormBuilderInterface $builder
+     * @param FormBuilderInterface     $builder
      *
      * @throws \Exception
      *
@@ -129,8 +129,8 @@ class DateTimeType extends AbstractType
         switch ($type) {
             case DateType::WIDGET_TYPE_SINGLE_TEXT:
                 $element->dateTimeFormat = $element->dateTimeFormat ?: 'd.m.Y H:i';
-                $options['html5']        = (bool)$element->html5;
-                $options['format']       = System::getContainer()->get('huh.utils.date')->transformPhpDateFormatToRFC3339($element->dateTimeFormat);
+                $options['html5'] = (bool) $element->html5;
+                $options['format'] = System::getContainer()->get('huh.utils.date')->transformPhpDateFormatToRFC3339($element->dateTimeFormat);
 
                 if (true === $options['html5']) {
                     if ($element->minDateTime) {
@@ -143,7 +143,7 @@ class DateTimeType extends AbstractType
 
                     break;
                 }
-                $options['group_attr']['class']      = 'datepicker timepicker';
+                $options['group_attr']['class'] = 'datepicker timepicker';
                 $options['attr']['data-enable-time'] = 'true';
                 $options['attr']['data-date-format'] = $element->dateTimeFormat;
 
@@ -157,8 +157,8 @@ class DateTimeType extends AbstractType
 
                 break;
             case DateType::WIDGET_TYPE_CHOICE:
-                $minYear  = Date::parse('Y', strtotime('-5 year', $time));
-                $maxYear  = Date::parse('Y', strtotime('+5 year', $time));
+                $minYear = Date::parse('Y', strtotime('-5 year', $time));
+                $maxYear = Date::parse('Y', strtotime('+5 year', $time));
                 $minMonth = null;
 
                 if ($element->minDateTime) {

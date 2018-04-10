@@ -14,9 +14,9 @@ use Contao\System;
 /**
  * Reads and writes filter.
  *
- * @property int $id
- * @property int $tstamp
- * @property int $dateAdded
+ * @property int    $id
+ * @property int    $tstamp
+ * @property int    $dateAdded
  * @property string $title
  * @property string $dataContainer
  * @property string $method
@@ -24,8 +24,8 @@ use Contao\System;
  * @property string $template
  * @property string $name
  * @property string $cssClass
- * @property bool $renderEmpty
- * @property bool $published
+ * @property bool   $renderEmpty
+ * @property bool   $published
  * @property string $start
  * @property string $stop
  *
@@ -89,12 +89,12 @@ class FilterConfigModel extends \Model
      */
     public function findAllPublished(array $options = [])
     {
-        $t          = static::$strTable;
+        $t = static::$strTable;
         $arrColumns = [];
 
         if (isset($arrOptions['ignoreFePreview']) || !defined('BE_USER_LOGGED_IN') || !BE_USER_LOGGED_IN) {
-            $time         = \Date::floorToMinute();
-            $arrColumns[] = "($t.start='' OR $t.start<='$time') AND ($t.stop='' OR $t.stop>'" . ($time + 60) . "') AND $t.published='1'";
+            $time = \Date::floorToMinute();
+            $arrColumns[] = "($t.start='' OR $t.start<='$time') AND ($t.stop='' OR $t.stop>'".($time + 60)."') AND $t.published='1'";
         }
 
         /** @var Model $adapter */

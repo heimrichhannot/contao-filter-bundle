@@ -27,15 +27,15 @@ class PublishedType extends AbstractType
         }
 
         $filter = $this->config->getFilter();
-        $and    = $builder->expr()->andX();
+        $and = $builder->expr()->andX();
 
-        if ($element->addStartAndStop && !$this->isPreviewMode((bool)$element->ignoreFePreview)) {
+        if ($element->addStartAndStop && !$this->isPreviewMode((bool) $element->ignoreFePreview)) {
             $time = Date::floorToMinute();
 
             if ($element->startField) {
                 $orStart = $builder->expr()->orX(
-                    $builder->expr()->eq($filter['dataContainer'] . '.' . $element->startField, '""'),
-                    $builder->expr()->lte($filter['dataContainer'] . '.' . $element->startField, ':startField_time')
+                    $builder->expr()->eq($filter['dataContainer'].'.'.$element->startField, '""'),
+                    $builder->expr()->lte($filter['dataContainer'].'.'.$element->startField, ':startField_time')
                 );
 
                 $and->add($orStart);
@@ -43,23 +43,38 @@ class PublishedType extends AbstractType
             }
 
             if ($element->stopField) {
-
                 $orStop = $builder->expr()->orX(
-                    $builder->expr()->eq($filter['dataContainer'] . '.' . $element->stopField, '""'),
-                    $builder->expr()->gt($filter['dataContainer'] . '.' . $element->stopField, ':stopField_time')
+                    $builder->expr()->eq($filter['dataContainer'].'.'.$element->stopField, '""'),
+                    $builder->expr()->gt($filter['dataContainer'].'.'.$element->stopField, ':stopField_time')
                 );
                 $and->add($orStop);
                 $builder->setParameter(':stopField_time', $time + 60);
             }
         }
 
-        $and->add($builder->expr()->eq($filter['dataContainer'] . '.' . $element->field, $element->invertField ? '""' : 1));
+        $and->add($builder->expr()->eq($filter['dataContainer'].'.'.$element->field, $element->invertField ? '""' : 1));
 
         $builder->andWhere($and);
     }
 
     public function buildForm(FilterConfigElementModel $element, FormBuilderInterface $builder)
     {
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDefaultOperator(FilterConfigElementModel $element)
+    {
+        return DatabaseUtil::OPERATOR_LIKE;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDefaultName(FilterConfigElementModel $element)
+    {
+        return null;
     }
 
     /**
@@ -77,22 +92,4 @@ class PublishedType extends AbstractType
 
         return \defined('BE_USER_LOGGED_IN') && true === BE_USER_LOGGED_IN;
     }
-
-    /**
-     * @inheritdoc
-     */
-    public function getDefaultOperator(FilterConfigElementModel $element)
-    {
-        return DatabaseUtil::OPERATOR_LIKE;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getDefaultName(FilterConfigElementModel $element)
-    {
-        return null;
-    }
-
-
 }

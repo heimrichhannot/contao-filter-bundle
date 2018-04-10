@@ -1,16 +1,14 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2018 Heimrich & Hannot GmbH
  *
- * @author Rico Kaltofen <r.kaltofen@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @license LGPL-3.0-or-later
  */
 
 namespace HeimrichHannot\FilterBundle\Tests\Model;
 
-
 use Contao\ManagerPlugin\Config\ContainerBuilder;
-use Contao\Model;
 use Contao\System;
 use Contao\TestCase\ContaoTestCase;
 use Doctrine\DBAL\Connection;
@@ -21,7 +19,6 @@ use Symfony\Component\HttpKernel\Kernel;
 
 class FilterConfigModelTest extends ContaoTestCase
 {
-
     /**
      * @var ContainerBuilder
      */
@@ -43,20 +40,19 @@ class FilterConfigModelTest extends ContaoTestCase
             \define('TL_ROOT', $this->getFixturesDir());
         }
 
-        $GLOBALS['TL_LANGUAGE']    = 'en';
+        $GLOBALS['TL_LANGUAGE'] = 'en';
         $GLOBALS['TL_LANG']['MSC'] = ['test' => 'bar'];
 
         $GLOBALS['TL_DCA']['tl_filter_config'] = [
             'config' => [
                 'dataContainer' => 'Table',
-                'sql'           => [
+                'sql' => [
                     'keys' => [
                     ],
                 ],
             ],
             'fields' => [
-
-            ]
+            ],
         ];
 
         $this->container = $this->mockContainer();
@@ -81,13 +77,13 @@ class FilterConfigModelTest extends ContaoTestCase
     }
 
     /**
-     * Test findPublishedByPid()
+     * Test findPublishedByPid().
      */
     public function testFindAllPublished()
     {
         $modelA = $this->mockClassWithProperties(FilterConfigModel::class, [
-            'id'  => 1,
-            'pid' => 1
+            'id' => 1,
+            'pid' => 1,
         ]);
 
         $modelAdapter = $this->mockAdapter(['findBy']);
@@ -100,14 +96,14 @@ class FilterConfigModelTest extends ContaoTestCase
         System::setContainer($this->container);
 
         $filterConfigModel = new FilterConfigModel();
-        $result            = $filterConfigModel->findAllPublished();
+        $result = $filterConfigModel->findAllPublished();
 
         $this->assertNotNull($result);
-        $this->assertEquals($modelA, $result[0]);
+        $this->assertSame($modelA, $result[0]);
     }
 
     /**
-     * Test findPublishedByPid() without Contao\Model Adapter
+     * Test findPublishedByPid() without Contao\Model Adapter.
      */
     public function testFindAllPublishedWithoutAdapter()
     {
@@ -118,7 +114,7 @@ class FilterConfigModelTest extends ContaoTestCase
         System::setContainer($this->container);
 
         $filterConfigModel = new FilterConfigModel();
-        $result            = $filterConfigModel->findAllPublished();
+        $result = $filterConfigModel->findAllPublished();
 
         $this->assertNull($result);
     }
@@ -128,6 +124,6 @@ class FilterConfigModelTest extends ContaoTestCase
      */
     protected function getFixturesDir(): string
     {
-        return __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Fixtures';
+        return __DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'Fixtures';
     }
 }

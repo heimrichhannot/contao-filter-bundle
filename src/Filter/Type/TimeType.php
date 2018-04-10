@@ -24,9 +24,9 @@ class TimeType extends AbstractType
      */
     public function buildQuery(FilterQueryBuilder $builder, FilterConfigElementModel $element)
     {
-        $data   = $this->config->getData();
+        $data = $this->config->getData();
         $filter = $this->config->getFilter();
-        $name   = $this->getName($element);
+        $name = $this->getName($element);
 
         Controller::loadDataContainer($filter['dataContainer']);
 
@@ -34,7 +34,7 @@ class TimeType extends AbstractType
             return;
         }
 
-        $field = $filter['dataContainer'] . '.' . $element->field;
+        $field = $filter['dataContainer'].'.'.$element->field;
         $value = isset($data[$name]) && $data[$name] ? $data[$name] : 0;
 
         if ($element->isInitial) {
@@ -51,7 +51,7 @@ class TimeType extends AbstractType
         $maxDate = $this->getMaxDate($element);
 
         $start = $value;
-        $stop  = $value;
+        $stop = $value;
 
         $start = $start < $minDate ? $minDate : $start;
         $start = $start > $maxDate ? $maxDate : $start;

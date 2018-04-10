@@ -17,8 +17,8 @@ use HeimrichHannot\FilterBundle\Choice\TypeChoice;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
 use HeimrichHannot\FilterBundle\Filter\Type\PublishedType;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
-use HeimrichHannot\FilterBundle\Session\FilterSession;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
+use HeimrichHannot\FilterBundle\Session\FilterSession;
 use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpFoundation\Request;
@@ -41,7 +41,6 @@ class PublishedTypeTest extends ContaoTestCase
      */
     private $kernel;
 
-
     protected function setUp()
     {
         parent::setUp();
@@ -50,37 +49,35 @@ class PublishedTypeTest extends ContaoTestCase
             \define('TL_ROOT', $this->getFixturesDir());
         }
 
-        $GLOBALS['TL_LANGUAGE']    = 'en';
+        $GLOBALS['TL_LANGUAGE'] = 'en';
         $GLOBALS['TL_LANG']['MSC'] = ['test' => 'bar'];
 
         $GLOBALS['TL_DCA']['tl_test'] = [
             'config' => [
                 'dataContainer' => 'Table',
-                'sql'           => [
+                'sql' => [
                     'keys' => [
                     ],
                 ],
             ],
             'fields' => [
-
-            ]
+            ],
         ];
 
         $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'config' => [
                 'dataContainer' => 'Table',
-                'sql'           => [
+                'sql' => [
                     'keys' => [
                     ],
                 ],
             ],
             'fields' => [
-
-            ]
+            ],
         ];
 
         $finder = new ResourceFinder([
-            $this->getFixturesDir() . '/vendor/contao/core-bundle/Resources/contao',
+            $this->getFixturesDir().'/vendor/contao/core-bundle/Resources/contao',
         ]);
 
         $this->container = $this->mockContainer();
@@ -116,10 +113,10 @@ class PublishedTypeTest extends ContaoTestCase
         System::setContainer($this->container);
 
         $framework = $this->mockContaoFramework();
-        $session   = new MockArraySessionStorage();
+        $session = new MockArraySessionStorage();
 
         $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
 
         $type = new PublishedType($config);
 
@@ -127,45 +124,45 @@ class PublishedTypeTest extends ContaoTestCase
     }
 
     /**
-     * Test getDefaultOperator()
+     * Test getDefaultOperator().
      */
     public function testGetDefaultOperator()
     {
         $framework = $this->mockContaoFramework();
-        $session   = new MockArraySessionStorage();
+        $session = new MockArraySessionStorage();
 
         $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
 
         /** @var FilterConfigElementModel $element */
         $element = $this->mockClassWithProperties(FilterConfigElementModel::class, []);
 
         $type = new PublishedType($config);
 
-        $this->assertEquals(DatabaseUtil::OPERATOR_LIKE, $type->getDefaultOperator($element));
+        $this->assertSame(DatabaseUtil::OPERATOR_LIKE, $type->getDefaultOperator($element));
     }
 
     /**
-     * Test buildForm() with field name
+     * Test buildForm() with field name.
      */
     public function testBuildFormWithFieldName()
     {
         $framework = $this->mockContaoFramework();
-        $session   = new MockArraySessionStorage();
+        $session = new MockArraySessionStorage();
 
         $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
 
         $this->container->setParameter('huh.filter', [
             'filter' => [
                 'types' => [
                     [
-                        'name'  => 'visible',
+                        'name' => 'visible',
                         'class' => PublishedType::class,
-                        'type'  => 'text'
-                    ]
-                ]
-            ]
+                        'type' => 'text',
+                    ],
+                ],
+            ],
         ]);
 
         $this->container->set('huh.filter.choice.type', new TypeChoice($framework));
@@ -173,38 +170,38 @@ class PublishedTypeTest extends ContaoTestCase
 
         $filter = ['name' => 'test', 'dataContainer' => 'tl_test'];
 
-        $element        = new FilterConfigElementModel();
-        $element->type  = 'visible';
+        $element = new FilterConfigElementModel();
+        $element->type = 'visible';
         $element->field = 'test';
 
         $config->init('test', $filter, [$element]);
         $config->buildForm();
 
-        $this->assertEquals(2, $config->getBuilder()->count());  // f_id and f_ref element always exists
+        $this->assertSame(2, $config->getBuilder()->count());  // f_id and f_ref element always exists
         $this->assertFalse($config->getBuilder()->has('test'));
     }
 
     /**
-     * Test buildQuery() without dca field
+     * Test buildQuery() without dca field.
      */
     public function testBuildQueryWithoutDcaField()
     {
         $framework = $this->mockContaoFramework();
-        $session   = new MockArraySessionStorage();
+        $session = new MockArraySessionStorage();
 
         $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
 
         $this->container->setParameter('huh.filter', [
             'filter' => [
                 'types' => [
                     [
-                        'name'  => 'visible',
+                        'name' => 'visible',
                         'class' => PublishedType::class,
-                        'type'  => 'text'
-                    ]
-                ]
-            ]
+                        'type' => 'text',
+                    ],
+                ],
+            ],
         ]);
 
         $this->container->set('huh.filter.choice.type', new TypeChoice($framework));
@@ -212,8 +209,8 @@ class PublishedTypeTest extends ContaoTestCase
 
         $filter = ['name' => 'test', 'dataContainer' => 'tl_test'];
 
-        $element       = new FilterConfigElementModel();
-        $element->id   = 2;
+        $element = new FilterConfigElementModel();
+        $element->id = 2;
         $element->type = 'visible';
         $element->name = 'test';
 
@@ -225,26 +222,26 @@ class PublishedTypeTest extends ContaoTestCase
     }
 
     /**
-     * Test buildQuery() without start stop
+     * Test buildQuery() without start stop.
      */
     public function testBuildQueryWithoutStartStop()
     {
         $framework = $this->mockContaoFramework();
-        $session   = new MockArraySessionStorage();
+        $session = new MockArraySessionStorage();
 
         $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
 
         $this->container->setParameter('huh.filter', [
             'filter' => [
                 'types' => [
                     [
-                        'name'  => 'visible',
+                        'name' => 'visible',
                         'class' => PublishedType::class,
-                        'type'  => 'other'
-                    ]
-                ]
-            ]
+                        'type' => 'other',
+                    ],
+                ],
+            ],
         ]);
 
         $GLOBALS['TL_DCA']['tl_test']['fields']['published'] = [
@@ -261,9 +258,9 @@ class PublishedTypeTest extends ContaoTestCase
         $errorReporting = error_reporting();
         error_reporting($errorReporting & ~E_NOTICE);
 
-        $element        = new FilterConfigElementModel();
-        $element->id    = 2;
-        $element->type  = 'visible';
+        $element = new FilterConfigElementModel();
+        $element->id = 2;
+        $element->type = 'visible';
         $element->field = 'published';
 
         $config->init('test', $filter, [$element]);
@@ -272,30 +269,30 @@ class PublishedTypeTest extends ContaoTestCase
 
         $this->assertEmpty($config->getQueryBuilder()->getParameters());
         $this->assertNotEmpty($config->getQueryBuilder()->getQueryPart('where'));
-        $this->assertEquals('SELECT  FROM tl_test WHERE tl_test.published = 1', $config->getQueryBuilder()->getSQL());
+        $this->assertSame('SELECT  FROM tl_test WHERE tl_test.published = 1', $config->getQueryBuilder()->getSQL());
     }
 
     /**
-     * Test buildQuery() with start stop
+     * Test buildQuery() with start stop.
      */
     public function testBuildQueryWithStartStop()
     {
         $framework = $this->mockContaoFramework();
-        $session   = new MockArraySessionStorage();
+        $session = new MockArraySessionStorage();
 
         $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
 
         $this->container->setParameter('huh.filter', [
             'filter' => [
                 'types' => [
                     [
-                        'name'  => 'visible',
+                        'name' => 'visible',
                         'class' => PublishedType::class,
-                        'type'  => 'other'
-                    ]
-                ]
-            ]
+                        'type' => 'other',
+                    ],
+                ],
+            ],
         ]);
 
         $GLOBALS['TL_DCA']['tl_test']['fields']['published'] = [
@@ -312,13 +309,13 @@ class PublishedTypeTest extends ContaoTestCase
         $errorReporting = error_reporting();
         error_reporting($errorReporting & ~E_NOTICE);
 
-        $element                  = new FilterConfigElementModel();
-        $element->id              = 2;
-        $element->type            = 'visible';
-        $element->field           = 'published';
+        $element = new FilterConfigElementModel();
+        $element->id = 2;
+        $element->type = 'visible';
+        $element->field = 'published';
         $element->addStartAndStop = true;
-        $element->startField      = 'start';
-        $element->stopField       = 'stop';
+        $element->startField = 'start';
+        $element->stopField = 'stop';
 
         $config->init('test', $filter, [$element]);
         $config->setData(['published' => 1]);
@@ -326,30 +323,30 @@ class PublishedTypeTest extends ContaoTestCase
 
         $this->assertNotEmpty($config->getQueryBuilder()->getParameters());
         $this->assertNotEmpty($config->getQueryBuilder()->getQueryPart('where'));
-        $this->assertEquals('SELECT  FROM tl_test WHERE ((tl_test.start = "") OR (tl_test.start <= :startField_time)) AND ((tl_test.stop = "") OR (tl_test.stop > :stopField_time)) AND (tl_test.published = 1)', $config->getQueryBuilder()->getSQL());
+        $this->assertSame('SELECT  FROM tl_test WHERE ((tl_test.start = "") OR (tl_test.start <= :startField_time)) AND ((tl_test.stop = "") OR (tl_test.stop > :stopField_time)) AND (tl_test.published = 1)', $config->getQueryBuilder()->getSQL());
     }
 
     /**
-     * Test buildQuery() with start stop and active frontend preview
+     * Test buildQuery() with start stop and active frontend preview.
      */
     public function testBuildQueryWithStartStopAndPreview()
     {
         $framework = $this->mockContaoFramework();
-        $session   = new MockArraySessionStorage();
+        $session = new MockArraySessionStorage();
 
         $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
 
         $this->container->setParameter('huh.filter', [
             'filter' => [
                 'types' => [
                     [
-                        'name'  => 'visible',
+                        'name' => 'visible',
                         'class' => PublishedType::class,
-                        'type'  => 'other'
-                    ]
-                ]
-            ]
+                        'type' => 'other',
+                    ],
+                ],
+            ],
         ]);
 
         $GLOBALS['TL_DCA']['tl_test']['fields']['published'] = [
@@ -366,13 +363,13 @@ class PublishedTypeTest extends ContaoTestCase
         $errorReporting = error_reporting();
         error_reporting($errorReporting & ~E_NOTICE);
 
-        $element                  = new FilterConfigElementModel();
-        $element->id              = 2;
-        $element->type            = 'visible';
-        $element->field           = 'published';
+        $element = new FilterConfigElementModel();
+        $element->id = 2;
+        $element->type = 'visible';
+        $element->field = 'published';
         $element->addStartAndStop = true;
-        $element->startField      = 'start';
-        $element->stopField       = 'stop';
+        $element->startField = 'start';
+        $element->stopField = 'stop';
         $element->ignoreFePreview = true;
 
         $config->init('test', $filter, [$element]);
@@ -381,7 +378,7 @@ class PublishedTypeTest extends ContaoTestCase
 
         $this->assertNotEmpty($config->getQueryBuilder()->getParameters());
         $this->assertNotEmpty($config->getQueryBuilder()->getQueryPart('where'));
-        $this->assertEquals('SELECT  FROM tl_test WHERE ((tl_test.start = "") OR (tl_test.start <= :startField_time)) AND ((tl_test.stop = "") OR (tl_test.stop > :stopField_time)) AND (tl_test.published = 1)', $config->getQueryBuilder()->getSQL());
+        $this->assertSame('SELECT  FROM tl_test WHERE ((tl_test.start = "") OR (tl_test.start <= :startField_time)) AND ((tl_test.stop = "") OR (tl_test.stop > :stopField_time)) AND (tl_test.published = 1)', $config->getQueryBuilder()->getSQL());
     }
 
     /**
@@ -389,6 +386,6 @@ class PublishedTypeTest extends ContaoTestCase
      */
     protected function getFixturesDir(): string
     {
-        return __DIR__ . DIRECTORY_SEPARATOR . '../..' . DIRECTORY_SEPARATOR . 'Fixtures';
+        return __DIR__.DIRECTORY_SEPARATOR.'../..'.DIRECTORY_SEPARATOR.'Fixtures';
     }
 }

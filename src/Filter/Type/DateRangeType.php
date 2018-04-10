@@ -33,14 +33,14 @@ class DateRangeType extends AbstractType
      */
     public function buildQuery(FilterQueryBuilder $builder, FilterConfigElementModel $element)
     {
-        $data   = $this->config->getData();
+        $data = $this->config->getData();
         $filter = $this->config->getFilter();
-        $name   = $this->getName($element);
+        $name = $this->getName($element);
 
         Controller::loadDataContainer($filter['dataContainer']);
 
         $this->startElement = $this->config->getElementByValue($element->startElement);
-        $this->stopElement  = $this->config->getElementByValue($element->stopElement);
+        $this->stopElement = $this->config->getElementByValue($element->stopElement);
 
         if (null === $this->startElement || null === $this->stopElement) {
             return;
@@ -53,11 +53,11 @@ class DateRangeType extends AbstractType
         $builder->addSkip($this->startElement);
         $builder->addSkip($this->stopElement);
 
-        $startField = $filter['dataContainer'] . '.' . $this->startElement->field;
-        $stopField  = $filter['dataContainer'] . '.' . $this->stopElement->field;
+        $startField = $filter['dataContainer'].'.'.$this->startElement->field;
+        $stopField = $filter['dataContainer'].'.'.$this->stopElement->field;
 
         $startName = $this->startElement->getFormName($this->config);
-        $stopName  = $this->stopElement->getFormName($this->config);
+        $stopName = $this->stopElement->getFormName($this->config);
 
         /** @var \DateTime|null $startDate */
         $startDate = $startDate = $data[$name][$startName] ?? 0;
@@ -79,12 +79,12 @@ class DateRangeType extends AbstractType
         }
 
         $start = System::getContainer()->get('huh.utils.date')->getTimeStamp($startDate, false) ?? 0;
-        $stop  = System::getContainer()->get('huh.utils.date')->getTimeStamp($stopDate, false) ?? 9999999999999;
+        $stop = System::getContainer()->get('huh.utils.date')->getTimeStamp($stopDate, false) ?? 9999999999999;
 
         $startFieldMinDate = $this->getMinDate($this->startElement);
         $startFieldMaxDate = $this->getMaxDate($this->startElement);
-        $stopFieldMinDate  = $this->getMinDate($this->stopElement);
-        $stopFieldMaxDate  = $this->getMaxDate($this->stopElement);
+        $stopFieldMinDate = $this->getMinDate($this->stopElement);
+        $stopFieldMaxDate = $this->getMaxDate($this->stopElement);
 
         $start = $start < $startFieldMinDate ? $startFieldMinDate : $start;
         $start = $start > $startFieldMaxDate ? $startFieldMaxDate : $start;
@@ -140,12 +140,13 @@ class DateRangeType extends AbstractType
         }
 
         $this->startElement = $this->config->getElementByValue($element->startElement);
-        $this->stopElement  = $this->config->getElementByValue($element->stopElement);
+        $this->stopElement = $this->config->getElementByValue($element->stopElement);
 
         if (null === $this->getStartElement() || null === $this->getStopElement()) {
             null === $this->getStartElement() ? null : $builder->remove($this->getStartElement()->getFormName($this->config));
             null === $this->getStopElement() ? null : $builder->remove($this->getStopElement()->getFormName($this->config));
             $builder->remove($name);
+
             return;
         }
 
@@ -153,11 +154,12 @@ class DateRangeType extends AbstractType
             $builder->getForm()->has($this->getStartElement()->getFormName($this->config)) ? $builder->remove($this->getStartElement()->getFormName($this->config)) : null;
             $builder->getForm()->has($this->getStopElement()->getFormName($this->config)) ? $builder->remove($this->getStopElement()->getFormName($this->config)) : null;
             $builder->remove($name);
+
             return;
         }
 
         $start = $builder->get($this->getStartElement()->getFormName($this->config));
-        $stop  = $builder->get($this->getStopElement()->getFormName($this->config));
+        $stop = $builder->get($this->getStopElement()->getFormName($this->config));
 
         $group = $builder->get($this->getName($element));
 
@@ -211,9 +213,9 @@ class DateRangeType extends AbstractType
      * Get the options for the start field.
      *
      * @param FilterConfigElementModel $element
-     * @param FormBuilderInterface $builder
-     * @param FormBuilderInterface $start
-     * @param FormBuilderInterface $stop
+     * @param FormBuilderInterface     $builder
+     * @param FormBuilderInterface     $start
+     * @param FormBuilderInterface     $stop
      *
      * @return array
      */
@@ -223,7 +225,7 @@ class DateRangeType extends AbstractType
         FormBuilderInterface $start,
         FormBuilderInterface $stop
     ) {
-        $options                            = $start->getOptions();
+        $options = $start->getOptions();
         $options['attr']['data-linked-end'] = sprintf('#%s_%s_%s', $builder->getName(), $this->getName($element),
             $stop->getName());
 
@@ -234,9 +236,9 @@ class DateRangeType extends AbstractType
      * Get the options for the stop field.
      *
      * @param FilterConfigElementModel $element
-     * @param FormBuilderInterface $builder
-     * @param FormBuilderInterface $start
-     * @param FormBuilderInterface $stop
+     * @param FormBuilderInterface     $builder
+     * @param FormBuilderInterface     $start
+     * @param FormBuilderInterface     $stop
      *
      * @return array
      */
@@ -246,7 +248,7 @@ class DateRangeType extends AbstractType
         FormBuilderInterface $start,
         FormBuilderInterface $stop
     ) {
-        $options                              = $stop->getOptions();
+        $options = $stop->getOptions();
         $options['attr']['data-linked-start'] = sprintf('#%s_%s_%s', $builder->getName(), $this->getName($element),
             $start->getName());
 

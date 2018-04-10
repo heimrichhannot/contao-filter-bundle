@@ -228,7 +228,8 @@ abstract class AbstractType
     }
 
     /**
-     * Get min date for given element and type
+     * Get min date for given element and type.
+     *
      * @param FilterConfigElementModel $element
      *
      * @return int The min date as timestamp
@@ -257,7 +258,8 @@ abstract class AbstractType
     }
 
     /**
-     * Get max date for given element and type
+     * Get max date for given element and type.
+     *
      * @param FilterConfigElementModel $element
      *
      * @return int The max date as timestamp

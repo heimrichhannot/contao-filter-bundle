@@ -510,7 +510,7 @@ class LocaleChoiceTest extends ContaoTestCase
      * Mocks the plugin loader.
      *
      * @param \PHPUnit_Framework_MockObject_Matcher_InvokedCount $expects
-     * @param array      $plugins
+     * @param array                                              $plugins
      *
      * @return PluginLoader|\PHPUnit_Framework_MockObject_MockObject
      */

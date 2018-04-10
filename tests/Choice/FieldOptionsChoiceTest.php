@@ -9,7 +9,6 @@
 namespace HeimrichHannot\FilterBundle\Test\Choice;
 
 use Codefog\TagsBundle\Manager\DefaultManager;
-use Codefog\TagsBundle\ManagerRegistry;
 use Codefog\TagsBundle\Model\TagModel;
 use Contao\Controller;
 use Contao\ManagerPlugin\PluginLoader;
@@ -51,8 +50,7 @@ class FieldOptionsChoiceTest extends ContaoTestCase
             \define('TL_ROOT', $this->getFixturesDir());
         }
 
-        unset($GLOBALS['TL_DCA']['tl_test']);
-        unset($GLOBALS['TL_FFL']);
+        unset($GLOBALS['TL_DCA']['tl_test'], $GLOBALS['TL_FFL']);
 
         $this->container = $this->mockContainer();
         $this->container->setParameter('kernel.debug', true);
@@ -65,12 +63,12 @@ class FieldOptionsChoiceTest extends ContaoTestCase
 
         $containerBuilder = new \Contao\ManagerPlugin\Config\ContainerBuilder($this->mockPluginLoader($this->never()), []);
 
-        $config                 = $plugin->getExtensionConfig('huh_filter', [[]], $containerBuilder);
+        $config = $plugin->getExtensionConfig('huh_filter', [[]], $containerBuilder);
         $this->config['filter'] = $config['huh']['filter'];
 
         // required within Contao\Widget::getAttributesFromDca()
         if (!\function_exists('array_is_assoc')) {
-            include_once __DIR__ . '/../../vendor/contao/core-bundle/src/Resources/contao/helper/functions.php';
+            include_once __DIR__.'/../../vendor/contao/core-bundle/src/Resources/contao/helper/functions.php';
         }
     }
 
@@ -85,13 +83,13 @@ class FieldOptionsChoiceTest extends ContaoTestCase
         System::setContainer($this->container);
 
         $framework = $this->mockContaoFramework();
-        $instance  = new FieldOptionsChoice($framework);
+        $instance = new FieldOptionsChoice($framework);
 
         $this->assertInstanceOf('HeimrichHannot\FilterBundle\Choice\FieldOptionsChoice', $instance);
     }
 
     /**
-     * Tests the field options choices based on tag field without tag manager service
+     * Tests the field options choices based on tag field without tag manager service.
      */
     public function testCollectTagOptionsWithTranslation()
     {
@@ -116,7 +114,7 @@ class FieldOptionsChoiceTest extends ContaoTestCase
 
         $framework = $this->mockContaoFramework([
             Controller::class => $controllerAdapter,
-            TagModel::class   => $tagModelAdapter
+            TagModel::class => $tagModelAdapter,
         ]);
 
         $defaultManagerAdapter = $this->mockAdapter(['findMultiple']);
@@ -132,42 +130,42 @@ class FieldOptionsChoiceTest extends ContaoTestCase
         $GLOBALS['TL_DCA']['tl_test'] = [
             'fields' => [
                 'test' => [
-                    'label'     => ['foo', 'bar'],
+                    'label' => ['foo', 'bar'],
                     'inputType' => 'cfgTags',
-                    'eval'      => [
-                        'submitOnChange'     => false,
-                        'allowHtml'          => false,
-                        'rte'                => false,
-                        'preserveTags'       => false,
-                        'isAssociative'      => false,
+                    'eval' => [
+                        'submitOnChange' => false,
+                        'allowHtml' => false,
+                        'rte' => false,
+                        'preserveTags' => false,
+                        'isAssociative' => false,
                         'includeBlankOption' => false,
-                        'sql'                => '',
-                        'tagsManager'        => 'tag_manager.test'
+                        'sql' => '',
+                        'tagsManager' => 'tag_manager.test',
                     ],
-                ]
-            ]
+                ],
+            ],
         ];
 
         $elementModel = $this->mockClassWithProperties(FilterConfigElementModel::class, [
-            'field' => 'test'
+            'field' => 'test',
         ]);
 
         $context = [
-            'filter'  => ['dataContainer' => 'tl_test'],
-            'element' => $elementModel
+            'filter' => ['dataContainer' => 'tl_test'],
+            'element' => $elementModel,
         ];
 
         $instance = new FieldOptionsChoice($framework);
-        $choices  = $instance->getChoices($context);
+        $choices = $instance->getChoices($context);
 
         System::setContainer($this->container);
 
         $this->assertNotEmpty($choices);
-        $this->assertEquals(['Translated tag A' => 1, 'Tag B' => 2], $choices);
+        $this->assertSame(['Translated tag A' => 1, 'Tag B' => 2], $choices);
     }
 
     /**
-     * Tests the field options choices based on tag field without tags
+     * Tests the field options choices based on tag field without tags.
      */
     public function testCollectTagOptionsWithoutTags()
     {
@@ -183,7 +181,7 @@ class FieldOptionsChoiceTest extends ContaoTestCase
 
         $framework = $this->mockContaoFramework([
             Controller::class => $controllerAdapter,
-            TagModel::class   => $tagModelAdapter
+            TagModel::class => $tagModelAdapter,
         ]);
 
         $defaultManagerAdapter = $this->mockAdapter(['findMultiple']);
@@ -199,33 +197,33 @@ class FieldOptionsChoiceTest extends ContaoTestCase
         $GLOBALS['TL_DCA']['tl_test'] = [
             'fields' => [
                 'test' => [
-                    'label'     => ['foo', 'bar'],
+                    'label' => ['foo', 'bar'],
                     'inputType' => 'cfgTags',
-                    'eval'      => [
-                        'submitOnChange'     => false,
-                        'allowHtml'          => false,
-                        'rte'                => false,
-                        'preserveTags'       => false,
-                        'isAssociative'      => false,
+                    'eval' => [
+                        'submitOnChange' => false,
+                        'allowHtml' => false,
+                        'rte' => false,
+                        'preserveTags' => false,
+                        'isAssociative' => false,
                         'includeBlankOption' => false,
-                        'sql'                => '',
-                        'tagsManager'        => 'tag_manager.test'
+                        'sql' => '',
+                        'tagsManager' => 'tag_manager.test',
                     ],
-                ]
-            ]
+                ],
+            ],
         ];
 
         $elementModel = $this->mockClassWithProperties(FilterConfigElementModel::class, [
-            'field' => 'test'
+            'field' => 'test',
         ]);
 
         $context = [
-            'filter'  => ['dataContainer' => 'tl_test'],
-            'element' => $elementModel
+            'filter' => ['dataContainer' => 'tl_test'],
+            'element' => $elementModel,
         ];
 
         $instance = new FieldOptionsChoice($framework);
-        $choices  = $instance->getChoices($context);
+        $choices = $instance->getChoices($context);
 
         System::setContainer($this->container);
 
@@ -233,7 +231,7 @@ class FieldOptionsChoiceTest extends ContaoTestCase
     }
 
     /**
-     * Tests the field options choices based on tag field without tag manager service
+     * Tests the field options choices based on tag field without tag manager service.
      */
     public function testCollectTagOptionsWithoutTagManager()
     {
@@ -249,7 +247,7 @@ class FieldOptionsChoiceTest extends ContaoTestCase
 
         $framework = $this->mockContaoFramework([
             Controller::class => $controllerAdapter,
-            TagModel::class   => $tagModelAdapter
+            TagModel::class => $tagModelAdapter,
         ]);
 
         $tagManagerRegistry = $this->mockAdapter(['get']);
@@ -262,33 +260,33 @@ class FieldOptionsChoiceTest extends ContaoTestCase
         $GLOBALS['TL_DCA']['tl_test'] = [
             'fields' => [
                 'test' => [
-                    'label'     => ['foo', 'bar'],
+                    'label' => ['foo', 'bar'],
                     'inputType' => 'cfgTags',
-                    'eval'      => [
-                        'submitOnChange'     => false,
-                        'allowHtml'          => false,
-                        'rte'                => false,
-                        'preserveTags'       => false,
-                        'isAssociative'      => false,
+                    'eval' => [
+                        'submitOnChange' => false,
+                        'allowHtml' => false,
+                        'rte' => false,
+                        'preserveTags' => false,
+                        'isAssociative' => false,
                         'includeBlankOption' => false,
-                        'sql'                => '',
-                        'tagsManager'        => 'tag_manager.test'
+                        'sql' => '',
+                        'tagsManager' => 'tag_manager.test',
                     ],
-                ]
-            ]
+                ],
+            ],
         ];
 
         $elementModel = $this->mockClassWithProperties(FilterConfigElementModel::class, [
-            'field' => 'test'
+            'field' => 'test',
         ]);
 
         $context = [
-            'filter'  => ['dataContainer' => 'tl_test'],
-            'element' => $elementModel
+            'filter' => ['dataContainer' => 'tl_test'],
+            'element' => $elementModel,
         ];
 
         $instance = new FieldOptionsChoice($framework);
-        $choices  = $instance->getChoices($context);
+        $choices = $instance->getChoices($context);
 
         System::setContainer($this->container);
 
@@ -296,7 +294,7 @@ class FieldOptionsChoiceTest extends ContaoTestCase
     }
 
     /**
-     * Tests the field options choices based on tag field without codefog_tags.manager_registry service
+     * Tests the field options choices based on tag field without codefog_tags.manager_registry service.
      */
     public function testCollectTagOptionsWithoutTagsManagerRegistryService()
     {
@@ -314,33 +312,33 @@ class FieldOptionsChoiceTest extends ContaoTestCase
         $GLOBALS['TL_DCA']['tl_test'] = [
             'fields' => [
                 'test' => [
-                    'label'     => ['foo', 'bar'],
+                    'label' => ['foo', 'bar'],
                     'inputType' => 'cfgTags',
-                    'eval'      => [
-                        'submitOnChange'     => false,
-                        'allowHtml'          => false,
-                        'rte'                => false,
-                        'preserveTags'       => false,
-                        'isAssociative'      => false,
+                    'eval' => [
+                        'submitOnChange' => false,
+                        'allowHtml' => false,
+                        'rte' => false,
+                        'preserveTags' => false,
+                        'isAssociative' => false,
                         'includeBlankOption' => false,
-                        'sql'                => '',
-                        'tagsManager'        => 'tag_manager.test'
+                        'sql' => '',
+                        'tagsManager' => 'tag_manager.test',
                     ],
-                ]
-            ]
+                ],
+            ],
         ];
 
         $elementModel = $this->mockClassWithProperties(FilterConfigElementModel::class, [
-            'field' => 'test'
+            'field' => 'test',
         ]);
 
         $context = [
-            'filter'  => ['dataContainer' => 'tl_test'],
-            'element' => $elementModel
+            'filter' => ['dataContainer' => 'tl_test'],
+            'element' => $elementModel,
         ];
 
         $instance = new FieldOptionsChoice($framework);
-        $choices  = $instance->getChoices($context);
+        $choices = $instance->getChoices($context);
 
         System::setContainer($this->container);
 
@@ -348,7 +346,7 @@ class FieldOptionsChoiceTest extends ContaoTestCase
     }
 
     /**
-     * Tests the field options choices based on tag field without tagsManager in eval set
+     * Tests the field options choices based on tag field without tagsManager in eval set.
      */
     public function testCollectTagOptionsWithoutTagManagerEval()
     {
@@ -366,32 +364,32 @@ class FieldOptionsChoiceTest extends ContaoTestCase
         $GLOBALS['TL_DCA']['tl_test'] = [
             'fields' => [
                 'test' => [
-                    'label'     => ['foo', 'bar'],
+                    'label' => ['foo', 'bar'],
                     'inputType' => 'cfgTags',
-                    'eval'      => [
-                        'submitOnChange'     => false,
-                        'allowHtml'          => false,
-                        'rte'                => false,
-                        'preserveTags'       => false,
-                        'isAssociative'      => false,
+                    'eval' => [
+                        'submitOnChange' => false,
+                        'allowHtml' => false,
+                        'rte' => false,
+                        'preserveTags' => false,
+                        'isAssociative' => false,
                         'includeBlankOption' => false,
-                        'sql'                => '',
+                        'sql' => '',
                     ],
-                ]
-            ]
+                ],
+            ],
         ];
 
         $elementModel = $this->mockClassWithProperties(FilterConfigElementModel::class, [
-            'field' => 'test'
+            'field' => 'test',
         ]);
 
         $context = [
-            'filter'  => ['dataContainer' => 'tl_test'],
-            'element' => $elementModel
+            'filter' => ['dataContainer' => 'tl_test'],
+            'element' => $elementModel,
         ];
 
         $instance = new FieldOptionsChoice($framework);
-        $choices  = $instance->getChoices($context);
+        $choices = $instance->getChoices($context);
 
         System::setContainer($this->container);
 
@@ -399,7 +397,7 @@ class FieldOptionsChoiceTest extends ContaoTestCase
     }
 
     /**
-     * Tests the field options choices based on category field with categories and translation
+     * Tests the field options choices based on category field with categories and translation.
      */
     public function testCollectCategoryOptionsWithTranslation()
     {
@@ -412,21 +410,21 @@ class FieldOptionsChoiceTest extends ContaoTestCase
         $controllerAdapter->method('loadDataContainer')->willReturn(null);
 
         $categoryA = $this->mockClassWithProperties(CategoryModel::class, [
-            'id'            => 1,
+            'id' => 1,
             'frontendTitle' => 'message.categoryA.frontendTitle',
-            'title'         => 'Category A',
+            'title' => 'Category A',
         ]);
 
         $categoryB = $this->mockClassWithProperties(CategoryModel::class, [
-            'id'            => 2,
+            'id' => 2,
             'frontendTitle' => 'Frontend Title Category B',
-            'title'         => 'Category B',
+            'title' => 'Category B',
         ]);
 
         $categoryAdapter = $this->mockAdapter(['findByCategoryFieldAndTable']);
         $categoryAdapter->method('findByCategoryFieldAndTable')->willReturn([
             $categoryA,
-            $categoryB
+            $categoryB,
         ]);
         $this->container->set('huh.categories.manager', $categoryAdapter);
 
@@ -437,42 +435,42 @@ class FieldOptionsChoiceTest extends ContaoTestCase
         $GLOBALS['TL_DCA']['tl_test'] = [
             'fields' => [
                 'test' => [
-                    'label'     => ['foo', 'bar'],
+                    'label' => ['foo', 'bar'],
                     'inputType' => 'select',
-                    'eval'      => [
-                        'submitOnChange'     => false,
-                        'allowHtml'          => false,
-                        'rte'                => false,
-                        'preserveTags'       => false,
-                        'isAssociative'      => false,
+                    'eval' => [
+                        'submitOnChange' => false,
+                        'allowHtml' => false,
+                        'rte' => false,
+                        'preserveTags' => false,
+                        'isAssociative' => false,
                         'includeBlankOption' => false,
-                        'sql'                => '',
-                        'isCategoryField'    => true,
+                        'sql' => '',
+                        'isCategoryField' => true,
                     ],
-                ]
-            ]
+                ],
+            ],
         ];
 
         $elementModel = $this->mockClassWithProperties(FilterConfigElementModel::class, [
-            'field' => 'test'
+            'field' => 'test',
         ]);
 
         $context = [
-            'filter'  => ['dataContainer' => 'tl_test'],
-            'element' => $elementModel
+            'filter' => ['dataContainer' => 'tl_test'],
+            'element' => $elementModel,
         ];
 
         $instance = new FieldOptionsChoice($framework);
-        $choices  = $instance->getChoices($context);
+        $choices = $instance->getChoices($context);
 
         System::setContainer($this->container);
 
         $this->assertNotEmpty($choices);
-        $this->assertEquals(['Frontend Title Category A' => 1, 'Frontend Title Category B' => 2], $choices);
+        $this->assertSame(['Frontend Title Category A' => 1, 'Frontend Title Category B' => 2], $choices);
     }
 
     /**
-     * Tests the field options choices based on category field without existing categories
+     * Tests the field options choices based on category field without existing categories.
      */
     public function testCollectCategoryOptionsWithoutCategories()
     {
@@ -494,33 +492,33 @@ class FieldOptionsChoiceTest extends ContaoTestCase
         $GLOBALS['TL_DCA']['tl_test'] = [
             'fields' => [
                 'test' => [
-                    'label'     => ['foo', 'bar'],
+                    'label' => ['foo', 'bar'],
                     'inputType' => 'select',
-                    'eval'      => [
-                        'submitOnChange'     => false,
-                        'allowHtml'          => false,
-                        'rte'                => false,
-                        'preserveTags'       => false,
-                        'isAssociative'      => false,
+                    'eval' => [
+                        'submitOnChange' => false,
+                        'allowHtml' => false,
+                        'rte' => false,
+                        'preserveTags' => false,
+                        'isAssociative' => false,
                         'includeBlankOption' => false,
-                        'sql'                => '',
-                        'isCategoryField'    => true,
+                        'sql' => '',
+                        'isCategoryField' => true,
                     ],
-                ]
-            ]
+                ],
+            ],
         ];
 
         $elementModel = $this->mockClassWithProperties(FilterConfigElementModel::class, [
-            'field' => 'test'
+            'field' => 'test',
         ]);
 
         $context = [
-            'filter'  => ['dataContainer' => 'tl_test'],
-            'element' => $elementModel
+            'filter' => ['dataContainer' => 'tl_test'],
+            'element' => $elementModel,
         ];
 
         $instance = new FieldOptionsChoice($framework);
-        $choices  = $instance->getChoices($context);
+        $choices = $instance->getChoices($context);
 
         System::setContainer($this->container);
 
@@ -528,7 +526,7 @@ class FieldOptionsChoiceTest extends ContaoTestCase
     }
 
     /**
-     * Tests the field options choices based on category field without existing category manager
+     * Tests the field options choices based on category field without existing category manager.
      */
     public function testCollectCategoryOptionsWithoutCategoryManagerService()
     {
@@ -546,33 +544,33 @@ class FieldOptionsChoiceTest extends ContaoTestCase
         $GLOBALS['TL_DCA']['tl_test'] = [
             'fields' => [
                 'test' => [
-                    'label'     => ['foo', 'bar'],
+                    'label' => ['foo', 'bar'],
                     'inputType' => 'select',
-                    'eval'      => [
-                        'submitOnChange'     => false,
-                        'allowHtml'          => false,
-                        'rte'                => false,
-                        'preserveTags'       => false,
-                        'isAssociative'      => false,
+                    'eval' => [
+                        'submitOnChange' => false,
+                        'allowHtml' => false,
+                        'rte' => false,
+                        'preserveTags' => false,
+                        'isAssociative' => false,
                         'includeBlankOption' => false,
-                        'sql'                => '',
-                        'isCategoryField'    => true,
+                        'sql' => '',
+                        'isCategoryField' => true,
                     ],
-                ]
-            ]
+                ],
+            ],
         ];
 
         $elementModel = $this->mockClassWithProperties(FilterConfigElementModel::class, [
-            'field' => 'test'
+            'field' => 'test',
         ]);
 
         $context = [
-            'filter'  => ['dataContainer' => 'tl_test'],
-            'element' => $elementModel
+            'filter' => ['dataContainer' => 'tl_test'],
+            'element' => $elementModel,
         ];
 
         $instance = new FieldOptionsChoice($framework);
-        $choices  = $instance->getChoices($context);
+        $choices = $instance->getChoices($context);
 
         System::setContainer($this->container);
 
@@ -580,7 +578,7 @@ class FieldOptionsChoiceTest extends ContaoTestCase
     }
 
     /**
-     * Tests the field options choices based on given dca field from `options_callback`
+     * Tests the field options choices based on given dca field from `options_callback`.
      */
     public function testCollectDcaOptionsFromWidgetOptionsCallback()
     {
@@ -602,44 +600,44 @@ class FieldOptionsChoiceTest extends ContaoTestCase
         $GLOBALS['TL_DCA']['tl_test'] = [
             'fields' => [
                 'test' => [
-                    'label'            => ['foo', 'bar'],
-                    'inputType'        => 'select',
+                    'label' => ['foo', 'bar'],
+                    'inputType' => 'select',
                     'options_callback' => function () {
                         return ['optionA', 'optionB'];
                     },
-                    'eval'             => [
-                        'submitOnChange'     => false,
-                        'allowHtml'          => false,
-                        'rte'                => false,
-                        'preserveTags'       => false,
-                        'isAssociative'      => false,
+                    'eval' => [
+                        'submitOnChange' => false,
+                        'allowHtml' => false,
+                        'rte' => false,
+                        'preserveTags' => false,
+                        'isAssociative' => false,
                         'includeBlankOption' => false,
-                        'sql'                => '',
+                        'sql' => '',
                     ],
-                ]
-            ]
+                ],
+            ],
         ];
 
         $elementModel = $this->mockClassWithProperties(FilterConfigElementModel::class, [
-            'field' => 'test'
+            'field' => 'test',
         ]);
 
         $context = [
-            'filter'  => ['dataContainer' => 'tl_test'],
-            'element' => $elementModel
+            'filter' => ['dataContainer' => 'tl_test'],
+            'element' => $elementModel,
         ];
 
         $instance = new FieldOptionsChoice($framework);
-        $choices  = $instance->getChoices($context);
+        $choices = $instance->getChoices($context);
 
         System::setContainer($this->container);
 
         $this->assertNotEmpty($choices);
-        $this->assertEquals(['optionA' => 'optionA', 'optionB' => 'optionB'], $choices);
+        $this->assertSame(['optionA' => 'optionA', 'optionB' => 'optionB'], $choices);
     }
 
     /**
-     * Tests the field options choices based on given dca field from `options` with reference
+     * Tests the field options choices based on given dca field from `options` with reference.
      */
     public function testCollectDcaOptionsFromWidgetOptionsWithReference()
     {
@@ -664,47 +662,47 @@ class FieldOptionsChoiceTest extends ContaoTestCase
         $GLOBALS['TL_DCA']['tl_test'] = [
             'fields' => [
                 'test' => [
-                    'label'            => ['foo', 'bar'],
-                    'inputType'        => 'select',
-                    'options'          => [
+                    'label' => ['foo', 'bar'],
+                    'inputType' => 'select',
+                    'options' => [
                         'optionA',
-                        'optionB'
+                        'optionB',
                     ],
                     'options_callback' => null,
-                    'eval'             => [
-                        'submitOnChange'     => false,
-                        'allowHtml'          => false,
-                        'rte'                => false,
-                        'preserveTags'       => false,
-                        'isAssociative'      => false,
+                    'eval' => [
+                        'submitOnChange' => false,
+                        'allowHtml' => false,
+                        'rte' => false,
+                        'preserveTags' => false,
+                        'isAssociative' => false,
                         'includeBlankOption' => false,
-                        'sql'                => '',
+                        'sql' => '',
                     ],
-                    'reference'        => &$GLOBALS['TL_LANG']['tl_test']['test']['reference']
-                ]
-            ]
+                    'reference' => &$GLOBALS['TL_LANG']['tl_test']['test']['reference'],
+                ],
+            ],
         ];
 
         $elementModel = $this->mockClassWithProperties(FilterConfigElementModel::class, [
-            'field' => 'test'
+            'field' => 'test',
         ]);
 
         $context = [
-            'filter'  => ['dataContainer' => 'tl_test'],
-            'element' => $elementModel
+            'filter' => ['dataContainer' => 'tl_test'],
+            'element' => $elementModel,
         ];
 
         $instance = new FieldOptionsChoice($framework);
-        $choices  = $instance->getChoices($context);
+        $choices = $instance->getChoices($context);
 
         System::setContainer($this->container);
 
         $this->assertNotEmpty($choices);
-        $this->assertEquals(['translated option A' => 'optionA', 'translated option B' => 'optionB'], $choices);
+        $this->assertSame(['translated option A' => 'optionA', 'translated option B' => 'optionB'], $choices);
     }
 
     /**
-     * Tests the field options choices based on given dca field from `options`
+     * Tests the field options choices based on given dca field from `options`.
      */
     public function testCollectDcaOptionsFromWidgetOptions()
     {
@@ -726,46 +724,46 @@ class FieldOptionsChoiceTest extends ContaoTestCase
         $GLOBALS['TL_DCA']['tl_test'] = [
             'fields' => [
                 'test' => [
-                    'label'            => ['foo', 'bar'],
-                    'inputType'        => 'select',
-                    'options'          => [
+                    'label' => ['foo', 'bar'],
+                    'inputType' => 'select',
+                    'options' => [
                         'optionA',
-                        'optionB'
+                        'optionB',
                     ],
                     'options_callback' => null,
-                    'eval'             => [
-                        'submitOnChange'     => false,
-                        'allowHtml'          => false,
-                        'rte'                => false,
-                        'preserveTags'       => false,
-                        'isAssociative'      => false,
+                    'eval' => [
+                        'submitOnChange' => false,
+                        'allowHtml' => false,
+                        'rte' => false,
+                        'preserveTags' => false,
+                        'isAssociative' => false,
                         'includeBlankOption' => false,
-                        'sql'                => '',
+                        'sql' => '',
                     ],
-                ]
-            ]
+                ],
+            ],
         ];
 
         $elementModel = $this->mockClassWithProperties(FilterConfigElementModel::class, [
-            'field' => 'test'
+            'field' => 'test',
         ]);
 
         $context = [
-            'filter'  => ['dataContainer' => 'tl_test'],
-            'element' => $elementModel
+            'filter' => ['dataContainer' => 'tl_test'],
+            'element' => $elementModel,
         ];
 
         $instance = new FieldOptionsChoice($framework);
-        $choices  = $instance->getChoices($context);
+        $choices = $instance->getChoices($context);
 
         System::setContainer($this->container);
 
         $this->assertNotEmpty($choices);
-        $this->assertEquals(['optionA' => 'optionA', 'optionB' => 'optionB'], $choices);
+        $this->assertSame(['optionA' => 'optionA', 'optionB' => 'optionB'], $choices);
     }
 
     /**
-     * Tests the field options choices based on given dca field without frontend widget $GLOBALS['TL_FFL'] class
+     * Tests the field options choices based on given dca field without frontend widget $GLOBALS['TL_FFL'] class.
      */
     public function testCollectDcaOptionsFromWidgetWithoutExistingFrontendWidgetClass()
     {
@@ -786,25 +784,25 @@ class FieldOptionsChoiceTest extends ContaoTestCase
             'fields' => [
                 'test' => [
                     'inputType' => 'select',
-                    'options'   => [
+                    'options' => [
                         'optionA',
-                        'optionB'
-                    ]
-                ]
-            ]
+                        'optionB',
+                    ],
+                ],
+            ],
         ];
 
         $elementModel = $this->mockClassWithProperties(FilterConfigElementModel::class, [
-            'field' => 'test'
+            'field' => 'test',
         ]);
 
         $context = [
-            'filter'  => ['dataContainer' => 'tl_test'],
-            'element' => $elementModel
+            'filter' => ['dataContainer' => 'tl_test'],
+            'element' => $elementModel,
         ];
 
         $instance = new FieldOptionsChoice($framework);
-        $choices  = $instance->getChoices($context);
+        $choices = $instance->getChoices($context);
 
         System::setContainer($this->container);
 
@@ -812,7 +810,7 @@ class FieldOptionsChoiceTest extends ContaoTestCase
     }
 
     /**
-     * Tests the field options choices based on given dca field without frontend widget $GLOBALS['TL_FFL']
+     * Tests the field options choices based on given dca field without frontend widget $GLOBALS['TL_FFL'].
      */
     public function testCollectDcaOptionsFromWidgetWithoutExistingFrontendWidget()
     {
@@ -831,25 +829,25 @@ class FieldOptionsChoiceTest extends ContaoTestCase
             'fields' => [
                 'test' => [
                     'inputType' => 'select',
-                    'options'   => [
+                    'options' => [
                         'optionA',
-                        'optionB'
-                    ]
-                ]
-            ]
+                        'optionB',
+                    ],
+                ],
+            ],
         ];
 
         $elementModel = $this->mockClassWithProperties(FilterConfigElementModel::class, [
-            'field' => 'test'
+            'field' => 'test',
         ]);
 
         $context = [
-            'filter'  => ['dataContainer' => 'tl_test'],
-            'element' => $elementModel
+            'filter' => ['dataContainer' => 'tl_test'],
+            'element' => $elementModel,
         ];
 
         $instance = new FieldOptionsChoice($framework);
-        $choices  = $instance->getChoices($context);
+        $choices = $instance->getChoices($context);
 
         System::setContainer($this->container);
 
@@ -857,7 +855,7 @@ class FieldOptionsChoiceTest extends ContaoTestCase
     }
 
     /**
-     * Tests the field options choices based on given dca field
+     * Tests the field options choices based on given dca field.
      */
     public function testCollectDcaOptionsWithoutInputType()
     {
@@ -875,21 +873,21 @@ class FieldOptionsChoiceTest extends ContaoTestCase
         $GLOBALS['TL_DCA']['tl_test'] = [
             'fields' => [
                 'test' => [
-                ]
-            ]
+                ],
+            ],
         ];
 
         $elementModel = $this->mockClassWithProperties(FilterConfigElementModel::class, [
-            'field' => 'test'
+            'field' => 'test',
         ]);
 
         $context = [
-            'filter'  => ['dataContainer' => 'tl_test'],
-            'element' => $elementModel
+            'filter' => ['dataContainer' => 'tl_test'],
+            'element' => $elementModel,
         ];
 
         $instance = new FieldOptionsChoice($framework);
-        $choices  = $instance->getChoices($context);
+        $choices = $instance->getChoices($context);
 
         System::setContainer($this->container);
 
@@ -897,7 +895,7 @@ class FieldOptionsChoiceTest extends ContaoTestCase
     }
 
     /**
-     * Tests the field options choices based on given dca field without existing dca field configuration
+     * Tests the field options choices based on given dca field without existing dca field configuration.
      */
     public function testCollectDcaOptionsForNonExistingField()
     {
@@ -915,16 +913,16 @@ class FieldOptionsChoiceTest extends ContaoTestCase
         $GLOBALS['TL_DCA']['tl_test'] = [];
 
         $elementModel = $this->mockClassWithProperties(FilterConfigElementModel::class, [
-            'field' => 'test'
+            'field' => 'test',
         ]);
 
         $context = [
-            'filter'  => ['dataContainer' => 'tl_test'],
-            'element' => $elementModel
+            'filter' => ['dataContainer' => 'tl_test'],
+            'element' => $elementModel,
         ];
 
         $instance = new FieldOptionsChoice($framework);
-        $choices  = $instance->getChoices($context);
+        $choices = $instance->getChoices($context);
 
         System::setContainer($this->container);
 
@@ -932,7 +930,7 @@ class FieldOptionsChoiceTest extends ContaoTestCase
     }
 
     /**
-     * Tests the field options choices for custom options
+     * Tests the field options choices for custom options.
      */
     public function testCollectCustomOptions()
     {
@@ -940,7 +938,7 @@ class FieldOptionsChoiceTest extends ContaoTestCase
         $translator->getCatalogue('de')->add(
             [
                 'message.customOption1' => 'My custom option 1 label',
-                'message.customOption2' => 'My custom option 2 label'
+                'message.customOption2' => 'My custom option 2 label',
             ]
         );
         $this->container->set('translator', $translator);
@@ -957,32 +955,32 @@ class FieldOptionsChoiceTest extends ContaoTestCase
 
         $elementModel = $this->mockClassWithProperties(FilterConfigElementModel::class, [
             'customOptions' => true,
-            'options'       => [
+            'options' => [
                 ['value' => 'customOption1', 'label' => 'message.customOption1'],
-                ['value' => 'customOption2', 'label' => 'message.customOption2']
-            ]
+                ['value' => 'customOption2', 'label' => 'message.customOption2'],
+            ],
         ]);
 
         $context = [
-            'filter'  => ['dataContainer' => 'tl_test'],
-            'element' => $elementModel
+            'filter' => ['dataContainer' => 'tl_test'],
+            'element' => $elementModel,
         ];
 
         $instance = new FieldOptionsChoice($framework);
-        $choices  = $instance->getChoices($context);
+        $choices = $instance->getChoices($context);
 
         System::setContainer($this->container);
 
         $this->assertNotEmpty($choices);
-        $this->assertEquals(
+        $this->assertSame(
             [
                 'My custom option 1 label' => 'customOption1',
-                'My custom option 2 label' => 'customOption2'
+                'My custom option 2 label' => 'customOption2',
             ], $choices);
     }
 
     /**
-     * Tests the field options choices without custom options
+     * Tests the field options choices without custom options.
      */
     public function testCollectCustomOptionsWithoutOptions()
     {
@@ -1001,16 +999,16 @@ class FieldOptionsChoiceTest extends ContaoTestCase
 
         $elementModel = $this->mockClassWithProperties(FilterConfigElementModel::class, [
             'customOptions' => true,
-            'options'       => null
+            'options' => null,
         ]);
 
         $context = [
-            'filter'  => ['dataContainer' => 'tl_test'],
-            'element' => $elementModel
+            'filter' => ['dataContainer' => 'tl_test'],
+            'element' => $elementModel,
         ];
 
         $instance = new FieldOptionsChoice($framework);
-        $choices  = $instance->getChoices($context);
+        $choices = $instance->getChoices($context);
 
         System::setContainer($this->container);
 
@@ -1018,7 +1016,7 @@ class FieldOptionsChoiceTest extends ContaoTestCase
     }
 
     /**
-     * Tests the field options choices for invalid custom options
+     * Tests the field options choices for invalid custom options.
      */
     public function testCollectCustomOptionsOnInvalidOptions()
     {
@@ -1037,19 +1035,19 @@ class FieldOptionsChoiceTest extends ContaoTestCase
 
         $elementModel = $this->mockClassWithProperties(FilterConfigElementModel::class, [
             'customOptions' => true,
-            'options'       => [
+            'options' => [
                 ['customOption1' => 'message.customOption1'],
-                ['customOption2' => 'message.customOption2']
-            ]
+                ['customOption2' => 'message.customOption2'],
+            ],
         ]);
 
         $context = [
-            'filter'  => ['dataContainer' => 'tl_test'],
-            'element' => $elementModel
+            'filter' => ['dataContainer' => 'tl_test'],
+            'element' => $elementModel,
         ];
 
         $instance = new FieldOptionsChoice($framework);
-        $choices  = $instance->getChoices($context);
+        $choices = $instance->getChoices($context);
 
         System::setContainer($this->container);
 
@@ -1057,7 +1055,7 @@ class FieldOptionsChoiceTest extends ContaoTestCase
     }
 
     /**
-     * Tests the field options choices with controller adapter
+     * Tests the field options choices with controller adapter.
      */
     public function testCollectWithController()
     {
@@ -1071,12 +1069,12 @@ class FieldOptionsChoiceTest extends ContaoTestCase
         System::setContainer($this->container);
 
         $context = [
-            'filter'  => ['dataContainer' => 'tl_test'],
-            'element' => []
+            'filter' => ['dataContainer' => 'tl_test'],
+            'element' => [],
         ];
 
         $instance = new FieldOptionsChoice($framework);
-        $choices  = $instance->getChoices($context);
+        $choices = $instance->getChoices($context);
 
         System::setContainer($this->container);
 
@@ -1084,7 +1082,7 @@ class FieldOptionsChoiceTest extends ContaoTestCase
     }
 
     /**
-     * Tests the field options choices without controller adapter
+     * Tests the field options choices without controller adapter.
      */
     public function testCollectWithoutController()
     {
@@ -1097,7 +1095,7 @@ class FieldOptionsChoiceTest extends ContaoTestCase
         $context = ['filter' => [], 'element' => []];
 
         $instance = new FieldOptionsChoice($framework);
-        $choices  = $instance->getChoices($context);
+        $choices = $instance->getChoices($context);
 
         System::setContainer($this->container);
 
@@ -1105,7 +1103,7 @@ class FieldOptionsChoiceTest extends ContaoTestCase
     }
 
     /**
-     * Tests the field options choices without element context
+     * Tests the field options choices without element context.
      */
     public function testCollectWithoutElementContext()
     {
@@ -1118,16 +1116,15 @@ class FieldOptionsChoiceTest extends ContaoTestCase
         $context = ['filter' => []];
 
         $instance = new FieldOptionsChoice($framework);
-        $choices  = $instance->getChoices($context);
+        $choices = $instance->getChoices($context);
 
         System::setContainer($this->container);
 
         $this->assertEmpty($choices);
     }
 
-
     /**
-     * Tests the field options choices without filter context
+     * Tests the field options choices without filter context.
      */
     public function testCollectWithoutFilterContext()
     {
@@ -1140,7 +1137,7 @@ class FieldOptionsChoiceTest extends ContaoTestCase
         $context = ['element' => []];
 
         $instance = new FieldOptionsChoice($framework);
-        $choices  = $instance->getChoices($context);
+        $choices = $instance->getChoices($context);
 
         System::setContainer($this->container);
 
@@ -1148,7 +1145,7 @@ class FieldOptionsChoiceTest extends ContaoTestCase
     }
 
     /**
-     * Tests the field options choices without filter and element context
+     * Tests the field options choices without filter and element context.
      */
     public function testCollectWithoutFilterAndElementsContext()
     {
@@ -1161,7 +1158,7 @@ class FieldOptionsChoiceTest extends ContaoTestCase
         $context = [];
 
         $instance = new FieldOptionsChoice($framework);
-        $choices  = $instance->getChoices($context);
+        $choices = $instance->getChoices($context);
 
         System::setContainer($this->container);
 
@@ -1173,14 +1170,14 @@ class FieldOptionsChoiceTest extends ContaoTestCase
      */
     protected function getFixturesDir(): string
     {
-        return __DIR__ . DIRECTORY_SEPARATOR . 'Fixtures';
+        return __DIR__.DIRECTORY_SEPARATOR.'Fixtures';
     }
 
     /**
      * Mocks the plugin loader.
      *
      * @param \PHPUnit_Framework_MockObject_Matcher_InvokedCount $expects
-     * @param array $plugins
+     * @param array                                              $plugins
      *
      * @return PluginLoader|\PHPUnit_Framework_MockObject_MockObject
      */

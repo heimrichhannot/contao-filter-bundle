@@ -17,8 +17,8 @@ use HeimrichHannot\FilterBundle\Choice\TypeChoice;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
 use HeimrichHannot\FilterBundle\Filter\Type\TextConcatType;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
-use HeimrichHannot\FilterBundle\Session\FilterSession;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
+use HeimrichHannot\FilterBundle\Session\FilterSession;
 use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpFoundation\Request;
@@ -41,7 +41,6 @@ class TextConcatTypeTest extends ContaoTestCase
      */
     private $kernel;
 
-
     protected function setUp()
     {
         parent::setUp();
@@ -50,37 +49,35 @@ class TextConcatTypeTest extends ContaoTestCase
             \define('TL_ROOT', $this->getFixturesDir());
         }
 
-        $GLOBALS['TL_LANGUAGE']    = 'en';
+        $GLOBALS['TL_LANGUAGE'] = 'en';
         $GLOBALS['TL_LANG']['MSC'] = ['test' => 'bar'];
 
         $GLOBALS['TL_DCA']['tl_test'] = [
             'config' => [
                 'dataContainer' => 'Table',
-                'sql'           => [
+                'sql' => [
                     'keys' => [
                     ],
                 ],
             ],
             'fields' => [
-
-            ]
+            ],
         ];
 
         $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'config' => [
                 'dataContainer' => 'Table',
-                'sql'           => [
+                'sql' => [
                     'keys' => [
                     ],
                 ],
             ],
             'fields' => [
-
-            ]
+            ],
         ];
 
         $finder = new ResourceFinder([
-            $this->getFixturesDir() . '/vendor/contao/core-bundle/Resources/contao',
+            $this->getFixturesDir().'/vendor/contao/core-bundle/Resources/contao',
         ]);
 
         $this->container = $this->mockContainer();
@@ -116,10 +113,10 @@ class TextConcatTypeTest extends ContaoTestCase
         System::setContainer($this->container);
 
         $framework = $this->mockContaoFramework();
-        $session   = new MockArraySessionStorage();
+        $session = new MockArraySessionStorage();
 
         $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
 
         $type = new TextConcatType($config);
 
@@ -127,64 +124,64 @@ class TextConcatTypeTest extends ContaoTestCase
     }
 
     /**
-     * Test getDefaultOperator()
+     * Test getDefaultOperator().
      */
     public function testGetDefaultOperator()
     {
         $framework = $this->mockContaoFramework();
-        $session   = new MockArraySessionStorage();
+        $session = new MockArraySessionStorage();
 
         $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
 
         /** @var FilterConfigElementModel $element */
         $element = $this->mockClassWithProperties(FilterConfigElementModel::class, []);
 
         $type = new TextConcatType($config);
 
-        $this->assertEquals(DatabaseUtil::OPERATOR_LIKE, $type->getDefaultOperator($element));
+        $this->assertSame(DatabaseUtil::OPERATOR_LIKE, $type->getDefaultOperator($element));
     }
 
     /**
-     * Test getDefaultName()
+     * Test getDefaultName().
      */
     public function testGetDefaultName()
     {
         $framework = $this->mockContaoFramework();
-        $session   = new MockArraySessionStorage();
+        $session = new MockArraySessionStorage();
 
         $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
 
-        $range       = new FilterConfigElementModel();
+        $range = new FilterConfigElementModel();
         $range->name = 'test';
 
         $type = new TextConcatType($config);
 
-        $this->assertEquals('test', $type->getDefaultName($range));
+        $this->assertSame('test', $type->getDefaultName($range));
     }
 
     /**
-     * Test buildForm() without name
+     * Test buildForm() without name.
      */
     public function testBuildFormWithoutName()
     {
         $framework = $this->mockContaoFramework();
-        $session   = new MockArraySessionStorage();
+        $session = new MockArraySessionStorage();
 
         $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
 
         $this->container->setParameter('huh.filter', [
             'filter' => [
                 'types' => [
                     [
-                        'name'  => 'text_concat',
+                        'name' => 'text_concat',
                         'class' => TextConcatType::class,
-                        'type'  => 'text'
-                    ]
-                ]
-            ]
+                        'type' => 'text',
+                    ],
+                ],
+            ],
         ]);
 
         $this->container->set('huh.filter.choice.type', new TypeChoice($framework));
@@ -192,36 +189,36 @@ class TextConcatTypeTest extends ContaoTestCase
 
         $filter = ['name' => 'test', 'dataContainer' => 'tl_test'];
 
-        $element       = new FilterConfigElementModel();
+        $element = new FilterConfigElementModel();
         $element->type = 'text_concat';
 
         $config->init('test', $filter, [$element]);
         $config->buildForm();
 
-        $this->assertEquals(2, $config->getBuilder()->count());  // f_id and f_ref element always exists
+        $this->assertSame(2, $config->getBuilder()->count());  // f_id and f_ref element always exists
     }
 
     /**
-     * Test buildForm() with field name
+     * Test buildForm() with field name.
      */
     public function testBuildFormWithFieldName()
     {
         $framework = $this->mockContaoFramework();
-        $session   = new MockArraySessionStorage();
+        $session = new MockArraySessionStorage();
 
         $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
 
         $this->container->setParameter('huh.filter', [
             'filter' => [
                 'types' => [
                     [
-                        'name'  => 'text_concat',
+                        'name' => 'text_concat',
                         'class' => TextConcatType::class,
-                        'type'  => 'text'
-                    ]
-                ]
-            ]
+                        'type' => 'text',
+                    ],
+                ],
+            ],
         ]);
 
         $this->container->set('huh.filter.choice.type', new TypeChoice($framework));
@@ -229,39 +226,39 @@ class TextConcatTypeTest extends ContaoTestCase
 
         $filter = ['name' => 'test', 'dataContainer' => 'tl_test'];
 
-        $element        = new FilterConfigElementModel();
-        $element->type  = 'text_concat';
+        $element = new FilterConfigElementModel();
+        $element->type = 'text_concat';
         $element->field = 'test';
 
         $config->init('test', $filter, [$element]);
         $config->buildForm();
 
-        $this->assertEquals(3, $config->getBuilder()->count());  // f_id and f_ref element always exists
+        $this->assertSame(3, $config->getBuilder()->count());  // f_id and f_ref element always exists
         $this->assertTrue($config->getBuilder()->has('test'));
         $this->assertInstanceOf(\Symfony\Component\Form\Extension\Core\Type\TextType::class, $config->getBuilder()->get('test')->getType()->getInnerType());
     }
 
     /**
-     * Test buildQuery() without dca field
+     * Test buildQuery() without dca field.
      */
     public function testBuildQueryWithoutDcaField()
     {
         $framework = $this->mockContaoFramework();
-        $session   = new MockArraySessionStorage();
+        $session = new MockArraySessionStorage();
 
         $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
 
         $this->container->setParameter('huh.filter', [
             'filter' => [
                 'types' => [
                     [
-                        'name'  => 'text_concat',
+                        'name' => 'text_concat',
                         'class' => TextConcatType::class,
-                        'type'  => 'text'
-                    ]
-                ]
-            ]
+                        'type' => 'text',
+                    ],
+                ],
+            ],
         ]);
 
         $this->container->set('huh.filter.choice.type', new TypeChoice($framework));
@@ -269,8 +266,8 @@ class TextConcatTypeTest extends ContaoTestCase
 
         $filter = ['name' => 'test', 'dataContainer' => 'tl_test'];
 
-        $element       = new FilterConfigElementModel();
-        $element->id   = 2;
+        $element = new FilterConfigElementModel();
+        $element->id = 2;
         $element->type = 'text_concat';
         $element->name = 'test';
 
@@ -282,26 +279,26 @@ class TextConcatTypeTest extends ContaoTestCase
     }
 
     /**
-     * Test buildQuery() without fields
+     * Test buildQuery() without fields.
      */
     public function testBuildQueryWithoutFields()
     {
         $framework = $this->mockContaoFramework();
-        $session   = new MockArraySessionStorage();
+        $session = new MockArraySessionStorage();
 
         $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
 
         $this->container->setParameter('huh.filter', [
             'filter' => [
                 'types' => [
                     [
-                        'name'  => 'text_concat',
+                        'name' => 'text_concat',
                         'class' => TextConcatType::class,
-                        'type'  => 'text'
-                    ]
-                ]
-            ]
+                        'type' => 'text',
+                    ],
+                ],
+            ],
         ]);
 
         $GLOBALS['TL_DCA']['tl_test']['fields']['test'] = [
@@ -318,8 +315,8 @@ class TextConcatTypeTest extends ContaoTestCase
         $errorReporting = error_reporting();
         error_reporting($errorReporting & ~E_NOTICE);
 
-        $element       = new FilterConfigElementModel();
-        $element->id   = 2;
+        $element = new FilterConfigElementModel();
+        $element->id = 2;
         $element->type = 'text_concat';
         $element->name = 'test';
 
@@ -332,26 +329,26 @@ class TextConcatTypeTest extends ContaoTestCase
     }
 
     /**
-     * Test buildQuery() without data
+     * Test buildQuery() without data.
      */
     public function testBuildQueryWithoutData()
     {
         $framework = $this->mockContaoFramework();
-        $session   = new MockArraySessionStorage();
+        $session = new MockArraySessionStorage();
 
         $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
 
         $this->container->setParameter('huh.filter', [
             'filter' => [
                 'types' => [
                     [
-                        'name'  => 'text_concat',
+                        'name' => 'text_concat',
                         'class' => TextConcatType::class,
-                        'type'  => 'text'
-                    ]
-                ]
-            ]
+                        'type' => 'text',
+                    ],
+                ],
+            ],
         ]);
 
         $GLOBALS['TL_DCA']['tl_test']['fields']['test'] = [
@@ -368,8 +365,8 @@ class TextConcatTypeTest extends ContaoTestCase
         $errorReporting = error_reporting();
         error_reporting($errorReporting & ~E_NOTICE);
 
-        $element       = new FilterConfigElementModel();
-        $element->id   = 2;
+        $element = new FilterConfigElementModel();
+        $element->id = 2;
         $element->type = 'text_concat';
 
         $config->init('test', $filter, [$element]);
@@ -380,26 +377,26 @@ class TextConcatTypeTest extends ContaoTestCase
     }
 
     /**
-     * Test buildQuery() without dca field
+     * Test buildQuery() without dca field.
      */
     public function testBuildQuery()
     {
         $framework = $this->mockContaoFramework();
-        $session   = new MockArraySessionStorage();
+        $session = new MockArraySessionStorage();
 
         $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
 
         $this->container->setParameter('huh.filter', [
             'filter' => [
                 'types' => [
                     [
-                        'name'  => 'text_concat',
+                        'name' => 'text_concat',
                         'class' => TextConcatType::class,
-                        'type'  => 'text'
-                    ]
-                ]
-            ]
+                        'type' => 'text',
+                    ],
+                ],
+            ],
         ]);
 
         $GLOBALS['TL_DCA']['tl_test']['fields']['first_name'] = [
@@ -420,10 +417,10 @@ class TextConcatTypeTest extends ContaoTestCase
         $errorReporting = error_reporting();
         error_reporting($errorReporting & ~E_NOTICE);
 
-        $element         = new FilterConfigElementModel();
-        $element->id     = 2;
-        $element->type   = 'text_concat';
-        $element->name   = 'name';
+        $element = new FilterConfigElementModel();
+        $element->id = 2;
+        $element->type = 'text_concat';
+        $element->name = 'name';
         $element->fields = ['first_name', 'last_name'];
 
         $config->init('test', $filter, [$element]);
@@ -432,8 +429,8 @@ class TextConcatTypeTest extends ContaoTestCase
 
         $this->assertNotEmpty($config->getQueryBuilder()->getParameters());
         $this->assertNotEmpty($config->getQueryBuilder()->getQueryPart('where'));
-        $this->assertEquals('SELECT  FROM tl_test WHERE CONCAT(first_name," ",last_name) LIKE :name', $config->getQueryBuilder()->getSQL());
-        $this->assertEquals([':name' => '%John Doe%'], $config->getQueryBuilder()->getParameters());
+        $this->assertSame('SELECT  FROM tl_test WHERE CONCAT(first_name," ",last_name) LIKE :name', $config->getQueryBuilder()->getSQL());
+        $this->assertSame([':name' => '%John Doe%'], $config->getQueryBuilder()->getParameters());
     }
 
     /**
@@ -441,6 +438,6 @@ class TextConcatTypeTest extends ContaoTestCase
      */
     protected function getFixturesDir(): string
     {
-        return __DIR__ . DIRECTORY_SEPARATOR . '../..' . DIRECTORY_SEPARATOR . 'Fixtures';
+        return __DIR__.DIRECTORY_SEPARATOR.'../..'.DIRECTORY_SEPARATOR.'Fixtures';
     }
 }

@@ -14,7 +14,6 @@ use Contao\System;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Haste\Model\Relations;
-use HeimrichHannot\FilterBundle\Backend\FilterConfigElement;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
@@ -33,7 +32,8 @@ class FilterQueryBuilder extends QueryBuilder
     protected $contextualValues = [];
 
     /**
-     * List of elements that should be skipped
+     * List of elements that should be skipped.
+     *
      * @var FilterConfigElementModel[]
      */
     protected $skip = [];
@@ -48,8 +48,8 @@ class FilterQueryBuilder extends QueryBuilder
      * Add where clause based on an element.
      *
      * @param FilterConfigElementModel $element
-     * @param string $name The field name
-     * @param FilterConfig $config
+     * @param string                   $name    The field name
+     * @param FilterConfig             $config
      *
      * @return $this this FilterQueryBuilder instance
      */
@@ -89,9 +89,9 @@ class FilterQueryBuilder extends QueryBuilder
      * Add tag widget where clause.
      *
      * @param FilterConfigElementModel $element
-     * @param string $name The field name
-     * @param FilterConfig $config
-     * @param array $dca
+     * @param string                   $name    The field name
+     * @param FilterConfig             $config
+     * @param array                    $dca
      *
      * @return $this this FilterQueryBuilder instance
      */
@@ -149,69 +149,6 @@ class FilterQueryBuilder extends QueryBuilder
     }
 
     /**
-     * Add tag widget where clause.
-     *
-     * @param FilterConfigElementModel $element
-     * @param string $name The field name
-     * @param FilterConfig $config
-     * @param array $dca
-     *
-     * @return $this this FilterQueryBuilder instance
-     */
-    protected function whereTagWidget(FilterConfigElementModel $element, string $name, FilterConfig $config, array $dca)
-    {
-        $filter   = $config->getFilter();
-        $data     = $config->getData();
-        $value    = $data[$name];
-        $relation = Relations::getRelation($filter['dataContainer'], $element->field);
-
-        if (false === $relation || null === $value) {
-            return $this;
-        }
-
-        $alias = $relation['table'] . '_' . $name;
-
-        $this->join($relation['reference_table'], $relation['table'], $alias, $alias . '.' . $relation['reference_field'] . '=' . $relation['reference_table'] . '.' . $relation['reference']);
-        $this->andWhere($this->expr()->in($alias . '.' . $relation['related_field'], $value));
-
-        return $this;
-    }
-
-    /**
-     * Add category widget where clause.
-     *
-     * @param FilterConfigElementModel $element
-     * @param string $name The field name
-     * @param FilterConfig $config
-     * @param array $dca
-     *
-     * @return $this this FilterQueryBuilder instance
-     */
-    protected function whereCategoryWidget(FilterConfigElementModel $element, string $name, FilterConfig $config, array $dca)
-    {
-        $filter = $config->getFilter();
-        $data   = $config->getData();
-        $value  = $data[$name];
-
-        if (null === $value) {
-            return $this;
-        }
-
-        $alias = 'tl_category_association_' . $element->field;
-
-        $this->join($filter['dataContainer'], 'tl_category_association', $alias, "
-        $alias.categoryField='$element->field' AND 
-        $alias.parentTable='" . $filter['dataContainer'] . "' AND
-        $alias.entity=" . $filter['dataContainer'] . '.id
-        ');
-        $this->andWhere($this->expr()->in($alias . '.category', ":$alias"));
-
-        $this->setParameter(":$alias", $value, \PDO::PARAM_STR);
-
-        return $this;
-    }
-
-    /**
      * @return array
      */
     public function getContextualValues(): array
@@ -220,7 +157,8 @@ class FilterQueryBuilder extends QueryBuilder
     }
 
     /**
-     * Get filter skip elements
+     * Get filter skip elements.
+     *
      * @return FilterConfigElementModel[]
      */
     public function getSkip()
@@ -229,7 +167,8 @@ class FilterQueryBuilder extends QueryBuilder
     }
 
     /**
-     * Set filter skip elements
+     * Set filter skip elements.
+     *
      * @param FilterConfigElementModel[] $skip
      */
     public function setSkip(array $skip)
@@ -238,11 +177,75 @@ class FilterQueryBuilder extends QueryBuilder
     }
 
     /**
-     * Add filter element to skip
+     * Add filter element to skip.
+     *
      * @param FilterConfigElementModel $element
      */
     public function addSkip(FilterConfigElementModel $element)
     {
         $this->skip[$element->id] = $element;
+    }
+
+    /**
+     * Add tag widget where clause.
+     *
+     * @param FilterConfigElementModel $element
+     * @param string                   $name    The field name
+     * @param FilterConfig             $config
+     * @param array                    $dca
+     *
+     * @return $this this FilterQueryBuilder instance
+     */
+    protected function whereTagWidget(FilterConfigElementModel $element, string $name, FilterConfig $config, array $dca)
+    {
+        $filter = $config->getFilter();
+        $data = $config->getData();
+        $value = $data[$name];
+        $relation = Relations::getRelation($filter['dataContainer'], $element->field);
+
+        if (false === $relation || null === $value) {
+            return $this;
+        }
+
+        $alias = $relation['table'].'_'.$name;
+
+        $this->join($relation['reference_table'], $relation['table'], $alias, $alias.'.'.$relation['reference_field'].'='.$relation['reference_table'].'.'.$relation['reference']);
+        $this->andWhere($this->expr()->in($alias.'.'.$relation['related_field'], $value));
+
+        return $this;
+    }
+
+    /**
+     * Add category widget where clause.
+     *
+     * @param FilterConfigElementModel $element
+     * @param string                   $name    The field name
+     * @param FilterConfig             $config
+     * @param array                    $dca
+     *
+     * @return $this this FilterQueryBuilder instance
+     */
+    protected function whereCategoryWidget(FilterConfigElementModel $element, string $name, FilterConfig $config, array $dca)
+    {
+        $filter = $config->getFilter();
+        $data = $config->getData();
+        $value = $data[$name];
+
+        if (null === $value) {
+            return $this;
+        }
+
+        $alias = 'tl_category_association_'.$element->field;
+
+        $this->join($filter['dataContainer'], 'tl_category_association', $alias, "
+        $alias.categoryField='$element->field' AND 
+        $alias.parentTable='".$filter['dataContainer']."' AND
+        $alias.entity=".$filter['dataContainer'].'.id
+        ');
+        $this->andWhere($this->expr()->in($alias.'.category', ":$alias"));
+
+        $this->setParameter(":$alias", $value, \PDO::PARAM_STR);
+
+        return $this;
     }
 }

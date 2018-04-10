@@ -36,8 +36,8 @@ class Plugin implements BundlePluginInterface, ExtensionPluginInterface, Routing
     /**
      * Allows a plugin to override extension configuration.
      *
-     * @param string $extensionName
-     * @param array $extensionConfigs
+     * @param string           $extensionName
+     * @param array            $extensionConfigs
      * @param ContainerBuilder $container
      *
      * @return
@@ -58,7 +58,7 @@ class Plugin implements BundlePluginInterface, ExtensionPluginInterface, Routing
             'huh_filter',
             $extensionName,
             $extensionConfigs,
-            __DIR__ . '/../Resources/config/config.yml'
+            __DIR__.'/../Resources/config/config.yml'
         );
     }
 
@@ -68,7 +68,7 @@ class Plugin implements BundlePluginInterface, ExtensionPluginInterface, Routing
     public function getRouteCollection(LoaderResolverInterface $resolver, KernelInterface $kernel): ?RouteCollection
     {
         return $resolver
-            ->resolve(__DIR__ . '/../Resources/config/routing.yml')
-            ->load(__DIR__ . '/../Resources/config/routing.yml');
+            ->resolve(__DIR__.'/../Resources/config/routing.yml')
+            ->load(__DIR__.'/../Resources/config/routing.yml');
     }
 }

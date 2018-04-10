@@ -67,25 +67,25 @@ class ChoiceType extends AbstractType
 
     public function getOptions(FilterConfigElementModel $element, FormBuilderInterface $builder)
     {
-        $options                              = parent::getOptions($element, $builder);
-        $options['choices']                   = $this->getChoices($element);
+        $options = parent::getOptions($element, $builder);
+        $options['choices'] = $this->getChoices($element);
         $options['choice_translation_domain'] = false; // disable translation]
 
         if (isset($options['attr']['placeholder'])) {
             $options['attr']['data-placeholder'] = $options['attr']['placeholder'];
-            $options['placeholder']              = $options['attr']['placeholder'];
+            $options['placeholder'] = $options['attr']['placeholder'];
             unset($options['attr']['placeholder']);
 
-            $options['required']   = false;
+            $options['required'] = false;
             $options['empty_data'] = '';
         }
 
-        $options['expanded'] = (bool)$element->expanded;
-        $options['multiple'] = (bool)$element->multiple;
+        $options['expanded'] = (bool) $element->expanded;
+        $options['multiple'] = (bool) $element->multiple;
 
         // forgiving array handling
         if ($element->addDefaultValue) {
-            if (isset($options['multiple']) && true === (bool)$options['multiple'] && isset($options['data'])) {
+            if (isset($options['multiple']) && true === (bool) $options['multiple'] && isset($options['data'])) {
                 $options['data'] = !is_array($options['data']) ? [$options['data']] : $options['data'];
             }
         }

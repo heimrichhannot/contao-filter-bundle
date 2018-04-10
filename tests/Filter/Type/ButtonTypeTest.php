@@ -17,8 +17,8 @@ use HeimrichHannot\FilterBundle\Choice\TypeChoice;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
 use HeimrichHannot\FilterBundle\Filter\Type\ButtonType;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
-use HeimrichHannot\FilterBundle\Session\FilterSession;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
+use HeimrichHannot\FilterBundle\Session\FilterSession;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -40,7 +40,6 @@ class ButtonTypeTest extends ContaoTestCase
      */
     private $kernel;
 
-
     protected function setUp()
     {
         parent::setUp();
@@ -49,37 +48,35 @@ class ButtonTypeTest extends ContaoTestCase
             \define('TL_ROOT', $this->getFixturesDir());
         }
 
-        $GLOBALS['TL_LANGUAGE']    = 'en';
+        $GLOBALS['TL_LANGUAGE'] = 'en';
         $GLOBALS['TL_LANG']['MSC'] = ['test' => 'bar'];
 
         $GLOBALS['TL_DCA']['tl_test'] = [
             'config' => [
                 'dataContainer' => 'Table',
-                'sql'           => [
+                'sql' => [
                     'keys' => [
                     ],
                 ],
             ],
             'fields' => [
-
-            ]
+            ],
         ];
 
         $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'config' => [
                 'dataContainer' => 'Table',
-                'sql'           => [
+                'sql' => [
                     'keys' => [
                     ],
                 ],
             ],
             'fields' => [
-
-            ]
+            ],
         ];
 
         $finder = new ResourceFinder([
-            $this->getFixturesDir() . '/vendor/contao/core-bundle/Resources/contao',
+            $this->getFixturesDir().'/vendor/contao/core-bundle/Resources/contao',
         ]);
 
         $this->container = $this->mockContainer();
@@ -115,10 +112,10 @@ class ButtonTypeTest extends ContaoTestCase
         System::setContainer($this->container);
 
         $framework = $this->mockContaoFramework();
-        $session   = new MockArraySessionStorage();
+        $session = new MockArraySessionStorage();
 
         $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
 
         $type = new ButtonType($config);
 
@@ -126,15 +123,15 @@ class ButtonTypeTest extends ContaoTestCase
     }
 
     /**
-     * Test getDefaultOperator()
+     * Test getDefaultOperator().
      */
     public function testGetDefaultOperator()
     {
         $framework = $this->mockContaoFramework();
-        $session   = new MockArraySessionStorage();
+        $session = new MockArraySessionStorage();
 
         $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
 
         /** @var FilterConfigElementModel $element */
         $element = $this->mockClassWithProperties(FilterConfigElementModel::class, []);
@@ -145,45 +142,45 @@ class ButtonTypeTest extends ContaoTestCase
     }
 
     /**
-     * Test getDefaultName()
+     * Test getDefaultName().
      */
     public function testGetDefaultName()
     {
         $framework = $this->mockContaoFramework();
-        $session   = new MockArraySessionStorage();
+        $session = new MockArraySessionStorage();
 
         $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
 
-        $range       = new FilterConfigElementModel();
+        $range = new FilterConfigElementModel();
         $range->name = 'test';
 
         $type = new ButtonType($config);
 
-        $this->assertEquals('test', $type->getDefaultName($range));
+        $this->assertSame('test', $type->getDefaultName($range));
     }
 
     /**
-     * Test buildForm() without name
+     * Test buildForm() without name.
      */
     public function testBuildFormWithoutName()
     {
         $framework = $this->mockContaoFramework();
-        $session   = new MockArraySessionStorage();
+        $session = new MockArraySessionStorage();
 
         $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
 
         $this->container->setParameter('huh.filter', [
             'filter' => [
                 'types' => [
                     [
-                        'name'  => 'button',
+                        'name' => 'button',
                         'class' => ButtonType::class,
-                        'type'  => 'button'
-                    ]
-                ]
-            ]
+                        'type' => 'button',
+                    ],
+                ],
+            ],
         ]);
 
         $this->container->set('huh.filter.choice.type', new TypeChoice($framework));
@@ -191,36 +188,36 @@ class ButtonTypeTest extends ContaoTestCase
 
         $filter = ['name' => 'test', 'dataContainer' => 'tl_test'];
 
-        $element       = new FilterConfigElementModel();
+        $element = new FilterConfigElementModel();
         $element->type = 'button';
 
         $config->init('test', $filter, [$element]);
         $config->buildForm();
 
-        $this->assertEquals(2, $config->getBuilder()->count());  // f_id and f_ref element always exists
+        $this->assertSame(2, $config->getBuilder()->count());  // f_id and f_ref element always exists
     }
 
     /**
-     * Test buildForm() with name
+     * Test buildForm() with name.
      */
     public function testBuildFormWithName()
     {
         $framework = $this->mockContaoFramework();
-        $session   = new MockArraySessionStorage();
+        $session = new MockArraySessionStorage();
 
         $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
 
         $this->container->setParameter('huh.filter', [
             'filter' => [
                 'types' => [
                     [
-                        'name'  => 'button',
+                        'name' => 'button',
                         'class' => ButtonType::class,
-                        'type'  => 'button'
-                    ]
-                ]
-            ]
+                        'type' => 'button',
+                    ],
+                ],
+            ],
         ]);
 
         $this->container->set('huh.filter.choice.type', new TypeChoice($framework));
@@ -228,39 +225,39 @@ class ButtonTypeTest extends ContaoTestCase
 
         $filter = ['name' => 'test', 'dataContainer' => 'tl_test'];
 
-        $element       = new FilterConfigElementModel();
+        $element = new FilterConfigElementModel();
         $element->type = 'button';
         $element->name = 'test';
 
         $config->init('test', $filter, [$element]);
         $config->buildForm();
 
-        $this->assertEquals(3, $config->getBuilder()->count());  // f_id and f_ref element always exists
+        $this->assertSame(3, $config->getBuilder()->count());  // f_id and f_ref element always exists
         $this->assertTrue($config->getBuilder()->has('test'));
         $this->assertInstanceOf(\Symfony\Component\Form\Extension\Core\Type\ButtonType::class, $config->getBuilder()->get('test')->getType()->getInnerType());
     }
 
     /**
-     * Test buildForm() with custom label
+     * Test buildForm() with custom label.
      */
     public function testBuildFormWithLabel()
     {
         $framework = $this->mockContaoFramework();
-        $session   = new MockArraySessionStorage();
+        $session = new MockArraySessionStorage();
 
         $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
 
         $this->container->setParameter('huh.filter', [
             'filter' => [
                 'types' => [
                     [
-                        'name'  => 'button',
+                        'name' => 'button',
                         'class' => ButtonType::class,
-                        'type'  => 'button'
-                    ]
-                ]
-            ]
+                        'type' => 'button',
+                    ],
+                ],
+            ],
         ]);
 
         $this->container->set('huh.filter.choice.type', new TypeChoice($framework));
@@ -268,42 +265,42 @@ class ButtonTypeTest extends ContaoTestCase
 
         $filter = ['name' => 'test', 'dataContainer' => 'tl_test'];
 
-        $element              = new FilterConfigElementModel();
-        $element->type        = 'button';
-        $element->name        = 'test';
+        $element = new FilterConfigElementModel();
+        $element->type = 'button';
+        $element->name = 'test';
         $element->customLabel = true;
-        $element->label       = 'Button label';
+        $element->label = 'Button label';
 
         $config->init('test', $filter, [$element]);
         $config->buildForm();
 
-        $this->assertEquals(3, $config->getBuilder()->count());  // f_id and f_ref element always exists
+        $this->assertSame(3, $config->getBuilder()->count());  // f_id and f_ref element always exists
         $this->assertTrue($config->getBuilder()->has('test'));
         $this->assertInstanceOf(\Symfony\Component\Form\Extension\Core\Type\ButtonType::class, $config->getBuilder()->get('test')->getType()->getInnerType());
-        $this->assertEquals('Button label', $config->getBuilder()->get('test')->getForm()->getConfig()->getOption('label'));
+        $this->assertSame('Button label', $config->getBuilder()->get('test')->getForm()->getConfig()->getOption('label'));
     }
 
     /**
-     * Test buildQuery()
+     * Test buildQuery().
      */
     public function testBuildQuery()
     {
         $framework = $this->mockContaoFramework();
-        $session   = new MockArraySessionStorage();
+        $session = new MockArraySessionStorage();
 
         $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
 
         $this->container->setParameter('huh.filter', [
             'filter' => [
                 'types' => [
                     [
-                        'name'  => 'button',
+                        'name' => 'button',
                         'class' => ButtonType::class,
-                        'type'  => 'button',
-                    ]
-                ]
-            ]
+                        'type' => 'button',
+                    ],
+                ],
+            ],
         ]);
 
         $this->container->set('huh.filter.choice.type', new TypeChoice($framework));
@@ -311,8 +308,8 @@ class ButtonTypeTest extends ContaoTestCase
 
         $filter = ['name' => 'test', 'dataContainer' => 'tl_test'];
 
-        $element       = new FilterConfigElementModel();
-        $element->id   = 2;
+        $element = new FilterConfigElementModel();
+        $element->id = 2;
         $element->type = 'button';
         $element->name = 'start';
 
@@ -328,6 +325,6 @@ class ButtonTypeTest extends ContaoTestCase
      */
     protected function getFixturesDir(): string
     {
-        return __DIR__ . DIRECTORY_SEPARATOR . '../..' . DIRECTORY_SEPARATOR . 'Fixtures';
+        return __DIR__.DIRECTORY_SEPARATOR.'../..'.DIRECTORY_SEPARATOR.'Fixtures';
     }
 }

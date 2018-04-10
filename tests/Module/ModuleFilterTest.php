@@ -1,13 +1,12 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2018 Heimrich & Hannot GmbH
  *
- * @author Rico Kaltofen <r.kaltofen@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @license LGPL-3.0-or-later
  */
 
 namespace HeimrichHannot\FilterBundle\Tests\Module;
-
 
 use Contao\CoreBundle\Config\ResourceFinder;
 use Contao\ModuleModel;
@@ -17,11 +16,11 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Platforms\MySqlPlatform;
 use Doctrine\DBAL\Schema\MySqlSchemaManager;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
+use HeimrichHannot\FilterBundle\Manager\FilterManager;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\Model\FilterConfigModel;
 use HeimrichHannot\FilterBundle\Module\ModuleFilter;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
-use HeimrichHannot\FilterBundle\Manager\FilterManager;
 use HeimrichHannot\FilterBundle\Session\FilterSession;
 use HeimrichHannot\UtilsBundle\Container\ContainerUtil;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -55,24 +54,23 @@ class ModuleFilterTest extends ContaoTestCase
             \define('TL_ROOT', $this->getFixturesDir());
         }
 
-        $GLOBALS['TL_LANGUAGE']    = 'en';
+        $GLOBALS['TL_LANGUAGE'] = 'en';
         $GLOBALS['TL_LANG']['MSC'] = ['test' => 'bar'];
 
         $GLOBALS['TL_DCA']['tl_module'] = [
             'config' => [
                 'dataContainer' => 'Table',
-                'sql'           => [
+                'sql' => [
                     'keys' => [
                     ],
                 ],
             ],
             'fields' => [
-
-            ]
+            ],
         ];
 
         $finder = new ResourceFinder([
-            $this->getFixturesDir() . '/vendor/contao/core-bundle/Resources/contao',
+            $this->getFixturesDir().'/vendor/contao/core-bundle/Resources/contao',
         ]);
 
         $this->container = $this->mockContainer();
@@ -113,7 +111,8 @@ class ModuleFilterTest extends ContaoTestCase
     }
 
     /**
-     * Tests generate() in back end mode
+     * Tests generate() in back end mode.
+     *
      * @runInSeparateProcess
      */
     public function testGenerateInBackEndMode()
@@ -126,19 +125,19 @@ class ModuleFilterTest extends ContaoTestCase
 
         $GLOBALS['TL_LANG']['FMD']['filter'][0] = 'Filter';
 
-        $model       = new ModuleModel();
-        $model->id   = 1;
+        $model = new ModuleModel();
+        $model->id = 1;
         $model->type = 'filter';
 
         \Config::set('debugMode', false);
 
         $module = new ModuleFilter($model);
 
-        $this->assertEquals('<div class="tl_gray">    ### FILTER ###      </div>', str_replace("\n", '', trim($module->generate())));
+        $this->assertSame('<div class="tl_gray">    ### FILTER ###      </div>', str_replace("\n", '', trim($module->generate())));
     }
 
     /**
-     * Tests generate() in front end mode without huh.filter.registry service
+     * Tests generate() in front end mode without huh.filter.registry service.
      */
     public function testGenerateInFrontEndModeWithoutFilterRegistryService()
     {
@@ -150,8 +149,8 @@ class ModuleFilterTest extends ContaoTestCase
 
         $GLOBALS['TL_LANG']['FMD']['filter'][0] = 'Filter';
 
-        $model       = new ModuleModel();
-        $model->id   = 1;
+        $model = new ModuleModel();
+        $model->id = 1;
         $model->type = 'filter';
 
         \Config::set('debugMode', false);
@@ -162,7 +161,7 @@ class ModuleFilterTest extends ContaoTestCase
     }
 
     /**
-     * Tests generate() in front end mode without filter
+     * Tests generate() in front end mode without filter.
      */
     public function testGenerateInFrontEndModeWithoutFilter()
     {
@@ -181,9 +180,9 @@ class ModuleFilterTest extends ContaoTestCase
 
         $GLOBALS['TL_LANG']['FMD']['filter'][0] = 'Filter';
 
-        $model         = new ModuleModel();
-        $model->id     = 1;
-        $model->type   = 'filter';
+        $model = new ModuleModel();
+        $model->id = 1;
+        $model->type = 'filter';
         $model->filter = 1;
 
         \Config::set('debugMode', false);
@@ -194,7 +193,7 @@ class ModuleFilterTest extends ContaoTestCase
     }
 
     /**
-     * Tests generate() in front end mode with filter
+     * Tests generate() in front end mode with filter.
      */
     public function testGenerateInFrontEndMode()
     {
@@ -236,9 +235,9 @@ class ModuleFilterTest extends ContaoTestCase
         $this->container->set('router', $router);
 
         /** @var Connection $connection */
-        $connection         = $this->container->get('database_connection');
-        $session            = new Session(new MockArraySessionStorage());
-        $filterSession      = new FilterSession($framework, $session);
+        $connection = $this->container->get('database_connection');
+        $session = new Session(new MockArraySessionStorage());
+        $filterSession = new FilterSession($framework, $session);
         $filterQueryBuilder = new FilterQueryBuilder($framework, $connection);
 
         $this->container->set('huh.filter.config', new FilterConfig($framework, $filterSession, $filterQueryBuilder));
@@ -252,24 +251,23 @@ class ModuleFilterTest extends ContaoTestCase
         $GLOBALS['TL_LANG']['FMD']['filter'][0] = 'Filter';
 
         global $objPage;
-        $objPage                = new \stdClass();
-        $objPage->outputFormat  = '';
+        $objPage = new \stdClass();
+        $objPage->outputFormat = '';
         $objPage->templateGroup = '';
 
-        $model         = new ModuleModel();
-        $model->id     = 1;
-        $model->type   = 'filter';
+        $model = new ModuleModel();
+        $model->id = 1;
+        $model->type = 'filter';
         $model->filter = 1;
-        $model->cssID  = [0 => 'cssId', '1' => 'cssClass'];
+        $model->cssID = [0 => 'cssId', '1' => 'cssClass'];
 
         \Config::set('debugMode', false);
 
         $module = new ModuleFilter($model);
         $result = $module->generate();
 
-
         $this->assertNotEmpty($result);
-        $this->assertEquals('<!-- indexer::stop --><div class="mod_filter cssClass block" id="cssId">              test</div><!-- indexer::continue -->', str_replace("\n", '', trim($result)));
+        $this->assertSame('<!-- indexer::stop --><div class="mod_filter cssClass block" id="cssId">              test</div><!-- indexer::continue -->', str_replace("\n", '', trim($result)));
     }
 
     /**
@@ -277,6 +275,6 @@ class ModuleFilterTest extends ContaoTestCase
      */
     protected function getFixturesDir(): string
     {
-        return __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Fixtures';
+        return __DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'Fixtures';
     }
 }

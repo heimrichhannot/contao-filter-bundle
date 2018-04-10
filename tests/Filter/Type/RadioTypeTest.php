@@ -17,8 +17,8 @@ use HeimrichHannot\FilterBundle\Choice\TypeChoice;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
 use HeimrichHannot\FilterBundle\Filter\Type\RadioType;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
-use HeimrichHannot\FilterBundle\Session\FilterSession;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
+use HeimrichHannot\FilterBundle\Session\FilterSession;
 use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpFoundation\Request;
@@ -41,7 +41,6 @@ class RadioTypeTest extends ContaoTestCase
      */
     private $kernel;
 
-
     protected function setUp()
     {
         parent::setUp();
@@ -50,37 +49,35 @@ class RadioTypeTest extends ContaoTestCase
             \define('TL_ROOT', $this->getFixturesDir());
         }
 
-        $GLOBALS['TL_LANGUAGE']    = 'en';
+        $GLOBALS['TL_LANGUAGE'] = 'en';
         $GLOBALS['TL_LANG']['MSC'] = ['test' => 'bar'];
 
         $GLOBALS['TL_DCA']['tl_test'] = [
             'config' => [
                 'dataContainer' => 'Table',
-                'sql'           => [
+                'sql' => [
                     'keys' => [
                     ],
                 ],
             ],
             'fields' => [
-
-            ]
+            ],
         ];
 
         $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'config' => [
                 'dataContainer' => 'Table',
-                'sql'           => [
+                'sql' => [
                     'keys' => [
                     ],
                 ],
             ],
             'fields' => [
-
-            ]
+            ],
         ];
 
         $finder = new ResourceFinder([
-            $this->getFixturesDir() . '/vendor/contao/core-bundle/Resources/contao',
+            $this->getFixturesDir().'/vendor/contao/core-bundle/Resources/contao',
         ]);
 
         $this->container = $this->mockContainer();
@@ -116,10 +113,10 @@ class RadioTypeTest extends ContaoTestCase
         System::setContainer($this->container);
 
         $framework = $this->mockContaoFramework();
-        $session   = new MockArraySessionStorage();
+        $session = new MockArraySessionStorage();
 
         $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
 
         $type = new RadioType($config);
 
@@ -127,36 +124,36 @@ class RadioTypeTest extends ContaoTestCase
     }
 
     /**
-     * Test getDefaultOperator()
+     * Test getDefaultOperator().
      */
     public function testGetDefaultOperator()
     {
         $framework = $this->mockContaoFramework();
-        $session   = new MockArraySessionStorage();
+        $session = new MockArraySessionStorage();
 
         $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
 
         /** @var FilterConfigElementModel $element */
         $element = $this->mockClassWithProperties(FilterConfigElementModel::class, []);
 
         $type = new RadioType($config);
 
-        $this->assertEquals(DatabaseUtil::OPERATOR_EQUAL, $type->getDefaultOperator($element));
+        $this->assertSame(DatabaseUtil::OPERATOR_EQUAL, $type->getDefaultOperator($element));
     }
 
     /**
-     * Test getDefaultName()
+     * Test getDefaultName().
      */
     public function testGetDefaultName()
     {
         $framework = $this->mockContaoFramework();
-        $session   = new MockArraySessionStorage();
+        $session = new MockArraySessionStorage();
 
         $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
 
-        $range       = new FilterConfigElementModel();
+        $range = new FilterConfigElementModel();
         $range->name = 'test';
 
         $type = new RadioType($config);
@@ -165,26 +162,26 @@ class RadioTypeTest extends ContaoTestCase
     }
 
     /**
-     * Test buildForm() without name
+     * Test buildForm() without name.
      */
     public function testBuildFormWithoutName()
     {
         $framework = $this->mockContaoFramework();
-        $session   = new MockArraySessionStorage();
+        $session = new MockArraySessionStorage();
 
         $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
 
         $this->container->setParameter('huh.filter', [
             'filter' => [
                 'types' => [
                     [
-                        'name'  => 'radio',
+                        'name' => 'radio',
                         'class' => RadioType::class,
-                        'type'  => 'other'
-                    ]
-                ]
-            ]
+                        'type' => 'other',
+                    ],
+                ],
+            ],
         ]);
 
         $this->container->set('huh.filter.choice.type', new TypeChoice($framework));
@@ -192,36 +189,36 @@ class RadioTypeTest extends ContaoTestCase
 
         $filter = ['name' => 'test', 'dataContainer' => 'tl_test'];
 
-        $element       = new FilterConfigElementModel();
+        $element = new FilterConfigElementModel();
         $element->type = 'radio';
 
         $config->init('test', $filter, [$element]);
         $config->buildForm();
 
-        $this->assertEquals(2, $config->getBuilder()->count());  // f_id and f_ref element always exists
+        $this->assertSame(2, $config->getBuilder()->count());  // f_id and f_ref element always exists
     }
 
     /**
-     * Test buildForm() with field name
+     * Test buildForm() with field name.
      */
     public function testBuildFormWithFieldName()
     {
         $framework = $this->mockContaoFramework();
-        $session   = new MockArraySessionStorage();
+        $session = new MockArraySessionStorage();
 
         $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
 
         $this->container->setParameter('huh.filter', [
             'filter' => [
                 'types' => [
                     [
-                        'name'  => 'radio',
+                        'name' => 'radio',
                         'class' => RadioType::class,
-                        'type'  => 'other'
-                    ]
-                ]
-            ]
+                        'type' => 'other',
+                    ],
+                ],
+            ],
         ]);
 
         $this->container->set('huh.filter.choice.type', new TypeChoice($framework));
@@ -229,39 +226,39 @@ class RadioTypeTest extends ContaoTestCase
 
         $filter = ['name' => 'test', 'dataContainer' => 'tl_test'];
 
-        $element        = new FilterConfigElementModel();
-        $element->type  = 'radio';
+        $element = new FilterConfigElementModel();
+        $element->type = 'radio';
         $element->field = 'test';
 
         $config->init('test', $filter, [$element]);
         $config->buildForm();
 
-        $this->assertEquals(3, $config->getBuilder()->count());  // f_id and f_ref element always exists
+        $this->assertSame(3, $config->getBuilder()->count());  // f_id and f_ref element always exists
         $this->assertTrue($config->getBuilder()->has('test'));
         $this->assertInstanceOf(\Symfony\Component\Form\Extension\Core\Type\RadioType::class, $config->getBuilder()->get('test')->getType()->getInnerType());
     }
 
     /**
-     * Test buildForm() with custom value
+     * Test buildForm() with custom value.
      */
     public function testBuildFormWithCustomValue()
     {
         $framework = $this->mockContaoFramework();
-        $session   = new MockArraySessionStorage();
+        $session = new MockArraySessionStorage();
 
         $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
 
         $this->container->setParameter('huh.filter', [
             'filter' => [
                 'types' => [
                     [
-                        'name'  => 'radio',
+                        'name' => 'radio',
                         'class' => RadioType::class,
-                        'type'  => 'other'
-                    ]
-                ]
-            ]
+                        'type' => 'other',
+                    ],
+                ],
+            ],
         ]);
 
         $this->container->set('huh.filter.choice.type', new TypeChoice($framework));
@@ -269,41 +266,41 @@ class RadioTypeTest extends ContaoTestCase
 
         $filter = ['name' => 'test', 'dataContainer' => 'tl_test'];
 
-        $element              = new FilterConfigElementModel();
-        $element->type        = 'radio';
-        $element->field       = 'test';
+        $element = new FilterConfigElementModel();
+        $element->type = 'radio';
+        $element->field = 'test';
         $element->customValue = true;
-        $element->value       = 'myCustomValue';
+        $element->value = 'myCustomValue';
 
         $config->init('test', $filter, [$element]);
         $config->buildForm();
 
-        $this->assertEquals(3, $config->getBuilder()->count());  // f_id and f_ref element always exists
+        $this->assertSame(3, $config->getBuilder()->count());  // f_id and f_ref element always exists
         $this->assertTrue($config->getBuilder()->has('test'));
         $this->assertInstanceOf(\Symfony\Component\Form\Extension\Core\Type\RadioType::class, $config->getBuilder()->get('test')->getType()->getInnerType());
     }
 
     /**
-     * Test buildQuery() without dca field
+     * Test buildQuery() without dca field.
      */
     public function testBuildQueryWithoutDcaField()
     {
         $framework = $this->mockContaoFramework();
-        $session   = new MockArraySessionStorage();
+        $session = new MockArraySessionStorage();
 
         $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
 
         $this->container->setParameter('huh.filter', [
             'filter' => [
                 'types' => [
                     [
-                        'name'  => 'radio',
+                        'name' => 'radio',
                         'class' => RadioType::class,
-                        'type'  => 'other'
-                    ]
-                ]
-            ]
+                        'type' => 'other',
+                    ],
+                ],
+            ],
         ]);
 
         $this->container->set('huh.filter.choice.type', new TypeChoice($framework));
@@ -311,10 +308,10 @@ class RadioTypeTest extends ContaoTestCase
 
         $filter = ['name' => 'test', 'dataContainer' => 'tl_test'];
 
-        $element             = new FilterConfigElementModel();
-        $element->id         = 2;
-        $element->type       = 'radio';
-        $element->name       = 'test';
+        $element = new FilterConfigElementModel();
+        $element->id = 2;
+        $element->type = 'radio';
+        $element->name = 'test';
         $element->customName = true;
 
         $config->init('test', $filter, [$element]);
@@ -325,26 +322,26 @@ class RadioTypeTest extends ContaoTestCase
     }
 
     /**
-     * Test buildQuery() without dca field
+     * Test buildQuery() without dca field.
      */
     public function testBuildQuery()
     {
         $framework = $this->mockContaoFramework();
-        $session   = new MockArraySessionStorage();
+        $session = new MockArraySessionStorage();
 
         $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
 
         $this->container->setParameter('huh.filter', [
             'filter' => [
                 'types' => [
                     [
-                        'name'  => 'radio',
+                        'name' => 'radio',
                         'class' => RadioType::class,
-                        'type'  => 'other'
-                    ]
-                ]
-            ]
+                        'type' => 'other',
+                    ],
+                ],
+            ],
         ]);
 
         $GLOBALS['TL_DCA']['tl_test']['fields']['test'] = [
@@ -361,9 +358,9 @@ class RadioTypeTest extends ContaoTestCase
         $errorReporting = error_reporting();
         error_reporting($errorReporting & ~E_NOTICE);
 
-        $element        = new FilterConfigElementModel();
-        $element->id    = 2;
-        $element->type  = 'radio';
+        $element = new FilterConfigElementModel();
+        $element->id = 2;
+        $element->type = 'radio';
         $element->field = 'test';
 
         $config->init('test', $filter, [$element]);
@@ -372,8 +369,8 @@ class RadioTypeTest extends ContaoTestCase
 
         $this->assertNotEmpty($config->getQueryBuilder()->getParameters());
         $this->assertNotEmpty($config->getQueryBuilder()->getQueryPart('where'));
-        $this->assertEquals('SELECT  FROM tl_test WHERE test = :test', $config->getQueryBuilder()->getSQL());
-        $this->assertEquals([':test' => 1], $config->getQueryBuilder()->getParameters());
+        $this->assertSame('SELECT  FROM tl_test WHERE test = :test', $config->getQueryBuilder()->getSQL());
+        $this->assertSame([':test' => 1], $config->getQueryBuilder()->getParameters());
     }
 
     /**
@@ -381,6 +378,6 @@ class RadioTypeTest extends ContaoTestCase
      */
     protected function getFixturesDir(): string
     {
-        return __DIR__ . DIRECTORY_SEPARATOR . '../..' . DIRECTORY_SEPARATOR . 'Fixtures';
+        return __DIR__.DIRECTORY_SEPARATOR.'../..'.DIRECTORY_SEPARATOR.'Fixtures';
     }
 }

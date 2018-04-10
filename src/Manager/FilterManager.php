@@ -11,11 +11,9 @@ namespace HeimrichHannot\FilterBundle\Manager;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\System;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
-use HeimrichHannot\FilterBundle\Session\FilterSession;
-use HeimrichHannot\FilterBundle\Form\FilterType;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\Model\FilterConfigModel;
-use Symfony\Component\Form\Exception\TransformationFailedException;
+use HeimrichHannot\FilterBundle\Session\FilterSession;
 
 class FilterManager
 {
@@ -29,9 +27,8 @@ class FilterManager
      */
     protected $session;
 
-
     /**
-     * All available filter configurations cache
+     * All available filter configurations cache.
      *
      * @var FilterConfig[]
      */
@@ -41,12 +38,12 @@ class FilterManager
      * Constructor.
      *
      * @param ContaoFrameworkInterface $framework
-     * @param FilterSession $session
+     * @param FilterSession            $session
      */
     public function __construct(ContaoFrameworkInterface $framework, FilterSession $session)
     {
         $this->framework = $framework;
-        $this->session   = $session;
+        $this->session = $session;
     }
 
     /**
@@ -77,7 +74,7 @@ class FilterManager
      */
     public function getSessionKey(array $filter)
     {
-        return 'huh.filter.session.' . $filter['name'] ?: $filter['id'];
+        return 'huh.filter.session.'.$filter['name'] ?: $filter['id'];
     }
 
     /**
@@ -108,7 +105,7 @@ class FilterManager
     }
 
     /**
-     * Get the config for a given filter
+     * Get the config for a given filter.
      *
      * @param array $filter
      * @param mixed $request The request to handle

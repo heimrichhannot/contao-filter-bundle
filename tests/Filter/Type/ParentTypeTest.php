@@ -10,6 +10,7 @@ namespace HeimrichHannot\FilterBundle\Tests\Filter\Type;
 
 use Contao\CoreBundle\Config\ResourceFinder;
 use Contao\MemberModel;
+use Contao\Model\Collection;
 use Contao\PageModel;
 use Contao\System;
 use Contao\TestCase\ContaoTestCase;
@@ -19,11 +20,10 @@ use HeimrichHannot\FilterBundle\Choice\TypeChoice;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
 use HeimrichHannot\FilterBundle\Filter\Type\ParentType;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
-use HeimrichHannot\FilterBundle\Session\FilterSession;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
+use HeimrichHannot\FilterBundle\Session\FilterSession;
 use HeimrichHannot\UtilsBundle\Choice\ModelInstanceChoice;
 use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
-use Contao\Model\Collection;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -45,7 +45,6 @@ class ParentTypeTest extends ContaoTestCase
      */
     private $kernel;
 
-
     protected function setUp()
     {
         parent::setUp();
@@ -54,37 +53,35 @@ class ParentTypeTest extends ContaoTestCase
             \define('TL_ROOT', $this->getFixturesDir());
         }
 
-        $GLOBALS['TL_LANGUAGE']    = 'en';
+        $GLOBALS['TL_LANGUAGE'] = 'en';
         $GLOBALS['TL_LANG']['MSC'] = ['test' => 'bar'];
 
         $GLOBALS['TL_DCA']['tl_test'] = [
             'config' => [
                 'dataContainer' => 'Table',
-                'sql'           => [
+                'sql' => [
                     'keys' => [
                     ],
                 ],
             ],
             'fields' => [
-
-            ]
+            ],
         ];
 
         $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'config' => [
                 'dataContainer' => 'Table',
-                'sql'           => [
+                'sql' => [
                     'keys' => [
                     ],
                 ],
             ],
             'fields' => [
-
-            ]
+            ],
         ];
 
         $finder = new ResourceFinder([
-            $this->getFixturesDir() . '/vendor/contao/core-bundle/Resources/contao',
+            $this->getFixturesDir().'/vendor/contao/core-bundle/Resources/contao',
         ]);
 
         $this->container = $this->mockContainer();
@@ -120,10 +117,10 @@ class ParentTypeTest extends ContaoTestCase
         System::setContainer($this->container);
 
         $framework = $this->mockContaoFramework();
-        $session   = new MockArraySessionStorage();
+        $session = new MockArraySessionStorage();
 
         $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
 
         $type = new ParentType($config);
 
@@ -131,34 +128,34 @@ class ParentTypeTest extends ContaoTestCase
     }
 
     /**
-     * Test getDefaultOperator()
+     * Test getDefaultOperator().
      */
     public function testGetDefaultOperator()
     {
         $framework = $this->mockContaoFramework();
-        $session   = new MockArraySessionStorage();
+        $session = new MockArraySessionStorage();
 
         $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
 
         /** @var FilterConfigElementModel $element */
         $element = $this->mockClassWithProperties(FilterConfigElementModel::class, []);
 
         $type = new ParentType($config);
 
-        $this->assertEquals(DatabaseUtil::OPERATOR_EQUAL, $type->getDefaultOperator($element));
+        $this->assertSame(DatabaseUtil::OPERATOR_EQUAL, $type->getDefaultOperator($element));
     }
 
     /**
-     * Test getChoices() without a dataContainer
+     * Test getChoices() without a dataContainer.
      */
     public function testGetChoicesWithoutDataContainer()
     {
         $framework = $this->mockContaoFramework();
-        $session   = new MockArraySessionStorage();
+        $session = new MockArraySessionStorage();
 
         $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
 
         /** @var FilterConfigElementModel $element */
         $element = $this->mockClassWithProperties(FilterConfigElementModel::class, []);
@@ -172,18 +169,18 @@ class ParentTypeTest extends ContaoTestCase
     }
 
     /**
-     * Test getChoices() for tl_member table
+     * Test getChoices() for tl_member table.
      */
     public function testGetChoicesForMemberTable()
     {
         $framework = $this->mockContaoFramework();
-        $session   = new MockArraySessionStorage();
+        $session = new MockArraySessionStorage();
 
         $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
 
         $modelInstances = $this->mockClassWithProperties(MemberModel::class, ['id' => 12]);
-        $collection     = $this->mockClassWithProperties(Collection::class, ['id' => 12]);
+        $collection = $this->mockClassWithProperties(Collection::class, ['id' => 12]);
         $collection->method('next')->willReturn($modelInstances, $modelInstances);
         $modelUtilAdapter = $this->mockAdapter(['findModelInstancesBy']);
         $modelUtilAdapter->method('findModelInstancesBy')->willReturn($collection);
@@ -193,31 +190,31 @@ class ParentTypeTest extends ContaoTestCase
 
         System::setContainer($this->container);
 
-        $element          = new FilterConfigElementModel();
+        $element = new FilterConfigElementModel();
         $element->columns = [];
-        $element->values  = [];
+        $element->values = [];
 
         $filter = ['name' => 'test', 'dataContainer' => 'tl_member'];
         $config->init('test', $filter, [$element]);
 
         $type = new ParentType($config);
 
-        $this->assertEquals(['ID 12' => 12], $type->getChoices($element));
+        $this->assertSame(['ID 12' => 12], $type->getChoices($element));
     }
 
     /**
-     * Test getChoices() by dca foreignKey
+     * Test getChoices() by dca foreignKey.
      */
     public function testGetChoicesByForeignKey()
     {
         $framework = $this->mockContaoFramework();
-        $session   = new MockArraySessionStorage();
+        $session = new MockArraySessionStorage();
 
         $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
 
         $modelInstances = $this->mockClassWithProperties(PageModel::class, ['id' => 8, 'title' => 'Test page title']);
-        $collection     = $this->mockClassWithProperties(Collection::class, ['id' => 8, 'title' => 'Test page title']);
+        $collection = $this->mockClassWithProperties(Collection::class, ['id' => 8, 'title' => 'Test page title']);
         $collection->method('next')->willReturn($modelInstances, $modelInstances);
         $modelUtilAdapter = $this->mockAdapter(['findModelInstancesBy']);
         $modelUtilAdapter->method('findModelInstancesBy')->willReturn($collection);
@@ -227,47 +224,46 @@ class ParentTypeTest extends ContaoTestCase
 
         System::setContainer($this->container);
 
-        $element          = new FilterConfigElementModel();
+        $element = new FilterConfigElementModel();
         $element->columns = [];
-        $element->values  = [];
+        $element->values = [];
 
         $GLOBALS['TL_DCA']['tl_article']['fields']['pid'] = [
-            'foreignKey' => 'tl_page.title'
+            'foreignKey' => 'tl_page.title',
         ];
 
         $GLOBALS['TL_DCA']['tl_page']['fields']['title'] = [
         ];
-
 
         $filter = ['name' => 'test', 'dataContainer' => 'tl_article'];
         $config->init('test', $filter, [$element]);
 
         $type = new ParentType($config);
 
-        $this->assertEquals(['Test page title' => 8], $type->getChoices($element));
+        $this->assertSame(['Test page title' => 8], $type->getChoices($element));
     }
 
     /**
-     * Test buildForm() with field name
+     * Test buildForm() with field name.
      */
     public function testBuildFormWithFieldName()
     {
         $framework = $this->mockContaoFramework();
-        $session   = new MockArraySessionStorage();
+        $session = new MockArraySessionStorage();
 
         $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config       = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
 
         $this->container->setParameter('huh.filter', [
             'filter' => [
                 'types' => [
                     [
-                        'name'  => 'parent',
+                        'name' => 'parent',
                         'class' => ParentType::class,
-                        'type'  => 'choice'
-                    ]
-                ]
-            ]
+                        'type' => 'choice',
+                    ],
+                ],
+            ],
         ]);
 
         $this->container->set('huh.filter.choice.type', new TypeChoice($framework));
@@ -275,14 +271,14 @@ class ParentTypeTest extends ContaoTestCase
 
         $filter = ['name' => 'test', 'dataContainer' => 'tl_test'];
 
-        $element        = new FilterConfigElementModel();
-        $element->type  = 'parent';
+        $element = new FilterConfigElementModel();
+        $element->type = 'parent';
         $element->field = 'test';
 
         $config->init('test', $filter, [$element]);
         $config->buildForm();
 
-        $this->assertEquals(3, $config->getBuilder()->count());  // f_id and f_ref element always exists
+        $this->assertSame(3, $config->getBuilder()->count());  // f_id and f_ref element always exists
         $this->assertTrue($config->getBuilder()->has('test'));
         $this->assertInstanceOf(\Symfony\Component\Form\Extension\Core\Type\ChoiceType::class, $config->getBuilder()->get('test')->getType()->getInnerType());
     }
@@ -292,6 +288,6 @@ class ParentTypeTest extends ContaoTestCase
      */
     protected function getFixturesDir(): string
     {
-        return __DIR__ . DIRECTORY_SEPARATOR . '../..' . DIRECTORY_SEPARATOR . 'Fixtures';
+        return __DIR__.DIRECTORY_SEPARATOR.'../..'.DIRECTORY_SEPARATOR.'Fixtures';
     }
 }
