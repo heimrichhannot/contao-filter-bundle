@@ -193,7 +193,7 @@ abstract class AbstractType
         }
 
         if (true === (bool) $element->addPlaceholder && '' !== $element->placeholder) {
-            $options['attr']['placeholder'] = $this->translator->trans($element->placeholder, ['%label%' => $this->translator->trans($options['label'])]);
+            $options['attr']['placeholder'] = $this->translator->trans($element->placeholder, ['%label%' => $this->translator->trans($options['label']) ?: $element->title]);
         }
 
         if ('' !== $element->cssClass) {

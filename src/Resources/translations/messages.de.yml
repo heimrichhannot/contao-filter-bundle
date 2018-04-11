@@ -1,6 +1,8 @@
 # placeholders
 huh.filter.placeholder.default: -
+huh.filter.placeholder.input_label_name: '%label%'
 huh.filter.placeholder.input_label: '%label% eingeben'
+huh.filter.placeholder.input_label_choose: '%label% auswählen'
 huh.filter.placeholder.start: Anfang
 huh.filter.placeholder.stop: Ende
 huh.filter.placeholder.from: Von
