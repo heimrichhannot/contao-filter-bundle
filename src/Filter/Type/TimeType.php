@@ -146,6 +146,7 @@ class TimeType extends AbstractType
                 }
 
                 $options['group_attr']['class'] = 'timepicker';
+                $options['attr']['data-iso8601-format'] = System::getContainer()->get('huh.utils.date')->transformPhpDateFormatToISO8601($element->timeFormat);
                 $options['attr']['data-enable-time'] = 'true';
                 $options['attr']['data-no-calendar'] = 'true';
 

@@ -149,6 +149,7 @@ class DateType extends AbstractType
                 }
 
                 $options['group_attr']['class'] = 'datepicker';
+                $options['attr']['data-iso8601-format'] = System::getContainer()->get('huh.utils.date')->transformPhpDateFormatToISO8601($element->dateFormat);
                 $options['attr']['data-date-format'] = $element->dateFormat;
 
                 if ('' !== $element->minDate) {
