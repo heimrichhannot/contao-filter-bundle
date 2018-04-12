@@ -56,24 +56,20 @@ class TextConcatTypeTest extends ContaoTestCase
             'config' => [
                 'dataContainer' => 'Table',
                 'sql' => [
-                    'keys' => [
-                    ],
+                    'keys' => [],
                 ],
             ],
-            'fields' => [
-            ],
+            'fields' => [],
         ];
 
         $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'config' => [
                 'dataContainer' => 'Table',
                 'sql' => [
-                    'keys' => [
-                    ],
+                    'keys' => [],
                 ],
             ],
-            'fields' => [
-            ],
+            'fields' => [],
         ];
 
         $finder = new ResourceFinder([
@@ -429,7 +425,7 @@ class TextConcatTypeTest extends ContaoTestCase
 
         $this->assertNotEmpty($config->getQueryBuilder()->getParameters());
         $this->assertNotEmpty($config->getQueryBuilder()->getQueryPart('where'));
-        $this->assertSame('SELECT  FROM tl_test WHERE CONCAT(first_name," ",last_name) LIKE :name', $config->getQueryBuilder()->getSQL());
+        $this->assertSame('SELECT  FROM tl_test WHERE CONCAT(COALESCE(tl_test.first_name, "")," ",COALESCE(tl_test.last_name, "")) LIKE :name', $config->getQueryBuilder()->getSQL());
         $this->assertSame([':name' => '%John Doe%'], $config->getQueryBuilder()->getParameters());
     }
 

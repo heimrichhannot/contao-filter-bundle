@@ -184,7 +184,7 @@ class RangeTypeTest extends ContaoTestCase
         $this->assertTrue($config->getBuilder()->has('test'));
         $this->assertInstanceOf(\Symfony\Component\Form\Extension\Core\Type\RangeType::class, $config->getBuilder()->get('test')->getType()->getInnerType());
         $this->assertSame(20, $config->getBuilder()->get('test')->getForm()->getConfig()->getOption('attr')['min']);
-        $this->assertSame(80, $config->getBuilder()->get('test')->getForm()->getConfig()->getOption('attr')['max']);
+        $this->assertSame('80', $config->getBuilder()->get('test')->getForm()->getConfig()->getOption('attr')['max']);
         $this->assertSame(10, $config->getBuilder()->get('test')->getForm()->getConfig()->getOption('attr')['step']);
     }
 

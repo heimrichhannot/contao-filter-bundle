@@ -457,7 +457,7 @@ class CountryTypeTest extends ContaoTestCase
         $this->assertNotEmpty($config->getQueryBuilder()->getParameters());
         $this->assertNotEmpty($config->getQueryBuilder()->getQueryPart('where'));
         $this->assertSame('SELECT  FROM tl_test WHERE test = :test', $config->getQueryBuilder()->getSQL());
-        $this->assertSame([':test' => '1'], $config->getQueryBuilder()->getParameters());
+        $this->assertSame([':test' => 1], $config->getQueryBuilder()->getParameters());
     }
 
     /**

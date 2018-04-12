@@ -26,7 +26,7 @@ return PhpCsFixer\Config::create()
         'header_comment' => ['header' => $header],
         'ordered_imports' => true,
         'ordered_class_elements' => true,
-        'php_unit_strict' => true,
+        'php_unit_strict' => false,
         'phpdoc_order' => true,
         'no_useless_return' => true,
         'no_useless_else' => true,

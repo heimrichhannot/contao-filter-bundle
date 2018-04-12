@@ -269,7 +269,7 @@ class LocaleTypeTest extends ContaoTestCase
         $this->assertTrue($config->getBuilder()->has('test'));
         $this->assertInstanceOf(\Symfony\Component\Form\Extension\Core\Type\LocaleType::class, $config->getBuilder()->get('test')->getType()->getInnerType());
         $this->assertNotEmpty($config->getBuilder()->get('test')->getForm()->getConfig()->getOption('choices'));
-        $this->assertSame(['German' => 'de', 'English' => 'en'], $config->getBuilder()->get('test')->getForm()->getConfig()->getOption('choices'));
+        $this->assertEquals(['German' => 'de', 'English' => 'en'], $config->getBuilder()->get('test')->getForm()->getConfig()->getOption('choices'));
     }
 
     /**
@@ -457,7 +457,7 @@ class LocaleTypeTest extends ContaoTestCase
         $this->assertNotEmpty($config->getQueryBuilder()->getParameters());
         $this->assertNotEmpty($config->getQueryBuilder()->getQueryPart('where'));
         $this->assertSame('SELECT  FROM tl_test WHERE test = :test', $config->getQueryBuilder()->getSQL());
-        $this->assertSame([':test' => '1'], $config->getQueryBuilder()->getParameters());
+        $this->assertSame([':test' => 1], $config->getQueryBuilder()->getParameters());
     }
 
     /**

@@ -107,7 +107,13 @@ class FilterQueryBuilder extends QueryBuilder
             }
 
             // never replace non initial Inserttags (user inputs), avoid injection and never cache to avoid esi:tags
-            $value = Controller::replaceInsertTags($value, false);
+            if (is_array($value)) {
+                foreach ($value as &$val) {
+                    $val = Controller::replaceInsertTags($val, false);
+                }
+            } else {
+                $value = Controller::replaceInsertTags($value, false);
+            }
 
             $operator = $element->operator;
 
