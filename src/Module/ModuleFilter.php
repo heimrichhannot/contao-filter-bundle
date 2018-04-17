@@ -12,6 +12,8 @@ use Contao\System;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
 use HeimrichHannot\FilterBundle\Manager\FilterManager;
 use Patchwork\Utf8;
+use Urodoz\Truncate\Bridge\Twig\TruncateExtension;
+use Urodoz\Truncate\TruncateService;
 
 class ModuleFilter extends \Contao\Module
 {
@@ -71,6 +73,7 @@ class ModuleFilter extends \Contao\Module
         $twig->hasExtension('\Twig_Extensions_Extension_Intl') ?: $twig->addExtension(new \Twig_Extensions_Extension_Intl());
         $twig->hasExtension('\Twig_Extensions_Extension_Array') ?: $twig->addExtension(new \Twig_Extensions_Extension_Array());
         $twig->hasExtension('\Twig_Extensions_Extension_Date') ?: $twig->addExtension(new \Twig_Extensions_Extension_Date());
+        $twig->hasExtension('Urodoz\Truncate\Bridge\Twig\TruncateExtension') ?: $twig->addExtension(new TruncateExtension(TruncateService::create()));
 
         $templates = System::getContainer()->get('huh.filter.choice.template')->getChoices();
 
