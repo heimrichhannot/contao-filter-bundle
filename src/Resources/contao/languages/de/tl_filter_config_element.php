@@ -71,6 +71,7 @@ $lang['cssClass']           = ['CSS-Klasse', 'Geben Sie hier durch Leerzeichen g
 $lang['published']          = ['Veröffentlichen', 'Wählen Sie diese Option zum Veröffentlichen.'];
 $lang['start']              = ['Anzeigen ab', 'Filterelement erst ab diesem Tag auf der Webseite anzeigen.'];
 $lang['stop']               = ['Anzeigen bis', 'Filterelement nur bis zu diesem Tag auf der Webseite anzeigen.'];
+$lang['whereSql']           = ['Zusätzliches WHERE-SQL', 'Geben Sie hier SQL ein, welches dem WHERE-Statement hinzugefügt wird.'];
 
 /**
  * Legends
@@ -129,6 +130,7 @@ $lang['reference'] = [
         'date'        => 'Datum',
         'time'        => 'Zeit',
         'date_range'  => 'Datumsspanne (date range)',
+        'sql'         => 'SQL',
     ],
     'roundingMode'                                                      => [
         \Symfony\Component\Form\Extension\Core\DataTransformer\IntegerToLocalizedStringTransformer::ROUND_DOWN      => 'Abrunden (zu 0 hin)',
@@ -141,8 +143,8 @@ $lang['reference'] = [
     ],
     'percentType'                                                       => [
         'fractional' => 'Bruch (z. B. 0.55)',
-        'integer'    => 'Ganzzahl (z. B. 55)'
+        'integer'    => 'Ganzzahl (z. B. 55)',
     ],
     \HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_SCALAR => 'Skalar',
-    \HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_ARRAY  => 'Array'
+    \HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_ARRAY  => 'Array',
 ];
