@@ -120,6 +120,49 @@ class FilterConfigModelTest extends ContaoTestCase
     }
 
     /**
+     * Test findByDataContainers().
+     */
+    public function testFindByDataContainers()
+    {
+        $modelA = $this->mockClassWithProperties(FilterConfigModel::class, [
+            'id' => 1,
+            'pid' => 1,
+        ]);
+
+        $modelAdapter = $this->mockAdapter(['findBy']);
+        $modelAdapter->method('findBy')->willReturn([$modelA]);
+
+        $framework = $this->mockContaoFramework([FilterConfigModel::class => $modelAdapter]);
+
+        $this->container->set('contao.framework', $framework);
+
+        System::setContainer($this->container);
+
+        $filterConfigModel = new FilterConfigModel();
+        $result = $filterConfigModel->findByDataContainers(['tl_test']);
+
+        $this->assertNotNull($result);
+        $this->assertSame($modelA, $result[0]);
+    }
+
+    /**
+     * Test findByDataContainers() without Contao\Model Adapter.
+     */
+    public function testFindByDataContainersWithoutAdapter()
+    {
+        $framework = $this->mockContaoFramework();
+
+        $this->container->set('contao.framework', $framework);
+
+        System::setContainer($this->container);
+
+        $filterConfigModel = new FilterConfigModel();
+        $result = $filterConfigModel->findByDataContainers(['tl_test']);
+
+        $this->assertNull($result);
+    }
+
+    /**
      * @return string
      */
     protected function getFixturesDir(): string

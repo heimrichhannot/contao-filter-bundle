@@ -81,6 +81,32 @@ class FilterConfigModel extends \Model
     protected static $strTable = 'tl_filter_config';
 
     /**
+     * Find filters by multiple dataContainers.
+     *
+     * @param array $dataContainers
+     * @param array $options
+     *
+     * @return \Contao\Model\Collection|FilterConfigModel[]|FilterConfigModel|null A collection of models or null if there are no filters
+     */
+    public function findByDataContainers(array $dataContainers, array $options = []){
+        $t = static::$strTable;
+        $arrColumns = ["$t.dataContainer IN(" . implode(',', array_map(function($dataContainer){ return "'". addslashes($dataContainer) . "'";}, $dataContainers)) .")"];
+
+        /** @var Model $adapter */
+        $adapter = System::getContainer()->get('contao.framework')->getAdapter(static::class);
+
+        if (null === $adapter) {
+            return null;
+        }
+
+        if(!isset($options['order'])){
+            $options['order'] = "$t.title DESC";
+        }
+
+        return $adapter->findBy($arrColumns, null, $options);
+    }
+
+    /**
      * Find published filters.
      *
      * @param array $options
