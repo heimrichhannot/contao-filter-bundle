@@ -88,9 +88,10 @@ class FilterConfigModel extends \Model
      *
      * @return \Contao\Model\Collection|FilterConfigModel[]|FilterConfigModel|null A collection of models or null if there are no filters
      */
-    public function findByDataContainers(array $dataContainers, array $options = []){
+    public function findByDataContainers(array $dataContainers, array $options = [])
+    {
         $t = static::$strTable;
-        $arrColumns = ["$t.dataContainer IN(" . implode(',', array_map(function($dataContainer){ return "'". addslashes($dataContainer) . "'";}, $dataContainers)) .")"];
+        $arrColumns = ["$t.dataContainer IN(".implode(',', array_map(function ($dataContainer) { return "'".addslashes($dataContainer)."'"; }, $dataContainers)).')'];
 
         /** @var Model $adapter */
         $adapter = System::getContainer()->get('contao.framework')->getAdapter(static::class);
@@ -99,7 +100,7 @@ class FilterConfigModel extends \Model
             return null;
         }
 
-        if(!isset($options['order'])){
+        if (!isset($options['order'])) {
             $options['order'] = "$t.title DESC";
         }
 

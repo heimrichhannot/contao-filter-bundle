@@ -32,6 +32,7 @@ huh:
       - {name: time, class: HeimrichHannot\FilterBundle\Filter\Type\TimeType, type: date}
       - {name: date_range, class: HeimrichHannot\FilterBundle\Filter\Type\DateRangeType, type: date, wrapper: true}
       - {name: sql, class: HeimrichHannot\FilterBundle\Filter\Type\SqlType, type: other}
+      - {name: auto_item, class: HeimrichHannot\FilterBundle\Filter\Type\AutoItemType, type: other}
     templates:
       - {name: form_div_layout, template: '@HeimrichHannotContaoFilter/filter/filter_form_div_layout.html.twig'}
       - {name: form_table_layout, template: '@HeimrichHannotContaoFilter/filter/filter_form_table_layout.html.twig'}
