@@ -8,6 +8,7 @@
 
 namespace HeimrichHannot\FilterBundle\Choice;
 
+use Contao\System;
 use HeimrichHannot\UtilsBundle\Choice\AbstractChoice;
 
 class TemplateChoice extends AbstractChoice
@@ -18,18 +19,24 @@ class TemplateChoice extends AbstractChoice
     protected function collect()
     {
         $choices = [];
+        $config  = System::getContainer()->getParameter('huh.filter');
 
-        $config = \System::getContainer()->getParameter('huh.filter');
-
-        if (!isset($config['filter']['templates'])) {
-            return $choices;
+        if (isset($config['filter']['template_prefixes'])) {
+            $choices = System::getContainer()->get('huh.utils.choice.twig_template')->setContext($config['filter']['template_prefixes'])->getCachedChoices();
         }
 
-        $templates = $config['filter']['templates'];
+        if (isset($config['filter']['templates'])) {
+            foreach ($config['filter']['templates'] as $template) {
+                // remove duplicates returned by `huh.utils.choice.twig_template`
+                if (false !== ($idx = array_search($template['template'], $choices))) {
+                    unset($choices[$idx]);
+                }
 
-        foreach ($templates as $config) {
-            $choices[$config['name']] = $config['template'];
+                $choices[$template['name']] = $template['template'] . ' (Yaml)';
+            }
         }
+
+        asort($choices);
 
         return $choices;
     }

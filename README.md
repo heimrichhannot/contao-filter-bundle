@@ -7,6 +7,70 @@
 
 This bundle offers a generic filter module to use with arbitrary contao entities containing standard filter with initial filters and filter form types including [symfony form type representations](https://symfony.com/doc/current/reference/forms/types).
 
+
+## Templates (filter)
+
+There are two ways to define your templates. 
+
+#### 1. By Prefix
+
+The first one is to simply deploy twig templates inside any `templates` or bundles `views` directory with the following prefixes:
+
+** filter template prefixes**
+
+- `filter_`
+
+**More prefixes can be defined, see 2nd way.**
+
+#### 2. By config.yml
+
+The second on is to extend the `config.yml` and define a strict template:
+
+**Plugin.php**
+```
+<?php
+
+class Plugin implements BundlePluginInterface, ExtensionPluginInterface
+{
+    /**
+     * {@inheritdoc}
+     */
+    public function getBundles(ParserInterface $parser)
+    {
+        …
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getExtensionConfig($extensionName, array $extensionConfigs, ContainerBuilder $container)
+    {
+        return ContainerUtil::mergeConfigFile(
+            'huh_filter',
+            $extensionName,
+            $extensionConfigs,
+            __DIR__ .'/../Resources/config/config.yml'
+        );
+    }
+}
+```
+
+**config.yml**
+```
+huh:
+  filter:
+    templates:
+      - {name: form_div_layout, template: '@HeimrichHannotContaoFilter/filter/filter_form_div_layout.html.twig'}
+      - {name: form_table_layout, template: '@HeimrichHannotContaoFilter/filter/filter_form_table_layout.html.twig'}
+      - {name: bootstrap_3_layout, template: '@HeimrichHannotContaoFilter/filter/filter_form_bootstrap_3_layout.html.twig'}
+      - {name: bootstrap_3_horizontal_layout, template: '@HeimrichHannotContaoFilter/filter/filter_form_bootstrap_3_horizontal_layout.html.twig'}
+      - {name: bootstrap_4_layout, template: '@HeimrichHannotContaoFilter/filter/filter_form_bootstrap_4_layout.html.twig'}
+      - {name: bootstrap_4_horizontal_layout, template: '@HeimrichHannotContaoFilter/filter/filter_form_bootstrap_4_horizontal_layout.html.twig'}
+      - {name: foundation_5_layout, template: '@HeimrichHannotContaoFilter/filter/filter_form_foundation_5_layout.html.twig'}
+    template_prefixes:
+      - filter_
+```
+
 ## Bootstrap 4 form snippets
 
 The following bootstrap 4 form theme snippets can be used to generate uncommon, but existing bootstrap 4 form widgets within your custom `filter_form_bootstrap4*.html.twig` template.

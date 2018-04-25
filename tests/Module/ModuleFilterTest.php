@@ -9,20 +9,25 @@
 namespace HeimrichHannot\FilterBundle\Tests\Module;
 
 use Contao\CoreBundle\Config\ResourceFinder;
+use Contao\ManagerPlugin\PluginLoader;
 use Contao\ModuleModel;
 use Contao\System;
 use Contao\TestCase\ContaoTestCase;
+use Contao\ThemeModel;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Platforms\MySqlPlatform;
 use Doctrine\DBAL\Schema\MySqlSchemaManager;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
+use HeimrichHannot\FilterBundle\ContaoManager\Plugin;
 use HeimrichHannot\FilterBundle\Manager\FilterManager;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\Model\FilterConfigModel;
 use HeimrichHannot\FilterBundle\Module\ModuleFilter;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 use HeimrichHannot\FilterBundle\Session\FilterSession;
+use HeimrichHannot\UtilsBundle\Choice\TwigTemplateChoice;
 use HeimrichHannot\UtilsBundle\Container\ContainerUtil;
+use HeimrichHannot\UtilsBundle\Template\TemplateUtil;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -44,6 +49,11 @@ class ModuleFilterTest extends ContaoTestCase
     private $kernel;
 
     /**
+     * @var array
+     */
+    private $config;
+
+    /**
      * {@inheritdoc}
      */
     public function setUp(): void
@@ -54,13 +64,13 @@ class ModuleFilterTest extends ContaoTestCase
             \define('TL_ROOT', $this->getFixturesDir());
         }
 
-        $GLOBALS['TL_LANGUAGE'] = 'en';
+        $GLOBALS['TL_LANGUAGE']    = 'en';
         $GLOBALS['TL_LANG']['MSC'] = ['test' => 'bar'];
 
         $GLOBALS['TL_DCA']['tl_module'] = [
             'config' => [
                 'dataContainer' => 'Table',
-                'sql' => [
+                'sql'           => [
                     'keys' => [
                     ],
                 ],
@@ -70,7 +80,7 @@ class ModuleFilterTest extends ContaoTestCase
         ];
 
         $finder = new ResourceFinder([
-            $this->getFixturesDir().'/vendor/contao/core-bundle/Resources/contao',
+            $this->getFixturesDir() . '/vendor/contao/core-bundle/Resources/contao',
         ]);
 
         $this->container = $this->mockContainer();
@@ -93,6 +103,13 @@ class ModuleFilterTest extends ContaoTestCase
 
         $this->kernel = $this->createMock(Kernel::class);
         $this->kernel->method('getContainer')->willReturn($this->container);
+
+        $plugin = new Plugin();
+
+        $containerBuilder = new \Contao\ManagerPlugin\Config\ContainerBuilder($this->mockPluginLoader($this->never()), []);
+
+        $config                 = $plugin->getExtensionConfig('huh_filter', [[]], $containerBuilder);
+        $this->config['filter'] = $config['huh']['filter'];
     }
 
     /**
@@ -125,8 +142,8 @@ class ModuleFilterTest extends ContaoTestCase
 
         $GLOBALS['TL_LANG']['FMD']['filter'][0] = 'Filter';
 
-        $model = new ModuleModel();
-        $model->id = 1;
+        $model       = new ModuleModel();
+        $model->id   = 1;
         $model->type = 'filter';
 
         \Config::set('debugMode', false);
@@ -149,8 +166,8 @@ class ModuleFilterTest extends ContaoTestCase
 
         $GLOBALS['TL_LANG']['FMD']['filter'][0] = 'Filter';
 
-        $model = new ModuleModel();
-        $model->id = 1;
+        $model       = new ModuleModel();
+        $model->id   = 1;
         $model->type = 'filter';
 
         \Config::set('debugMode', false);
@@ -180,9 +197,9 @@ class ModuleFilterTest extends ContaoTestCase
 
         $GLOBALS['TL_LANG']['FMD']['filter'][0] = 'Filter';
 
-        $model = new ModuleModel();
-        $model->id = 1;
-        $model->type = 'filter';
+        $model         = new ModuleModel();
+        $model->id     = 1;
+        $model->type   = 'filter';
         $model->filter = 1;
 
         \Config::set('debugMode', false);
@@ -197,6 +214,8 @@ class ModuleFilterTest extends ContaoTestCase
      */
     public function testGenerateInFrontEndMode()
     {
+        $this->container->set('kernel', $this->kernel);
+
         $filterConfigAdapter = $this->mockAdapter(['findByPk']);
 
         $filterConfigModel = $this->mockClassWithProperties(FilterConfigModel::class, ['id' => 1, 'name' => 'test', 'template' => 'bootstrap_4_layout']);
@@ -207,7 +226,25 @@ class ModuleFilterTest extends ContaoTestCase
         $filterConfigElementAdapter = $this->mockAdapter(['findPublishedByPid']);
         $filterConfigElementAdapter->method('findPublishedByPid')->willReturn(null);
 
-        $framework = $this->mockContaoFramework([FilterConfigModel::class => $filterConfigAdapter, FilterConfigElementModel::class => $filterConfigElementAdapter]);
+        $themeModelAdapter = $this->mockAdapter(['findAll']);
+        $themeModelAdapter->method('findAll')->willReturn(null);
+
+        $framework = $this->mockContaoFramework([ThemeModel::class => $themeModelAdapter, FilterConfigModel::class => $filterConfigAdapter, FilterConfigElementModel::class => $filterConfigElementAdapter]);
+
+        $finder = new ResourceFinder(([
+            $this->getFixturesDir(),
+            __DIR__ .'/../../src/Resources/contao',
+            __DIR__ .'/../../vendor/contao/core-bundle/src/Resources/contao'
+        ]));
+
+        $this->container->set('contao.resource_finder', $finder);
+
+        System::setContainer($this->container);
+
+        $this->container->setParameter('huh.filter', $this->config);
+        $this->container->set('huh.utils.template', new TemplateUtil($framework));
+        $this->container->set('huh.utils.container', new ContainerUtil($framework));
+        $this->container->set('huh.utils.choice.twig_template', new TwigTemplateChoice($framework));
 
         $this->container->set('huh.utils.container', new ContainerUtil($framework));
 
@@ -235,9 +272,9 @@ class ModuleFilterTest extends ContaoTestCase
         $this->container->set('router', $router);
 
         /** @var Connection $connection */
-        $connection = $this->container->get('database_connection');
-        $session = new Session(new MockArraySessionStorage());
-        $filterSession = new FilterSession($framework, $session);
+        $connection         = $this->container->get('database_connection');
+        $session            = new Session(new MockArraySessionStorage());
+        $filterSession      = new FilterSession($framework, $session);
         $filterQueryBuilder = new FilterQueryBuilder($framework, $connection);
 
         $this->container->set('huh.filter.config', new FilterConfig($framework, $filterSession, $filterQueryBuilder));
@@ -251,15 +288,15 @@ class ModuleFilterTest extends ContaoTestCase
         $GLOBALS['TL_LANG']['FMD']['filter'][0] = 'Filter';
 
         global $objPage;
-        $objPage = new \stdClass();
-        $objPage->outputFormat = '';
+        $objPage                = new \stdClass();
+        $objPage->outputFormat  = '';
         $objPage->templateGroup = '';
 
-        $model = new ModuleModel();
-        $model->id = 1;
-        $model->type = 'filter';
+        $model         = new ModuleModel();
+        $model->id     = 1;
+        $model->type   = 'filter';
         $model->filter = 1;
-        $model->cssID = [0 => 'cssId', '1' => 'cssClass'];
+        $model->cssID  = [0 => 'cssId', '1' => 'cssClass'];
 
         \Config::set('debugMode', false);
 
@@ -271,10 +308,27 @@ class ModuleFilterTest extends ContaoTestCase
     }
 
     /**
+     * Mocks the plugin loader.
+     *
+     * @param \PHPUnit_Framework_MockObject_Matcher_InvokedCount $expects
+     * @param array $plugins
+     *
+     * @return PluginLoader|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private function mockPluginLoader(\PHPUnit_Framework_MockObject_Matcher_InvokedCount $expects, array $plugins = [])
+    {
+        $pluginLoader = $this->createMock(PluginLoader::class);
+
+        $pluginLoader->expects($expects)->method('getInstancesOf')->with(PluginLoader::EXTENSION_PLUGINS)->willReturn($plugins);
+
+        return $pluginLoader;
+    }
+
+    /**
      * @return string
      */
     protected function getFixturesDir(): string
     {
-        return __DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'Fixtures';
+        return __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Fixtures';
     }
 }

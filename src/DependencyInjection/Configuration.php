@@ -57,6 +57,9 @@ class Configuration implements ConfigurationInterface
                                 ->end()
                             ->end()
                         ->end()
+                        ->arrayNode('template_prefixes')
+                        ->prototype('scalar')
+                        ->end()->end()
                     ->end()
                 ->end()
             ->end();
