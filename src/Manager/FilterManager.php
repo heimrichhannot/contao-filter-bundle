@@ -38,12 +38,12 @@ class FilterManager
      * Constructor.
      *
      * @param ContaoFrameworkInterface $framework
-     * @param FilterSession            $session
+     * @param FilterSession $session
      */
     public function __construct(ContaoFrameworkInterface $framework, FilterSession $session)
     {
         $this->framework = $framework;
-        $this->session = $session;
+        $this->session   = $session;
     }
 
     /**
@@ -74,7 +74,7 @@ class FilterManager
      */
     public function getSessionKey(array $filter)
     {
-        return 'huh.filter.session.'.$filter['name'] ?: $filter['id'];
+        return 'huh.filter.session.' . $filter['name'] ?: $filter['id'];
     }
 
     /**
