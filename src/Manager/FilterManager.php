@@ -81,12 +81,13 @@ class FilterManager
      * Find filter by id.
      *
      * @param int $id
+     * @param bool $cache Disable for a fresh filter/querybuilder instance
      *
      * @return FilterConfig|null The config or null if not found
      */
-    public function findById(int $id)
+    public function findById(int $id, $cache = true)
     {
-        if (isset($this->filters[$id])) {
+        if (true === $cache && isset($this->filters[$id])) {
             return $this->filters[$id];
         }
 
@@ -99,7 +100,13 @@ class FilterManager
             return null;
         }
 
-        $this->filters[$id] = $this->getConfig($filter->row());
+        $filterConfig = $this->getConfig($filter->row());
+
+        if (false === $cache) {
+            return $filterConfig;
+        }
+
+        $this->filters[$id] = $filterConfig;
 
         return isset($this->filters[$id]) ? $this->filters[$id] : null;
     }
