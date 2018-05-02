@@ -64,13 +64,13 @@ class ModuleFilterTest extends ContaoTestCase
             \define('TL_ROOT', $this->getFixturesDir());
         }
 
-        $GLOBALS['TL_LANGUAGE']    = 'en';
+        $GLOBALS['TL_LANGUAGE'] = 'en';
         $GLOBALS['TL_LANG']['MSC'] = ['test' => 'bar'];
 
         $GLOBALS['TL_DCA']['tl_module'] = [
             'config' => [
                 'dataContainer' => 'Table',
-                'sql'           => [
+                'sql' => [
                     'keys' => [
                     ],
                 ],
@@ -80,7 +80,7 @@ class ModuleFilterTest extends ContaoTestCase
         ];
 
         $finder = new ResourceFinder([
-            $this->getFixturesDir() . '/vendor/contao/core-bundle/Resources/contao',
+            $this->getFixturesDir().'/vendor/contao/core-bundle/Resources/contao',
         ]);
 
         $this->container = $this->mockContainer();
@@ -108,7 +108,7 @@ class ModuleFilterTest extends ContaoTestCase
 
         $containerBuilder = new \Contao\ManagerPlugin\Config\ContainerBuilder($this->mockPluginLoader($this->never()), []);
 
-        $config                 = $plugin->getExtensionConfig('huh_filter', [[]], $containerBuilder);
+        $config = $plugin->getExtensionConfig('huh_filter', [[]], $containerBuilder);
         $this->config['filter'] = $config['huh']['filter'];
     }
 
@@ -142,8 +142,8 @@ class ModuleFilterTest extends ContaoTestCase
 
         $GLOBALS['TL_LANG']['FMD']['filter'][0] = 'Filter';
 
-        $model       = new ModuleModel();
-        $model->id   = 1;
+        $model = new ModuleModel();
+        $model->id = 1;
         $model->type = 'filter';
 
         \Config::set('debugMode', false);
@@ -166,8 +166,8 @@ class ModuleFilterTest extends ContaoTestCase
 
         $GLOBALS['TL_LANG']['FMD']['filter'][0] = 'Filter';
 
-        $model       = new ModuleModel();
-        $model->id   = 1;
+        $model = new ModuleModel();
+        $model->id = 1;
         $model->type = 'filter';
 
         \Config::set('debugMode', false);
@@ -197,9 +197,9 @@ class ModuleFilterTest extends ContaoTestCase
 
         $GLOBALS['TL_LANG']['FMD']['filter'][0] = 'Filter';
 
-        $model         = new ModuleModel();
-        $model->id     = 1;
-        $model->type   = 'filter';
+        $model = new ModuleModel();
+        $model->id = 1;
+        $model->type = 'filter';
         $model->filter = 1;
 
         \Config::set('debugMode', false);
@@ -233,8 +233,8 @@ class ModuleFilterTest extends ContaoTestCase
 
         $finder = new ResourceFinder(([
             $this->getFixturesDir(),
-            __DIR__ .'/../../src/Resources/contao',
-            __DIR__ .'/../../vendor/contao/core-bundle/src/Resources/contao'
+            __DIR__.'/../../src/Resources/contao',
+            __DIR__.'/../../vendor/contao/core-bundle/src/Resources/contao',
         ]));
 
         $this->container->set('contao.resource_finder', $finder);
@@ -272,9 +272,9 @@ class ModuleFilterTest extends ContaoTestCase
         $this->container->set('router', $router);
 
         /** @var Connection $connection */
-        $connection         = $this->container->get('database_connection');
-        $session            = new Session(new MockArraySessionStorage());
-        $filterSession      = new FilterSession($framework, $session);
+        $connection = $this->container->get('database_connection');
+        $session = new Session(new MockArraySessionStorage());
+        $filterSession = new FilterSession($framework, $session);
         $filterQueryBuilder = new FilterQueryBuilder($framework, $connection);
 
         $this->container->set('huh.filter.config', new FilterConfig($framework, $filterSession, $filterQueryBuilder));
@@ -288,15 +288,15 @@ class ModuleFilterTest extends ContaoTestCase
         $GLOBALS['TL_LANG']['FMD']['filter'][0] = 'Filter';
 
         global $objPage;
-        $objPage                = new \stdClass();
-        $objPage->outputFormat  = '';
+        $objPage = new \stdClass();
+        $objPage->outputFormat = '';
         $objPage->templateGroup = '';
 
-        $model         = new ModuleModel();
-        $model->id     = 1;
-        $model->type   = 'filter';
+        $model = new ModuleModel();
+        $model->id = 1;
+        $model->type = 'filter';
         $model->filter = 1;
-        $model->cssID  = [0 => 'cssId', '1' => 'cssClass'];
+        $model->cssID = [0 => 'cssId', '1' => 'cssClass'];
 
         \Config::set('debugMode', false);
 
@@ -308,10 +308,18 @@ class ModuleFilterTest extends ContaoTestCase
     }
 
     /**
+     * @return string
+     */
+    protected function getFixturesDir(): string
+    {
+        return __DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'Fixtures';
+    }
+
+    /**
      * Mocks the plugin loader.
      *
      * @param \PHPUnit_Framework_MockObject_Matcher_InvokedCount $expects
-     * @param array $plugins
+     * @param array                                              $plugins
      *
      * @return PluginLoader|\PHPUnit_Framework_MockObject_MockObject
      */
@@ -322,13 +330,5 @@ class ModuleFilterTest extends ContaoTestCase
         $pluginLoader->expects($expects)->method('getInstancesOf')->with(PluginLoader::EXTENSION_PLUGINS)->willReturn($plugins);
 
         return $pluginLoader;
-    }
-
-    /**
-     * @return string
-     */
-    protected function getFixturesDir(): string
-    {
-        return __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Fixtures';
     }
 }

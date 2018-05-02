@@ -19,3 +19,5 @@ huh.filter.label.reset: Reset
 huh.filter.input_group_text.fa_clock_o: '<span class="fa fa-clock-o"></span>'
 huh.filter.input_group_text.fa_calendar: '<span class="fa fa-calendar"></span>'
 huh.filter.input_group_text.fa_envelope: '<span class="fa fa-envelope"></span>'
+huh.filter.input_group_text.fa_at: '<span class="fa fa-at"></span>'
+

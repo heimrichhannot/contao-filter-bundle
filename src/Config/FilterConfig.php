@@ -389,6 +389,25 @@ class FilterConfig
         $this->queryBuilder->addContextualValue($elementId, $values);
     }
 
+    public function getFilterTemplateByName(string $name)
+    {
+        $config = System::getContainer()->getParameter('huh.filter');
+
+        if (!isset($config['filter']['templates'])) {
+            return System::getContainer()->get('huh.utils.template')->getTemplate($name);
+        }
+
+        $templates = $config['filter']['templates'];
+
+        foreach ($templates as $template) {
+            if ($template['name'] === $name) {
+                return $template['template'];
+            }
+        }
+
+        return System::getContainer()->get('huh.utils.template')->getTemplate($name);
+    }
+
     /**
      * Get the redirect url based on current filter action.
      *
@@ -449,27 +468,5 @@ class FilterConfig
         }
 
         $this->builder->setData($data);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getFilterTemplateByName(string $name)
-    {
-        $config = System::getContainer()->getParameter('huh.filter');
-
-        if (!isset($config['filter']['templates'])) {
-            return System::getContainer()->get('huh.utils.template')->getTemplate($name);
-        }
-
-        $templates = $config['filter']['templates'];
-
-        foreach ($templates as $template) {
-            if ($template['name'] == $name) {
-                return $template['template'];
-            }
-        }
-
-        return System::getContainer()->get('huh.utils.template')->getTemplate($name);
     }
 }
