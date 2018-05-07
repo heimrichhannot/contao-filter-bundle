@@ -59,6 +59,10 @@ class CheckboxType extends AbstractType
             $options['value'] = $element->value;
         }
 
+        if ($element->submitOnChange) {
+            $options['attr']['onchange'] = 'this.form.submit()';
+        }
+
         return $options;
     }
 }

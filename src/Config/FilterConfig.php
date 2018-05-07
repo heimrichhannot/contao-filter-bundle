@@ -26,6 +26,14 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
 
 class FilterConfig
 {
+    const FILTER_TYPE_DEFAULT = 'filter';
+    const FILTER_TYPE_SORT = 'sort';
+
+    const FILTER_TYPES = [
+        self::FILTER_TYPE_DEFAULT,
+        self::FILTER_TYPE_SORT,
+    ];
+
     /**
      * @var ContaoFrameworkInterface
      */
@@ -88,8 +96,8 @@ class FilterConfig
      */
     public function init(string $sessionKey, array $filter, $elements = null)
     {
-        $this->sessionKey = $sessionKey;
         $this->filter = $filter;
+        $this->sessionKey = $sessionKey;
         $this->elements = $elements;
     }
 
@@ -212,7 +220,7 @@ class FilterConfig
             $url = System::getContainer()->get('huh.utils.url')->removeQueryString([$form->getName()], $url ?: null);
 
             // do not save filter id in session
-            $this->setData($data);
+            $this->setData($this->filter['mergeData'] ? array_merge($this->getData(), $data) : $data);
 
             // allow reset, support different form configuration with same form name
             if (null !== $form->getClickedButton() && in_array($form->getClickedButton()->getName(), $this->getResetNames(), true)) {

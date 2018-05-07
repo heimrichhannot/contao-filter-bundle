@@ -8,12 +8,10 @@
 
 namespace HeimrichHannot\FilterBundle\Choice;
 
-use HeimrichHannot\FilterBundle\Filter\AbstractType;
-use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
-use HeimrichHannot\FilterBundle\Model\FilterConfigModel;
+use HeimrichHannot\FilterBundle\Sort\AbstractSort;
 use HeimrichHannot\UtilsBundle\Choice\AbstractChoice;
 
-class TypeChoice extends AbstractChoice
+class SortChoice extends AbstractChoice
 {
     /**
      * @return array
@@ -21,30 +19,23 @@ class TypeChoice extends AbstractChoice
     protected function collect()
     {
         $choices = [];
-        $filterType = 'filter';
 
         $groupChoices = $this->getContext() instanceof \Contao\DataContainer;
 
-        $config = \System::getContainer()->getParameter('huh.filter');
+        $config = \System::getContainer()->getParameter('huh.sort');
 
-        if (!isset($config['filter']['types'])) {
+        if (!isset($config['sort']['classes'])) {
             return $choices;
         }
 
-        if ($groupChoices && null !== ($pid = $this->framework->getAdapter(FilterConfigElementModel::class)->findById($this->context->id)->pid)) {
-            if (null !== ($type = $this->framework->getAdapter(FilterConfigModel::class)->findById($pid)->type)) {
-                $filterType = $type;
-            }
-        }
-
-        foreach ($config[$filterType]['types'] as $type) {
+        foreach ($config['sort']['classes'] as $type) {
             if (!class_exists($type['class'])) {
                 continue;
             }
 
             $r = new \ReflectionClass($type['class']);
 
-            if (!$r->isSubclassOf(AbstractType::class)) {
+            if (!$r->isSubclassOf(AbstractSort::class)) {
                 continue;
             }
 

@@ -101,3 +101,8 @@ services:
         -  "@twig.truncate.html.service"
       tags:
         - { name: twig.extension }
+  huh.filter.choice.sort:
+    class: HeimrichHannot\FilterBundle\Choice\SortChoice
+    public: true
+    arguments:
+      - "@contao.framework"

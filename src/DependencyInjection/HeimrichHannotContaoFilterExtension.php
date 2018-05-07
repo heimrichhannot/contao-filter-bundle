@@ -32,11 +32,9 @@ class HeimrichHannotContaoFilterExtension extends Extension
         $processedConfig = $this->processConfiguration($configuration, $configs);
 
         $container->setParameter('huh.filter', $processedConfig);
+        $container->setParameter('huh.sort', $processedConfig);
 
-        $loader = new YamlFileLoader(
-            $container,
-            new FileLocator(__DIR__.'/../Resources/config')
-        );
+        $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
 
         $loader->load('listener.yml');
         $loader->load('services.yml');

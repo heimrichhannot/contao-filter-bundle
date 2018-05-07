@@ -69,7 +69,7 @@ class ChoiceType extends AbstractType
     {
         $options = parent::getOptions($element, $builder);
         $options['choices'] = $this->getChoices($element);
-        $options['choice_translation_domain'] = false; // disable translation]
+        $options['choice_translation_domain'] = false; // disable translation
 
         if (isset($options['attr']['placeholder'])) {
             $options['attr']['data-placeholder'] = $options['attr']['placeholder'];
@@ -82,6 +82,10 @@ class ChoiceType extends AbstractType
 
         $options['expanded'] = (bool) $element->expanded;
         $options['multiple'] = (bool) $element->multiple;
+
+        if ($element->submitOnChange) {
+            $options['attr']['onchange'] = 'this.form.submit()';
+        }
 
         // forgiving array handling
         if ($element->addDefaultValue) {

@@ -79,8 +79,10 @@ $GLOBALS['TL_DCA']['tl_filter_config'] = [
         ],
     ],
     'palettes'    => [
-        '__selector__' => ['published'],
-        'default'      => '{general_legend},title;{config_legend},authorType,author,name,dataContainer,method,action,renderEmpty;{template_legend},template;{expert_legend},cssClass;{publish_legend},published;',
+        '__selector__' => ['published', 'type'],
+        'default'      => '{general_legend},title,type;',
+        'filter'       => '{general_legend},title,type;{config_legend},authorType,author,name,dataContainer,method,action,renderEmpty,mergeData;{template_legend},template;{expert_legend},cssClass;{publish_legend},published;',
+        'sort'         => '{general_legend},title,type;{config_legend},parentFilter;{template_legend},template;{expert_legend},cssClass;{publish_legend},published;',
     ],
     'subpalettes' => [
         'published' => 'start,stop',
@@ -201,6 +203,35 @@ $GLOBALS['TL_DCA']['tl_filter_config'] = [
             'inputType' => 'text',
             'eval'      => ['tl_class' => 'w50', 'maxlength' => 64],
             'sql'       => "varchar(64) NOT NULL default ''",
+        ],
+        'mergeData'     => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config']['mergeData'],
+            'exclude'   => true,
+            'filter'    => true,
+            'inputType' => 'checkbox',
+            'eval'      => ['tl_class' => 'w50', 'doNotCopy' => true],
+            'sql'       => "char(1) NOT NULL default ''",
+        ],
+        'type'          => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config']['type'],
+            'exclude'   => true,
+            'inputType' => 'select',
+            'options'   => \HeimrichHannot\FilterBundle\Config\FilterConfig::FILTER_TYPES,
+            'eval'      => [
+                'tl_class'       => 'w50',
+                'submitOnChange' => true,
+                'mandatory'      => true,
+            ],
+            'sql'       => "varchar(64) NOT NULL default 'filter'",
+        ],
+        'parentFilter'  => [
+            'label'      => &$GLOBALS['TL_LANG']['tl_filter_config']['parentFilter'],
+            'exclude'    => true,
+            'inputType'  => 'select',
+            'foreignKey' => 'tl_filter_config.title',
+            'relation'   => ['type' => 'belongsTo', 'load' => 'eager'],
+            'eval'       => ['tl_class' => 'w50 clr', 'includeBlankOption' => true, 'chosen' => true, 'mandatory' => true, 'submitOnChange' => true],
+            'sql'        => "int(10) NOT NULL default '0'",
         ],
     ],
 ];

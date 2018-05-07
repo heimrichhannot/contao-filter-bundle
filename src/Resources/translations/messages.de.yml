@@ -26,3 +26,11 @@ huh.filter.input_group_text.button.fa_at: '<button class="btn btn-outline-second
 huh.filter.input_group_text.button.fa_clock_o: '<button class="btn btn-outline-secondary" type="button"><i class="fa fa-clock-o"></i></button>'
 huh.filter.input_group_text.button.fa_calendar: '<button class="btn btn-outline-secondary" type="button"><i class="fa fa-calendar"></i></button>'
 huh.filter.input_group_text.button.fa_envelope: '<button class="btn btn-outline-secondary" type="button"><i class="fa fa-envelope"></i></button>'
+
+# placeholders
+huh.sort.text.desc: 'Ergebnisse sortieren: %field% (Absteigend)'
+huh.sort.text.asc: 'Ergebnisse sortieren: %field% (Aufsteigend)'
+huh.sort.text.default: 'Ergebnisse sortieren: %field%'
+
+huh.sort.DESC: Absteigend
+huh.sort.ASC: Aufsteigend

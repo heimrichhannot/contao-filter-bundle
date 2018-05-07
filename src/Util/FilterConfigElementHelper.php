@@ -23,10 +23,44 @@ class FilterConfigElementHelper
             return [];
         }
 
-        return System::getContainer()->get('huh.utils.choice.field')->getCachedChoices(
-            [
-                'dataContainer' => $filterConfig->getFilter()['dataContainer'],
-            ]
-        );
+        return System::getContainer()->get('huh.utils.choice.field')->getCachedChoices([
+            'dataContainer' => $filterConfig->getFilter()['dataContainer'],
+        ]);
+    }
+
+    public static function getSortClasses(DataContainer $dc)
+    {
+        $types = [];
+
+        $config = System::getContainer()->getParameter('huh.sort');
+
+        if (!isset($config['sort']['classes']) || !is_array($config['sort']['classes'])) {
+            return $types;
+        }
+
+        foreach ($config['sort']['classes'] as $type) {
+            $types[$type['name']] = $type['class'];
+        }
+
+        return $types;
+    }
+
+    public static function getSortDirections(DataContainer $dc)
+    {
+        $directions = [];
+
+        $config = System::getContainer()->getParameter('huh.sort');
+
+        if (!isset($config['sort']['directions']) || !is_array($config['sort']['directions'])) {
+            return $directions;
+        }
+
+        $translator = System::getContainer()->get('translator');
+
+        foreach ($config['sort']['directions'] as $type) {
+            $directions[$type['value']] = $translator->trans('huh.sort.'.$type['value']);
+        }
+
+        return $directions;
     }
 }

@@ -5,15 +5,19 @@ $lang = &$GLOBALS['TL_LANG']['tl_filter_config'];
 /**
  * Fields
  */
-$lang['tstamp']        = ['Änderungsdatum', ''];
-$lang['title']         = ['Titel', 'Geben Sie hier bitte den Titel ein.'];
-$lang['dataContainer'] = ['Data-Container', 'Wählen Sie hier den gewünschten Data-Container aus.'];
-$lang['method']        = ['HTTP-Methode', 'Wählen Sie die HTTP-Methode des Formulars aus (GET oder POST).'];
-$lang['action']        = ['Action', 'Geben Sie eine URL an, zu der die Formulardaten gesendet werden sollen.'];
-$lang['published']     = ['Veröffentlichen', 'Wählen Sie diese Option zum Veröffentlichen.'];
-$lang['start']         = ['Anzeigen ab', 'Filter erst ab diesem Tag auf der Webseite anzeigen.'];
-$lang['stop']          = ['Anzeigen bis', 'Filter nur bis zu diesem Tag auf der Webseite anzeigen.'];
+$lang['tstamp']         = ['Änderungsdatum', ''];
+$lang['title']          = ['Titel', 'Geben Sie hier bitte den Titel ein.'];
+$lang['dataContainer']  = ['Data-Container', 'Wählen Sie hier den gewünschten Data-Container aus.'];
+$lang['method']         = ['HTTP-Methode', 'Wählen Sie die HTTP-Methode des Formulars aus (GET oder POST).'];
+$lang['action']         = ['Action', 'Geben Sie eine URL an, zu der die Formulardaten gesendet werden sollen.'];
+$lang['published']      = ['Veröffentlichen', 'Wählen Sie diese Option zum Veröffentlichen.'];
+$lang['start']          = ['Anzeigen ab', 'Filter erst ab diesem Tag auf der Webseite anzeigen.'];
+$lang['stop']           = ['Anzeigen bis', 'Filter nur bis zu diesem Tag auf der Webseite anzeigen.'];
 $lang['dateTimeFormat'] = ['Zeitformat', 'Geben Sie hier die zu verwendende Formatierung aus.'];
+$lang['mergeData']      = ['Formulardaten mergen', 'Wählen Sie diese Option um die abgesendeten Formulardaten mit anderen Formulardaten zu mergen.'];
+$lang['type']           = ['Typ', 'Wählen Sie den Typen aus.'];
+$lang['parentFilter']   = ['Eltern-Filterkonfiguration', 'Wählen Sie hier eine Filterkonfiguration aus, von der geerbt werden soll.'];
+
 
 /**
  * Legends

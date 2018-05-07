@@ -113,7 +113,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
         'range'        => '{general_legend},title,type,isInitial;{config_legend},field,customName,customOperator,addDefaultValue,min,max,step;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
         'tel'          => '{general_legend},title,type,isInitial;{config_legend},field,customName,customOperator,addDefaultValue;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
         'color'        => '{general_legend},title,type,isInitial;{config_legend},field,customName,customOperator,addDefaultValue;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
-        'choice'       => '{general_legend},title,type,isInitial;{config_legend},field,customOptions,customName,customOperator,addDefaultValue,expanded,multiple;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
+        'choice'       => '{general_legend},title,type,isInitial;{config_legend},field,customOptions,customName,customOperator,addDefaultValue,expanded,multiple,submitOnChange;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
         'country'      => '{general_legend},title,type,isInitial;{config_legend},field,customCountries,customOptions,customName,customOperator,addDefaultValue,expanded,multiple;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
         'language'     => '{general_legend},title,type,isInitial;{config_legend},field,customLanguages,customOptions,customName,customOperator,addDefaultValue,expanded,multiple;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
         'locale'       => '{general_legend},title,type,isInitial;{config_legend},field,customLocales,customOptions,customName,customOperator,addDefaultValue,expanded,multiple;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
@@ -123,14 +123,15 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
         'button'       => '{general_legend},title,type;{config_legend},name,label;{expert_legend},cssClass;{publish_legend},published;',
         'reset'        => '{general_legend},title,type;{config_legend},customName;{visualization_legend},customLabel,hideLabel;{expert_legend},cssClass;{publish_legend},published;',
         'submit'       => '{general_legend},title,type;{config_legend},customName;{visualization_legend},customLabel,hideLabel;{expert_legend},cssClass;{publish_legend},published;',
-        'checkbox'     => '{general_legend},title,type,isInitial;{config_legend},field,customName,customOperator,addDefaultValue,customValue;{visualization_legend},customLabel,hideLabel;{expert_legend},cssClass;{publish_legend},published;',
-        'radio'        => '{general_legend},title,type,isInitial;{config_legend},field,customName,customOperator,addDefaultValue,customValue;{visualization_legend},customLabel,hideLabel;{expert_legend},cssClass;{publish_legend},published;',
+        'checkbox'     => '{general_legend},title,type,isInitial;{config_legend},field,customName,customOperator,addDefaultValue,customValue,submitOnChange;{visualization_legend},customLabel,hideLabel;{expert_legend},cssClass;{publish_legend},published;',
+        'radio'        => '{general_legend},title,type,isInitial;{config_legend},field,customName,customOperator,addDefaultValue,customValue,submitOnChange;{visualization_legend},customLabel,hideLabel;{expert_legend},cssClass;{publish_legend},published;',
         'date'         => '{general_legend},title,type,isInitial;{config_legend},field,name,customValue,dateWidget,dateFormat,html5,minDate,maxDate;{visualization_legend},customLabel,hideLabel,inputGroup,addPlaceholder;{expert_legend},cssClass;{publish_legend},published;',
         'date_time'    => '{general_legend},title,type,isInitial;{config_legend},field,name,customValue,dateWidget,timeWidget,html5,dateTimeFormat,minDateTime,maxDateTime;{visualization_legend},customLabel,hideLabel,inputGroup,addPlaceholder;{expert_legend},cssClass;{publish_legend},published;',
         'time'         => '{general_legend},title,type,isInitial;{config_legend},field,name,customValue,timeWidget,timeFormat,minTime,html5,maxTime;{visualization_legend},customLabel,hideLabel,inputGroup,addPlaceholder;{expert_legend},cssClass;{publish_legend},published;',
         'date_range'   => '{general_legend},title,type,isInitial;{config_legend},startElement,stopElement,name;{visualization_legend},customLabel,hideLabel;{expert_legend},cssClass;{publish_legend},published;',
         'sql'          => '{general_legend},title,type;{config_legend},whereSql;{publish_legend},published',
         'auto_item'    => '{general_legend},title,type;{config_legend},field,operator;{publish_legend},published',
+        'sort'         => '{general_legend},title,type;{config_legend},sortOptions,expanded,submitOnChange;{visualization_legend},addPlaceholder,customLabel,hideLabel;{publish_legend},published',
     ],
     'subpalettes' => [
         'customOptions'                                                                           => 'options',
@@ -820,6 +821,72 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'inputType' => 'textarea',
             'eval'      => ['rte' => 'ace|sql', 'tl_class' => 'clr'],
             'sql'       => "text NULL",
+        ],
+        'sortOptions'       => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['sortOptions'],
+            'inputType' => 'multiColumnEditor',
+            'eval'      => [
+                'tl_class'          => 'long clr',
+                'multiColumnEditor' => [
+                    'fields' => [
+                        'class'     => [
+                            'label'            => &$GLOBALS['TL_LANG']['tl_filter_config_element']['sortOptions_class'],
+                            'exclude'          => true,
+                            'search'           => true,
+                            'inputType'        => 'select',
+                            'options_callback' => function (\Contao\DataContainer $dc) {
+                                return \HeimrichHannot\FilterBundle\Util\FilterConfigElementHelper::getSortClasses($dc);
+                            },
+                            'eval'             => ['tl_class' => 'w50', 'mandatory' => true, 'groupStyle' => 'width: 300px', 'chosen' => true, 'includeBlankOption' => true],
+                        ],
+                        'field'     => [
+                            'label'            => &$GLOBALS['TL_LANG']['tl_filter_config_element']['sortOptions_field'],
+                            'exclude'          => true,
+                            'filter'           => true,
+                            'inputType'        => 'select',
+                            'options_callback' => function (\Contao\DataContainer $dc) {
+                                return \HeimrichHannot\FilterBundle\Util\FilterConfigElementHelper::getFields($dc);
+                            },
+                            'eval'             => ['tl_class' => 'w50', 'mandatory' => true, 'groupStyle' => 'width: 150px', 'chosen' => true, 'includeBlankOption' => true],
+                        ],
+                        'direction' => [
+                            'label'            => &$GLOBALS['TL_LANG']['tl_filter_config_element']['sortOptions_direction'],
+                            'exclude'          => true,
+                            'filter'           => true,
+                            'inputType'        => 'select',
+                            'options_callback' => function (\Contao\DataContainer $dc) {
+                                return \HeimrichHannot\FilterBundle\Util\FilterConfigElementHelper::getSortDirections($dc);
+                            },
+                            'eval'             => ['tl_class' => 'w50', 'mandatory' => true, 'groupStyle' => 'width: 150px', 'chosen' => true, 'includeBlankOption' => true],
+                        ],
+                        'fieldText' => [
+                            'label'            => &$GLOBALS['TL_LANG']['tl_filter_config_element']['sortOptions_fieldText'],
+                            'exclude'          => true,
+                            'filter'           => true,
+                            'inputType'        => 'select',
+                            'options_callback' => function (\DataContainer $dc) {
+                                return \Contao\System::getContainer()->get('huh.utils.choice.message')->getCachedChoices('huh.sort.text');
+                            },
+                            'eval'             => ['tl_class' => 'w50', 'mandatory' => true, 'groupStyle' => 'width: 300px', 'chosen' => true, 'includeBlankOption' => true],
+                        ],
+                        'standard'  => [
+                            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['sortOptions_standard'],
+                            'exclude'   => true,
+                            'search'    => true,
+                            'inputType' => 'checkbox',
+                            'eval'      => ['tl_class' => 'w50', 'groupStyle' => 'width: 100px'],
+                        ],
+                    ],
+                ],
+            ],
+            'sql'       => "blob NULL",
+        ],
+        'submitOnChange'    => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['submitOnChange'],
+            'exclude'   => true,
+            'inputType' => 'checkbox',
+            'eval'      => ['tl_class' => 'w50'],
+            'sql'       => "char(1) NOT NULL default ''",
         ],
     ],
 ];

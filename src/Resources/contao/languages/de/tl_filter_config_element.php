@@ -72,6 +72,14 @@ $lang['published']          = ['Veröffentlichen', 'Wählen Sie diese Option zum
 $lang['start']              = ['Anzeigen ab', 'Filterelement erst ab diesem Tag auf der Webseite anzeigen.'];
 $lang['stop']               = ['Anzeigen bis', 'Filterelement nur bis zu diesem Tag auf der Webseite anzeigen.'];
 $lang['whereSql']           = ['Zusätzliches WHERE-SQL', 'Geben Sie hier SQL ein, welches dem WHERE-Statement hinzugefügt wird.'];
+$lang['submitOnChange']     = ['Submit on Change', 'Wählen Sie diese Option, wenn der Nutzer das Formular bei Änderung abschicken soll.'];
+
+// sort
+$lang['sortOptions_class']     = ['Sortier-Klasse', 'Wählen Sie hier die Sortierklasse aus.'];
+$lang['sortOptions_field']     = ['Dca-Feld', 'Wählen Sie hier das zu sortierende Feld aus.'];
+$lang['sortOptions_direction'] = ['Sortierreihenfolde', 'Wählen Sie eine Reihenfolge für die Sortierung aus.'];
+$lang['sortOptions_fieldText'] = ['Sortiertext', 'Wählen Sie hier den Text des Sortierfeldes aus.'];
+$lang['sortOptions_standard']  = ['Standard', 'HINWEIS: Dieser Wert wird NICHT initial ausgewertet, sondern gibt nur einen Standardwert für das Sortierfeld vor. Der initiale Sortierfilter wird in der Listenkonfiguration festgelegt.'];
 
 /**
  * Legends
@@ -131,6 +139,7 @@ $lang['reference'] = [
         'time'        => 'Zeit',
         'date_range'  => 'Datumsspanne (date range)',
         'sql'         => 'SQL',
+        'sort'        => 'Sortierung',
     ],
     'roundingMode'                                                      => [
         \Symfony\Component\Form\Extension\Core\DataTransformer\IntegerToLocalizedStringTransformer::ROUND_DOWN      => 'Abrunden (zu 0 hin)',

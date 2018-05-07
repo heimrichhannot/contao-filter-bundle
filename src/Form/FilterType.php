@@ -66,12 +66,10 @@ class FilterType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(
-            [
+        $resolver->setDefaults([
                 'filter' => null,
                 'framework' => null,
-            ]
-        );
+            ]);
     }
 
     /**
