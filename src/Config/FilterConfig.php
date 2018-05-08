@@ -16,6 +16,7 @@ use HeimrichHannot\FilterBundle\Form\Extension\FormButtonExtension;
 use HeimrichHannot\FilterBundle\Form\Extension\FormTypeExtension;
 use HeimrichHannot\FilterBundle\Form\FilterType;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
+use HeimrichHannot\FilterBundle\Model\FilterConfigModel;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 use HeimrichHannot\FilterBundle\Session\FilterSession;
 use Symfony\Component\Form\Exception\TransformationFailedException;
@@ -425,7 +426,18 @@ class FilterConfig
     {
         $filter = $this->getFilter();
 
-        if (!isset($filter['action'])) {
+        if (!empty($filter['parentFilter'])) {
+            $parentFilter = $this->framework->getAdapter(FilterConfigModel::class)->findById($filter['parentFilter'])->row();
+            if (!empty($parentFilter)) {
+                $filter['action'] = $parentFilter['action'];
+                $filter['name'] = $parentFilter['name'];
+                $filter['dataContainer'] = $parentFilter['dataContainer'];
+                $filter['method'] = $parentFilter['method'];
+                $filter['mergeData'] = $parentFilter['mergeData'];
+            }
+        }
+
+        if (!isset($filter['action']) || empty($filter['action'])) {
             return '';
         }
 

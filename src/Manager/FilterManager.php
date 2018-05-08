@@ -122,8 +122,6 @@ class FilterManager
      */
     protected function getConfig(array $filter, $request = null)
     {
-        $sessionKey = $this->getSessionKey($filter);
-
         /**
          * @var FilterConfig
          */
@@ -140,7 +138,13 @@ class FilterManager
         // get the parent filter config
         if (FilterConfig::FILTER_TYPE_SORT === $filter['type']) {
             $parentFilter = $this->framework->getAdapter(FilterConfigModel::class)->findById($filter['parentFilter'])->row();
-            $filter = array_merge($parentFilter, $filter);
+            if (!empty($parentFilter)) {
+                $filter['action'] = $parentFilter['action'];
+                $filter['dataContainer'] = $parentFilter['dataContainer'];
+                $filter['name'] = $parentFilter['name'];
+                $filter['method'] = $parentFilter['method'];
+                $filter['mergeData'] = $parentFilter['mergeData'];
+            }
         }
 
         // merge multiple filters (e.g. inital filters and sort filter)
@@ -157,6 +161,8 @@ class FilterManager
                 $elements = new Collection($elementModels, FilterConfigElementModel::getTable());
             }
         }
+
+        $sessionKey = $this->getSessionKey($filter);
 
         $config->init($sessionKey, $filter, $elements);
 
