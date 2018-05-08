@@ -8,7 +8,7 @@
     "contao/core-bundle": "^4.4",
     "symfony/framework-bundle": "^3.4",
     "heimrichhannot/contao-utils-bundle": "^2.0",
-    "heimrichhannot/contao-multi_column_editor": "^1.4",
+    "heimrichhannot/contao-multi-column-editor-bundle": "^1.0",
     "codefog/contao-haste": "^4.18",
     "twig/extensions": "^1.5",
     "urodoz/truncate-html": "^1.0"
