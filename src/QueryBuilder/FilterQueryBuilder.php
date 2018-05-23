@@ -57,7 +57,7 @@ class FilterQueryBuilder extends QueryBuilder
     {
         $filter = $config->getFilter();
 
-        \Controller::loadDataContainer($filter['dataContainer']);
+        $this->framework->getAdapter(Controller::class)->loadDataContainer($filter['dataContainer']);
 
         if (!isset($GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element->field])) {
             return $this;
@@ -89,9 +89,10 @@ class FilterQueryBuilder extends QueryBuilder
      * Add tag widget where clause.
      *
      * @param FilterConfigElementModel $element
-     * @param string                   $name    The field name
+     * @param string                   $name            The field name
      * @param FilterConfig             $config
      * @param array                    $dca
+     * @param string|null              $defaultOperator
      *
      * @return $this this FilterQueryBuilder instance
      */
@@ -102,7 +103,7 @@ class FilterQueryBuilder extends QueryBuilder
         if ($element->isInitial) {
             $value = $data[$name] ?? AbstractType::getInitialValue($element, $this->contextualValues);
 
-            if (null === $value || !$element->field) {
+            if (empty($value) || !$element->field) {
                 return $this;
             }
 
@@ -124,7 +125,7 @@ class FilterQueryBuilder extends QueryBuilder
         } else {
             $value = $data[$name] ?? ($element->customValue ? $element->value : null);
 
-            if (null === $value || !$element->field) {
+            if (empty($value) || !$element->field) {
                 return $this;
             }
 
