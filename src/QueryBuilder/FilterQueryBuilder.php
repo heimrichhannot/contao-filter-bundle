@@ -57,7 +57,7 @@ class FilterQueryBuilder extends QueryBuilder
     {
         $filter = $config->getFilter();
 
-        $this->framework->getAdapter(Controller::class)->loadDataContainer($filter['dataContainer']);
+        Controller::loadDataContainer($filter['dataContainer']);
 
         if (!isset($GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element->field])) {
             return $this;
