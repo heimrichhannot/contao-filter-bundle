@@ -11,6 +11,7 @@ $lang['type']               = ['Typ', 'Wählen Sie hier bitte einen Typ aus.'];
 $lang['field']              = ['DCA-Feld', 'Wählen Sie hier das verknüpfte DCA-Feld aus.'];
 $lang['fields']             = ['Felder', 'Wählen Sie hier mehrere Felder aus, die in der gewählten Reihenfolge verknüpft werden sollen.'];
 $lang['customOptions']      = ['Optionen anpassen', 'Wählen Sie diese Option, um benutzerdefinierte Optionswerte festzulegen.'];
+$lang['sortOptionValues']   = ['Optionen sortieren', 'Wählen Sie diese Option, um die Optionswerte alphabetisch zu sortieren.'];
 $lang['options']            = ['Optionen', 'Wenn JavaScript deaktiviert ist, speichern Sie Ihre Änderungen, bevor Sie die Reihenfolge verändern.'];
 $lang['customName']         = ['Name anpassen', 'Setzen Sie hier einen benutzerdefinierten Namen.'];
 $lang['name']               = ['Formularfeldname', 'Geben Sie hier den gewünschten Namen im HTML-Formular ein.'];

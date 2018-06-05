@@ -67,7 +67,13 @@ class FieldOptionsChoice extends AbstractChoice
                 $option['label'] = $translator->trans($option['label']);
             }
 
+            $option['label'] = html_entity_decode($option['label']);
+
             $choices[$option['label']] = $option['value'];
+        }
+
+        if ($element->sortOptionValues) {
+            asort($choices);
         }
 
         return $choices;
