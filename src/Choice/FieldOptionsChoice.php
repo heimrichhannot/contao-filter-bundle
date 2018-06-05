@@ -113,6 +113,13 @@ class FieldOptionsChoice extends AbstractChoice
         $dca = $GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element->field];
 
         if (isset($dca['eval']['isCategoryField']) && $dca['eval']['isCategoryField']) {
+            if (isset($dca['options_callback'])) {
+                // TODO: workaround until we have categoryTree in frontend
+                $GLOBALS['TL_FFL']['categoryTree'] = 'HeimrichHannot\CategoriesBundle\Widget\CategoryTree';
+
+                return $this->getWidgetOptions($element, $filter, $dca);
+            }
+
             $options = $this->getCategoryWidgetOptions($element, $filter, $dca);
 
             return $options;
