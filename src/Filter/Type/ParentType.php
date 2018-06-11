@@ -52,6 +52,7 @@ class ParentType extends ChoiceType
         if (System::getContainer()->has('huh.utils.choice.model_instance')) {
             $choices = System::getContainer()->get('huh.utils.choice.model_instance')->getCachedChoices([
                 'dataContainer' => $parentTable,
+                'labelPattern' => '%title% [ID: %id%]',
             ]);
         }
 
