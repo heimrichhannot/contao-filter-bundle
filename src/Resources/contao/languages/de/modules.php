@@ -10,4 +10,4 @@ $lang['MOD']['filter'] = ['Sortier-/Filterkonfigurationen', 'Sortier-/Filter-Kon
 /**
  * Front end modules
  */
-$lang['FMD']['filter'] = ['Filter/Sortierung', 'Anzeige eines Filter-Formulars'];
+$lang['FMD'][HeimrichHannot\FilterBundle\Module\ModuleFilter::TYPE] = ['Filter/Sortierung', 'Anzeige eines Filter-Formulars'];

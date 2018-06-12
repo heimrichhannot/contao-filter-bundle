@@ -8,13 +8,17 @@
 
 namespace HeimrichHannot\FilterBundle\Module;
 
+use Contao\BackendTemplate;
+use Contao\Module;
 use Contao\System;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
 use HeimrichHannot\FilterBundle\Manager\FilterManager;
 use Patchwork\Utf8;
 
-class ModuleFilter extends \Contao\Module
+class ModuleFilter extends Module
 {
+    const TYPE = 'filter';
+
     protected $strTemplate = 'mod_filter';
 
     /**
@@ -25,12 +29,12 @@ class ModuleFilter extends \Contao\Module
     public function generate()
     {
         if (TL_MODE === 'BE') {
-            $objTemplate = new \BackendTemplate('be_wildcard');
+            $objTemplate = new BackendTemplate('be_wildcard');
             $objTemplate->wildcard = '### '.Utf8::strtoupper($GLOBALS['TL_LANG']['FMD'][$this->type][0]).' ###';
             $objTemplate->title = $this->headline;
             $objTemplate->id = $this->id;
             $objTemplate->link = $this->name;
-            $objTemplate->href = 'contao/main.php?do=themes&amp;table=tl_module&amp;act=edit&amp;id='.$this->id;
+            $objTemplate->href = 'contao?do=themes&amp;table=tl_module&amp;act=edit&amp;id='.$this->id;
 
             return $objTemplate->parse();
         }

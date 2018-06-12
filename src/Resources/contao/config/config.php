@@ -27,6 +27,6 @@ array_insert(
     $GLOBALS['FE_MOD']['filter'],
     2,
     [
-        'filter' => 'HeimrichHannot\FilterBundle\Module\ModuleFilter',
+        HeimrichHannot\FilterBundle\Module\ModuleFilter::TYPE => HeimrichHannot\FilterBundle\Module\ModuleFilter::class,
     ]
 );

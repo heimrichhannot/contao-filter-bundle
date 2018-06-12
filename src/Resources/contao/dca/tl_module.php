@@ -5,7 +5,7 @@ $dc = &$GLOBALS['TL_DCA']['tl_module'];
 /**
  * Palettes
  */
-$dc['palettes']['filter'] = '{title_legend},name,headline,type;{config_legend},filter;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
+$dc['palettes'][HeimrichHannot\FilterBundle\Module\ModuleFilter::TYPE] = '{title_legend},name,headline,type;{config_legend},filter;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
 
 /**
  * Fields

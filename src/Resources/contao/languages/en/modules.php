@@ -11,4 +11,4 @@ $lang['MOD']['filter'] = ['Filter configurations', 'Manage filter configurations
 /**
  * Front end modules
  */
-$lang['FMD']['filter'] = ['Filter', 'Display a filter form'];
+$lang['FMD'][HeimrichHannot\FilterBundle\Module\ModuleFilter::TYPE] = ['Filter', 'Display a filter form'];

@@ -120,7 +120,7 @@ class ModuleFilterTest extends ContaoTestCase
         System::setContainer($this->container);
 
         /** @var ModuleModel $model */
-        $model = $this->mockClassWithProperties(ModuleModel::class, ['id' => 1, 'type' => 'filter']);
+        $model = $this->mockClassWithProperties(ModuleModel::class, ['id' => 1, 'type' => ModuleFilter::TYPE]);
 
         $module = new ModuleFilter($model);
 
@@ -140,11 +140,11 @@ class ModuleFilterTest extends ContaoTestCase
             \define('TL_MODE', 'BE');
         }
 
-        $GLOBALS['TL_LANG']['FMD']['filter'][0] = 'Filter';
+        $GLOBALS['TL_LANG']['FMD'][ModuleFilter::TYPE][0] = 'Filter';
 
         $model = new ModuleModel();
         $model->id = 1;
-        $model->type = 'filter';
+        $model->type = ModuleFilter::TYPE;
 
         \Config::set('debugMode', false);
 
@@ -164,11 +164,11 @@ class ModuleFilterTest extends ContaoTestCase
             \define('TL_MODE', 'FE');
         }
 
-        $GLOBALS['TL_LANG']['FMD']['filter'][0] = 'Filter';
+        $GLOBALS['TL_LANG']['FMD'][ModuleFilter::TYPE][0] = 'Filter';
 
         $model = new ModuleModel();
         $model->id = 1;
-        $model->type = 'filter';
+        $model->type = ModuleFilter::TYPE;
 
         \Config::set('debugMode', false);
 
@@ -195,11 +195,11 @@ class ModuleFilterTest extends ContaoTestCase
             \define('TL_MODE', 'FE');
         }
 
-        $GLOBALS['TL_LANG']['FMD']['filter'][0] = 'Filter';
+        $GLOBALS['TL_LANG']['FMD'][ModuleFilter::TYPE][0] = 'Filter';
 
         $model = new ModuleModel();
         $model->id = 1;
-        $model->type = 'filter';
+        $model->type = ModuleFilter::TYPE;
         $model->filter = 1;
 
         \Config::set('debugMode', false);
@@ -285,7 +285,7 @@ class ModuleFilterTest extends ContaoTestCase
             \define('TL_MODE', 'FE');
         }
 
-        $GLOBALS['TL_LANG']['FMD']['filter'][0] = 'Filter';
+        $GLOBALS['TL_LANG']['FMD'][ModuleFilter::TYPE][0] = 'Filter';
 
         global $objPage;
         $objPage = new \stdClass();
@@ -294,7 +294,7 @@ class ModuleFilterTest extends ContaoTestCase
 
         $model = new ModuleModel();
         $model->id = 1;
-        $model->type = 'filter';
+        $model->type = ModuleFilter::TYPE;
         $model->filter = 1;
         $model->cssID = [0 => 'cssId', '1' => 'cssClass'];
 
