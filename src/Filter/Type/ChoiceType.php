@@ -17,6 +17,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class ChoiceType extends AbstractType
 {
+    const TYPE = 'choice';
+
     /**
      * {@inheritdoc}
      */

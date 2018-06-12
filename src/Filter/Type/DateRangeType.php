@@ -18,6 +18,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class DateRangeType extends AbstractType
 {
+    const TYPE = 'date_range';
+
     /**
      * @var FilterConfigElementModel
      */

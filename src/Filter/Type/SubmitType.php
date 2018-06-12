@@ -15,6 +15,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class SubmitType extends AbstractType
 {
+    const TYPE = 'submit';
+
     /**
      * {@inheritdoc}
      */

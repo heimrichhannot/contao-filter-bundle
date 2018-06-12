@@ -19,6 +19,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class DateType extends AbstractType
 {
+    const TYPE = 'date';
+
     const WIDGET_TYPE_CHOICE = 'choice';
     const WIDGET_TYPE_TEXT = 'text';
     const WIDGET_TYPE_SINGLE_TEXT = 'single_text';

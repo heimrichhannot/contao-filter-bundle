@@ -17,6 +17,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class TextConcatType extends AbstractType
 {
+    const TYPE = 'text_concat';
+
     /**
      * {@inheritdoc}
      */
