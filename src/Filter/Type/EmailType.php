@@ -13,6 +13,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class EmailType extends TextType
 {
+    const TYPE = 'email';
+
     /**
      * {@inheritdoc}
      */

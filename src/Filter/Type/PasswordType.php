@@ -14,6 +14,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class PasswordType extends TextType
 {
+    const TYPE = 'password';
+
     /**
      * {@inheritdoc}
      */

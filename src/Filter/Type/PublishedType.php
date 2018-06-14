@@ -17,6 +17,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class PublishedType extends AbstractType
 {
+    const TYPE = 'visible';
+
     /**
      * {@inheritdoc}
      */

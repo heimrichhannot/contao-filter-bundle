@@ -16,6 +16,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class HiddenType extends AbstractType
 {
+    const TYPE = 'hidden';
+
     /**
      * {@inheritdoc}
      */

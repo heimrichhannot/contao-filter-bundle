@@ -14,6 +14,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class CountryType extends ChoiceType
 {
+    const TYPE = 'country';
+
     /**
      * {@inheritdoc}
      */

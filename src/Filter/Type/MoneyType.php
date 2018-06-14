@@ -14,6 +14,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class MoneyType extends TextType
 {
+    const TYPE = 'money';
+
     /**
      * {@inheritdoc}
      */

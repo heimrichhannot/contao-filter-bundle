@@ -14,6 +14,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class PercentType extends TextType
 {
+    const TYPE = 'percent';
+
     /**
      * {@inheritdoc}
      */

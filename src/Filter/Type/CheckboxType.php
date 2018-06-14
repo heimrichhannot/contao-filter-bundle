@@ -16,6 +16,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class CheckboxType extends AbstractType
 {
+    const TYPE = 'checkbox';
+
     /**
      * {@inheritdoc}
      */

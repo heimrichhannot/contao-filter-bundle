@@ -17,6 +17,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class AutoItemType extends AbstractType
 {
+    const TYPE = 'auto_item';
+
     /**
      * {@inheritdoc}
      */

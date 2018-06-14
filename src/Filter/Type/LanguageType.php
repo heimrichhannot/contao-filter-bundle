@@ -14,6 +14,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class LanguageType extends ChoiceType
 {
+    const TYPE = 'language';
+
     /**
      * {@inheritdoc}
      */

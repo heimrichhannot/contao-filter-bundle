@@ -14,6 +14,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class LocaleType extends ChoiceType
 {
+    const TYPE = 'locale';
+
     /**
      * {@inheritdoc}
      */

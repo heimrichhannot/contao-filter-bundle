@@ -15,6 +15,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class ButtonType extends AbstractType
 {
+    const TYPE = 'button';
+
     /**
      * {@inheritdoc}
      */

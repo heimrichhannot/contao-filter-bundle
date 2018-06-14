@@ -14,6 +14,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class ColorType extends TextType
 {
+    const TYPE = 'color';
+
     /**
      * {@inheritdoc}
      */

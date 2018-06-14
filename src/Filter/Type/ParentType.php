@@ -14,6 +14,8 @@ use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 
 class ParentType extends ChoiceType
 {
+    const TYPE = 'parent';
+
     /** {@inheritdoc} */
     public function getChoices(FilterConfigElementModel $element)
     {

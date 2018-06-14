@@ -42,9 +42,7 @@ class TypeChoice extends AbstractChoice
                 continue;
             }
 
-            $r = new \ReflectionClass($type['class']);
-
-            if (!$r->isSubclassOf(AbstractType::class)) {
+            if (!is_subclass_of($type['class'], AbstractType::class)) {
                 continue;
             }
 

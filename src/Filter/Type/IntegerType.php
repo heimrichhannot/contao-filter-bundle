@@ -14,6 +14,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class IntegerType extends TextType
 {
+    const TYPE = 'integer';
+
     /**
      * {@inheritdoc}
      */

@@ -103,39 +103,56 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
         \HeimrichHannot\FilterBundle\Filter\Type\TextConcatType::TYPE
                        => '{general_legend},title,type,isInitial;{config_legend},fields,name;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
         'textarea'     => '{general_legend},title,type,isInitial;{config_legend},field,customName,customOperator,addDefaultValue;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
-        'email'        => '{general_legend},title,type,isInitial;{config_legend},field,customName,customOperator,addDefaultValue;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
-        'integer'      => '{general_legend},title,type,isInitial;{config_legend},field,customName,customOperator,addDefaultValue,grouping,scale,rounding_mode;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
-        'money'        => '{general_legend},title,type,isInitial;{config_legend},field,customName,customOperator,addDefaultValue,currency,divisor,grouping,scale;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
-        'number'       => '{general_legend},title,type,isInitial;{config_legend},field,customName,customOperator,addDefaultValue,grouping,scale,roundingMode;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
-        'password'     => '{general_legend},title,type,isInitial;{config_legend},field,customName,customOperator,addDefaultValue,alwaysEmpty;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
+        \HeimrichHannot\FilterBundle\Filter\Type\EmailType::TYPE
+                       => '{general_legend},title,type,isInitial;{config_legend},field,customName,customOperator,addDefaultValue;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
+        \HeimrichHannot\FilterBundle\Filter\Type\IntegerType::TYPE
+                       => '{general_legend},title,type,isInitial;{config_legend},field,customName,customOperator,addDefaultValue,grouping,scale,rounding_mode;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
+        \HeimrichHannot\FilterBundle\Filter\Type\MoneyType::TYPE
+        => '{general_legend},title,type,isInitial;{config_legend},field,customName,customOperator,addDefaultValue,currency,divisor,grouping,scale;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
+        \HeimrichHannot\FilterBundle\Filter\Type\NumberType::TYPE
+        => '{general_legend},title,type,isInitial;{config_legend},field,customName,customOperator,addDefaultValue,grouping,scale,roundingMode;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
+        \HeimrichHannot\FilterBundle\Filter\Type\PasswordType::TYPE
+        => '{general_legend},title,type,isInitial;{config_legend},field,customName,customOperator,addDefaultValue,alwaysEmpty;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
         'search'       => '{general_legend},title,type,isInitial;{config_legend},field,customName,customOperator,addDefaultValue;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
-        'percent'      => '{general_legend},title,type,isInitial;{config_legend},field,customName,customOperator,addDefaultValue,scale,percentType;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
+        \HeimrichHannot\FilterBundle\Filter\Type\PercentType::TYPE
+        => '{general_legend},title,type,isInitial;{config_legend},field,customName,customOperator,addDefaultValue,scale,percentType;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
         'url'          => '{general_legend},title,type,isInitial;{config_legend},field,customName,customOperator,addDefaultValue,defaultProtocol;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
         'range'        => '{general_legend},title,type,isInitial;{config_legend},field,customName,customOperator,addDefaultValue,min,max,step;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
         'tel'          => '{general_legend},title,type,isInitial;{config_legend},field,customName,customOperator,addDefaultValue;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
-        'color'        => '{general_legend},title,type,isInitial;{config_legend},field,customName,customOperator,addDefaultValue;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
+        \HeimrichHannot\FilterBundle\Filter\Type\ColorType::TYPE
+                       => '{general_legend},title,type,isInitial;{config_legend},field,customName,customOperator,addDefaultValue;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
         \HeimrichHannot\FilterBundle\Filter\Type\ChoiceType::TYPE
                        => '{general_legend},title,type,isInitial;{config_legend},field,customOptions,sortOptionValues,customName,customOperator,addDefaultValue,expanded,multiple,submitOnChange;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
-        'country'      => '{general_legend},title,type,isInitial;{config_legend},field,customCountries,customOptions,sortOptionValues,customName,customOperator,addDefaultValue,expanded,multiple;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
-        'language'     => '{general_legend},title,type,isInitial;{config_legend},field,customLanguages,customOptions,sortOptionValues,customName,customOperator,addDefaultValue,expanded,multiple;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
-        'locale'       => '{general_legend},title,type,isInitial;{config_legend},field,customLocales,customOptions,sortOptionValues,customName,customOperator,addDefaultValue,expanded,multiple;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
-        'parent'       => '{general_legend},title,type,isInitial;{config_legend},field,customOptions,sortOptionValues,customName,customOperator,addDefaultValue,expanded,multiple;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
-        'visible'      => '{general_legend},title,type;{config_legend},field,customName,invertField,ignoreFePreview,addStartAndStop;{publish_legend},published;',
-        'hidden'       => '{general_legend},title,type,isInitial;{config_legend},field,customName,customOperator,addDefaultValue;{expert_legend},cssClass;{publish_legend},published;',
-        'button'       => '{general_legend},title,type;{config_legend},name,label;{expert_legend},cssClass;{publish_legend},published;',
+        \HeimrichHannot\FilterBundle\Filter\Type\CountryType::TYPE
+                       => '{general_legend},title,type,isInitial;{config_legend},field,customCountries,customOptions,sortOptionValues,customName,customOperator,addDefaultValue,expanded,multiple;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
+        \HeimrichHannot\FilterBundle\Filter\Type\LanguageType::TYPE
+                       => '{general_legend},title,type,isInitial;{config_legend},field,customLanguages,customOptions,sortOptionValues,customName,customOperator,addDefaultValue,expanded,multiple;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
+        \HeimrichHannot\FilterBundle\Filter\Type\LocaleType::TYPE
+                       => '{general_legend},title,type,isInitial;{config_legend},field,customLocales,customOptions,sortOptionValues,customName,customOperator,addDefaultValue,expanded,multiple;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
+        \HeimrichHannot\FilterBundle\Filter\Type\ParentType::TYPE
+        => '{general_legend},title,type,isInitial;{config_legend},field,customOptions,sortOptionValues,customName,customOperator,addDefaultValue,expanded,multiple;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
+        \HeimrichHannot\FilterBundle\Filter\Type\PublishedType::TYPE
+        => '{general_legend},title,type;{config_legend},field,customName,invertField,ignoreFePreview,addStartAndStop;{publish_legend},published;',
+        \HeimrichHannot\FilterBundle\Filter\Type\HiddenType::TYPE
+                       => '{general_legend},title,type,isInitial;{config_legend},field,customName,customOperator,addDefaultValue;{expert_legend},cssClass;{publish_legend},published;',
+        \HeimrichHannot\FilterBundle\Filter\Type\ButtonType::TYPE
+                       => '{general_legend},title,type;{config_legend},name,label;{expert_legend},cssClass;{publish_legend},published;',
         'reset'        => '{general_legend},title,type;{config_legend},customName;{visualization_legend},customLabel,hideLabel;{expert_legend},cssClass;{publish_legend},published;',
         \HeimrichHannot\FilterBundle\Filter\Type\SubmitType::TYPE
                        => '{general_legend},title,type;{config_legend},customName;{visualization_legend},customLabel,hideLabel;{expert_legend},cssClass;{publish_legend},published;',
-        'checkbox'     => '{general_legend},title,type,isInitial;{config_legend},field,customName,customOperator,addDefaultValue,customValue,submitOnChange;{visualization_legend},customLabel,hideLabel;{expert_legend},cssClass;{publish_legend},published;',
+        \HeimrichHannot\FilterBundle\Filter\Type\CheckboxType::TYPE
+                       => '{general_legend},title,type,isInitial;{config_legend},field,customName,customOperator,addDefaultValue,customValue,submitOnChange;{visualization_legend},customLabel,hideLabel;{expert_legend},cssClass;{publish_legend},published;',
         'radio'        => '{general_legend},title,type,isInitial;{config_legend},field,customName,customOperator,addDefaultValue,customValue,submitOnChange;{visualization_legend},customLabel,hideLabel;{expert_legend},cssClass;{publish_legend},published;',
         \HeimrichHannot\FilterBundle\Filter\Type\DateType::TYPE
                        => '{general_legend},title,type,isInitial;{config_legend},field,name,customValue,dateWidget,dateFormat,html5,minDate,maxDate;{visualization_legend},customLabel,hideLabel,inputGroup,addPlaceholder;{expert_legend},cssClass;{publish_legend},published;',
-        'date_time'    => '{general_legend},title,type,isInitial;{config_legend},field,name,customValue,dateWidget,timeWidget,html5,dateTimeFormat,minDateTime,maxDateTime;{visualization_legend},customLabel,hideLabel,inputGroup,addPlaceholder;{expert_legend},cssClass;{publish_legend},published;',
+        \HeimrichHannot\FilterBundle\Filter\Type\DateTimeType::TYPE
+                       => '{general_legend},title,type,isInitial;{config_legend},field,name,customValue,dateWidget,timeWidget,html5,dateTimeFormat,minDateTime,maxDateTime;{visualization_legend},customLabel,hideLabel,inputGroup,addPlaceholder;{expert_legend},cssClass;{publish_legend},published;',
         'time'         => '{general_legend},title,type,isInitial;{config_legend},field,name,customValue,timeWidget,timeFormat,minTime,html5,maxTime;{visualization_legend},customLabel,hideLabel,inputGroup,addPlaceholder;{expert_legend},cssClass;{publish_legend},published;',
         \HeimrichHannot\FilterBundle\Filter\Type\DateRangeType::TYPE
                        => '{general_legend},title,type,isInitial;{config_legend},startElement,stopElement,name;{visualization_legend},customLabel,hideLabel;{expert_legend},cssClass;{publish_legend},published;',
         'sql'          => '{general_legend},title,type;{config_legend},whereSql;{publish_legend},published',
-        'auto_item'    => '{general_legend},title,type;{config_legend},field,operator;{publish_legend},published',
+        \HeimrichHannot\FilterBundle\Filter\Type\AutoItemType::TYPE
+                       => '{general_legend},title,type;{config_legend},field,operator;{publish_legend},published',
         'sort'         => '{general_legend},title,type;{config_legend},sortOptions,expanded,submitOnChange;{visualization_legend},addPlaceholder,customLabel,hideLabel;{publish_legend},published',
     ],
     'subpalettes' => [

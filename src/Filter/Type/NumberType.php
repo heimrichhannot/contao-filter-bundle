@@ -14,6 +14,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class NumberType extends TextType
 {
+    const TYPE = 'number';
+
     /**
      * {@inheritdoc}
      */

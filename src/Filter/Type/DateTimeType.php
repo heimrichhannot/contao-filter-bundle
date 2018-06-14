@@ -19,6 +19,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class DateTimeType extends AbstractType
 {
+    const TYPE = 'date_time';
+
     /**
      * {@inheritdoc}
      */
