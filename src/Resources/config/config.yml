@@ -31,6 +31,7 @@ huh:
       - {name: date, class: HeimrichHannot\FilterBundle\Filter\Type\DateType, type: date}
       - {name: time, class: HeimrichHannot\FilterBundle\Filter\Type\TimeType, type: date}
       - {name: date_range, class: HeimrichHannot\FilterBundle\Filter\Type\DateRangeType, type: date, wrapper: true}
+      - {name: year, class: HeimrichHannot\FilterBundle\Filter\Type\YearType, type: date}
       - {name: sql, class: HeimrichHannot\FilterBundle\Filter\Type\SqlType, type: other}
       - {name: auto_item, class: HeimrichHannot\FilterBundle\Filter\Type\AutoItemType, type: other}
       - {name: sort, class: HeimrichHannot\FilterBundle\Filter\Type\SortType, type: sort}
