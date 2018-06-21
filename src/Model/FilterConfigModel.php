@@ -76,7 +76,7 @@ use Contao\System;
  * @method int                                                                 countByStart($val, array $opt = [])
  * @method int                                                                 countByStop($val, array $opt = [])
  */
-class FilterConfigModel extends \Model
+class FilterConfigModel extends Model
 {
     protected static $strTable = 'tl_filter_config';
 
