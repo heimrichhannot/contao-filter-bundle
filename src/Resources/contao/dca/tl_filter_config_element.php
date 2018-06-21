@@ -137,7 +137,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
                        => '{general_legend},title,type,isInitial;{config_legend},field,customName,customOperator,addDefaultValue;{expert_legend},cssClass;{publish_legend},published;',
         \HeimrichHannot\FilterBundle\Filter\Type\ButtonType::TYPE
                        => '{general_legend},title,type;{config_legend},name,label;{expert_legend},cssClass;{publish_legend},published;',
-        'reset'        => '{general_legend},title,type;{config_legend},customName;{visualization_legend},customLabel,hideLabel;{expert_legend},cssClass;{publish_legend},published;',
+        'reset'        => '{general_legend},title,type;{config_legend},customName,alwaysShow;{visualization_legend},customLabel,hideLabel;{expert_legend},cssClass;{publish_legend},published;',
         \HeimrichHannot\FilterBundle\Filter\Type\SubmitType::TYPE
                        => '{general_legend},title,type;{config_legend},customName;{visualization_legend},customLabel,hideLabel;{expert_legend},cssClass;{publish_legend},published;',
         \HeimrichHannot\FilterBundle\Filter\Type\CheckboxType::TYPE
@@ -921,5 +921,12 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'eval'      => ['tl_class' => 'w50'],
             'sql'       => "char(1) NOT NULL default ''",
         ],
+        'alwaysShow' => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['alwaysShow'],
+            'exclude'   => true,
+            'inputType' => 'checkbox',
+            'eval'      => ['tl_class' => 'w50'],
+            'sql'       => "char(1) NOT NULL default ''",
+        ]
     ],
 ];

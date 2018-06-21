@@ -88,6 +88,10 @@ use HeimrichHannot\FilterBundle\Filter\AbstractType;
  * @property bool   $addStartAndStop
  * @property bool   $ignoreFePreview
  * @property bool   $invertField
+ * @property string $whereSql
+ * @property array  $sortOptions
+ * @property bool   $submitOnChange
+ * @property bool   $alwaysShow
  * @property bool   $published
  * @property string $start
  * @property string $stop
@@ -142,11 +146,11 @@ class FilterConfigElementModel extends \Model implements \JsonSerializable
      */
     public function findPublishedByPid($intId, $intLimit = 0, array $arrOptions = [])
     {
-        $t = static::$strTable;
+        $t          = static::$strTable;
         $arrColumns = ["$t.pid=?"];
 
         if (isset($arrOptions['ignoreFePreview']) || !defined('BE_USER_LOGGED_IN') || !BE_USER_LOGGED_IN) {
-            $time = \Date::floorToMinute();
+            $time         = \Date::floorToMinute();
             $arrColumns[] = "($t.start='' OR $t.start<='$time') AND ($t.stop='' OR $t.stop>'".($time + 60)."') AND $t.published='1'";
         }
 
@@ -180,11 +184,11 @@ class FilterConfigElementModel extends \Model implements \JsonSerializable
      */
     public function findPublishedByPidAndTypes($intId, array $types = [], $intLimit = 0, array $arrOptions = [])
     {
-        $t = static::$strTable;
+        $t          = static::$strTable;
         $arrColumns = ["$t.pid=?"];
 
         if (isset($arrOptions['ignoreFePreview']) || !defined('BE_USER_LOGGED_IN') || !BE_USER_LOGGED_IN) {
-            $time = \Date::floorToMinute();
+            $time         = \Date::floorToMinute();
             $arrColumns[] = "($t.start='' OR $t.start<='$time') AND ($t.stop='' OR $t.stop>'".($time + 60)."') AND $t.published='1'";
         }
 
@@ -237,7 +241,7 @@ class FilterConfigElementModel extends \Model implements \JsonSerializable
             return null;
         }
 
-        $type = $types[$this->type];
+        $type  = $types[$this->type];
         $class = $type['class'];
 
         /** @var AbstractType $type */

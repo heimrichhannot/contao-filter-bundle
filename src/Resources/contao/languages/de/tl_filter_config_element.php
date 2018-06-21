@@ -73,7 +73,9 @@ $lang['published']          = ['Veröffentlichen', 'Wählen Sie diese Option zum
 $lang['start']              = ['Anzeigen ab', 'Filterelement erst ab diesem Tag auf der Webseite anzeigen.'];
 $lang['stop']               = ['Anzeigen bis', 'Filterelement nur bis zu diesem Tag auf der Webseite anzeigen.'];
 $lang['whereSql']           = ['Zusätzliches WHERE-SQL', 'Geben Sie hier SQL ein, welches dem WHERE-Statement hinzugefügt wird.'];
-$lang['submitOnChange']     = ['Submit on Change', 'Wählen Sie diese Option, wenn der Nutzer das Formular bei Änderung abschicken soll.'];
+$lang['submitOnChange']     = ['Formular bei Änderung absenden (submitOnChange)', 'Wählen Sie diese Option, wenn der Nutzer das Formular bei Änderung abschicken soll.'];
+$lang['alwaysShow']         = ['Immer anzeigen', 'Das Filterelement immer anzeigen.'];
+
 
 // sort
 $lang['sortOptions_class']     = ['Sortier-Klasse', 'Wählen Sie hier die Sortierklasse aus.'];

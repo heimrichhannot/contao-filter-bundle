@@ -67,10 +67,13 @@ $lang['addStartAndStop']    = ['Add start and stop field', 'Select this option i
 $lang['startField']         = ['Start field', 'Select a field here.'];
 $lang['stopField']          = ['Stop field', 'Select a field here.'];
 $lang['cssClass']           = ['CSS class', 'Here you can enter one or more classes.'];
-$lang['published']          = ['Publish Filterelement', 'Make the Filterelement publicly visible on the website.'];
-$lang['start']              = ['Show from', 'Do not publish the Filterelement on the website before this date.'];
-$lang['stop']               = ['Show until', 'Unpublish the Filterelement on the website after this date.'];
+$lang['published']          = ['Publish filter element', 'Make the filter element publicly visible on the website.'];
+$lang['start']              = ['Show from', 'Do not publish the filter element on the website before this date.'];
+$lang['stop']               = ['Show until', 'Unpublish the filter element on the website after this date.'];
 $lang['tstamp']             = ['Revision date', ''];
+$lang['whereSql']           = ['Additional WHERE-SQL', 'Enter SQL, which will be added to the WHERE statement.'];
+$lang['submitOnChange']     = ['Submit form on change (submitOnChange)', 'Select this option if you want the user to submit the form on change.'];
+$lang['alwaysShow']         = ['Show always', 'Always show the filter element.'];
 
 /**
  * Legends
@@ -141,8 +144,8 @@ $lang['reference'] = [
     ],
     'percentType'                                                       => [
         'fractional' => 'fractional (e.g .55)',
-        'integer'    => 'integer (e.g. 55)'
+        'integer'    => 'integer (e.g. 55)',
     ],
     \HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_SCALAR => 'Scalar',
-    \HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_ARRAY  => 'Array'
+    \HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_ARRAY  => 'Array',
 ];
