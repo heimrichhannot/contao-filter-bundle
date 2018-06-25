@@ -97,6 +97,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'addStartAndStop',
             'inputGroup',
             'published',
+            'addParentSelector',
         ],
         'default'      => '{general_legend},title,type,isInitial;{publish_legend},published;',
         'text'         => '{general_legend},title,type,isInitial;{config_legend},field,customName,customOperator,addDefaultValue;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
@@ -152,7 +153,9 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
                        => '{general_legend},title,type,isInitial;{config_legend},startElement,stopElement,name;{visualization_legend},customLabel,hideLabel;{expert_legend},cssClass;{publish_legend},published;',
         'sql'          => '{general_legend},title,type;{config_legend},whereSql;{publish_legend},published',
         \HeimrichHannot\FilterBundle\Filter\Type\YearType::TYPE
-                        => '{general_legend},title,type,isInitial;{config_legend},field,name,customValue,dateWidget,dateFormat,html5,minDate,maxDate;{visualization_legend},customLabel,hideLabel,inputGroup,addPlaceholder;{expert_legend},cssClass;{publish_legend},published;',
+                        => '{general_legend},title,type,isInitial;
+                        {config_legend},field,customOptions,sortOptionValues,customName,customOperator,addDefaultValue,expanded,multiple,submitOnChange;{date_legend},minDate,maxDate,addParentSelector;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup{expert_legend},cssClass;{publish_legend},published;',
+//                        => '{config_legend},name;{visualization_legend},inputGroup;',
         \HeimrichHannot\FilterBundle\Filter\Type\AutoItemType::TYPE
                        => '{general_legend},title,type;{config_legend},field,operator;{publish_legend},published',
         'sort'         => '{general_legend},title,type;{config_legend},sortOptions,expanded,submitOnChange;{visualization_legend},addPlaceholder,customLabel,hideLabel;{publish_legend},published',
@@ -173,6 +176,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
         'defaultValueType_' . \HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_SCALAR => 'defaultValue',
         'defaultValueType_' . \HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_ARRAY  => 'defaultValueArray',
         'addStartAndStop'                                                                         => 'startField,stopField',
+        'addParentSelector'                                                                         => 'parentField',
         'inputGroup'                                                                              => 'inputGroupPrepend,inputGroupAppend',
         'published'                                                                               => 'start,stop',
     ],
@@ -927,6 +931,34 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'inputType' => 'checkbox',
             'eval'      => ['tl_class' => 'w50'],
             'sql'       => "char(1) NOT NULL default ''",
-        ]
+        ],
+        'addParentSelector'   => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['addParentSelector'],
+            'exclude'   => true,
+            'inputType' => 'checkbox',
+            'eval'      => ['tl_class' => 'w50', 'submitOnChange' => true],
+            'sql'       => "char(1) NOT NULL default ''",
+        ],
+        'parentField'        => [
+            'label'            => &$GLOBALS['TL_LANG']['tl_filter_config_element']['parentField'],
+            'exclude'          => true,
+            'filter'           => true,
+            'inputType'        => 'select',
+            'options_callback' => function (\Contao\DataContainer $dc) {
+
+                if (null === ($model = \Contao\System::getContainer()->get('huh.utils.model')->findModelInstanceByPk($dc->table, $dc->id)))
+                {
+                    return [];
+                }
+
+                return \Contao\System::getContainer()->get('huh.filter.choice.element')->getCachedChoices([
+                    'pid'   => $model->pid,
+                    'types' => [\HeimrichHannot\FilterBundle\Filter\Type\ParentType::TYPE],
+                ]);
+            },
+            'eval'             => ['chosen' => true, 'tl_class' => 'w50', 'includeBlankOption' => true, 'mandatory' => true],
+            'sql'              => "int(10) unsigned NOT NULL default '0'",
+        ],
+
     ],
 ];

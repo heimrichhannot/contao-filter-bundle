@@ -103,7 +103,7 @@ class FilterQueryBuilder extends QueryBuilder
         if ($element->isInitial) {
             $value = $data[$name] ?? AbstractType::getInitialValue($element, $this->contextualValues);
 
-            if (!in_array($element->operator, [DatabaseUtil::OPERATOR_IS_EMPTY, DatabaseUtil::OPERATOR_IS_NOT_EMPTY]) && (empty($value) || !$element->field)) {
+            if (!in_array($element->operator, [DatabaseUtil::OPERATOR_IS_EMPTY, DatabaseUtil::OPERATOR_IS_NOT_EMPTY], true) && (empty($value) || !$element->field)) {
                 return $this;
             }
 

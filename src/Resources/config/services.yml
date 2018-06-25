@@ -75,6 +75,10 @@ services:
     public: true
     arguments:
       - "@contao.framework"
+  huh.filter.choice.year:
+    class: HeimrichHannot\FilterBundle\Choice\YearChoice
+    public: true
+    arguments: ['@contao.framework', '@huh.utils.model']
   twig.extension.text:
       class: Twig_Extensions_Extension_Text
       tags:
