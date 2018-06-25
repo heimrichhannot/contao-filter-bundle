@@ -31,10 +31,8 @@ class YearChoice extends AbstractChoice
      */
     protected function collect()
     {
-        $choices = [];
-
         if (!is_array($this->getContext()) || empty($this->getContext())) {
-            return $choices;
+            return [];
         }
         $context = $this->getContext();
 
@@ -45,14 +43,19 @@ class YearChoice extends AbstractChoice
             $value = StringUtil::deserialize($parentElement->initialValueArray);
             if ($value) {
                 $value = array_column($value, 'value');
+            } else {
+                return [];
             }
         } else {
-            $value = $parentElement->value;
+            $value = [$parentElement->value];
         }
-        if (empty($value)) {
+        if (empty($value) || empty($value[0])) {
             return [];
         }
         $items = $this->modelUtil->findModelInstancesBy($filter['dataContainer'], $parentElement->field, $value);
+        if (!$items) {
+            return [];
+        }
         $years = [];
         foreach ($items as $item) {
             $date = date('Y', $item->date);

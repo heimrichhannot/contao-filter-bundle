@@ -21,7 +21,6 @@ use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 use HeimrichHannot\FilterBundle\Session\FilterSession;
 use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 use HeimrichHannot\UtilsBundle\Date\DateUtil;
-use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -984,6 +983,6 @@ class DateRangeTypeTest extends ContaoTestCase
      */
     protected function getFixturesDir(): string
     {
-        return __DIR__.DIRECTORY_SEPARATOR.'../..'.DIRECTORY_SEPARATOR.'Fixtures';
+        return __DIR__.\DIRECTORY_SEPARATOR.'../..'.\DIRECTORY_SEPARATOR.'Fixtures';
     }
 }

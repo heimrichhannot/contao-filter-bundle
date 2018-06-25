@@ -187,6 +187,6 @@ class TextareaTypeTest extends ContaoTestCase
      */
     protected function getFixturesDir(): string
     {
-        return __DIR__.DIRECTORY_SEPARATOR.'../..'.DIRECTORY_SEPARATOR.'Fixtures';
+        return __DIR__.\DIRECTORY_SEPARATOR.'../..'.\DIRECTORY_SEPARATOR.'Fixtures';
     }
 }
