@@ -16,6 +16,7 @@ use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 use HeimrichHannot\UtilsBundle\Date\DateUtil;
 use HeimrichHannot\UtilsBundle\Model\ModelUtil;
+use Symfony\Component\Form\FormBuilderInterface;
 
 class YearType extends ChoiceType
 {
@@ -74,6 +75,19 @@ class YearType extends ChoiceType
 
         $builder->setParameter(':start', $start);
         $builder->setParameter(':stop', $stop);
+    }
+
+    public function getOptions(FilterConfigElementModel $element, FormBuilderInterface $builder)
+    {
+        $options = parent::getOptions($element, $builder);
+        $cssClasses = 'year' === $this->getName($element) ? $this->getName($element) : ' year '.$this->getName($element);
+        if (isset($options['attr']['class'])) {
+            $options['attr']['class'] .= $cssClasses;
+        } else {
+            $options['attr']['class'] = $cssClasses;
+        }
+
+        return $options;
     }
 
     public function getChoices(FilterConfigElementModel $element)
