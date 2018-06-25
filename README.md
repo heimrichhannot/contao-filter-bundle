@@ -2,8 +2,8 @@
 
 ![](https://img.shields.io/packagist/v/heimrichhannot/contao-filter-bundle.svg)
 ![](https://img.shields.io/packagist/dt/heimrichhannot/contao-filter-bundle.svg)
-[![](https://img.shields.io/travis/heimrichhannot/contao-filter-bundle/master.svg)](https://travis-ci.org/heimrichhannot/contao-filter-bundle/)
-[![](https://img.shields.io/coveralls/heimrichhannot/contao-filter-bundle/master.svg)](https://coveralls.io/github/heimrichhannot/contao-filter-bundle)
+[![Build Status](https://travis-ci.org/heimrichhannot/contao-filter-bundle.svg?branch=master)](https://travis-ci.org/heimrichhannot/contao-filter-bundle)
+[![Coverage Status](https://coveralls.io/repos/github/heimrichhannot/contao-filter-bundle/badge.svg?branch=master)](https://coveralls.io/github/heimrichhannot/contao-filter-bundle?branch=master)
 
 This bundle offers a generic filter module to use with arbitrary contao entities containing standard filter with initial filters and filter form types including [symfony form type representations](https://symfony.com/doc/current/reference/forms/types).
 
