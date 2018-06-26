@@ -9,6 +9,8 @@
 namespace HeimrichHannot\FilterBundle\Filter\Type;
 
 use Contao\Controller;
+use Contao\System;
+use Doctrine\DBAL\Exception\SyntaxErrorException;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
@@ -25,7 +27,23 @@ class SqlType extends AbstractType
         if (!$element->whereSql) {
             return;
         }
+
         $where = Controller::replaceInsertTags($element->whereSql, false);
+
+        try {
+            $testBuilder = clone $builder;
+            $testBuilder->select('*');
+            $testBuilder->where($where);
+            $testBuilder->setMaxResults(1);
+            $testBuilder->execute();
+        } catch (SyntaxErrorException $e) {
+            // force error if in frontend and debug mode
+            if (System::getContainer()->getParameter('kernel.debug') && System::getContainer()->get('huh.utils.container')->isFrontend()) {
+                $builder->andWhere($where);
+            }
+
+            return;
+        }
 
         $builder->andWhere($where);
     }
