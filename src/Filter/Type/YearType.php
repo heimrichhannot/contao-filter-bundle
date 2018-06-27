@@ -9,6 +9,7 @@
 namespace HeimrichHannot\FilterBundle\Filter\Type;
 
 use Contao\Controller;
+use Contao\Date;
 use Contao\System;
 use HeimrichHannot\FilterBundle\Choice\YearChoice;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
@@ -77,7 +78,7 @@ class YearType extends ChoiceType
                     ]))) {
                     $value = array_pop($choices);
                 } else {
-                    $value = date('Y');
+                    $value = Date::parse('Y');
                 }
             } else {
                 $value = $data[$name] ?? $this->getInitialValue($element, $builder->getContextualValues());

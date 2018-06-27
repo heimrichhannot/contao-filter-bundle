@@ -184,11 +184,13 @@ abstract class AbstractType
      */
     public function getOptions(FilterConfigElementModel $element, FormBuilderInterface $builder)
     {
+        $data = $this->config->getData();
+        $name = $this->getName($element);
         $options = [];
 
         $options['label'] = (true === (bool) $element->hideLabel) ? false : ($this->getLabel($element, $builder) ?: $element->title);
 
-        if ($element->addDefaultValue) {
+        if ($element->addDefaultValue && !isset($data[$name])) {
             $options['data'] = static::getDefaultValue($element);
         }
 

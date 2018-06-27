@@ -69,6 +69,9 @@ class ChoiceType extends AbstractType
 
     public function getOptions(FilterConfigElementModel $element, FormBuilderInterface $builder)
     {
+        $data = $this->config->getData();
+        $name = $this->getName($element);
+
         $options = parent::getOptions($element, $builder);
         $options['choices'] = $this->getChoices($element);
         $options['choice_translation_domain'] = false; // disable translation
@@ -97,7 +100,7 @@ class ChoiceType extends AbstractType
         }
 
         // forgiving array handling
-        if ($element->addDefaultValue) {
+        if ($element->addDefaultValue && !isset($data[$name])) {
             if (isset($options['multiple']) && true === (bool) $options['multiple'] && isset($options['data'])) {
                 $options['data'] = !is_array($options['data']) ? [$options['data']] : $options['data'];
             }
