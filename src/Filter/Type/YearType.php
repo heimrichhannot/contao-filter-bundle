@@ -21,6 +21,15 @@ use Symfony\Component\Form\FormBuilderInterface;
 class YearType extends ChoiceType
 {
     const TYPE = 'year';
+
+    const VALUE_TYPE_LATEST = 'latest';
+
+    const VALUE_TYPES = [
+        self::VALUE_TYPE_SCALAR,
+        self::VALUE_TYPE_CONTEXTUAL,
+        self::VALUE_TYPE_LATEST,
+    ];
+
     /**
      * @var DateUtil
      */
@@ -58,7 +67,21 @@ class YearType extends ChoiceType
         $value = isset($data[$name]) && $data[$name] ? $data[$name] : 0;
 
         if ($element->isInitial) {
-            $value = $data[$name] ?? $this->getInitialValue($element, $builder->getContextualValues());
+            if (static::VALUE_TYPE_LATEST === $element->initialValueType) {
+                $parentElement = $this->config->getElementByValue($element->parentField);
+                if ($parentElement && !empty($choices = $this->optionsChoice->getCachedChoices([
+                        'element' => $element,
+                        'filter' => $this->config->getFilter(),
+                        'parentElement' => $parentElement,
+                        'latest' => true,
+                    ]))) {
+                    $value = array_pop($choices);
+                } else {
+                    $value = date('Y');
+                }
+            } else {
+                $value = $data[$name] ?? $this->getInitialValue($element, $builder->getContextualValues());
+            }
         }
         if (!$this->validYear($value)) {
             return;

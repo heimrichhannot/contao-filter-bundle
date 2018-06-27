@@ -29,6 +29,7 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
+use Symfony\Component\HttpKernel\Config\FileLocator;
 use Symfony\Component\HttpKernel\Kernel;
 
 class FilterConfigElementHelperTest extends ContaoTestCase
@@ -56,7 +57,7 @@ class FilterConfigElementHelperTest extends ContaoTestCase
 
         $container->set('contao.framework', $framework);
 
-        $modelsUtil = new ModelUtil($framework);
+        $modelsUtil = new ModelUtil($framework, $this->createMock(ContainerUtil::class));
         $container->set('huh.utils.model', $modelsUtil);
         System::setContainer($container);
 
@@ -97,13 +98,13 @@ class FilterConfigElementHelperTest extends ContaoTestCase
 
         $container->set('contao.framework', $framework);
 
-        $modelsUtil = new ModelUtil($framework);
+        $modelsUtil = new ModelUtil($framework, $this->createMock(ContainerUtil::class));
         $container->set('huh.utils.model', $modelsUtil);
 
         $requestStack = new RequestStack();
         $container->set('request_stack', $requestStack);
 
-        $containerUtil = new ContainerUtil($framework);
+        $containerUtil = new ContainerUtil($framework, $this->createMock(FileLocator::class));
         $container->set('huh.utils.container', $containerUtil);
 
         $session = new Session(new MockArraySessionStorage());
@@ -163,13 +164,13 @@ class FilterConfigElementHelperTest extends ContaoTestCase
 
         $container->set('contao.framework', $framework);
 
-        $modelsUtil = new ModelUtil($framework);
+        $modelsUtil = new ModelUtil($framework, $this->createMock(ContainerUtil::class));
         $container->set('huh.utils.model', $modelsUtil);
 
         $requestStack = new RequestStack();
         $container->set('request_stack', $requestStack);
 
-        $containerUtil = new ContainerUtil($framework);
+        $containerUtil = new ContainerUtil($framework, $this->createMock(FileLocator::class));
         $container->set('huh.utils.container', $containerUtil);
 
         $session = new Session(new MockArraySessionStorage());

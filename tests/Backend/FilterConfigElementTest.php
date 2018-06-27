@@ -29,6 +29,7 @@ use HeimrichHannot\UtilsBundle\Model\ModelUtil;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
+use Symfony\Component\HttpKernel\Config\FileLocator;
 use Symfony\Component\Translation\Translator;
 
 class FilterConfigElementTest extends ContaoTestCase
@@ -64,7 +65,7 @@ class FilterConfigElementTest extends ContaoTestCase
 
         $container->set('contao.framework', $framework);
 
-        $modelsUtil = new ModelUtil($framework);
+        $modelsUtil = new ModelUtil($framework, $this->createMock(ContainerUtil::class));
         $container->set('huh.utils.model', $modelsUtil);
 
         System::setContainer($container);
@@ -100,7 +101,7 @@ class FilterConfigElementTest extends ContaoTestCase
 
         $container->set('contao.framework', $framework);
 
-        $modelsUtil = new ModelUtil($framework);
+        $modelsUtil = new ModelUtil($framework, $this->createMock(ContainerUtil::class));
         $container->set('huh.utils.model', $modelsUtil);
 
         $container->setParameter('huh.filter', ['filter' => [[]]]);
@@ -138,7 +139,7 @@ class FilterConfigElementTest extends ContaoTestCase
 
         $container->set('contao.framework', $framework);
 
-        $modelsUtil = new ModelUtil($framework);
+        $modelsUtil = new ModelUtil($framework, $this->createMock(ContainerUtil::class));
         $container->set('huh.utils.model', $modelsUtil);
 
         $container->setParameter('huh.filter', ['filter' => ['types' => [['name' => 'choice']]]]);
@@ -182,7 +183,7 @@ class FilterConfigElementTest extends ContaoTestCase
 
         $container->set('contao.framework', $framework);
 
-        $modelsUtil = new ModelUtil($framework);
+        $modelsUtil = new ModelUtil($framework, $this->createMock(ContainerUtil::class));
         $container->set('huh.utils.model', $modelsUtil);
 
         $container->setParameter('huh.filter', [
@@ -227,7 +228,7 @@ class FilterConfigElementTest extends ContaoTestCase
 
         $container->set('contao.framework', $framework);
 
-        $modelsUtil = new ModelUtil($framework);
+        $modelsUtil = new ModelUtil($framework, $this->createMock(ContainerUtil::class));
         $container->set('huh.utils.model', $modelsUtil);
 
         System::setContainer($container);
@@ -263,7 +264,7 @@ class FilterConfigElementTest extends ContaoTestCase
 
         $container->set('contao.framework', $framework);
 
-        $modelsUtil = new ModelUtil($framework);
+        $modelsUtil = new ModelUtil($framework, $this->createMock(ContainerUtil::class));
         $container->set('huh.utils.model', $modelsUtil);
 
         $container->setParameter('huh.filter', ['filter' => [[]]]);
@@ -301,7 +302,7 @@ class FilterConfigElementTest extends ContaoTestCase
 
         $container->set('contao.framework', $framework);
 
-        $modelsUtil = new ModelUtil($framework);
+        $modelsUtil = new ModelUtil($framework, $this->createMock(ContainerUtil::class));
         $container->set('huh.utils.model', $modelsUtil);
 
         $container->setParameter('huh.filter', ['filter' => ['types' => [['name' => 'choice']]]]);
@@ -353,7 +354,7 @@ class FilterConfigElementTest extends ContaoTestCase
 
         $container->set('contao.framework', $framework);
 
-        $modelsUtil = new ModelUtil($framework);
+        $modelsUtil = new ModelUtil($framework, $this->createMock(ContainerUtil::class));
         $container->set('huh.utils.model', $modelsUtil);
 
         $session = new Session(new MockArraySessionStorage());
@@ -372,7 +373,7 @@ class FilterConfigElementTest extends ContaoTestCase
         $translator = new Translator('en');
         $container->set('translator', $translator);
 
-        $containerUtil = new ContainerUtil($framework);
+        $containerUtil = new ContainerUtil($framework, $this->createMock(FileLocator::class));
         $container->set('huh.utils.container', $containerUtil);
 
         $container->setParameter('huh.filter', [
@@ -446,7 +447,7 @@ class FilterConfigElementTest extends ContaoTestCase
 
         $container->set('contao.framework', $framework);
 
-        $modelsUtil = new ModelUtil($framework);
+        $modelsUtil = new ModelUtil($framework, $this->createMock(ContainerUtil::class));
         $container->set('huh.utils.model', $modelsUtil);
 
         $session = new Session(new MockArraySessionStorage());
@@ -466,7 +467,7 @@ class FilterConfigElementTest extends ContaoTestCase
         $translator = new Translator('en');
         $container->set('translator', $translator);
 
-        $containerUtil = new ContainerUtil($framework);
+        $containerUtil = new ContainerUtil($framework, $this->createMock(FileLocator::class));
         $container->set('huh.utils.container', $containerUtil);
 
         $container->setParameter('huh.filter', [
@@ -558,7 +559,7 @@ class FilterConfigElementTest extends ContaoTestCase
 
         $container->set('contao.framework', $framework);
 
-        $modelsUtil = new ModelUtil($framework);
+        $modelsUtil = new ModelUtil($framework, $this->createMock(ContainerUtil::class));
         $container->set('huh.utils.model', $modelsUtil);
 
         $session = new Session(new MockArraySessionStorage());
@@ -577,7 +578,7 @@ class FilterConfigElementTest extends ContaoTestCase
         $translator = new Translator('en');
         $container->set('translator', $translator);
 
-        $containerUtil = new ContainerUtil($framework);
+        $containerUtil = new ContainerUtil($framework, $this->createMock(FileLocator::class));
         $container->set('huh.utils.container', $containerUtil);
 
         $container->setParameter('huh.filter', [

@@ -10,6 +10,7 @@ namespace HeimrichHannot\FilterBundle\Choice;
 
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\StringUtil;
+use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\UtilsBundle\Choice\AbstractChoice;
 use HeimrichHannot\UtilsBundle\Model\ModelUtil;
 
@@ -37,7 +38,15 @@ class YearChoice extends AbstractChoice
         $context = $this->getContext();
 
         $filter = $context['filter'];
+        /** @var FilterConfigElementModel $element */
+        $element = $context['element'];
+        /** @var FilterConfigElementModel $parentElement */
         $parentElement = $context['parentElement'];
+        $options = [];
+        if (isset($context['latest']) && true === $context['latest']) {
+            $options['order'] = $element->field.' DESC';
+            $options['limit'] = 1;
+        }
 
         if ($parentElement->isInitial) {
             $value = StringUtil::deserialize($parentElement->initialValueArray);
@@ -52,7 +61,7 @@ class YearChoice extends AbstractChoice
         if (empty($value) || empty($value[0])) {
             return [];
         }
-        $items = $this->modelUtil->findModelInstancesBy($filter['dataContainer'], $parentElement->field, $value);
+        $items = $this->modelUtil->findModelInstancesBy($filter['dataContainer'], $parentElement->field, $value, $options);
         if (!$items) {
             return [];
         }

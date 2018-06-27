@@ -33,6 +33,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
+use Symfony\Component\HttpKernel\Config\FileLocator;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -243,10 +244,10 @@ class ModuleFilterTest extends ContaoTestCase
 
         $this->container->setParameter('huh.filter', $this->config);
         $this->container->set('huh.utils.template', new TemplateUtil($framework));
-        $this->container->set('huh.utils.container', new ContainerUtil($framework));
+        $this->container->set('huh.utils.container', new ContainerUtil($framework, $this->createMock(FileLocator::class)));
         $this->container->set('huh.utils.choice.twig_template', new TwigTemplateChoice($framework));
 
-        $this->container->set('huh.utils.container', new ContainerUtil($framework));
+        $this->container->set('huh.utils.container', new ContainerUtil($framework, $this->createMock(FileLocator::class)));
 
         $templateChoiceAdapter = $this->mockAdapter(['getChoices']);
         $templateChoiceAdapter->method('getChoices')->willReturn(['bootstrap_4_layout' => '@HeimrichHannotContaoFilter/filter/filter_form_bootstrap_4_layout.html.twig']);

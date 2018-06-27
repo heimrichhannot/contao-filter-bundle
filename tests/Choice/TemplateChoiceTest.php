@@ -21,6 +21,7 @@ use HeimrichHannot\UtilsBundle\Choice\TwigTemplateChoice;
 use HeimrichHannot\UtilsBundle\Container\ContainerUtil;
 use HeimrichHannot\UtilsBundle\Template\TemplateUtil;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\HttpKernel\Config\FileLocator;
 use Symfony\Component\HttpKernel\Kernel;
 
 class TemplateChoiceTest extends ContaoTestCase
@@ -113,7 +114,7 @@ class TemplateChoiceTest extends ContaoTestCase
         $framework = $this->mockContaoFramework([ThemeModel::class => $themeModelAdapter]);
         $this->container->setParameter('huh.filter', $this->config);
         $this->container->set('huh.utils.template', new TemplateUtil($framework));
-        $this->container->set('huh.utils.container', new ContainerUtil($framework));
+        $this->container->set('huh.utils.container', new ContainerUtil($framework, $this->createMock(FileLocator::class)));
         $this->container->set('huh.utils.choice.twig_template', new TwigTemplateChoice($framework));
         $this->container->set('kernel', $this->kernel);
         $this->container->setParameter('kernel.project_dir', $this->getFixturesDir());

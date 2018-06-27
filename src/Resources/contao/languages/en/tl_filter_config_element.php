@@ -148,4 +148,5 @@ $lang['reference'] = [
     ],
     \HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_SCALAR => 'Scalar',
     \HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_ARRAY  => 'Array',
+    \HeimrichHannot\FilterBundle\Filter\Type\YearType::VALUE_TYPE_LATEST  => 'Latest',
 ];
