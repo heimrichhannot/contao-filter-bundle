@@ -46,7 +46,7 @@ class ElementChoice extends AbstractChoice
         }
 
         foreach ($elements as $element) {
-            $choices[$element->id] = $element->name.' ['.$element->type.']';
+            $choices[$element->id] = $element->title.' ['.$element->type.']';
         }
 
         return $choices;

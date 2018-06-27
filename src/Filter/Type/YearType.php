@@ -116,18 +116,25 @@ class YearType extends ChoiceType
 
     public function getChoices(FilterConfigElementModel $element)
     {
-        if ($element->addParentSelector && $element->parentField) {
-            $parentElement = $this->config->getElementByValue($element->parentField);
-            if ($parentElement && !empty($choices = $this->optionsChoice->getCachedChoices([
+        $min = $element->minDate ? $this->dateUtil->getTimeStamp($element->minDate, false) : null;
+        $max = $element->maxDate ? $this->dateUtil->getTimeStamp($element->maxDate, false) : null;
+
+        if ($element->dynamicOptions) {
+            $choiceOptions = [
                 'element' => $element,
+                'elements' => $this->config->getElements(),
                 'filter' => $this->config->getFilter(),
-                'parentElement' => $parentElement,
-            ]))) {
+            ];
+            if ($min) {
+                $choiceOptions['min'] = Date::parse('Y', $min);
+            }
+            if ($max) {
+                $choiceOptions['max'] = Date::parse('Y', $max);
+            }
+            if (!empty($choices = $this->optionsChoice->getCachedChoices($choiceOptions))) {
                 return $choices;
             }
         }
-        $min = $element->minDate ? $this->dateUtil->getTimeStamp($element->minDate, false) : null;
-        $max = $element->maxDate ? $this->dateUtil->getTimeStamp($element->maxDate, false) : null;
 
         return $this->getYears($min, $max);
     }
@@ -147,8 +154,11 @@ class YearType extends ChoiceType
         return array_combine($years, $years);
     }
 
-    public function validYear(int $year)
+    public function validYear($year)
     {
+        if (!is_numeric($year)) {
+            return false;
+        }
         if (checkdate(1, 1, $year) && checkdate(12, 31, $year)) {
             return true;
         }

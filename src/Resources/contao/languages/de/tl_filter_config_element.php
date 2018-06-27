@@ -75,6 +75,7 @@ $lang['stop']               = ['Anzeigen bis', 'Filterelement nur bis zu diesem 
 $lang['whereSql']           = ['Zusätzliches WHERE-SQL', 'Geben Sie hier SQL ein, welches dem WHERE-Statement hinzugefügt wird.'];
 $lang['submitOnChange']     = ['Formular bei Änderung absenden (submitOnChange)', 'Wählen Sie diese Option, wenn der Nutzer das Formular bei Änderung abschicken soll.'];
 $lang['alwaysShow']         = ['Immer anzeigen', 'Das Filterelement immer anzeigen.'];
+$lang['dynamicOptions']         = ['Dynamische Optionen', 'Aktivieren Sie diese Option, um die Optionswerte anhand der Daten zu erhalten. Initiale Filterelemente mit Skalaren oder Array-Werten werden beachtet.'];
 
 
 // sort

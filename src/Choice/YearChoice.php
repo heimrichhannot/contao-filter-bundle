@@ -9,7 +9,9 @@
 namespace HeimrichHannot\FilterBundle\Choice;
 
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
+use Contao\Model\Collection;
 use Contao\StringUtil;
+use HeimrichHannot\FilterBundle\Filter\AbstractType;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\UtilsBundle\Choice\AbstractChoice;
 use HeimrichHannot\UtilsBundle\Model\ModelUtil;
@@ -40,34 +42,40 @@ class YearChoice extends AbstractChoice
         $filter = $context['filter'];
         /** @var FilterConfigElementModel $element */
         $element = $context['element'];
-        /** @var FilterConfigElementModel $parentElement */
-        $parentElement = $context['parentElement'];
+        /** @var FilterConfigElementModel[]|Collection $elements */
+        $elements = $context['elements'];
+        $columns = [];
+        $values = [];
+        foreach ($elements as $entry) {
+            if ($entry->isInitial && $entry->id !== $element->id) {
+                switch ($entry->initialValueType) {
+                    case AbstractType::VALUE_TYPE_SCALAR:
+                        $columns[] = $entry->field.' = ?';
+                        $values[] = $entry->initialValue;
+                        break;
+                    case AbstractType::VALUE_TYPE_ARRAY:
+                        $value = array_column(StringUtil::deserialize($entry->initialValueArray), 'value');
+                        $columns[] = $entry->field.' IN ('.implode(',', $value).')';
+                        break;
+                }
+            }
+        }
         $options = [];
         if (isset($context['latest']) && true === $context['latest']) {
             $options['order'] = $element->field.' DESC';
             $options['limit'] = 1;
         }
 
-        if ($parentElement->isInitial) {
-            $value = StringUtil::deserialize($parentElement->initialValueArray);
-            if ($value) {
-                $value = array_column($value, 'value');
-            } else {
-                return [];
-            }
-        } else {
-            $value = [$parentElement->value];
-        }
-        if (empty($value) || empty($value[0])) {
+        if (empty($columns)) {
             return [];
         }
-        $items = $this->modelUtil->findModelInstancesBy($filter['dataContainer'], $parentElement->field, $value, $options);
+        $items = $this->modelUtil->findModelInstancesBy($filter['dataContainer'], $columns, $values, $options);
         if (!$items) {
             return [];
         }
         $years = [];
-        foreach ($items as $item) {
-            $date = date('Y', $item->date);
+        foreach ($items as $entry) {
+            $date = date('Y', $entry->date);
             $years[$date] = $date;
         }
         krsort($years, SORT_NUMERIC);
