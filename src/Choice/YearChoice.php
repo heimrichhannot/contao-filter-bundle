@@ -55,6 +55,9 @@ class YearChoice extends AbstractChoice
                         break;
                     case AbstractType::VALUE_TYPE_ARRAY:
                         $value = array_column(StringUtil::deserialize($entry->initialValueArray), 'value');
+                        if (empty($value) || empty($value[0])) {
+                            continue;
+                        }
                         $columns[] = $entry->field.' IN ('.implode(',', $value).')';
                         break;
                 }
