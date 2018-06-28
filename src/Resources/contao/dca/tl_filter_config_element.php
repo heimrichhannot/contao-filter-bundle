@@ -151,13 +151,14 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
         'time'         => '{general_legend},title,type,isInitial;{config_legend},field,name,customValue,timeWidget,timeFormat,minTime,html5,maxTime;{visualization_legend},customLabel,hideLabel,inputGroup,addPlaceholder;{expert_legend},cssClass;{publish_legend},published;',
         \HeimrichHannot\FilterBundle\Filter\Type\DateRangeType::TYPE
                        => '{general_legend},title,type,isInitial;{config_legend},startElement,stopElement,name;{visualization_legend},customLabel,hideLabel;{expert_legend},cssClass;{publish_legend},published;',
-        'sql'          => '{general_legend},title,type;{config_legend},whereSql;{publish_legend},published',
+        \HeimrichHannot\FilterBundle\Filter\Type\SqlType::TYPE
+                       => '{general_legend},title,type;{config_legend},whereSql;{publish_legend},published',
         \HeimrichHannot\FilterBundle\Filter\Type\YearType::TYPE
-                        => '{general_legend},title,type,isInitial;
-                        {config_legend},field,customOptions,sortOptionValues,customName,customOperator,addDefaultValue,expanded,submitOnChange;{date_legend},minDate,maxDate,dynamicOptions;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup{expert_legend},cssClass;{publish_legend},published;',
+                        => '{general_legend},title,type,isInitial;{config_legend},field,customOptions,sortOptionValues,customName,customOperator,addDefaultValue,expanded,submitOnChange,minDate,maxDate,dynamicOptions;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup{expert_legend},cssClass;{publish_legend},published;',
         \HeimrichHannot\FilterBundle\Filter\Type\AutoItemType::TYPE
                        => '{general_legend},title,type;{config_legend},field,operator;{publish_legend},published',
-        'sort'         => '{general_legend},title,type;{config_legend},sortOptions,expanded,submitOnChange;{visualization_legend},addPlaceholder,customLabel,hideLabel;{publish_legend},published',
+        \HeimrichHannot\FilterBundle\Filter\Type\SortType::TYPE
+                       => '{general_legend},title,type;{config_legend},sortOptions,expanded,submitOnChange;{visualization_legend},addPlaceholder,customLabel,hideLabel;{publish_legend},published',
     ],
     'subpalettes' => [
         'customOptions'                                                                           => 'options',
@@ -171,11 +172,11 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
         'customValue'                                                                             => 'value',
         'initialValueType_' . \HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_SCALAR => 'initialValue',
         'initialValueType_' . \HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_ARRAY  => 'initialValueArray',
-        'initialValueType_' . \HeimrichHannot\FilterBundle\Filter\Type\YearType::VALUE_TYPE_LATEST  => 'parentField',
+        'initialValueType_' . \HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_LATEST  => 'parentField',
         'addDefaultValue'                                                                         => 'defaultValueType',
         'defaultValueType_' . \HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_SCALAR => 'defaultValue',
         'defaultValueType_' . \HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_ARRAY  => 'defaultValueArray',
-        'defaultValueType_' . \HeimrichHannot\FilterBundle\Filter\Type\YearType::VALUE_TYPE_LATEST  => 'parentField',
+        'defaultValueType_' . \HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_LATEST  => 'parentField',
         'addStartAndStop'                                                                         => 'startField,stopField',
         'addParentSelector'                                                                         => 'parentField',
         'inputGroup'                                                                              => 'inputGroupPrepend,inputGroupAppend',
@@ -934,7 +935,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'sql'       => "char(1) NOT NULL default ''",
         ],
         'dynamicOptions'   => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['dynamicValues'],
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['dynamicOptions'],
             'exclude'   => true,
             'inputType' => 'checkbox',
             'eval'      => ['tl_class' => 'w50', 'submitOnChange' => true],

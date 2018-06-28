@@ -16,6 +16,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class SortType extends ChoiceType
 {
+    const TYPE = 'sort';
+
     /**
      * {@inheritdoc}
      */

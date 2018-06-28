@@ -19,6 +19,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class SqlType extends AbstractType
 {
+    const TYPE = 'sql';
+
     /**
      * {@inheritdoc}
      */

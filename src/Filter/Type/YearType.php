@@ -23,8 +23,6 @@ class YearType extends ChoiceType
 {
     const TYPE = 'year';
 
-    const VALUE_TYPE_LATEST = 'latest';
-
     const VALUE_TYPES = [
         self::VALUE_TYPE_SCALAR,
         self::VALUE_TYPE_CONTEXTUAL,
@@ -69,17 +67,7 @@ class YearType extends ChoiceType
 
         if ($element->isInitial) {
             if (static::VALUE_TYPE_LATEST === $element->initialValueType) {
-                $parentElement = $this->config->getElementByValue($element->parentField);
-                if ($parentElement && !empty($choices = $this->optionsChoice->getCachedChoices([
-                        'element' => $element,
-                        'filter' => $this->config->getFilter(),
-                        'parentElement' => $parentElement,
-                        'latest' => true,
-                    ]))) {
-                    $value = array_pop($choices);
-                } else {
-                    $value = Date::parse('Y');
-                }
+                $value = $this->getLatestValue($element);
             } else {
                 $value = $data[$name] ?? $this->getInitialValue($element, $builder->getContextualValues());
             }
@@ -104,6 +92,13 @@ class YearType extends ChoiceType
     public function getOptions(FilterConfigElementModel $element, FormBuilderInterface $builder)
     {
         $options = parent::getOptions($element, $builder);
+        $data = $this->config->getData();
+        $name = $this->getName($element);
+        if ($element->addDefaultValue && !isset($data[$name])) {
+            if (static::VALUE_TYPE_LATEST === $element->defaultValueType) {
+                $options['data'] = $this->getLatestValue($element);
+            }
+        }
         $cssClasses = 'year' === $this->getName($element) ? $this->getName($element) : ' year '.$this->getName($element);
         if (isset($options['attr']['class'])) {
             $options['attr']['class'] .= $cssClasses;
@@ -174,5 +169,27 @@ class YearType extends ChoiceType
     public function getYearEnd(int $year)
     {
         return mktime(23, 59, 59, 12, 31, $year);
+    }
+
+    /**
+     * @param FilterConfigElementModel $element
+     *
+     * @return mixed|string
+     */
+    protected function getLatestValue(FilterConfigElementModel $element)
+    {
+        $choiceOptions = [
+            'element' => $element,
+            'elements' => $this->config->getElements(),
+            'filter' => $this->config->getFilter(),
+            'latest' => true,
+        ];
+        if (!empty($choices = $this->optionsChoice->getCachedChoices($choiceOptions))) {
+            $value = array_pop($choices);
+        } else {
+            $value = Date::parse('Y');
+        }
+
+        return $value;
     }
 }
