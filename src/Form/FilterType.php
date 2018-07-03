@@ -47,7 +47,7 @@ class FilterType extends AbstractType
 
         $filter = $this->config->getFilter();
 
-        $builder->setAction($this->getAction());
+        $builder->setAction($this->config->getAction());
 
         if (isset($filter['method'])) {
             $builder->setMethod($filter['method']);
@@ -187,21 +187,5 @@ class FilterType extends AbstractType
                 continue;
             }
         }
-    }
-
-    /**
-     * Get the form action url to internal filter_frontend_submit action.
-     */
-    protected function getAction()
-    {
-        $router = System::getContainer()->get('router');
-
-        $filter = $this->config->getFilter();
-
-        if (!isset($filter['id'])) {
-            return null;
-        }
-
-        return $router->generate('filter_frontend_submit', ['id' => $filter['id']]);
     }
 }

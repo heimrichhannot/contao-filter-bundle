@@ -194,8 +194,11 @@ class ParentTypeTest extends ContaoTestCase
         $element->columns = [];
         $element->values = [];
 
+        $GLOBALS['TL_DCA']['tl_member_group']['fields']['title'] = [];
+
         $filter = ['name' => 'test', 'dataContainer' => 'tl_member'];
         $config->init('test', $filter, [$element]);
+
 
         $type = new ParentType($config);
 
@@ -240,7 +243,7 @@ class ParentTypeTest extends ContaoTestCase
 
         $type = new ParentType($config);
 
-        $this->assertSame(['Test page title' => 8], $type->getChoices($element));
+        $this->assertSame(['Test page title [ID: 8]' => 8], $type->getChoices($element));
     }
 
     /**

@@ -13,6 +13,7 @@ use HeimrichHannot\FilterBundle\Exception\MissingFilterException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Handles the filter frontend routes.
@@ -21,6 +22,34 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
  */
 class FrontendController extends Controller
 {
+    /**
+     * @Route("/_filter/preselect/{id}", name="filter_frontend_preselect")
+     *
+     * @param Request $request Current request
+     * @param int     $id      Filter id
+     *
+     * @throws MissingFilterException
+     * @throws HandleFormException
+     *
+     * @return RedirectResponse
+     */
+    public function preselectAction(Request $request, int $id): RedirectResponse
+    {
+        $this->get('contao.framework')->initialize();
+
+        if (null === ($filter = $this->get('huh.filter.manager')->findById($id))) {
+            throw new MissingFilterException('A filter with id '.$id.' does not exist.');
+        }
+
+        $data = $request->query->get('data');
+
+        $filter->setData(is_array($data) ? $data : []);
+
+        $response = new RedirectResponse($filter->getUrl(), 303);
+
+        return $response;
+    }
+
     /**
      * @Route("/_filter/submit/{id}", name="filter_frontend_submit")
      *

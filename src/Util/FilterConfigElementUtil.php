@@ -8,12 +8,23 @@
 
 namespace HeimrichHannot\FilterBundle\Util;
 
+use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\DataContainer;
 use Contao\System;
 
-class FilterConfigElementHelper
+class FilterConfigElementUtil
 {
-    public static function getFields(DataContainer $dc)
+    /**
+     * @var ContaoFrameworkInterface
+     */
+    protected $framework;
+
+    public function __construct(ContaoFrameworkInterface $framework)
+    {
+        $this->framework = $framework;
+    }
+
+    public function getFields(DataContainer $dc)
     {
         if (null === ($model = System::getContainer()->get('huh.utils.model')->findModelInstanceByPk($dc->table, $dc->id))) {
             return [];
@@ -28,7 +39,7 @@ class FilterConfigElementHelper
         ]);
     }
 
-    public static function getSortClasses(DataContainer $dc)
+    public function getSortClasses(DataContainer $dc)
     {
         $types = [];
 
@@ -45,7 +56,7 @@ class FilterConfigElementHelper
         return $types;
     }
 
-    public static function getSortDirections(DataContainer $dc)
+    public function getSortDirections(DataContainer $dc)
     {
         $directions = [];
 

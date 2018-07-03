@@ -28,7 +28,7 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
 class FilterConfig
 {
     const FILTER_TYPE_DEFAULT = 'filter';
-    const FILTER_TYPE_SORT = 'sort';
+    const FILTER_TYPE_SORT    = 'sort';
 
     const FILTER_TYPES = [
         self::FILTER_TYPE_DEFAULT,
@@ -83,8 +83,8 @@ class FilterConfig
      */
     public function __construct(ContaoFrameworkInterface $framework, FilterSession $session, FilterQueryBuilder $queryBuilder)
     {
-        $this->framework = $framework;
-        $this->session = $session;
+        $this->framework    = $framework;
+        $this->session      = $session;
         $this->queryBuilder = $queryBuilder;
     }
 
@@ -97,9 +97,9 @@ class FilterConfig
      */
     public function init(string $sessionKey, array $filter, $elements = null)
     {
-        $this->filter = $filter;
+        $this->filter     = $filter;
         $this->sessionKey = $sessionKey;
-        $this->elements = $elements;
+        $this->elements   = $elements;
     }
 
     /**
@@ -131,7 +131,7 @@ class FilterConfig
             $options['attr']['class'] = implode(' ', $cssClass);
         }
 
-        if (isset($this->filter['renderEmpty']) && true === (bool) $this->filter['renderEmpty']) {
+        if (isset($this->filter['renderEmpty']) && true === (bool)$this->filter['renderEmpty']) {
             $data = [];
         }
 
@@ -160,8 +160,8 @@ class FilterConfig
             }
 
             $config = $types[$element->type];
-            $class = $config['class'];
-            $skip = $this->queryBuilder->getSkip();
+            $class  = $config['class'];
+            $skip   = $this->queryBuilder->getSkip();
 
             if (!class_exists($class) || isset($skip[$element->id])) {
                 continue;
@@ -213,12 +213,12 @@ class FilterConfig
             }
 
             // form id must match
-            if ((int) $form->get(FilterType::FILTER_ID_NAME)->getData() !== $this->getId()) {
+            if ((int)$form->get(FilterType::FILTER_ID_NAME)->getData() !== $this->getId()) {
                 return null;
             }
 
             $data = $form->getData();
-            $url = System::getContainer()->get('huh.utils.url')->removeQueryString([$form->getName()], $url ?: null);
+            $url  = System::getContainer()->get('huh.utils.url')->removeQueryString([$form->getName()], $url ?: null);
 
             // do not save filter id in session
             $this->setData($this->filter['mergeData'] ? array_merge($this->getData(), $data) : $data);
@@ -271,7 +271,7 @@ class FilterConfig
         }
 
         foreach ($this->getElements() as $element) {
-            if (null === $element->{$key} || (string) $element->{$key} !== (string) $value) {
+            if (null === $element->{$key} || (string)$element->{$key} !== (string)$value) {
                 continue;
             }
 
@@ -422,18 +422,18 @@ class FilterConfig
      *
      * @return string
      */
-    protected function getUrl()
+    public function getUrl()
     {
         $filter = $this->getFilter();
 
         if (!empty($filter['parentFilter'])) {
             $parentFilter = $this->framework->getAdapter(FilterConfigModel::class)->findById($filter['parentFilter'])->row();
             if (!empty($parentFilter)) {
-                $filter['action'] = $parentFilter['action'];
-                $filter['name'] = $parentFilter['name'];
+                $filter['action']        = $parentFilter['action'];
+                $filter['name']          = $parentFilter['name'];
                 $filter['dataContainer'] = $parentFilter['dataContainer'];
-                $filter['method'] = $parentFilter['method'];
-                $filter['mergeData'] = $parentFilter['mergeData'];
+                $filter['method']        = $parentFilter['method'];
+                $filter['mergeData']     = $parentFilter['mergeData'];
             }
         }
 
@@ -459,8 +459,8 @@ class FilterConfig
      */
     protected function mapFormsToData()
     {
-        $data = [];
-        $forms = $this->builder->getForm();
+        $data             = [];
+        $forms            = $this->builder->getForm();
         $propertyAccessor = PropertyAccess::createPropertyAccessor();
 
         /*
@@ -468,7 +468,7 @@ class FilterConfig
          */
         foreach ($forms as $form) {
             $propertyPath = $form->getPropertyPath();
-            $config = $form->getConfig();
+            $config       = $form->getConfig();
 
             // Write-back is disabled if the form is not synchronized (transformation failed),
             // if the form was not submitted and if the form is disabled (modification not allowed)
@@ -488,5 +488,41 @@ class FilterConfig
         }
 
         $this->builder->setData($data);
+    }
+
+    /**
+     * Get the form action url to internal filter_frontend_submit action.
+     */
+    public function getAction()
+    {
+        $router = System::getContainer()->get('router');
+
+        $filter = $this->getFilter();
+
+        if (!isset($filter['id'])) {
+            return null;
+        }
+
+        return $router->generate('filter_frontend_submit', ['id' => $filter['id']]);
+    }
+
+    /**
+     * Get the preselection action url
+     *
+     * @param array $data Preselection data
+     *
+     * @return null|string
+     */
+    public function getPreselectAction(array $data = [])
+    {
+        $router = System::getContainer()->get('router');
+
+        $filter = $this->getFilter();
+
+        if (!isset($filter['id'])) {
+            return null;
+        }
+
+        return $router->generate('filter_frontend_preselect', ['id' => $filter['id'], 'data' => $data]);
     }
 }

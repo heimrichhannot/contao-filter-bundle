@@ -17,6 +17,7 @@ use Contao\ThemeModel;
 use HeimrichHannot\FilterBundle\Choice\TemplateChoice;
 use HeimrichHannot\FilterBundle\Choice\TypeChoice;
 use HeimrichHannot\FilterBundle\ContaoManager\Plugin;
+use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\UtilsBundle\Choice\TwigTemplateChoice;
 use HeimrichHannot\UtilsBundle\Container\ContainerUtil;
 use HeimrichHannot\UtilsBundle\Template\TemplateUtil;
@@ -58,7 +59,7 @@ class TemplateChoiceTest extends ContaoTestCase
 
         $containerBuilder = new \Contao\ManagerPlugin\Config\ContainerBuilder($this->mockPluginLoader($this->never()), []);
 
-        $config = $plugin->getExtensionConfig('huh_filter', [[]], $containerBuilder);
+        $config                 = $plugin->getExtensionConfig('huh_filter', [[]], $containerBuilder);
         $this->config['filter'] = $config['huh']['filter'];
     }
 
@@ -73,7 +74,7 @@ class TemplateChoiceTest extends ContaoTestCase
         System::setContainer($this->container);
 
         $framework = $this->mockContaoFramework();
-        $instance = new TemplateChoice($framework);
+        $instance  = new TemplateChoice($framework);
 
         $this->assertInstanceOf('HeimrichHannot\FilterBundle\Choice\TemplateChoice', $instance);
     }
@@ -89,8 +90,8 @@ class TemplateChoiceTest extends ContaoTestCase
         System::setContainer($this->container);
 
         $framework = $this->mockContaoFramework();
-        $instance = new TemplateChoice($framework);
-        $choices = $instance->getChoices();
+        $instance  = new TemplateChoice($framework);
+        $choices   = $instance->getChoices();
 
         System::setContainer($this->container);
 
@@ -105,9 +106,11 @@ class TemplateChoiceTest extends ContaoTestCase
         $themeModelAdapter = $this->mockAdapter(['findAll']);
         $themeModelAdapter->method('findAll')->willReturn(null);
 
-        $finder = new ResourceFinder(([
-            $this->getFixturesDir(),
-        ]));
+        $finder = new ResourceFinder(
+            ([
+                $this->getFixturesDir(),
+            ])
+        );
 
         $this->container->set('contao.resource_finder', $finder);
 
@@ -122,7 +125,7 @@ class TemplateChoiceTest extends ContaoTestCase
         System::setContainer($this->container);
 
         $instance = new TemplateChoice($framework);
-        $choices = $instance->getChoices();
+        $choices  = $instance->getChoices();
 
         $this->assertNotEmpty($choices);
         $this->assertArrayHasKey('form_div_layout', $choices);
@@ -148,7 +151,7 @@ class TemplateChoiceTest extends ContaoTestCase
      */
     public function testCollectWithExistingTypeWithMissingClassWithoutContext()
     {
-        $config = $this->config;
+        $config                                = $this->config;
         $config['filter']['types'][0]['class'] = '_NonExistingNamespace\NonExistingClass';
 
         $this->container->set('kernel', $this->kernel);
@@ -157,8 +160,8 @@ class TemplateChoiceTest extends ContaoTestCase
         System::setContainer($this->container);
 
         $framework = $this->mockContaoFramework();
-        $instance = new TypeChoice($framework);
-        $choices = $instance->getChoices();
+        $instance  = new TypeChoice($framework);
+        $choices   = $instance->getChoices();
 
         $this->assertNotEmpty($choices);
         $this->assertArrayNotHasKey('text', $choices);
@@ -174,7 +177,22 @@ class TemplateChoiceTest extends ContaoTestCase
 
         System::setContainer($this->container);
 
-        $framework = $this->mockContaoFramework();
+        $filterConfigElementModelAdapter = $this->mockAdapter(['findById']);
+        $filterConfigElementModelAdapter->method('findById')->willReturn(
+            [
+                null,
+            ]
+        );
+
+        $filterConfigModelAdapter = $this->mockAdapter(['findById']);
+        $filterConfigModelAdapter->method('findById')->willReturn(
+            [
+                null,
+            ]
+        );
+
+        $framework = $this->mockContaoFramework([FilterConfigElementModel::class => $filterConfigElementModelAdapter, FilterConfigElementModel::class => $filterConfigModelAdapter]);
+
         $instance = new TypeChoice($framework);
 
         $dataContainerMock = $this->createMock(DataContainer::class);

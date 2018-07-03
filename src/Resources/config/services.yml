@@ -39,6 +39,16 @@ services:
     class: HeimrichHannot\FilterBundle\Backend\FilterConfigElement
     arguments:
       - "@contao.framework"
+  huh.filter.backend.content:
+    public: true
+    class: HeimrichHannot\FilterBundle\Backend\Content
+    arguments:
+      - "@contao.framework"
+  huh.filter.backend.filter_preselect:
+    public: true
+    class: HeimrichHannot\FilterBundle\Backend\FilterPreselect
+    arguments:
+      - "@contao.framework"
   # choices
   huh.filter.choice.template:
     class: HeimrichHannot\FilterBundle\Choice\TemplateChoice
@@ -110,8 +120,13 @@ services:
     public: true
     arguments:
       - "@contao.framework"
-
-# EventListener
-
-  huh.filter.listener.dca.callback.filterconfigelement:
-    class: HeimrichHannot\FilterBundle\EventListener\FilterConfigElementCallbackListener
+  huh.filter.util.filter_config_element:
+    class: HeimrichHannot\FilterBundle\Util\FilterConfigElementUtil
+    public: true
+    arguments:
+      - "@contao.framework"
+  huh.filter.util.filter_preselect:
+    class: HeimrichHannot\FilterBundle\Util\FilterPreselectUtil
+    public: true
+    arguments:
+      - "@contao.framework"

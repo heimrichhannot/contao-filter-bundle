@@ -20,7 +20,7 @@ use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\Model\FilterConfigModel;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 use HeimrichHannot\FilterBundle\Session\FilterSession;
-use HeimrichHannot\FilterBundle\Util\FilterConfigElementHelper;
+use HeimrichHannot\FilterBundle\Util\FilterConfigElementUtil;
 use HeimrichHannot\UtilsBundle\Choice\FieldChoice;
 use HeimrichHannot\UtilsBundle\Container\ContainerUtil;
 use HeimrichHannot\UtilsBundle\Dca\DcaUtil;
@@ -32,7 +32,7 @@ use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 use Symfony\Component\HttpKernel\Config\FileLocator;
 use Symfony\Component\HttpKernel\Kernel;
 
-class FilterConfigElementHelperTest extends ContaoTestCase
+class FilterConfigElementUtilTest extends ContaoTestCase
 {
     /**
      * {@inheritdoc}
@@ -61,7 +61,9 @@ class FilterConfigElementHelperTest extends ContaoTestCase
         $container->set('huh.utils.model', $modelsUtil);
         System::setContainer($container);
 
-        $this->assertEmpty(FilterConfigElementHelper::getFields($this->getDataContainerMock()));
+        $filterConfigElementUtil = new FilterConfigElementUtil($framework);
+
+        $this->assertEmpty($filterConfigElementUtil->getFields($this->getDataContainerMock()));
     }
 
     /**
@@ -127,7 +129,9 @@ class FilterConfigElementHelperTest extends ContaoTestCase
         $container->set('huh.utils.dca', new DcaUtil($framework));
         $container->set('huh.utils.choice.field', new FieldChoice($framework));
 
-        $this->assertEmpty(FilterConfigElementHelper::getFields($this->getDataContainerMock()));
+        $filterConfigElementUtil = new FilterConfigElementUtil($framework);
+
+        $this->assertEmpty($filterConfigElementUtil->getFields($this->getDataContainerMock()));
     }
 
     /**
@@ -200,7 +204,9 @@ class FilterConfigElementHelperTest extends ContaoTestCase
         $choiceUtils = new FieldChoice($framework);
         $container->set('huh.utils.choice.field', $choiceUtils);
 
-        $choices = FilterConfigElementHelper::getFields($this->getDataContainerMock());
+        $filterConfigElementUtil = new FilterConfigElementUtil($framework);
+
+        $choices = $filterConfigElementUtil->getFields($this->getDataContainerMock());
 
         $this->assertNotEmpty($choices);
         $this->assertContains('success', $choices);

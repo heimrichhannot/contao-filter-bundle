@@ -56,7 +56,7 @@ class ElementChoiceTest extends ContaoTestCase
 
         $containerBuilder = new \Contao\ManagerPlugin\Config\ContainerBuilder($this->mockPluginLoader($this->never()), []);
 
-        $config = $plugin->getExtensionConfig('huh_filter', [[]], $containerBuilder);
+        $config                 = $plugin->getExtensionConfig('huh_filter', [[]], $containerBuilder);
         $this->config['filter'] = $config['huh']['filter'];
 
         // required within Contao\Widget::getAttributesFromDca()
@@ -76,7 +76,7 @@ class ElementChoiceTest extends ContaoTestCase
         System::setContainer($this->container);
 
         $framework = $this->mockContaoFramework();
-        $instance = new ElementChoice($framework);
+        $instance  = new ElementChoice($framework);
 
         $this->assertInstanceOf('HeimrichHannot\FilterBundle\Choice\ElementChoice', $instance);
     }
@@ -88,25 +88,35 @@ class ElementChoiceTest extends ContaoTestCase
     {
         $this->container->set('kernel', $this->kernel);
 
-        $filterConfigDateElement = $this->mockClassWithProperties(FilterConfigElementModel::class, [
-            'id' => 1,
-            'pid' => 1,
-            'type' => 'date',
-            'name' => 'testDate',
-        ]);
+        $filterConfigDateElement = $this->mockClassWithProperties(
+            FilterConfigElementModel::class,
+            [
+                'id'    => 1,
+                'pid'   => 1,
+                'type'  => 'date',
+                'title' => 'testDate',
+                'name'  => 'testDate',
+            ]
+        );
 
-        $filterConfigTimeElement = $this->mockClassWithProperties(FilterConfigElementModel::class, [
-            'id' => 2,
-            'pid' => 1,
-            'type' => 'time',
-            'name' => 'testTime',
-        ]);
+        $filterConfigTimeElement = $this->mockClassWithProperties(
+            FilterConfigElementModel::class,
+            [
+                'id'    => 2,
+                'pid'   => 1,
+                'type'  => 'time',
+                'title' => 'testTime',
+                'name'  => 'testTime',
+            ]
+        );
 
         $filterConfigElementAdapter = $this->mockAdapter(['findPublishedByPidAndTypes']);
-        $filterConfigElementAdapter->method('findPublishedByPidAndTypes')->willReturn([
-            $filterConfigDateElement,
-            $filterConfigTimeElement,
-        ]);
+        $filterConfigElementAdapter->method('findPublishedByPidAndTypes')->willReturn(
+            [
+                $filterConfigDateElement,
+                $filterConfigTimeElement,
+            ]
+        );
 
         $framework = $this->mockContaoFramework([FilterConfigElementModel::class => $filterConfigElementAdapter]);
 
@@ -115,7 +125,7 @@ class ElementChoiceTest extends ContaoTestCase
         $context = ['pid' => 1, 'types' => ['date']];
 
         $instance = new ElementChoice($framework);
-        $choices = $instance->getChoices($context);
+        $choices  = $instance->getChoices($context);
 
         System::setContainer($this->container);
 
@@ -142,7 +152,7 @@ class ElementChoiceTest extends ContaoTestCase
         $context = ['pid' => 1, 'types' => ['date']];
 
         $instance = new ElementChoice($framework);
-        $choices = $instance->getChoices($context);
+        $choices  = $instance->getChoices($context);
 
         System::setContainer($this->container);
 
@@ -163,7 +173,7 @@ class ElementChoiceTest extends ContaoTestCase
         $context = ['pid' => 1, 'types' => ['date']];
 
         $instance = new ElementChoice($framework);
-        $choices = $instance->getChoices($context);
+        $choices  = $instance->getChoices($context);
 
         System::setContainer($this->container);
 
@@ -184,7 +194,7 @@ class ElementChoiceTest extends ContaoTestCase
         $context = ['pid' => 0];
 
         $instance = new ElementChoice($framework);
-        $choices = $instance->getChoices($context);
+        $choices  = $instance->getChoices($context);
 
         System::setContainer($this->container);
 
@@ -205,7 +215,7 @@ class ElementChoiceTest extends ContaoTestCase
         $context = ['pid' => []];
 
         $instance = new ElementChoice($framework);
-        $choices = $instance->getChoices($context);
+        $choices  = $instance->getChoices($context);
 
         System::setContainer($this->container);
 
@@ -226,7 +236,7 @@ class ElementChoiceTest extends ContaoTestCase
         $context = [];
 
         $instance = new ElementChoice($framework);
-        $choices = $instance->getChoices($context);
+        $choices  = $instance->getChoices($context);
 
         System::setContainer($this->container);
 

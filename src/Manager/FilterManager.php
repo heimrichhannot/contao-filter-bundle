@@ -133,7 +133,7 @@ class FilterManager
         $adapter = $this->framework->getAdapter(FilterConfigElementModel::class);
 
         // get the parent filter config
-        if (FilterConfig::FILTER_TYPE_SORT === $filter['type']) {
+        if (isset($filter['type']) && FilterConfig::FILTER_TYPE_SORT === $filter['type']) {
             $parentFilter = $this->framework->getAdapter(FilterConfigModel::class)->findById($filter['parentFilter'])->row();
             if (!empty($parentFilter)) {
                 $filter['action'] = $parentFilter['action'];

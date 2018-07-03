@@ -20,7 +20,7 @@ class TypeChoice extends AbstractChoice
      */
     protected function collect()
     {
-        $choices = [];
+        $choices    = [];
         $filterType = 'filter';
 
         $groupChoices = $this->getContext() instanceof \Contao\DataContainer;
@@ -31,9 +31,9 @@ class TypeChoice extends AbstractChoice
             return $choices;
         }
 
-        if ($groupChoices && null !== ($pid = $this->framework->getAdapter(FilterConfigElementModel::class)->findById($this->context->id)->pid)) {
-            if (null !== ($type = $this->framework->getAdapter(FilterConfigModel::class)->findById($pid)->type)) {
-                $filterType = $type;
+        if ($groupChoices && null !== $this->getContext() && null !== ($filterConfigElement = $this->framework->getAdapter(FilterConfigElementModel::class)->findById($this->context->id)) && $filterConfigElement->pid > 0) {
+            if (null !== ($filterConfig = $this->framework->getAdapter(FilterConfigModel::class)->findById($filterConfigElement->pid)) && $filterConfig->type) {
+                $filterType = $filterConfig->type;
             }
         }
 
@@ -47,7 +47,7 @@ class TypeChoice extends AbstractChoice
             }
 
             if ($groupChoices) {
-                $group = $type['type'];
+                $group             = $type['type'];
                 $choices[$group][] = $type['name'];
                 continue;
             }

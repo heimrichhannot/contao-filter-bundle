@@ -1,0 +1,3 @@
+services:
+  huh.filter.listener.dca.callback.filterconfigelement:
+    class: HeimrichHannot\FilterBundle\EventListener\FilterConfigElementCallbackListener

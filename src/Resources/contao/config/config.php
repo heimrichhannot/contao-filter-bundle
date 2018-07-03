@@ -5,7 +5,7 @@
  */
 $GLOBALS['BE_MOD']['system']['filter'] = [
     'tables' => ['tl_filter_config', 'tl_filter_config_element'],
-    'option' => ['contao.controller.backend_csv_import', 'importOptionWizard']
+    'option' => ['contao.controller.backend_csv_import', 'importOptionWizard'],
 ];
 
 /**
@@ -13,6 +13,7 @@ $GLOBALS['BE_MOD']['system']['filter'] = [
  */
 $GLOBALS['TL_MODELS']['tl_filter_config']         = 'HeimrichHannot\FilterBundle\Model\FilterConfigModel';
 $GLOBALS['TL_MODELS']['tl_filter_config_element'] = 'HeimrichHannot\FilterBundle\Model\FilterConfigElementModel';
+$GLOBALS['TL_MODELS']['tl_filter_preselect']      = 'HeimrichHannot\FilterBundle\Model\FilterPreselectModel';
 
 /**
  * Permissions
@@ -30,3 +31,9 @@ array_insert(
         HeimrichHannot\FilterBundle\Module\ModuleFilter::TYPE => HeimrichHannot\FilterBundle\Module\ModuleFilter::class,
     ]
 );
+
+/**
+ * Content elements
+ */
+$GLOBALS['TL_CTE']['filter']['filter_preselect'] = \HeimrichHannot\FilterBundle\ContentElement\ContentFilterPreselect::class;
+$GLOBALS['TL_CTE']['filter']['filter_hyperlink'] = \HeimrichHannot\FilterBundle\ContentElement\ContentFilterHyperlink::class;
