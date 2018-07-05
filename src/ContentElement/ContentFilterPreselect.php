@@ -1,26 +1,23 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2018 Heimrich & Hannot GmbH
  *
- * @author  Rico Kaltofen <r.kaltofen@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @license LGPL-3.0-or-later
  */
 
 namespace HeimrichHannot\FilterBundle\ContentElement;
 
-
 use Contao\ContentElement;
 use Contao\Controller;
-use Contao\StringUtil;
 use Contao\System;
-use HeimrichHannot\FilterBundle\Filter\AbstractType;
 use HeimrichHannot\FilterBundle\Model\FilterPreselectModel;
 use Patchwork\Utf8;
 
 class ContentFilterPreselect extends ContentElement
 {
     /**
-     * Template
+     * Template.
      *
      * @var string
      */
@@ -29,9 +26,9 @@ class ContentFilterPreselect extends ContentElement
     public function generate()
     {
         if (System::getContainer()->get('huh.utils.container')->isBackend()) {
-            $objTemplate           = new \BackendTemplate('be_wildcard');
+            $objTemplate = new \BackendTemplate('be_wildcard');
             $objTemplate->wildcard = implode("\n", $this->getWildcard());
-            $objTemplate->title    = '### '.Utf8::strtoupper(($GLOBALS['TL_LANG']['CTE'][$this->type][0])).' ###';
+            $objTemplate->title = '### '.Utf8::strtoupper(($GLOBALS['TL_LANG']['CTE'][$this->type][0])).' ###';
 
             return $objTemplate->parse();
         }
@@ -42,7 +39,7 @@ class ContentFilterPreselect extends ContentElement
     }
 
     /**
-     * Get the wildcard from preselection
+     * Get the wildcard from preselection.
      *
      * @return array
      */
@@ -57,7 +54,6 @@ class ContentFilterPreselect extends ContentElement
         /** @var FilterPreselectModel $preselections */
         $preselections = System::getContainer()->get('contao.framework')->createInstance(FilterPreselectModel::class);
 
-
         if (null === ($preselections = $preselections->findPublishedByPidAndTableAndField($this->id, 'tl_content', 'filterPreselect'))) {
             return $wildcard;
         }
@@ -71,13 +67,12 @@ class ContentFilterPreselect extends ContentElement
     }
 
     /**
-     * Invoke preselection
+     * Invoke preselection.
      */
     protected function preselect()
     {
         /** @var FilterPreselectModel $preselections */
         $preselections = System::getContainer()->get('contao.framework')->createInstance(FilterPreselectModel::class);
-
 
         if (null === ($preselections = $preselections->findPublishedByPidAndTableAndField($this->id, 'tl_content', 'filterPreselect'))) {
             return;
@@ -91,13 +86,13 @@ class ContentFilterPreselect extends ContentElement
 
         $filterConfig->setData($data);
 
-        if (true !== (bool)$this->filterPreselectNoRedirect) {
+        if (true !== (bool) $this->filterPreselectNoRedirect) {
             Controller::redirect($filterConfig->getUrl());
         }
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function compile()
     {

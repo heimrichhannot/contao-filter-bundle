@@ -1,9 +1,9 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2018 Heimrich & Hannot GmbH
  *
- * @author  Rico Kaltofen <r.kaltofen@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @license LGPL-3.0-or-later
  */
 
 namespace HeimrichHannot\FilterBundle\ContentElement;
@@ -14,9 +14,8 @@ use HeimrichHannot\FilterBundle\Model\FilterPreselectModel;
 
 class ContentFilterHyperlink extends ContentHyperlink
 {
-
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function compile()
     {
@@ -29,17 +28,17 @@ class ContentFilterHyperlink extends ContentHyperlink
         $embed = explode('%s', $this->embed);
 
         // Use an image instead of the title
-        if ($this->useImage && $this->singleSRC != '') {
+        if ($this->useImage && '' !== $this->singleSRC) {
             $objModel = \FilesModel::findByUuid($this->singleSRC);
 
-            if ($objModel !== null && is_file(TL_ROOT.'/'.$objModel->path)) {
+            if (null !== $objModel && is_file(TL_ROOT.'/'.$objModel->path)) {
                 $this->singleSRC = $objModel->path;
                 $this->addImageToTemplate($this->Template, $this->arrData, null, null, $objModel);
                 $this->Template->useImage = true;
             }
         }
 
-        if (strncmp($this->rel, 'lightbox', 8) !== 0) {
+        if (0 !== strncmp($this->rel, 'lightbox', 8)) {
             $this->Template->attribute = ' rel="'.$this->rel.'"';
         } else {
             $this->Template->attribute = ' data-lightbox="'.substr($this->rel, 9, -1).'"';
@@ -48,15 +47,15 @@ class ContentFilterHyperlink extends ContentHyperlink
         // Deprecated since Contao 4.0, to be removed in Contao 5.0
         $this->Template->rel = $this->rel;
 
-        if ($this->linkTitle == '') {
+        if ('' === $this->linkTitle) {
             $this->linkTitle = $this->url;
         }
 
-        $this->Template->href       = $this->url;
-        $this->Template->embed_pre  = $embed[0];
+        $this->Template->href = $this->url;
+        $this->Template->embed_pre = $embed[0];
         $this->Template->embed_post = $embed[1];
-        $this->Template->link       = $this->linkTitle;
-        $this->Template->target     = '';
+        $this->Template->link = $this->linkTitle;
+        $this->Template->target = '';
 
         if ($this->titleText) {
             $this->Template->linkTitle = \StringUtil::specialchars($this->titleText);
@@ -68,14 +67,14 @@ class ContentFilterHyperlink extends ContentHyperlink
         }
 
         // Unset the title attributes in the back end (see #6258)
-        if (TL_MODE == 'BE') {
-            $this->Template->title     = '';
+        if (TL_MODE === 'BE') {
+            $this->Template->title = '';
             $this->Template->linkTitle = '';
         }
     }
 
     /**
-     * Get the filter url based on current preselection
+     * Get the filter url based on current preselection.
      *
      * @return string|null
      */
@@ -88,7 +87,6 @@ class ContentFilterHyperlink extends ContentHyperlink
         /** @var FilterPreselectModel $preselections */
         $preselections = System::getContainer()->get('contao.framework')->createInstance(FilterPreselectModel::class);
 
-
         if (null === ($preselections = $preselections->findPublishedByPidAndTableAndField($this->id, 'tl_content', 'filterPreselect'))) {
             return null;
         }
@@ -96,7 +94,6 @@ class ContentFilterHyperlink extends ContentHyperlink
         if (null === ($url = $filterConfig->getPreselectAction(System::getContainer()->get('huh.filter.util.filter_preselect')->getPreselectData($this->filter, $preselections->getModels())))) {
             return null;
         }
-
 
         return $url;
     }

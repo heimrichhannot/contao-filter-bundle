@@ -14,8 +14,6 @@ use Contao\System;
 use Contao\TestCase\ContaoTestCase;
 use HeimrichHannot\FilterBundle\Choice\TypeChoice;
 use HeimrichHannot\FilterBundle\ContaoManager\Plugin;
-use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
-use HeimrichHannot\FilterBundle\Model\FilterConfigModel;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Kernel;
 
@@ -163,7 +161,6 @@ class TypeChoiceTest extends ContaoTestCase
         $this->container->setParameter('huh.filter', $this->config);
 
         System::setContainer($this->container);
-
 
         $framework = $this->mockContaoFramework();
 

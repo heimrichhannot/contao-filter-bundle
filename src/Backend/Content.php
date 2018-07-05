@@ -1,13 +1,12 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2018 Heimrich & Hannot GmbH
  *
- * @author  Rico Kaltofen <r.kaltofen@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @license LGPL-3.0-or-later
  */
 
 namespace HeimrichHannot\FilterBundle\Backend;
-
 
 use Contao\ContentModel;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
@@ -26,11 +25,12 @@ class Content
     }
 
     /**
-     * Invoke onload_callback
+     * Invoke onload_callback.
+     *
      * @param DataContainer $dc
      */
-    public function onLoad(DataContainer $dc){
-
+    public function onLoad(DataContainer $dc)
+    {
         if (null === ($content = \Contao\System::getContainer()->get('huh.utils.model')->findModelInstanceByPk($dc->table, $dc->id))) {
             return;
         }
@@ -39,14 +39,14 @@ class Content
     }
 
     /**
-     * Toggle filterPreselect field on demand
+     * Toggle filterPreselect field on demand.
+     *
      * @param ContentModel  $content
      * @param DataContainer $dc
      */
     protected function toggleFilterPreselect(ContentModel $content, DataContainer $dc)
     {
-        if($content->filter < 1)
-        {
+        if ($content->filter < 1) {
             return;
         }
 

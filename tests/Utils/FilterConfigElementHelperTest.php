@@ -32,7 +32,7 @@ use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 use Symfony\Component\HttpKernel\Config\FileLocator;
 use Symfony\Component\HttpKernel\Kernel;
 
-class FilterConfigElementUtilTest extends ContaoTestCase
+class FilterConfigElementHelperTest extends ContaoTestCase
 {
     /**
      * {@inheritdoc}

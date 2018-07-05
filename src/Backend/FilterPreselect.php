@@ -1,13 +1,12 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2018 Heimrich & Hannot GmbH
  *
- * @author  Rico Kaltofen <r.kaltofen@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @license LGPL-3.0-or-later
  */
 
 namespace HeimrichHannot\FilterBundle\Backend;
-
 
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\DataContainer;
@@ -29,7 +28,7 @@ class FilterPreselect
     }
 
     /**
-     * Adjust label of entries
+     * Adjust label of entries.
      *
      * @param array  $row
      * @param string $label
@@ -43,11 +42,10 @@ class FilterPreselect
                 'tl_filter_config_element',
                 $row['element']
             ))) {
-
             return $label;
         }
 
-        $choices = $this->prepareElementChoices((int)$row['id']);
+        $choices = $this->prepareElementChoices((int) $row['id']);
 
         switch ($row['initialValueType']) {
             case \HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_SCALAR:
@@ -71,10 +69,9 @@ class FilterPreselect
     }
 
     /**
-     * Prepare initial choices
+     * Prepare initial choices.
      *
      * @param DataContainer $dc
-     *
      */
     public function prepareChoiceTypes(DataContainer $dc)
     {
@@ -86,11 +83,11 @@ class FilterPreselect
     }
 
     /**
-     * Prepare choices for given element id and return options
+     * Prepare choices for given element id and return options.
      *
      * @param int $id
      *
-     * @return  array
+     * @return array
      */
     protected function prepareElementChoices(int $id): array
     {
@@ -105,9 +102,9 @@ class FilterPreselect
             return [];
         }
 
-        $dca    = &$GLOBALS['TL_DCA']['tl_filter_preselect'];
+        $dca = &$GLOBALS['TL_DCA']['tl_filter_preselect'];
         $config = System::getContainer()->getParameter('huh.filter');
-        $class  = null;
+        $class = null;
 
         if (!isset($config['filter']['types']) || !is_array($config['filter']['types'])) {
             return [];
@@ -137,12 +134,12 @@ class FilterPreselect
 
         $options = array_flip($choiceType->getChoices($filterConfigElement));
 
-        $dca['fields']['initialValue']['inputType']      = 'select';
-        $dca['fields']['initialValue']['options']        = $options;
+        $dca['fields']['initialValue']['inputType'] = 'select';
+        $dca['fields']['initialValue']['options'] = $options;
         $dca['fields']['initialValue']['eval']['chosen'] = true;
 
-        $dca['fields']['initialValueArray']['eval']['multiColumnEditor']['fields']['value']['inputType']      = 'select';
-        $dca['fields']['initialValueArray']['eval']['multiColumnEditor']['fields']['value']['options']        = $options;
+        $dca['fields']['initialValueArray']['eval']['multiColumnEditor']['fields']['value']['inputType'] = 'select';
+        $dca['fields']['initialValueArray']['eval']['multiColumnEditor']['fields']['value']['options'] = $options;
         $dca['fields']['initialValueArray']['eval']['multiColumnEditor']['fields']['value']['eval']['chosen'] = true;
 
         return $options;

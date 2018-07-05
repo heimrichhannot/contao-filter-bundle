@@ -1,13 +1,12 @@
 <?php
-/**
+
+/*
  * Copyright (c) 2018 Heimrich & Hannot GmbH
  *
- * @author  Rico Kaltofen <r.kaltofen@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @license LGPL-3.0-or-later
  */
 
 namespace HeimrichHannot\FilterBundle\Util;
-
 
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\StringUtil;
@@ -28,7 +27,7 @@ class FilterPreselectUtil
     }
 
     /**
-     * Get preselected data based on given preselection
+     * Get preselected data based on given preselection.
      *
      * @param int                    $id            The filter id
      * @param FilterPreselectModel[] $preselections list of preselections
@@ -58,7 +57,7 @@ class FilterPreselectUtil
             }
 
             $config = $types[$element->type];
-            $class  = $config['class'];
+            $class = $config['class'];
 
             if (!class_exists($class)) {
                 continue;
@@ -82,7 +81,7 @@ class FilterPreselectUtil
     }
 
     /**
-     * Get the initial value based on preselection
+     * Get the initial value based on preselection.
      *
      * @param FilterPreselectModel $element
      *

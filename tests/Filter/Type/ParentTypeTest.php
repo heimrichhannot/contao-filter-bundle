@@ -60,24 +60,20 @@ class ParentTypeTest extends ContaoTestCase
             'config' => [
                 'dataContainer' => 'Table',
                 'sql' => [
-                    'keys' => [
-                    ],
+                    'keys' => [],
                 ],
             ],
-            'fields' => [
-            ],
+            'fields' => [],
         ];
 
         $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'config' => [
                 'dataContainer' => 'Table',
                 'sql' => [
-                    'keys' => [
-                    ],
+                    'keys' => [],
                 ],
             ],
-            'fields' => [
-            ],
+            'fields' => [],
         ];
 
         $finder = new ResourceFinder([
@@ -179,8 +175,8 @@ class ParentTypeTest extends ContaoTestCase
         $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
         $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
 
-        $modelInstances = $this->mockClassWithProperties(MemberModel::class, ['id' => 12]);
-        $collection = $this->mockClassWithProperties(Collection::class, ['id' => 12]);
+        $modelInstances = $this->mockClassWithProperties(MemberModel::class, ['id' => 12, 'title' => 'test']);
+        $collection = $this->mockClassWithProperties(Collection::class, ['id' => 12, 'title' => 'test']);
         $collection->method('next')->willReturn($modelInstances, $modelInstances);
         $modelUtilAdapter = $this->mockAdapter(['findModelInstancesBy']);
         $modelUtilAdapter->method('findModelInstancesBy')->willReturn($collection);
@@ -199,10 +195,9 @@ class ParentTypeTest extends ContaoTestCase
         $filter = ['name' => 'test', 'dataContainer' => 'tl_member'];
         $config->init('test', $filter, [$element]);
 
-
         $type = new ParentType($config);
 
-        $this->assertSame(['ID 12' => 12], $type->getChoices($element));
+        $this->assertSame(['test [ID: 12]' => 12], $type->getChoices($element));
     }
 
     /**
@@ -235,8 +230,7 @@ class ParentTypeTest extends ContaoTestCase
             'foreignKey' => 'tl_page.title',
         ];
 
-        $GLOBALS['TL_DCA']['tl_page']['fields']['title'] = [
-        ];
+        $GLOBALS['TL_DCA']['tl_page']['fields']['title'] = [];
 
         $filter = ['name' => 'test', 'dataContainer' => 'tl_article'];
         $config->init('test', $filter, [$element]);
