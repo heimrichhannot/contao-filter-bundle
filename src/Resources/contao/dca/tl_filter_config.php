@@ -28,9 +28,10 @@ $GLOBALS['TL_DCA']['tl_filter_config'] = [
             'format' => '%s',
         ],
         'sorting'           => [
-            'mode'        => 1,
-            'fields'      => ['title'],
-            'panelLayout' => 'filter;search,limit',
+            'mode'         => 2,
+            'fields'       => ['title'],
+            'headerFields' => ['title'],
+            'panelLayout'  => 'filter;sort,search,limit',
         ],
         'global_operations' => [
             'all' => [
