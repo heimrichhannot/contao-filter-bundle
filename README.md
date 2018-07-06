@@ -7,6 +7,28 @@
 
 This bundle offers a generic filter module to use with arbitrary contao entities containing standard filter with initial filters and filter form types including [symfony form type representations](https://symfony.com/doc/current/reference/forms/types).
 
+## Features
+
+- `codefog/tags-bundle` integration
+- `heimrichhannot/contao-categories-bundle` integration
+- Form handling using symfony form component 
+- Form rendering by using symfony form templates (currently available: bootstrap 3, bootstrap 4, foundation, div, table)
+- Numerous symfony form types supported (see: http://symfony.com/doc/3.4/reference/forms/types.html)
+- Highly customizable and detached from tl_module table
+- Label/Message handling using symfony translations
+- Render form always empty (without user selection)
+- Merge data over multiple filter forms with same form name
+- Default Values (can be overwritten by user)
+- Initial Values (can`t be overwritten by user)
+- Stores filter data in session (no GET parameter URL remnant)
+- Content element "Filter-Preselect" with optional redirect functionality to preselect filter on given page
+- Content element "Filter-Hyperlink" with filter preselect feature
+
+## Inserttags
+
+Insert tag | Arguments | Description
+--- | --------- | ------- 
+`{{filter_reset_url::*::*}}` | filter ID :: page ID or alias | This tag will be replaced with a reset filter link to an internal page with (replace 1st * with the filter ID, replace 2nd * with the page ID or alias)
 
 ## Templates (filter)
 

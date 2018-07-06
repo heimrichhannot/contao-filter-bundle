@@ -8,6 +8,7 @@
 
 namespace HeimrichHannot\FilterBundle\Config;
 
+use Contao\Controller;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\InsertTags;
 use Contao\System;
@@ -23,6 +24,7 @@ use Symfony\Component\Form\Exception\TransformationFailedException;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Forms;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
 class FilterConfig
@@ -488,6 +490,23 @@ class FilterConfig
         }
 
         return $router->generate('filter_frontend_preselect', ['id' => $filter['id'], 'data' => $data]);
+    }
+
+    /**
+     * Handle current request or the given one.
+     *
+     * @param Request|null $request
+     */
+    public function handleRequest(Request $request = null)
+    {
+        if (null === $request) {
+            $request = System::getContainer()->get('request_stack')->getCurrentRequest();
+        }
+
+        if ($request->query->has(FilterType::FILTER_RESET_URL_PARAMETER_NAME)) {
+            $this->resetData();
+            Controller::redirect(System::getContainer()->get('huh.utils.url')->removeQueryString([FilterType::FILTER_RESET_URL_PARAMETER_NAME], $request->getUri()));
+        }
     }
 
     /**

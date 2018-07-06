@@ -50,6 +50,8 @@ class ModuleFilter extends Module
             return '';
         }
 
+        $this->config->handleRequest();
+
         return parent::generate();
     }
 

@@ -37,3 +37,8 @@ array_insert(
  */
 $GLOBALS['TL_CTE']['filter']['filter_preselect'] = \HeimrichHannot\FilterBundle\ContentElement\ContentFilterPreselect::class;
 $GLOBALS['TL_CTE']['filter']['filter_hyperlink'] = \HeimrichHannot\FilterBundle\ContentElement\ContentFilterHyperlink::class;
+
+/**
+ * Hooks
+ */
+$GLOBALS['TL_HOOKS']['replaceInsertTags']['huh.filter'] = ['huh.filter.listener.inserttag', 'onReplaceInsertTags'];
