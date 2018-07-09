@@ -144,7 +144,7 @@ class FilterConfig
 
     public function initQueryBuilder()
     {
-        $this->queryBuilder->setMaxResults(null);
+        $this->queryBuilder->resetQueryParts();
         $this->queryBuilder->from($this->getFilter()['dataContainer']);
 
         if (null === $this->getElements()) {
