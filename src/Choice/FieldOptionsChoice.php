@@ -156,13 +156,13 @@ class FieldOptionsChoice extends AbstractChoice
     {
         $options = [];
 
-        if (!isset($GLOBALS['TL_FFL'][$dca['inputType']])) {
+        if (!isset($GLOBALS['TL_FFL'][$dca['inputType']]) && (System::getContainer()->get('huh.utils.container')->isBackend() && !isset($GLOBALS['BE_FFL'][$dca['inputType']]))) {
             return $options;
         }
 
-        $class = $GLOBALS['TL_FFL'][$dca['inputType']];
+        $class = $GLOBALS['TL_FFL'][$dca['inputType']] ?? $GLOBALS['BE_FFL'][$dca['inputType']] ?? null;
 
-        if (!class_exists($class)) {
+        if (null === $class || !class_exists($class)) {
             return $options;
         }
 

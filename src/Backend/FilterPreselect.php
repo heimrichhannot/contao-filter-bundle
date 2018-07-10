@@ -132,7 +132,13 @@ class FilterPreselect
             return [];
         }
 
-        $options = array_flip($choiceType->getChoices($filterConfigElement));
+        $choices = $choiceType->getChoices($filterConfigElement);
+
+        if (!is_array($choices)) {
+            return [];
+        }
+
+        $options = array_flip($choices);
 
         $dca['fields']['initialValue']['inputType'] = 'select';
         $dca['fields']['initialValue']['options'] = $options;

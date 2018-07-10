@@ -18,7 +18,10 @@ use HeimrichHannot\CategoriesBundle\Model\CategoryModel;
 use HeimrichHannot\FilterBundle\Choice\FieldOptionsChoice;
 use HeimrichHannot\FilterBundle\ContaoManager\Plugin;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
+use HeimrichHannot\UtilsBundle\Container\ContainerUtil;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpKernel\Config\FileLocator;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Translation\Translator;
 
@@ -112,10 +115,12 @@ class FieldOptionsChoiceTest extends ContaoTestCase
         $tagModelAdapter = $this->mockAdapter(['findByCriteria']);
         $tagModelAdapter->method('findByCriteria')->willReturn([$tagModelA, $tagModelB]);
 
-        $framework = $this->mockContaoFramework([
-            Controller::class => $controllerAdapter,
-            TagModel::class => $tagModelAdapter,
-        ]);
+        $framework = $this->mockContaoFramework(
+            [
+                Controller::class => $controllerAdapter,
+                TagModel::class => $tagModelAdapter,
+            ]
+        );
 
         $defaultManagerAdapter = $this->mockAdapter(['findMultiple']);
         $defaultManagerAdapter->method('findMultiple')->willReturn([$tagModelA, $tagModelB]);
@@ -146,9 +151,12 @@ class FieldOptionsChoiceTest extends ContaoTestCase
             ],
         ];
 
-        $elementModel = $this->mockClassWithProperties(FilterConfigElementModel::class, [
-            'field' => 'test',
-        ]);
+        $elementModel = $this->mockClassWithProperties(
+            FilterConfigElementModel::class,
+            [
+                'field' => 'test',
+            ]
+        );
 
         $context = [
             'filter' => ['dataContainer' => 'tl_test'],
@@ -179,10 +187,12 @@ class FieldOptionsChoiceTest extends ContaoTestCase
         $tagModelAdapter = $this->mockAdapter(['findByCriteria']);
         $tagModelAdapter->method('findByCriteria')->willReturn(null);
 
-        $framework = $this->mockContaoFramework([
-            Controller::class => $controllerAdapter,
-            TagModel::class => $tagModelAdapter,
-        ]);
+        $framework = $this->mockContaoFramework(
+            [
+                Controller::class => $controllerAdapter,
+                TagModel::class => $tagModelAdapter,
+            ]
+        );
 
         $defaultManagerAdapter = $this->mockAdapter(['findMultiple']);
         $defaultManagerAdapter->method('findMultiple')->willReturn(null);
@@ -213,9 +223,12 @@ class FieldOptionsChoiceTest extends ContaoTestCase
             ],
         ];
 
-        $elementModel = $this->mockClassWithProperties(FilterConfigElementModel::class, [
-            'field' => 'test',
-        ]);
+        $elementModel = $this->mockClassWithProperties(
+            FilterConfigElementModel::class,
+            [
+                'field' => 'test',
+            ]
+        );
 
         $context = [
             'filter' => ['dataContainer' => 'tl_test'],
@@ -245,10 +258,12 @@ class FieldOptionsChoiceTest extends ContaoTestCase
         $tagModelAdapter = $this->mockAdapter(['findByCriteria']);
         $tagModelAdapter->method('findByCriteria')->willReturn(null);
 
-        $framework = $this->mockContaoFramework([
-            Controller::class => $controllerAdapter,
-            TagModel::class => $tagModelAdapter,
-        ]);
+        $framework = $this->mockContaoFramework(
+            [
+                Controller::class => $controllerAdapter,
+                TagModel::class => $tagModelAdapter,
+            ]
+        );
 
         $tagManagerRegistry = $this->mockAdapter(['get']);
         $tagManagerRegistry->method('get')->willReturn(new DefaultManager($framework, 'tl_test', 'test'));
@@ -276,9 +291,12 @@ class FieldOptionsChoiceTest extends ContaoTestCase
             ],
         ];
 
-        $elementModel = $this->mockClassWithProperties(FilterConfigElementModel::class, [
-            'field' => 'test',
-        ]);
+        $elementModel = $this->mockClassWithProperties(
+            FilterConfigElementModel::class,
+            [
+                'field' => 'test',
+            ]
+        );
 
         $context = [
             'filter' => ['dataContainer' => 'tl_test'],
@@ -328,9 +346,12 @@ class FieldOptionsChoiceTest extends ContaoTestCase
             ],
         ];
 
-        $elementModel = $this->mockClassWithProperties(FilterConfigElementModel::class, [
-            'field' => 'test',
-        ]);
+        $elementModel = $this->mockClassWithProperties(
+            FilterConfigElementModel::class,
+            [
+                'field' => 'test',
+            ]
+        );
 
         $context = [
             'filter' => ['dataContainer' => 'tl_test'],
@@ -379,9 +400,12 @@ class FieldOptionsChoiceTest extends ContaoTestCase
             ],
         ];
 
-        $elementModel = $this->mockClassWithProperties(FilterConfigElementModel::class, [
-            'field' => 'test',
-        ]);
+        $elementModel = $this->mockClassWithProperties(
+            FilterConfigElementModel::class,
+            [
+                'field' => 'test',
+            ]
+        );
 
         $context = [
             'filter' => ['dataContainer' => 'tl_test'],
@@ -409,23 +433,31 @@ class FieldOptionsChoiceTest extends ContaoTestCase
         $controllerAdapter = $this->mockAdapter(['loadDataContainer']);
         $controllerAdapter->method('loadDataContainer')->willReturn(null);
 
-        $categoryA = $this->mockClassWithProperties(CategoryModel::class, [
-            'id' => 1,
-            'frontendTitle' => 'message.categoryA.frontendTitle',
-            'title' => 'Category A',
-        ]);
+        $categoryA = $this->mockClassWithProperties(
+            CategoryModel::class,
+            [
+                'id' => 1,
+                'frontendTitle' => 'message.categoryA.frontendTitle',
+                'title' => 'Category A',
+            ]
+        );
 
-        $categoryB = $this->mockClassWithProperties(CategoryModel::class, [
-            'id' => 2,
-            'frontendTitle' => 'Frontend Title Category B',
-            'title' => 'Category B',
-        ]);
+        $categoryB = $this->mockClassWithProperties(
+            CategoryModel::class,
+            [
+                'id' => 2,
+                'frontendTitle' => 'Frontend Title Category B',
+                'title' => 'Category B',
+            ]
+        );
 
         $categoryAdapter = $this->mockAdapter(['findByCategoryFieldAndTable']);
-        $categoryAdapter->method('findByCategoryFieldAndTable')->willReturn([
-            $categoryA,
-            $categoryB,
-        ]);
+        $categoryAdapter->method('findByCategoryFieldAndTable')->willReturn(
+            [
+                $categoryA,
+                $categoryB,
+            ]
+        );
         $this->container->set('huh.categories.manager', $categoryAdapter);
 
         $framework = $this->mockContaoFramework([Controller::class => $controllerAdapter]);
@@ -451,9 +483,12 @@ class FieldOptionsChoiceTest extends ContaoTestCase
             ],
         ];
 
-        $elementModel = $this->mockClassWithProperties(FilterConfigElementModel::class, [
-            'field' => 'test',
-        ]);
+        $elementModel = $this->mockClassWithProperties(
+            FilterConfigElementModel::class,
+            [
+                'field' => 'test',
+            ]
+        );
 
         $context = [
             'filter' => ['dataContainer' => 'tl_test'],
@@ -508,9 +543,12 @@ class FieldOptionsChoiceTest extends ContaoTestCase
             ],
         ];
 
-        $elementModel = $this->mockClassWithProperties(FilterConfigElementModel::class, [
-            'field' => 'test',
-        ]);
+        $elementModel = $this->mockClassWithProperties(
+            FilterConfigElementModel::class,
+            [
+                'field' => 'test',
+            ]
+        );
 
         $context = [
             'filter' => ['dataContainer' => 'tl_test'],
@@ -560,9 +598,12 @@ class FieldOptionsChoiceTest extends ContaoTestCase
             ],
         ];
 
-        $elementModel = $this->mockClassWithProperties(FilterConfigElementModel::class, [
-            'field' => 'test',
-        ]);
+        $elementModel = $this->mockClassWithProperties(
+            FilterConfigElementModel::class,
+            [
+                'field' => 'test',
+            ]
+        );
 
         $context = [
             'filter' => ['dataContainer' => 'tl_test'],
@@ -618,9 +659,12 @@ class FieldOptionsChoiceTest extends ContaoTestCase
             ],
         ];
 
-        $elementModel = $this->mockClassWithProperties(FilterConfigElementModel::class, [
-            'field' => 'test',
-        ]);
+        $elementModel = $this->mockClassWithProperties(
+            FilterConfigElementModel::class,
+            [
+                'field' => 'test',
+            ]
+        );
 
         $context = [
             'filter' => ['dataContainer' => 'tl_test'],
@@ -683,9 +727,12 @@ class FieldOptionsChoiceTest extends ContaoTestCase
             ],
         ];
 
-        $elementModel = $this->mockClassWithProperties(FilterConfigElementModel::class, [
-            'field' => 'test',
-        ]);
+        $elementModel = $this->mockClassWithProperties(
+            FilterConfigElementModel::class,
+            [
+                'field' => 'test',
+            ]
+        );
 
         $context = [
             'filter' => ['dataContainer' => 'tl_test'],
@@ -744,9 +791,12 @@ class FieldOptionsChoiceTest extends ContaoTestCase
             ],
         ];
 
-        $elementModel = $this->mockClassWithProperties(FilterConfigElementModel::class, [
-            'field' => 'test',
-        ]);
+        $elementModel = $this->mockClassWithProperties(
+            FilterConfigElementModel::class,
+            [
+                'field' => 'test',
+            ]
+        );
 
         $context = [
             'filter' => ['dataContainer' => 'tl_test'],
@@ -777,6 +827,7 @@ class FieldOptionsChoiceTest extends ContaoTestCase
         $framework = $this->mockContaoFramework([Controller::class => $controllerAdapter]);
 
         $GLOBALS['TL_FFL']['select'] = 'NonExistingFormSelectInputClass';
+        $GLOBALS['BE_FFL']['checkboxWizard'] = 'NonExistingFormSelectInputClass';
 
         System::setContainer($this->container);
 
@@ -792,9 +843,12 @@ class FieldOptionsChoiceTest extends ContaoTestCase
             ],
         ];
 
-        $elementModel = $this->mockClassWithProperties(FilterConfigElementModel::class, [
-            'field' => 'test',
-        ]);
+        $elementModel = $this->mockClassWithProperties(
+            FilterConfigElementModel::class,
+            [
+                'field' => 'test',
+            ]
+        );
 
         $context = [
             'filter' => ['dataContainer' => 'tl_test'],
@@ -823,6 +877,15 @@ class FieldOptionsChoiceTest extends ContaoTestCase
 
         $framework = $this->mockContaoFramework([Controller::class => $controllerAdapter]);
 
+        $this->container->set('huh.utils.container', new ContainerUtil($framework, $this->createMock(FileLocator::class)));
+
+        $requestStack = new RequestStack();
+        $request = new \Symfony\Component\HttpFoundation\Request();
+        $request->attributes->set('_contao_referer_id', 'foobar');
+        $requestStack->push($request);
+
+        $this->container->set('request_stack', $requestStack);
+
         System::setContainer($this->container);
 
         $GLOBALS['TL_DCA']['tl_test'] = [
@@ -837,9 +900,12 @@ class FieldOptionsChoiceTest extends ContaoTestCase
             ],
         ];
 
-        $elementModel = $this->mockClassWithProperties(FilterConfigElementModel::class, [
-            'field' => 'test',
-        ]);
+        $elementModel = $this->mockClassWithProperties(
+            FilterConfigElementModel::class,
+            [
+                'field' => 'test',
+            ]
+        );
 
         $context = [
             'filter' => ['dataContainer' => 'tl_test'],
@@ -872,14 +938,16 @@ class FieldOptionsChoiceTest extends ContaoTestCase
 
         $GLOBALS['TL_DCA']['tl_test'] = [
             'fields' => [
-                'test' => [
-                ],
+                'test' => [],
             ],
         ];
 
-        $elementModel = $this->mockClassWithProperties(FilterConfigElementModel::class, [
-            'field' => 'test',
-        ]);
+        $elementModel = $this->mockClassWithProperties(
+            FilterConfigElementModel::class,
+            [
+                'field' => 'test',
+            ]
+        );
 
         $context = [
             'filter' => ['dataContainer' => 'tl_test'],
@@ -912,9 +980,12 @@ class FieldOptionsChoiceTest extends ContaoTestCase
 
         $GLOBALS['TL_DCA']['tl_test'] = [];
 
-        $elementModel = $this->mockClassWithProperties(FilterConfigElementModel::class, [
-            'field' => 'test',
-        ]);
+        $elementModel = $this->mockClassWithProperties(
+            FilterConfigElementModel::class,
+            [
+                'field' => 'test',
+            ]
+        );
 
         $context = [
             'filter' => ['dataContainer' => 'tl_test'],
@@ -953,13 +1024,16 @@ class FieldOptionsChoiceTest extends ContaoTestCase
 
         $GLOBALS['TL_DCA']['tl_test'] = [];
 
-        $elementModel = $this->mockClassWithProperties(FilterConfigElementModel::class, [
-            'customOptions' => true,
-            'options' => [
-                ['value' => 'customOption1', 'label' => 'message.customOption1'],
-                ['value' => 'customOption2', 'label' => 'message.customOption2'],
-            ],
-        ]);
+        $elementModel = $this->mockClassWithProperties(
+            FilterConfigElementModel::class,
+            [
+                'customOptions' => true,
+                'options' => [
+                    ['value' => 'customOption1', 'label' => 'message.customOption1'],
+                    ['value' => 'customOption2', 'label' => 'message.customOption2'],
+                ],
+            ]
+        );
 
         $context = [
             'filter' => ['dataContainer' => 'tl_test'],
@@ -976,7 +1050,9 @@ class FieldOptionsChoiceTest extends ContaoTestCase
             [
                 'My custom option 1 label' => 'customOption1',
                 'My custom option 2 label' => 'customOption2',
-            ], $choices);
+            ],
+            $choices
+        );
     }
 
     /**
@@ -997,10 +1073,13 @@ class FieldOptionsChoiceTest extends ContaoTestCase
 
         $GLOBALS['TL_DCA']['tl_test'] = [];
 
-        $elementModel = $this->mockClassWithProperties(FilterConfigElementModel::class, [
-            'customOptions' => true,
-            'options' => null,
-        ]);
+        $elementModel = $this->mockClassWithProperties(
+            FilterConfigElementModel::class,
+            [
+                'customOptions' => true,
+                'options' => null,
+            ]
+        );
 
         $context = [
             'filter' => ['dataContainer' => 'tl_test'],
@@ -1033,13 +1112,16 @@ class FieldOptionsChoiceTest extends ContaoTestCase
 
         $GLOBALS['TL_DCA']['tl_test'] = [];
 
-        $elementModel = $this->mockClassWithProperties(FilterConfigElementModel::class, [
-            'customOptions' => true,
-            'options' => [
-                ['customOption1' => 'message.customOption1'],
-                ['customOption2' => 'message.customOption2'],
-            ],
-        ]);
+        $elementModel = $this->mockClassWithProperties(
+            FilterConfigElementModel::class,
+            [
+                'customOptions' => true,
+                'options' => [
+                    ['customOption1' => 'message.customOption1'],
+                    ['customOption2' => 'message.customOption2'],
+                ],
+            ]
+        );
 
         $context = [
             'filter' => ['dataContainer' => 'tl_test'],

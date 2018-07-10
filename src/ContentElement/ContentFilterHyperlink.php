@@ -80,7 +80,7 @@ class ContentFilterHyperlink extends ContentHyperlink
      */
     protected function getFilterUrl(): ?string
     {
-        if (null === ($filterConfig = System::getContainer()->get('huh.filter.manager')->findById($this->filter)) || null === ($elements = $filterConfig->getElements())) {
+        if (null === ($filterConfig = System::getContainer()->get('huh.filter.manager')->findById($this->filterConfig)) || null === ($elements = $filterConfig->getElements())) {
             return null;
         }
 
@@ -91,7 +91,7 @@ class ContentFilterHyperlink extends ContentHyperlink
             return null;
         }
 
-        if (null === ($url = $filterConfig->getPreselectAction(System::getContainer()->get('huh.filter.util.filter_preselect')->getPreselectData($this->filter, $preselections->getModels())))) {
+        if (null === ($url = $filterConfig->getPreselectAction(System::getContainer()->get('huh.filter.util.filter_preselect')->getPreselectData($this->filterConfig, $preselections->getModels())))) {
             return null;
         }
 

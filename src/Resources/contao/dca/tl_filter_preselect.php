@@ -48,7 +48,7 @@ $fields = [
                 return [];
             }
 
-            if (null === ($config = System::getContainer()->get('huh.filter.manager')->findById($content->filter))) {
+            if (null === ($config = System::getContainer()->get('huh.filter.manager')->findById($content->filterConfig))) {
                 return [];
             }
 

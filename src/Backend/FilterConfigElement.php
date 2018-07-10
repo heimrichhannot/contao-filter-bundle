@@ -31,8 +31,9 @@ class FilterConfigElement
     public function modifyPalette(DataContainer $dc)
     {
         if (null === ($filterConfigElement = System::getContainer()->get('huh.utils.model')->findModelInstanceByPk(
-                'tl_filter_config_element', $dc->id))
-        ) {
+                'tl_filter_config_element',
+                $dc->id
+            ))) {
             return null;
         }
 
@@ -63,8 +64,9 @@ class FilterConfigElement
     public function prepareChoiceTypes(DataContainer $dc)
     {
         if (null === ($filterConfigElement = System::getContainer()->get('huh.utils.model')->findModelInstanceByPk(
-                'tl_filter_config_element', $dc->id))
-        ) {
+                'tl_filter_config_element',
+                $dc->id
+            ))) {
             return null;
         }
 
@@ -98,7 +100,13 @@ class FilterConfigElement
             return null;
         }
 
-        $options = array_flip($choiceType->getChoices($filterConfigElement));
+        $choices = $choiceType->getChoices($filterConfigElement);
+
+        if (!is_array($choices)) {
+            return null;
+        }
+
+        $options = array_flip($choices);
 
         // prepare scalar fields
         $dca['fields']['defaultValue']['inputType'] = 'select';

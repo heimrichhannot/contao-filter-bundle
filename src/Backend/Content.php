@@ -46,11 +46,11 @@ class Content
      */
     protected function toggleFilterPreselect(ContentModel $content, DataContainer $dc)
     {
-        if ($content->filter < 1) {
+        if ($content->filterConfig < 1) {
             return;
         }
 
-        $GLOBALS['TL_DCA']['tl_content']['palettes']['filter_preselect'] = str_replace('filter;', 'filter,filterPreselect,filterPreselectNoRedirect;', $GLOBALS['TL_DCA']['tl_content']['palettes']['filter_preselect']);
-        $GLOBALS['TL_DCA']['tl_content']['palettes']['filter_hyperlink'] = str_replace('filter;', 'filter,filterPreselect;', $GLOBALS['TL_DCA']['tl_content']['palettes']['filter_hyperlink']);
+        $GLOBALS['TL_DCA']['tl_content']['palettes']['filter_preselect'] = str_replace('filterConfig;', 'filterConfig,filterPreselect,filterPreselectNoRedirect;', $GLOBALS['TL_DCA']['tl_content']['palettes']['filter_preselect']);
+        $GLOBALS['TL_DCA']['tl_content']['palettes']['filter_hyperlink'] = str_replace('filterConfig;', 'filterConfig,filterPreselect;', $GLOBALS['TL_DCA']['tl_content']['palettes']['filter_hyperlink']);
     }
 }

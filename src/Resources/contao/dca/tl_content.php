@@ -8,15 +8,15 @@ $dc['config']['onload_callback'][] = ['huh.filter.backend.content', 'onLoad'];
  * Palettes
  */
 $dc['palettes']['__selector__'][]   = 'filter';
-$dc['palettes']['filter_preselect'] = '{type_legend},type;{filter_legend},filter;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests;{invisible_legend:hide},invisible,start,stop';
-$dc['palettes']['filter_hyperlink'] = '{type_legend},type,headline;{filter_legend},filter;{link_legend},target,linkTitle,embed,titleText,rel;{imglink_legend:hide},useImage;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID;{invisible_legend:hide},invisible,start,stop';
+$dc['palettes']['filter_preselect'] = '{type_legend},type;{filter_legend},filterConfig;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests;{invisible_legend:hide},invisible,start,stop';
+$dc['palettes']['filter_hyperlink'] = '{type_legend},type,headline;{filter_legend},filterConfig;{link_legend},target,linkTitle,embed,titleText,rel;{imglink_legend:hide},useImage;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID;{invisible_legend:hide},invisible,start,stop';
 
 /**
  * Fields
  */
 $fields = [
-    'filter'                    => [
-        'label'      => &$GLOBALS['TL_LANG']['tl_content']['filter'],
+    'filterConfig'              => [
+        'label'      => &$GLOBALS['TL_LANG']['tl_content']['filterConfig'],
         'exclude'    => true,
         'inputType'  => 'select',
         'foreignKey' => 'tl_filter_config.title',
