@@ -47,6 +47,12 @@ $fields = [
             ],
         ],
     ],
+    'filterReset' => [
+        'label'     => &$GLOBALS['TL_LANG']['tl_content']['filterReset'],
+        'exclude'   => true,
+        'inputType' => 'checkbox',
+        'sql'       => "char(1) NOT NULL default ''",
+    ],
     'filterPreselectNoRedirect' => [
         'label'     => &$GLOBALS['TL_LANG']['tl_content']['filterPreselectNoRedirect'],
         'exclude'   => true,

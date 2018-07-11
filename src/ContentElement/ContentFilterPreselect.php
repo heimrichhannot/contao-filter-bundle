@@ -71,20 +71,26 @@ class ContentFilterPreselect extends ContentElement
      */
     protected function preselect()
     {
+        if (null === ($filterConfig = System::getContainer()->get('huh.filter.manager')->findById($this->filterConfig)) || null === ($elements = $filterConfig->getElements())) {
+            return;
+        }
+
         /** @var FilterPreselectModel $preselections */
         $preselections = System::getContainer()->get('contao.framework')->createInstance(FilterPreselectModel::class);
 
         if (null === ($preselections = $preselections->findPublishedByPidAndTableAndField($this->id, 'tl_content', 'filterPreselect'))) {
+            $filterConfig->resetData(); // reset previous filters
+
             return;
         }
 
         $data = System::getContainer()->get('huh.filter.util.filter_preselect')->getPreselectData($this->filterConfig, $preselections->getModels());
 
-        if (null === ($filterConfig = System::getContainer()->get('huh.filter.manager')->findById($this->filterConfig)) || null === ($elements = $filterConfig->getElements())) {
-            return;
+        if (true === (bool) $this->filterReset) {
+            $filterConfig->resetData();
+        } else {
+            $filterConfig->setData($data);
         }
-
-        $filterConfig->setData($data);
 
         if (true !== (bool) $this->filterPreselectNoRedirect) {
             Controller::redirect($filterConfig->getUrl());

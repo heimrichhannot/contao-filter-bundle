@@ -50,7 +50,7 @@ class Content
             return;
         }
 
-        $GLOBALS['TL_DCA']['tl_content']['palettes']['filter_preselect'] = str_replace('filterConfig;', 'filterConfig,filterPreselect,filterPreselectNoRedirect;', $GLOBALS['TL_DCA']['tl_content']['palettes']['filter_preselect']);
-        $GLOBALS['TL_DCA']['tl_content']['palettes']['filter_hyperlink'] = str_replace('filterConfig;', 'filterConfig,filterPreselect;', $GLOBALS['TL_DCA']['tl_content']['palettes']['filter_hyperlink']);
+        $GLOBALS['TL_DCA']['tl_content']['palettes']['filter_preselect'] = str_replace('filterConfig;', 'filterConfig,filterPreselect,filterReset,filterPreselectNoRedirect;', $GLOBALS['TL_DCA']['tl_content']['palettes']['filter_preselect']);
+        $GLOBALS['TL_DCA']['tl_content']['palettes']['filter_hyperlink'] = str_replace('filterConfig;', 'filterConfig,filterPreselect,filterReset;', $GLOBALS['TL_DCA']['tl_content']['palettes']['filter_hyperlink']);
     }
 }

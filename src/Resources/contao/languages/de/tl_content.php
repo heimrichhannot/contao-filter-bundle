@@ -8,7 +8,7 @@ $lang = &$GLOBALS['TL_LANG']['tl_content'];
 $lang['filterConfig']              = ['Filter', 'Wählen Sie eine Filter-Konfiguration aus.'];
 $lang['filterPreselect']           = ['Filtervorauswahl', 'Treffen Sie hier eine Filtervorauswahl.'];
 $lang['filterPreselectNoRedirect'] = ['Keine Weiterleitung nach Filtervorauswahl', 'Aktivieren Sie diese Option, wenn der Nutzer nach der Filtervorauswahl nicht zur Filter-URL weitergeleitet werden soll.'];
-
+$lang['filterReset']               = ['Filter zurücksetzen', 'Aktivieren um den Filter zurückzusetzen, die Filtervorauswahl wird dann ignoriert.'];
 
 /**
  * Legends
