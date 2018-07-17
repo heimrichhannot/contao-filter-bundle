@@ -111,6 +111,33 @@ class FilterPreselectUtil
             return $data;
         }
 
+        // set initial filters
+        foreach ($filterConfig->getElements() as $element) {
+            if (!$element->isInitial || !isset($types[$element->type])) {
+                continue;
+            }
+
+            $config = $types[$element->type];
+            $class = $config['class'];
+
+            if (!class_exists($class)) {
+                continue;
+            }
+
+            /** @var \HeimrichHannot\FilterBundle\Filter\AbstractType $type */
+            $type = new $class($filterConfig);
+
+            if (!is_subclass_of($type, \HeimrichHannot\FilterBundle\Filter\AbstractType::class)) {
+                continue;
+            }
+
+            if (null === ($name = $type->getName($element))) {
+                continue;
+            }
+
+            $data[$name] = AbstractType::getInitialValue($element);
+        }
+
         /** @var FilterPreselectModel $preselection */
         foreach ($preselections as $preselection) {
             $element = $filterConfig->getElementByValue($preselection->element);
