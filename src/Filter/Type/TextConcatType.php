@@ -43,14 +43,14 @@ class TextConcatType extends AbstractType
                 '," ",',
                 array_map(
                     function ($field) use ($filter) {
-                        return 'COALESCE('.$filter['dataContainer'].'.'.$field.', "")';
+                        return 'COALESCE(LOWER('.$filter['dataContainer'].'.'.$field.'), "")';
                     },
                     $fields
                 )
             ).')';
 
         $builder->andWhere($builder->expr()->like($concat, $wildcard));
-        $builder->setParameter($wildcard, '%'.$data[$name].'%');
+        $builder->setParameter($wildcard, '%'.strtolower($data[$name]).'%');
     }
 
     /**
