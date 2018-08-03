@@ -17,7 +17,6 @@ use HeimrichHannot\FilterBundle\Choice\TypeChoice;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
 use HeimrichHannot\FilterBundle\Filter\Type\SubmitType;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
-use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 use HeimrichHannot\FilterBundle\Session\FilterSession;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpFoundation\Request;
@@ -114,8 +113,7 @@ class SubmitTypeTest extends ContaoTestCase
         $framework = $this->mockContaoFramework();
         $session = new MockArraySessionStorage();
 
-        $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+        $config = new FilterConfig($this->container, $framework, new FilterSession($framework, new Session($session)), new Connection([], new Driver()));
 
         $type = new SubmitType($config);
 
@@ -130,8 +128,7 @@ class SubmitTypeTest extends ContaoTestCase
         $framework = $this->mockContaoFramework();
         $session = new MockArraySessionStorage();
 
-        $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+        $config = new FilterConfig($this->container, $framework, new FilterSession($framework, new Session($session)), new Connection([], new Driver()));
 
         /** @var FilterConfigElementModel $element */
         $element = $this->mockClassWithProperties(FilterConfigElementModel::class, []);
@@ -149,8 +146,7 @@ class SubmitTypeTest extends ContaoTestCase
         $framework = $this->mockContaoFramework();
         $session = new MockArraySessionStorage();
 
-        $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+        $config = new FilterConfig($this->container, $framework, new FilterSession($framework, new Session($session)), new Connection([], new Driver()));
 
         $range = new FilterConfigElementModel();
         $range->name = 'test';
@@ -168,8 +164,7 @@ class SubmitTypeTest extends ContaoTestCase
         $framework = $this->mockContaoFramework();
         $session = new MockArraySessionStorage();
 
-        $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+        $config = new FilterConfig($this->container, $framework, new FilterSession($framework, new Session($session)), new Connection([], new Driver()));
 
         $this->container->setParameter('huh.filter', [
             'filter' => [
@@ -207,8 +202,7 @@ class SubmitTypeTest extends ContaoTestCase
         $framework = $this->mockContaoFramework();
         $session = new MockArraySessionStorage();
 
-        $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+        $config = new FilterConfig($this->container, $framework, new FilterSession($framework, new Session($session)), new Connection([], new Driver()));
 
         $this->container->setParameter('huh.filter', [
             'filter' => [
@@ -247,8 +241,7 @@ class SubmitTypeTest extends ContaoTestCase
         $framework = $this->mockContaoFramework();
         $session = new MockArraySessionStorage();
 
-        $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+        $config = new FilterConfig($this->container, $framework, new FilterSession($framework, new Session($session)), new Connection([], new Driver()));
 
         $this->container->setParameter('huh.filter', [
             'filter' => [
@@ -290,8 +283,7 @@ class SubmitTypeTest extends ContaoTestCase
         $framework = $this->mockContaoFramework();
         $session = new MockArraySessionStorage();
 
-        $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+        $config = new FilterConfig($this->container, $framework, new FilterSession($framework, new Session($session)), new Connection([], new Driver()));
 
         $this->container->setParameter('huh.filter', [
             'filter' => [

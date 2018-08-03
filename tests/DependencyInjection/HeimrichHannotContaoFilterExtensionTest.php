@@ -17,7 +17,6 @@ use HeimrichHannot\FilterBundle\Choice\TypeChoice;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
 use HeimrichHannot\FilterBundle\DependencyInjection\HeimrichHannotContaoFilterExtension;
 use HeimrichHannot\FilterBundle\Manager\FilterManager;
-use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 use HeimrichHannot\FilterBundle\Session\FilterSession;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -97,22 +96,8 @@ class HeimrichHannotContaoFilterExtensionTest extends TestCase
         $definition = $this->container->getDefinition('huh.filter.config');
 
         $this->assertSame(FilterConfig::class, $definition->getClass());
-        $this->assertSame('contao.framework', (string) $definition->getArgument(0));
-        $this->assertSame('huh.filter.session', (string) $definition->getArgument(1));
-    }
-
-    /**
-     * Tests the huh.filter.query_builder service.
-     */
-    public function testRegistersTheFilterQueryBuilder()
-    {
-        $this->assertTrue($this->container->has('huh.filter.query_builder'));
-
-        $definition = $this->container->getDefinition('huh.filter.query_builder');
-
-        $this->assertSame(FilterQueryBuilder::class, $definition->getClass());
-        $this->assertSame('contao.framework', (string) $definition->getArgument(0));
-        $this->assertSame('doctrine.dbal.default_connection', (string) $definition->getArgument(1));
+        $this->assertSame('contao.framework', (string) $definition->getArgument(1));
+        $this->assertSame('huh.filter.session', (string) $definition->getArgument(2));
     }
 
     /**

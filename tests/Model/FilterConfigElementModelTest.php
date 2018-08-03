@@ -18,7 +18,6 @@ use Doctrine\DBAL\Schema\MySqlSchemaManager;
 use HeimrichHannot\FilterBundle\Choice\TypeChoice;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
-use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 use HeimrichHannot\FilterBundle\Session\FilterSession;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
@@ -264,8 +263,7 @@ class FilterConfigElementModelTest extends ContaoTestCase
         $framework = $this->mockContaoFramework();
         $session = new MockArraySessionStorage();
 
-        $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+        $config = new FilterConfig($this->container, $framework, new FilterSession($framework, new Session($session)), new Connection([], new Driver()));
 
         $this->assertNull($model->getFormName($config));
     }
@@ -296,8 +294,7 @@ class FilterConfigElementModelTest extends ContaoTestCase
         System::setContainer($container);
         $container->set('huh.filter.choice.type', new TypeChoice($framework));
 
-        $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+        $config = new FilterConfig($this->container, $framework, new FilterSession($framework, new Session($session)), new Connection([], new Driver()));
 
         $this->assertNull($model->getFormName($config));
     }
@@ -338,8 +335,7 @@ class FilterConfigElementModelTest extends ContaoTestCase
         System::setContainer($container);
         $container->set('huh.filter.choice.type', new TypeChoice($framework));
 
-        $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+        $config = new FilterConfig($this->container, $framework, new FilterSession($framework, new Session($session)), new Connection([], new Driver()));
 
         $this->assertNull($model->getFormName($config));
     }
@@ -383,8 +379,7 @@ class FilterConfigElementModelTest extends ContaoTestCase
         System::setContainer($container);
         $container->set('huh.filter.choice.type', new TypeChoice($framework));
 
-        $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+        $config = new FilterConfig($this->container, $framework, new FilterSession($framework, new Session($session)), new Connection([], new Driver()));
 
         $this->assertNull($model->getFormName($config));
     }
@@ -429,8 +424,7 @@ class FilterConfigElementModelTest extends ContaoTestCase
         System::setContainer($container);
         $container->set('huh.filter.choice.type', new TypeChoice($framework));
 
-        $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-        $config = new FilterConfig($framework, new FilterSession($framework, new Session($session)), $queryBuilder);
+        $config = new FilterConfig($this->container, $framework, new FilterSession($framework, new Session($session)), new Connection([], new Driver()));
 
         $this->assertSame('start', $model->getFormName($config));
 

@@ -11,7 +11,7 @@ namespace HeimrichHannot\FilterBundle\Config;
 use Contao\Controller;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\InsertTags;
-use Contao\System;
+use Doctrine\DBAL\Connection;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
 use HeimrichHannot\FilterBundle\Form\Extension\FormButtonExtension;
 use HeimrichHannot\FilterBundle\Form\Extension\FormTypeExtension;
@@ -20,6 +20,7 @@ use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\Model\FilterConfigModel;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 use HeimrichHannot\FilterBundle\Session\FilterSession;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Forms;
@@ -76,6 +77,10 @@ class FilterConfig
      * @var FilterQueryBuilder
      */
     protected $queryBuilder;
+    /**
+     * @var ContainerInterface
+     */
+    private $container;
 
     /**
      * Constructor.
@@ -83,11 +88,12 @@ class FilterConfig
      * @param ContaoFrameworkInterface $framework
      * @param FilterSession            $session
      */
-    public function __construct(ContaoFrameworkInterface $framework, FilterSession $session, FilterQueryBuilder $queryBuilder)
+    public function __construct(ContainerInterface $container, ContaoFrameworkInterface $framework, FilterSession $session, Connection $connection)
     {
         $this->framework = $framework;
         $this->session = $session;
-        $this->queryBuilder = $queryBuilder;
+        $this->container = $container;
+        $this->queryBuilder = new FilterQueryBuilder($this->container, $this->framework, $connection);
     }
 
     /**
@@ -144,14 +150,14 @@ class FilterConfig
 
     public function initQueryBuilder()
     {
-        $this->queryBuilder->resetQueryParts();
+        $this->queryBuilder = new FilterQueryBuilder($this->container, $this->framework, $this->queryBuilder->getConnection());
         $this->queryBuilder->from($this->getFilter()['dataContainer']);
 
         if (null === $this->getElements()) {
             return;
         }
 
-        $types = \System::getContainer()->get('huh.filter.choice.type')->getCachedChoices();
+        $types = $this->container->get('huh.filter.choice.type')->getCachedChoices();
 
         if (!is_array($types) || empty($types)) {
             return;
@@ -221,7 +227,7 @@ class FilterConfig
             }
 
             $data = $form->getData();
-            $url = System::getContainer()->get('huh.utils.url')->removeQueryString([$form->getName()], $url ?: null);
+            $url = $this->container->get('huh.utils.url')->removeQueryString([$form->getName()], $url ?: null);
 
             // do not save filter id in session
             $this->setData($this->filter['mergeData'] ? array_merge($this->getData(), $data) : $data);
@@ -230,7 +236,7 @@ class FilterConfig
             if (null !== $form->getClickedButton() && in_array($form->getClickedButton()->getName(), $this->getResetNames(), true)) {
                 $this->resetData();
                 // redirect to referrer page without filter parameters
-                $url = System::getContainer()->get('huh.utils.url')->removeQueryString([$form->getName()], $form->get(FilterType::FILTER_REFERRER_NAME)->getData() ?: null);
+                $url = $this->container->get('huh.utils.url')->removeQueryString([$form->getName()], $form->get(FilterType::FILTER_REFERRER_NAME)->getData() ?: null);
             }
 
             return new RedirectResponse($url, 303);
@@ -403,10 +409,10 @@ class FilterConfig
 
     public function getFilterTemplateByName(string $name)
     {
-        $config = System::getContainer()->getParameter('huh.filter');
+        $config = $this->container->getParameter('huh.filter');
 
         if (!isset($config['filter']['templates'])) {
-            return System::getContainer()->get('huh.utils.template')->getTemplate($name);
+            return $this->container->get('huh.utils.template')->getTemplate($name);
         }
 
         $templates = $config['filter']['templates'];
@@ -417,7 +423,7 @@ class FilterConfig
             }
         }
 
-        return System::getContainer()->get('huh.utils.template')->getTemplate($name);
+        return $this->container->get('huh.utils.template')->getTemplate($name);
     }
 
     /**
@@ -462,7 +468,7 @@ class FilterConfig
      */
     public function getAction()
     {
-        $router = System::getContainer()->get('router');
+        $router = $this->container->get('router');
 
         $filter = $this->getFilter();
 
@@ -482,7 +488,7 @@ class FilterConfig
      */
     public function getPreselectAction(array $data = [])
     {
-        $router = System::getContainer()->get('router');
+        $router = $this->container->get('router');
 
         $filter = $this->getFilter();
 
@@ -501,12 +507,12 @@ class FilterConfig
     public function handleRequest(Request $request = null)
     {
         if (null === $request) {
-            $request = System::getContainer()->get('request_stack')->getCurrentRequest();
+            $request = $this->container->get('request_stack')->getCurrentRequest();
         }
 
         if ($request->query->has(FilterType::FILTER_RESET_URL_PARAMETER_NAME)) {
             $this->resetData();
-            Controller::redirect(System::getContainer()->get('huh.utils.url')->removeQueryString([FilterType::FILTER_RESET_URL_PARAMETER_NAME], $request->getUri()));
+            Controller::redirect($this->container->get('huh.utils.url')->removeQueryString([FilterType::FILTER_RESET_URL_PARAMETER_NAME], $request->getUri()));
         }
     }
 

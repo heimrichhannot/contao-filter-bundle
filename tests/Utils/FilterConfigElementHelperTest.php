@@ -18,7 +18,6 @@ use HeimrichHannot\FilterBundle\Config\FilterConfig;
 use HeimrichHannot\FilterBundle\Manager\FilterManager;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\Model\FilterConfigModel;
-use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 use HeimrichHannot\FilterBundle\Session\FilterSession;
 use HeimrichHannot\FilterBundle\Util\FilterConfigElementUtil;
 use HeimrichHannot\UtilsBundle\Choice\FieldChoice;
@@ -114,9 +113,7 @@ class FilterConfigElementHelperTest extends ContaoTestCase
         $filterManager = new FilterManager($framework, $filterSession);
         $container->set('huh.filter.manager', $filterManager);
 
-        $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-
-        $filterConfig = new FilterConfig($framework, $filterSession, $queryBuilder);
+        $filterConfig = new FilterConfig($container, $framework, new FilterSession($framework, $session), new Connection([], new Driver()));
         $container->set('huh.filter.config', $filterConfig);
 
         $kernel = $this->createMock(Kernel::class);
@@ -182,9 +179,7 @@ class FilterConfigElementHelperTest extends ContaoTestCase
         $filterManager = new FilterManager($framework, $filterSession);
         $container->set('huh.filter.manager', $filterManager);
 
-        $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-
-        $filterConfig = new FilterConfig($framework, $filterSession, $queryBuilder);
+        $filterConfig = new FilterConfig($container, $framework, new FilterSession($framework, $session), new Connection([], new Driver()));
         $container->set('huh.filter.config', $filterConfig);
 
         $fs = new Filesystem();

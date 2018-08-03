@@ -10,7 +10,6 @@ namespace HeimrichHannot\FilterBundle\QueryBuilder;
 
 use Contao\Controller;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
-use Contao\System;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Haste\Model\Relations;
@@ -18,6 +17,7 @@ use HeimrichHannot\FilterBundle\Config\FilterConfig;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class FilterQueryBuilder extends QueryBuilder
 {
@@ -37,11 +37,16 @@ class FilterQueryBuilder extends QueryBuilder
      * @var FilterConfigElementModel[]
      */
     protected $skip = [];
+    /**
+     * @var ContainerInterface
+     */
+    private $container;
 
-    public function __construct(ContaoFrameworkInterface $framework, Connection $connection)
+    public function __construct(ContainerInterface $container, ContaoFrameworkInterface $framework, Connection $connection)
     {
         parent::__construct($connection);
         $this->framework = $framework;
+        $this->container = $container;
     }
 
     /**
@@ -145,7 +150,7 @@ class FilterQueryBuilder extends QueryBuilder
             }
         }
 
-        $this->andWhere(System::getContainer()->get('huh.utils.database')->composeWhereForQueryBuilder($this, $element->field, $operator, $dca, $value));
+        $this->andWhere($this->container->get('huh.utils.database')->composeWhereForQueryBuilder($this, $element->field, $operator, $dca, $value));
 
         return $this;
     }

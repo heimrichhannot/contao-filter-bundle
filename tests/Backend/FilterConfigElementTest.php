@@ -22,7 +22,6 @@ use HeimrichHannot\FilterBundle\Config\FilterConfig;
 use HeimrichHannot\FilterBundle\Manager\FilterManager;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\Model\FilterConfigModel;
-use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 use HeimrichHannot\FilterBundle\Session\FilterSession;
 use HeimrichHannot\UtilsBundle\Container\ContainerUtil;
 use HeimrichHannot\UtilsBundle\Model\ModelUtil;
@@ -362,11 +361,6 @@ class FilterConfigElementTest extends ContaoTestCase
         $filterManager = new FilterManager($framework, $filterSession);
         $container->set('huh.filter.manager', $filterManager);
 
-        $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-
-        $filterConfig = new FilterConfig($framework, $filterSession, $queryBuilder);
-        $container->set('huh.filter.config', $filterConfig);
-
         $requestStack = new RequestStack();
         $container->set('request_stack', $requestStack);
 
@@ -396,6 +390,9 @@ class FilterConfigElementTest extends ContaoTestCase
         $dcaAdapter = $this->mockAdapter(['getFields']);
         $dcaAdapter->method('getFields')->willReturn(['success']);
         $container->set('huh.utils.dca', $dcaAdapter);
+
+        $filterConfig = new FilterConfig($container, $framework, $filterSession, new Connection([], new Driver()));
+        $container->set('huh.filter.config', $filterConfig);
 
         System::setContainer($container);
 
@@ -455,12 +452,6 @@ class FilterConfigElementTest extends ContaoTestCase
         $filterManager = new FilterManager($framework, $filterSession);
         $container->set('huh.filter.manager', $filterManager);
 
-        $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-
-        $filterConfig = new FilterConfig($framework, $filterSession, $queryBuilder);
-
-        $container->set('huh.filter.config', $filterConfig);
-
         $requestStack = new RequestStack();
         $container->set('request_stack', $requestStack);
 
@@ -490,6 +481,9 @@ class FilterConfigElementTest extends ContaoTestCase
         $dcaAdapter = $this->mockAdapter(['getFields']);
         $dcaAdapter->method('getFields')->willReturn(['success']);
         $container->set('huh.utils.dca', $dcaAdapter);
+
+        $filterConfig = new FilterConfig($container, $framework, $filterSession, new Connection([], new Driver()));
+        $container->set('huh.filter.config', $filterConfig);
 
         System::setContainer($container);
 
@@ -567,11 +561,6 @@ class FilterConfigElementTest extends ContaoTestCase
         $filterManager = new FilterManager($framework, $filterSession);
         $container->set('huh.filter.manager', $filterManager);
 
-        $queryBuilder = new FilterQueryBuilder($framework, new Connection([], new Driver()));
-
-        $filterConfig = new FilterConfig($framework, $filterSession, $queryBuilder);
-        $container->set('huh.filter.config', $filterConfig);
-
         $requestStack = new RequestStack();
         $container->set('request_stack', $requestStack);
 
@@ -601,6 +590,9 @@ class FilterConfigElementTest extends ContaoTestCase
         $dcaAdapter = $this->mockAdapter(['getFields']);
         $dcaAdapter->method('getFields')->willReturn(['success']);
         $container->set('huh.utils.dca', $dcaAdapter);
+
+        $filterConfig = new FilterConfig($container, $framework, $filterSession, new Connection([], new Driver()));
+        $container->set('huh.filter.config', $filterConfig);
 
         System::setContainer($container);
 

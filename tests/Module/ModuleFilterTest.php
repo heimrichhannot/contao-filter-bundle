@@ -15,6 +15,7 @@ use Contao\System;
 use Contao\TestCase\ContaoTestCase;
 use Contao\ThemeModel;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Driver\Mysqli\Driver;
 use Doctrine\DBAL\Platforms\MySqlPlatform;
 use Doctrine\DBAL\Schema\MySqlSchemaManager;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
@@ -23,7 +24,6 @@ use HeimrichHannot\FilterBundle\Manager\FilterManager;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\Model\FilterConfigModel;
 use HeimrichHannot\FilterBundle\Module\ModuleFilter;
-use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 use HeimrichHannot\FilterBundle\Session\FilterSession;
 use HeimrichHannot\UtilsBundle\Choice\TwigTemplateChoice;
 use HeimrichHannot\UtilsBundle\Container\ContainerUtil;
@@ -276,9 +276,9 @@ class ModuleFilterTest extends ContaoTestCase
         $connection = $this->container->get('database_connection');
         $session = new Session(new MockArraySessionStorage());
         $filterSession = new FilterSession($framework, $session);
-        $filterQueryBuilder = new FilterQueryBuilder($framework, $connection);
+        $config = new FilterConfig($this->container, $framework, new FilterSession($framework, $session), new Connection([], new Driver()));
 
-        $this->container->set('huh.filter.config', new FilterConfig($framework, $filterSession, $filterQueryBuilder));
+        $this->container->set('huh.filter.config', $config);
         $this->container->set('huh.filter.manager', new FilterManager($framework, $filterSession));
         System::setContainer($this->container);
 
