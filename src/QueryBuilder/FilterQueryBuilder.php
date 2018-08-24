@@ -243,7 +243,10 @@ class FilterQueryBuilder extends QueryBuilder
         $data = $config->getData();
         $value = $data[$name];
 
-        if (null === $value) {
+        $value = array_filter(!is_array($value) ? explode(',', $value) : $value);
+
+        // skip if empty to avoid sql error
+        if (empty($value)) {
             return $this;
         }
 
@@ -254,9 +257,16 @@ class FilterQueryBuilder extends QueryBuilder
         $alias.parentTable='".$filter['dataContainer']."' AND
         $alias.entity=".$filter['dataContainer'].'.id
         ');
-        $this->andWhere($this->expr()->in($alias.'.category', ":$alias"));
 
-        $this->setParameter(":$alias", $value, \PDO::PARAM_STR);
+        $this->andWhere($this->expr()->in(
+            $alias.'.category',
+            array_map(
+                function ($val) {
+                    return '"'.addslashes(Controller::replaceInsertTags(trim($val), false)).'"';
+                },
+                $value
+            )
+        ));
 
         return $this;
     }
