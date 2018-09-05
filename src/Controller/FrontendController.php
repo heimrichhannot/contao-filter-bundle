@@ -10,10 +10,10 @@ namespace HeimrichHannot\FilterBundle\Controller;
 
 use HeimrichHannot\FilterBundle\Exception\HandleFormException;
 use HeimrichHannot\FilterBundle\Exception\MissingFilterException;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Handles the filter frontend routes.
