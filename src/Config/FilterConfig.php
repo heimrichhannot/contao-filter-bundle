@@ -522,7 +522,16 @@ class FilterConfig
     protected function mapFormsToData()
     {
         $data = [];
-        $forms = $this->builder->getForm();
+
+        try {
+            // in case of form configuration did change (e.g. choice from single to multiple value), we need to reset form data
+            $forms = $this->builder->getForm();
+        } catch (TransformationFailedException $e) {
+            $this->resetData();
+            $this->builder->setData($this->getData());
+            $forms = $this->builder->getForm();
+        }
+
         $propertyAccessor = PropertyAccess::createPropertyAccessor();
 
         /*
