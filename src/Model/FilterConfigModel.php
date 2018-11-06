@@ -119,7 +119,7 @@ class FilterConfigModel extends Model
         $t = static::$strTable;
         $arrColumns = [];
 
-        if (isset($arrOptions['ignoreFePreview']) || !defined('BE_USER_LOGGED_IN') || !BE_USER_LOGGED_IN) {
+        if (isset($arrOptions['ignoreFePreview']) || !\defined('BE_USER_LOGGED_IN') || !BE_USER_LOGGED_IN) {
             $time = \Date::floorToMinute();
             $arrColumns[] = "($t.start='' OR $t.start<='$time') AND ($t.stop='' OR $t.stop>'".($time + 60)."') AND $t.published='1'";
         }

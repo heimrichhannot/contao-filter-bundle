@@ -165,9 +165,9 @@ class DateRangeType extends AbstractType
 
         $group = $builder->get($this->getName($element));
 
-        $group->add($this->startElement->getFormName($this->config), get_class($start->getType()->getInnerType()),
+        $group->add($this->startElement->getFormName($this->config), \get_class($start->getType()->getInnerType()),
             $this->getStartOptions($element, $builder, $start, $stop));
-        $group->add($this->stopElement->getFormName($this->config), get_class($stop->getType()->getInnerType()),
+        $group->add($this->stopElement->getFormName($this->config), \get_class($stop->getType()->getInnerType()),
             $this->getStopOptions($element, $builder, $start, $stop));
 
         $group->get($this->startElement->getFormName($this->config))->setData($start->getData());

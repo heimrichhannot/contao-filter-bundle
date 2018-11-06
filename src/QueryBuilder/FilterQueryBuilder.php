@@ -108,12 +108,12 @@ class FilterQueryBuilder extends QueryBuilder
         if ($element->isInitial) {
             $value = $data[$name] ?? AbstractType::getInitialValue($element, $this->contextualValues);
 
-            if (!in_array($element->operator, [DatabaseUtil::OPERATOR_IS_EMPTY, DatabaseUtil::OPERATOR_IS_NOT_EMPTY], true) && (empty($value) || !$element->field)) {
+            if (!\in_array($element->operator, [DatabaseUtil::OPERATOR_IS_EMPTY, DatabaseUtil::OPERATOR_IS_NOT_EMPTY], true) && (empty($value) || !$element->field)) {
                 return $this;
             }
 
             // never replace non initial Inserttags (user inputs), avoid injection and never cache to avoid esi:tags
-            if (is_array($value)) {
+            if (\is_array($value)) {
                 foreach ($value as &$val) {
                     $val = Controller::replaceInsertTags($val, false);
                 }
@@ -175,7 +175,7 @@ class FilterQueryBuilder extends QueryBuilder
      */
     public function getSkip()
     {
-        return is_array($this->skip) ? $this->skip : [];
+        return \is_array($this->skip) ? $this->skip : [];
     }
 
     /**
@@ -243,7 +243,7 @@ class FilterQueryBuilder extends QueryBuilder
         $data = $config->getData();
         $value = $data[$name];
 
-        $value = array_filter(!is_array($value) ? explode(',', $value) : $value);
+        $value = array_filter(!\is_array($value) ? explode(',', $value) : $value);
 
         // skip if empty to avoid sql error
         if (empty($value)) {

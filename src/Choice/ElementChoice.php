@@ -20,7 +20,7 @@ class ElementChoice extends AbstractChoice
     {
         $choices = [];
 
-        if (!is_array($this->getContext()) || empty($this->getContext())) {
+        if (!\is_array($this->getContext()) || empty($this->getContext())) {
             return $choices;
         }
 
@@ -30,7 +30,7 @@ class ElementChoice extends AbstractChoice
             return $choices;
         }
 
-        $context['types'] = isset($context['types']) && is_array($context['types']) ? $context['types'] : [];
+        $context['types'] = isset($context['types']) && \is_array($context['types']) ? $context['types'] : [];
 
         /**
          * @var FilterConfigElementModel

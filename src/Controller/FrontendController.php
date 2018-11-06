@@ -43,7 +43,7 @@ class FrontendController extends Controller
 
         $data = $request->query->get('data');
 
-        $filter->setData(is_array($data) ? $data : []);
+        $filter->setData(\is_array($data) ? $data : []);
 
         $response = new RedirectResponse($filter->getUrl(), 303);
 

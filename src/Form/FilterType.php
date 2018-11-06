@@ -90,7 +90,7 @@ class FilterType extends AbstractType
         $wrappers = [];
         $types = \System::getContainer()->get('huh.filter.choice.type')->getCachedChoices();
 
-        if (!is_array($types) || empty($types)) {
+        if (!\is_array($types) || empty($types)) {
             return;
         }
 
@@ -153,7 +153,7 @@ class FilterType extends AbstractType
     {
         $types = \System::getContainer()->get('huh.filter.choice.type')->getCachedChoices();
 
-        if (!is_array($types) || empty($types)) {
+        if (!\is_array($types) || empty($types)) {
             return;
         }
 

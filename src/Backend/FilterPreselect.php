@@ -106,7 +106,7 @@ class FilterPreselect
         $config = System::getContainer()->getParameter('huh.filter');
         $class = null;
 
-        if (!isset($config['filter']['types']) || !is_array($config['filter']['types'])) {
+        if (!isset($config['filter']['types']) || !\is_array($config['filter']['types'])) {
             return [];
         }
 
@@ -134,7 +134,7 @@ class FilterPreselect
 
         $choices = $choiceType->getChoices($filterConfigElement);
 
-        if (!is_array($choices)) {
+        if (!\is_array($choices)) {
             return [];
         }
 

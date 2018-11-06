@@ -18,14 +18,16 @@ huh.filter.label.filter_period_colon: Zeitraum:
 huh.filter.label.reset: Zurücksetzen
 
 # input group append/prepend text
-huh.filter.input_group_text.fa_clock_o: '<span class="fa fa-clock-o"></span>'
-huh.filter.input_group_text.fa_calendar: '<span class="fa fa-calendar"></span>'
-huh.filter.input_group_text.fa_envelope: '<span class="fa fa-envelope"></span>'
-huh.filter.input_group_text.fa_at: '<span class="fa fa-at"></span>'
-huh.filter.input_group_text.button.fa_at: '<button class="btn btn-outline-secondary" type="button"><i class="fa fa-at"></i></button>'
-huh.filter.input_group_text.button.fa_clock_o: '<button class="btn btn-outline-secondary" type="button"><i class="fa fa-clock-o"></i></button>'
-huh.filter.input_group_text.button.fa_calendar: '<button class="btn btn-outline-secondary" type="button"><i class="fa fa-calendar"></i></button>'
-huh.filter.input_group_text.button.fa_envelope: '<button class="btn btn-outline-secondary" type="button"><i class="fa fa-envelope"></i></button>'
+huh.filter.input_group_text.fa_at: '<span class="fas fa-at"></span>'
+huh.filter.input_group_text.fa_calendar: '<span class="fas fa-calendar"></span>'
+huh.filter.input_group_text.fa_clock_o: '<span class="fas fa-clock"></span>'
+huh.filter.input_group_text.fa_envelope: '<span class="fas fa-envelope"></span>'
+huh.filter.input_group_text.fa_search: '<span class="fas fa-search"></span>'
+huh.filter.input_group_text.button.fa_at: '<button class="btn btn-outline-secondary" type="button"><i class="fas fa-at"></i></button>'
+huh.filter.input_group_text.button.fa_calendar: '<button class="btn btn-outline-secondary" type="button"><i class="fas fa-calendar"></i></button>'
+huh.filter.input_group_text.button.fa_clock_o: '<button class="btn btn-outline-secondary" type="button"><i class="fas fa-clock"></i></button>'
+huh.filter.input_group_text.button.fa_envelope: '<button class="btn btn-outline-secondary" type="button"><i class="fas fa-envelope"></i></button>'
+huh.filter.input_group_text.button.fa_search: '<button class="btn btn-outline-secondary" type="button"><i class="fas fa-search"></i></button>'
 
 # placeholders
 huh.sort.text.desc: 'Ergebnisse sortieren: %field% (Absteigend)'

@@ -24,7 +24,7 @@ class CountryChoice extends FieldOptionsChoice
         $choices = [];
         $options = [];
 
-        if (!is_array($this->getContext()) || empty($this->getContext())) {
+        if (!\is_array($this->getContext()) || empty($this->getContext())) {
             return $choices;
         }
 
@@ -51,7 +51,7 @@ class CountryChoice extends FieldOptionsChoice
         $translator = System::getContainer()->get('translator');
 
         foreach ($options as $key => $option) {
-            if (!is_array($option) && (!isset($option['label']) || !isset($option['value']))) {
+            if (!\is_array($option) && (!isset($option['label']) || !isset($option['value']))) {
                 $choices[$option] = $key;
                 continue;
             }

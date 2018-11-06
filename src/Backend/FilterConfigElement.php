@@ -41,7 +41,7 @@ class FilterConfigElement
         $config = System::getContainer()->getParameter('huh.filter');
         $foundType = null;
 
-        if (!isset($config['filter']['types']) || !is_array($config['filter']['types'])) {
+        if (!isset($config['filter']['types']) || !\is_array($config['filter']['types'])) {
             return null;
         }
 
@@ -74,7 +74,7 @@ class FilterConfigElement
         $config = System::getContainer()->getParameter('huh.filter');
         $class = null;
 
-        if (!isset($config['filter']['types']) || !is_array($config['filter']['types'])) {
+        if (!isset($config['filter']['types']) || !\is_array($config['filter']['types'])) {
             return null;
         }
 
@@ -102,7 +102,7 @@ class FilterConfigElement
 
         $choices = $choiceType->getChoices($filterConfigElement);
 
-        if (!is_array($choices)) {
+        if (!\is_array($choices)) {
             return null;
         }
 
@@ -142,13 +142,13 @@ class FilterConfigElement
         }
 
         // Set the root IDs
-        if (!is_array($user->filters) || empty($user->filters)) {
+        if (!\is_array($user->filters) || empty($user->filters)) {
             $root = [0];
         } else {
             $root = $user->filters;
         }
 
-        $id = strlen(\Input::get('id')) ? \Input::get('id') : CURRENT_ID;
+        $id = \strlen(\Input::get('id')) ? \Input::get('id') : CURRENT_ID;
 
         // Check current action
         switch (\Input::get('act')) {
@@ -157,7 +157,7 @@ class FilterConfigElement
                 break;
 
             case 'create':
-                if (!strlen(\Input::get('pid')) || !in_array(\Input::get('pid'), $root, true)) {
+                if (!\strlen(\Input::get('pid')) || !\in_array(\Input::get('pid'), $root, true)) {
                     throw new \Contao\CoreBundle\Exception\AccessDeniedException(
                         'Not enough permissions to create filter_element items in filter_element archive ID '.\Input::get('pid').'.'
                     );
@@ -166,7 +166,7 @@ class FilterConfigElement
 
             case 'cut':
             case 'copy':
-                if (!in_array(\Input::get('pid'), $root, true)) {
+                if (!\in_array(\Input::get('pid'), $root, true)) {
                     throw new \Contao\CoreBundle\Exception\AccessDeniedException(
                         'Not enough permissions to '.\Input::get('act').' filter_element item ID '.$id.' to filter_element archive ID '.\Input::get('pid').'.'
                     );
@@ -184,7 +184,7 @@ class FilterConfigElement
                     throw new \Contao\CoreBundle\Exception\AccessDeniedException('Invalid filter_element item ID '.$id.'.');
                 }
 
-                if (!in_array($objArchive->pid, $root, true)) {
+                if (!\in_array($objArchive->pid, $root, true)) {
                     throw new \Contao\CoreBundle\Exception\AccessDeniedException(
                         'Not enough permissions to '.\Input::get('act').' filter_element item ID '.$id.' of filter_element archive ID '.$objArchive->pid.'.'
                     );
@@ -197,7 +197,7 @@ class FilterConfigElement
             case 'overrideAll':
             case 'cutAll':
             case 'copyAll':
-                if (!in_array($id, $root, true)) {
+                if (!\in_array($id, $root, true)) {
                     throw new \Contao\CoreBundle\Exception\AccessDeniedException(
                         'Not enough permissions to access filter_element archive ID '.$id.'.'
                     );
@@ -218,9 +218,9 @@ class FilterConfigElement
                 break;
 
             default:
-                if (strlen(\Input::get('act'))) {
+                if (\strlen(\Input::get('act'))) {
                     throw new \Contao\CoreBundle\Exception\AccessDeniedException('Invalid command "'.\Input::get('act').'".');
-                } elseif (!in_array($id, $root, true)) {
+                } elseif (!\in_array($id, $root, true)) {
                     throw new \Contao\CoreBundle\Exception\AccessDeniedException(
                         'Not enough permissions to access filter_element archive ID '.$id.'.'
                     );
@@ -233,7 +233,7 @@ class FilterConfigElement
     {
         $user = \BackendUser::getInstance();
 
-        if (strlen(\Input::get('tid'))) {
+        if (\strlen(\Input::get('tid'))) {
             $this->toggleVisibility(\Input::get('tid'), ('1' === \Input::get('state')), (@func_get_arg(12) ?: null));
             Controller::redirect(Controller::getReferer());
         }
@@ -270,12 +270,12 @@ class FilterConfigElement
         }
 
         // Trigger the onload_callback
-        if (is_array($GLOBALS['TL_DCA']['tl_filter_config_element']['config']['onload_callback'])) {
+        if (\is_array($GLOBALS['TL_DCA']['tl_filter_config_element']['config']['onload_callback'])) {
             foreach ($GLOBALS['TL_DCA']['tl_filter_config_element']['config']['onload_callback'] as $callback) {
-                if (is_array($callback)) {
+                if (\is_array($callback)) {
                     $callbackObj = System::importStatic($callback[0]);
                     $callbackObj->{$callback[1]}($dc);
-                } elseif (is_callable($callback)) {
+                } elseif (\is_callable($callback)) {
                     $callback($dc);
                 }
             }
@@ -301,12 +301,12 @@ class FilterConfigElement
         $objVersions->initialize();
 
         // Trigger the save_callback
-        if (is_array($GLOBALS['TL_DCA']['tl_filter_config_element']['fields']['published']['save_callback'])) {
+        if (\is_array($GLOBALS['TL_DCA']['tl_filter_config_element']['fields']['published']['save_callback'])) {
             foreach ($GLOBALS['TL_DCA']['tl_filter_config_element']['fields']['published']['save_callback'] as $callback) {
-                if (is_array($callback)) {
+                if (\is_array($callback)) {
                     $callbackObj = System::importStatic($callback[0]);
                     $blnVisible = $callbackObj->{$callback[1]}($blnVisible, $dc);
-                } elseif (is_callable($callback)) {
+                } elseif (\is_callable($callback)) {
                     $blnVisible = $callback($blnVisible, $dc);
                 }
             }
@@ -325,12 +325,12 @@ class FilterConfigElement
         }
 
         // Trigger the onsubmit_callback
-        if (is_array($GLOBALS['TL_DCA']['tl_filter_config_element']['config']['onsubmit_callback'])) {
+        if (\is_array($GLOBALS['TL_DCA']['tl_filter_config_element']['config']['onsubmit_callback'])) {
             foreach ($GLOBALS['TL_DCA']['tl_filter_config_element']['config']['onsubmit_callback'] as $callback) {
-                if (is_array($callback)) {
+                if (\is_array($callback)) {
                     $callbackObj = System::importStatic($callback[0]);
                     $callbackObj->{$callback[1]}($dc);
-                } elseif (is_callable($callback)) {
+                } elseif (\is_callable($callback)) {
                     $callback($dc);
                 }
             }

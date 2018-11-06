@@ -45,7 +45,7 @@ class FilterConfigElementUtil
 
         $config = System::getContainer()->getParameter('huh.sort');
 
-        if (!isset($config['sort']['classes']) || !is_array($config['sort']['classes'])) {
+        if (!isset($config['sort']['classes']) || !\is_array($config['sort']['classes'])) {
             return $types;
         }
 
@@ -62,7 +62,7 @@ class FilterConfigElementUtil
 
         $config = System::getContainer()->getParameter('huh.sort');
 
-        if (!isset($config['sort']['directions']) || !is_array($config['sort']['directions'])) {
+        if (!isset($config['sort']['directions']) || !\is_array($config['sort']['directions'])) {
             return $directions;
         }
 

@@ -102,7 +102,7 @@ class ChoiceType extends AbstractType
         // forgiving array handling
         if ($element->addDefaultValue && !isset($data[$name])) {
             if (isset($options['multiple']) && true === (bool) $options['multiple'] && isset($options['data'])) {
-                $options['data'] = !is_array($options['data']) ? [$options['data']] : $options['data'];
+                $options['data'] = !\is_array($options['data']) ? [$options['data']] : $options['data'];
             }
         }
 

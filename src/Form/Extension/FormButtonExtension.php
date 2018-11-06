@@ -47,6 +47,6 @@ class FormButtonExtension extends AbstractTypeExtension
      */
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
-        $view->vars['group_attr'] = isset($options['group_attr']) && is_array($options['group_attr']) ? $options['group_attr'] : [];
+        $view->vars['group_attr'] = isset($options['group_attr']) && \is_array($options['group_attr']) ? $options['group_attr'] : [];
     }
 }

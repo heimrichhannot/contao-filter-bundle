@@ -175,7 +175,7 @@ class FieldOptionsChoice extends AbstractChoice
             null
         );
 
-        if (is_array($attributes['options'])) {
+        if (\is_array($attributes['options'])) {
             $options = $attributes['options'];
         }
 

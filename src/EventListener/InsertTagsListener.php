@@ -52,7 +52,7 @@ class InsertTagsListener
                 return '';
             }
 
-            return $this->replaceFilterInsertTag($key, $filterConfig, array_slice($elements, 2));
+            return $this->replaceFilterInsertTag($key, $filterConfig, \array_slice($elements, 2));
         }
 
         return false;

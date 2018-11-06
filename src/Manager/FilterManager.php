@@ -154,7 +154,7 @@ class FilterManager
             if (null !== $sort) {
                 foreach ($sort as $s) {
                     $sortElements = $adapter->findPublishedByPid($s->id)->getModels();
-                    if (is_array($sortElements) && !empty($sortElements)) {
+                    if (\is_array($sortElements) && !empty($sortElements)) {
                         $elementModels = array_merge($elementModels, $sortElements);
                     }
                 }

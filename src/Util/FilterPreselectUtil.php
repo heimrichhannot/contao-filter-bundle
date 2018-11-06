@@ -45,7 +45,7 @@ class FilterPreselectUtil
 
         $types = \System::getContainer()->get('huh.filter.choice.type')->getCachedChoices();
 
-        if (!is_array($types) || empty($types)) {
+        if (!\is_array($types) || empty($types)) {
             return $queryBuilder;
         }
 
@@ -107,7 +107,7 @@ class FilterPreselectUtil
 
         $types = \System::getContainer()->get('huh.filter.choice.type')->getCachedChoices();
 
-        if (!is_array($types) || empty($types)) {
+        if (!\is_array($types) || empty($types)) {
             return $data;
         }
 

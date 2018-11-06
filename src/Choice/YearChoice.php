@@ -34,7 +34,7 @@ class YearChoice extends AbstractChoice
      */
     protected function collect()
     {
-        if (!is_array($this->getContext()) || empty($this->getContext())) {
+        if (!\is_array($this->getContext()) || empty($this->getContext())) {
             return [];
         }
         $context = $this->getContext();

@@ -149,7 +149,7 @@ class FilterConfigElementModel extends Model implements \JsonSerializable
         $t = static::$strTable;
         $arrColumns = ["$t.pid=?"];
 
-        if (isset($arrOptions['ignoreFePreview']) || !defined('BE_USER_LOGGED_IN') || !BE_USER_LOGGED_IN) {
+        if (isset($arrOptions['ignoreFePreview']) || !\defined('BE_USER_LOGGED_IN') || !BE_USER_LOGGED_IN) {
             $time = \Date::floorToMinute();
             $arrColumns[] = "($t.start='' OR $t.start<='$time') AND ($t.stop='' OR $t.stop>'".($time + 60)."') AND $t.published='1'";
         }
@@ -187,7 +187,7 @@ class FilterConfigElementModel extends Model implements \JsonSerializable
         $t = static::$strTable;
         $arrColumns = ["$t.pid=?"];
 
-        if (isset($arrOptions['ignoreFePreview']) || !defined('BE_USER_LOGGED_IN') || !BE_USER_LOGGED_IN) {
+        if (isset($arrOptions['ignoreFePreview']) || !\defined('BE_USER_LOGGED_IN') || !BE_USER_LOGGED_IN) {
             $time = \Date::floorToMinute();
             $arrColumns[] = "($t.start='' OR $t.start<='$time') AND ($t.stop='' OR $t.stop>'".($time + 60)."') AND $t.published='1'";
         }
@@ -233,7 +233,7 @@ class FilterConfigElementModel extends Model implements \JsonSerializable
 
         $types = \System::getContainer()->get('huh.filter.choice.type')->getCachedChoices();
 
-        if (!is_array($types) || empty($types)) {
+        if (!\is_array($types) || empty($types)) {
             return null;
         }
 

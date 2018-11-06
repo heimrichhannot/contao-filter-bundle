@@ -44,7 +44,7 @@ class HiddenTypeTest extends ContaoTestCase
     {
         parent::setUp();
 
-        if (!defined('TL_ROOT')) {
+        if (!\defined('TL_ROOT')) {
             \define('TL_ROOT', $this->getFixturesDir());
         }
 

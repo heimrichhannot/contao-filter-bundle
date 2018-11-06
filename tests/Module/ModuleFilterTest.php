@@ -61,7 +61,7 @@ class ModuleFilterTest extends ContaoTestCase
     {
         parent::setUp();
 
-        if (!defined('TL_ROOT')) {
+        if (!\defined('TL_ROOT')) {
             \define('TL_ROOT', $this->getFixturesDir());
         }
 
@@ -137,7 +137,7 @@ class ModuleFilterTest extends ContaoTestCase
     {
         System::setContainer($this->container);
 
-        if (!defined('TL_MODE')) {
+        if (!\defined('TL_MODE')) {
             \define('TL_MODE', 'BE');
         }
 
@@ -161,7 +161,7 @@ class ModuleFilterTest extends ContaoTestCase
     {
         System::setContainer($this->container);
 
-        if (!defined('TL_MODE')) {
+        if (!\defined('TL_MODE')) {
             \define('TL_MODE', 'FE');
         }
 
@@ -192,7 +192,7 @@ class ModuleFilterTest extends ContaoTestCase
         $this->container->set('huh.filter.manager', new FilterManager($framework, new FilterSession($framework, $session)));
         System::setContainer($this->container);
 
-        if (!defined('TL_MODE')) {
+        if (!\defined('TL_MODE')) {
             \define('TL_MODE', 'FE');
         }
 
@@ -282,7 +282,7 @@ class ModuleFilterTest extends ContaoTestCase
         $this->container->set('huh.filter.manager', new FilterManager($framework, $filterSession));
         System::setContainer($this->container);
 
-        if (!defined('TL_MODE')) {
+        if (!\defined('TL_MODE')) {
             \define('TL_MODE', 'FE');
         }
 

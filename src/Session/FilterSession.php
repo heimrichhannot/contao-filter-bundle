@@ -63,7 +63,7 @@ class FilterSession
             $data = $this->session->get($key);
         }
 
-        return !is_array($data) ? [$data] : $data;
+        return !\is_array($data) ? [$data] : $data;
     }
 
     /**
@@ -83,7 +83,7 @@ class FilterSession
         }
 
         // remove empty values
-        if (is_array($data)) {
+        if (\is_array($data)) {
             $data = array_filter($data);
         }
 

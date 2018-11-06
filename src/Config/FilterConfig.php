@@ -159,7 +159,7 @@ class FilterConfig
 
         $types = $this->container->get('huh.filter.choice.type')->getCachedChoices();
 
-        if (!is_array($types) || empty($types)) {
+        if (!\is_array($types) || empty($types)) {
             return;
         }
 
@@ -233,7 +233,7 @@ class FilterConfig
             $this->setData($this->filter['mergeData'] ? array_merge($this->getData(), $data) : $data);
 
             // allow reset, support different form configuration with same form name
-            if (null !== $form->getClickedButton() && in_array($form->getClickedButton()->getName(), $this->getResetNames(), true)) {
+            if (null !== $form->getClickedButton() && \in_array($form->getClickedButton()->getName(), $this->getResetNames(), true)) {
                 $this->resetData();
                 // redirect to referrer page without filter parameters
                 $url = $this->container->get('huh.utils.url')->removeQueryString([$form->getName()], $form->get(FilterType::FILTER_REFERRER_NAME)->getData() ?: null);
@@ -275,7 +275,7 @@ class FilterConfig
             return null;
         }
 
-        if (is_array($value)) {
+        if (\is_array($value)) {
             $value = serialize($value);
         }
 
@@ -375,7 +375,7 @@ class FilterConfig
      */
     public function getResetNames(): array
     {
-        return !is_array($this->resetNames) ? [$this->resetNames] : $this->resetNames;
+        return !\is_array($this->resetNames) ? [$this->resetNames] : $this->resetNames;
     }
 
     /**
@@ -552,7 +552,7 @@ class FilterConfig
 
                 // If the data is identical to the value in $data, we are
                 // dealing with a reference
-                if (!is_object($data) || !$config->getByReference() || $form->getData() !== $propertyAccessor->getValue($data, $propertyPath)) {
+                if (!\is_object($data) || !$config->getByReference() || $form->getData() !== $propertyAccessor->getValue($data, $propertyPath)) {
                     $propertyAccessor->setValue($data, $propertyPath, $form->getData());
                 }
             }
