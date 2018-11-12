@@ -50,7 +50,7 @@ class SkipParentsType extends AbstractType
         $andNotNull = $builder->expr()->andX();
         $andNotNull->add($builder->expr()->isNotNull($parentField))->add($builder->expr()->neq($parentField, 0))->add($builder->expr()->neq($parentField, '""'));
 
-        $notIn = $builder->expr()->notIn($parentField, $parentIds);
+        $notIn = $builder->expr()->notIn($filter['dataContainer'].'.id', $parentIds);
 
         $or = $builder->expr()->orX();
         $or->add($andNotNull);
