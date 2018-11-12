@@ -131,9 +131,11 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
         \HeimrichHannot\FilterBundle\Filter\Type\LocaleType::TYPE
                        => '{general_legend},title,type,isInitial;{config_legend},field,customLocales,customOptions,sortOptionValues,customName,customOperator,addDefaultValue,expanded,multiple;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
         \HeimrichHannot\FilterBundle\Filter\Type\ParentType::TYPE
-        => '{general_legend},title,type,isInitial;{config_legend},field,customOptions,sortOptionValues,customName,customOperator,addDefaultValue,expanded,multiple;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
+                       => '{general_legend},title,type,isInitial;{config_legend},field,customOptions,sortOptionValues,customName,customOperator,addDefaultValue,expanded,multiple;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
+        \HeimrichHannot\FilterBundle\Filter\Type\SkipParentsType::TYPE
+                       => '{general_legend},title,type;{config_legend},parentField,customName;{publish_legend},published;',
         \HeimrichHannot\FilterBundle\Filter\Type\PublishedType::TYPE
-        => '{general_legend},title,type;{config_legend},field,customName,invertField,ignoreFePreview,addStartAndStop;{publish_legend},published;',
+                       => '{general_legend},title,type;{config_legend},field,customName,invertField,ignoreFePreview,addStartAndStop;{publish_legend},published;',
         \HeimrichHannot\FilterBundle\Filter\Type\HiddenType::TYPE
                        => '{general_legend},title,type,isInitial;{config_legend},field,customName,customOperator,addDefaultValue;{expert_legend},cssClass;{publish_legend},published;',
         \HeimrichHannot\FilterBundle\Filter\Type\ButtonType::TYPE
@@ -176,7 +178,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
         'addDefaultValue'                                                                         => 'defaultValueType',
         'defaultValueType_' . \HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_SCALAR => 'defaultValue',
         'defaultValueType_' . \HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_ARRAY  => 'defaultValueArray',
-        'defaultValueType_' . \HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_LATEST  => 'parentField',
+        'defaultValueType_' . \HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_LATEST => 'parentField',
         'addStartAndStop'                                                                         => 'startField,stopField',
         'addParentSelector'                                                                         => 'parentField',
         'inputGroup'                                                                              => 'inputGroupPrepend,inputGroupAppend',
@@ -263,6 +265,17 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             },
             'eval'             => ['chosen' => true, 'includeBlankOption' => true, 'multiple' => true, 'mandatory' => true],
             'sql'              => "blob NULL",
+        ],
+        'parentField'             => [
+            'label'            => &$GLOBALS['TL_LANG']['tl_filter_config_element']['parentField'],
+            'exclude'          => true,
+            'filter'           => true,
+            'inputType'        => 'select',
+            'options_callback' => function (\Contao\DataContainer $dc) {
+                return \Contao\System::getContainer()->get('huh.filter.util.filter_config_element')->getFields($dc);
+            },
+            'eval'             => ['chosen' => true, 'includeBlankOption' => true],
+            'sql'              => "varchar(64) NOT NULL default ''",
         ],
         'customOptions'    => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['customOptions'],
