@@ -7,6 +7,8 @@ huh.filter.placeholder.start: Anfang
 huh.filter.placeholder.stop: Ende
 huh.filter.placeholder.from: Von
 huh.filter.placeholder.to: Bis
+huh.filter.placeholder.all: Alle
+huh.filter.placeholder.nothing: Nichts
 
 # labels
 huh.filter.label.submit: Absenden

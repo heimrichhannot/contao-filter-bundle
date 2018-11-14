@@ -5,6 +5,8 @@ huh.filter.placeholder.start: Start
 huh.filter.placeholder.stop: Stop
 huh.filter.placeholder.from: From
 huh.filter.placeholder.to: To
+huh.filter.placeholder.all: All
+huh.filter.placeholder.nothing: Nothing
 
 # labels
 huh.filter.label.submit: Submit
