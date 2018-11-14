@@ -28,7 +28,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
-class FilterConfig
+class FilterConfig implements \JsonSerializable
 {
     const FILTER_TYPE_DEFAULT = 'filter';
     const FILTER_TYPE_SORT = 'sort';
@@ -515,6 +515,14 @@ class FilterConfig
             $this->resetData();
             Controller::redirect($this->container->get('huh.utils.url')->removeQueryString([FilterType::FILTER_RESET_URL_PARAMETER_NAME], $request->getUri()));
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function jsonSerialize()
+    {
+        return get_object_vars($this);
     }
 
     /**
