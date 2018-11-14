@@ -159,6 +159,7 @@ class DateTimeType extends AbstractType
                 }
 
                 break;
+
             case DateType::WIDGET_TYPE_CHOICE:
                 $minYear = Date::parse('Y', strtotime('-5 year', $time));
                 $maxYear = Date::parse('Y', strtotime('+5 year', $time));

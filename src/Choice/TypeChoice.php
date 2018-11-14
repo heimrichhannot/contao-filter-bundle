@@ -49,6 +49,7 @@ class TypeChoice extends AbstractChoice
             if ($groupChoices) {
                 $group = $type['type'];
                 $choices[$group][] = $type['name'];
+
                 continue;
             }
 

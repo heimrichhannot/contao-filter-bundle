@@ -82,7 +82,9 @@ class FilterQueryBuilder extends QueryBuilder
                     break;
                 }
                 $this->whereTagWidget($element, $name, $config, $dca);
+
                 break;
+
             default:
                 $this->whereWidget($element, $name, $config, $dca, $defaultOperator);
         }

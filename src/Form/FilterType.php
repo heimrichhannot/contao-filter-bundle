@@ -126,6 +126,7 @@ class FilterType extends AbstractType
                 $options['inherit_data'] = false;
                 $builder->add($builder->create($name, FormType::class, $options)); // add the group here to maintain correct form order
                 $wrappers[] = $element;
+
                 continue;
             }
 

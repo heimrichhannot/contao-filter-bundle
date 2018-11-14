@@ -135,7 +135,9 @@ class FieldOptionsChoice extends AbstractChoice
                     break;
                 }
                 $options = $this->getTagWidgetOptions($element, $filter, $dca);
+
                 break;
+
             default:
                 $options = $this->getWidgetOptions($element, $filter, $dca);
         }

@@ -22,11 +22,13 @@ class FilterConfigElementCallbackListener
     {
         $choices = AbstractType::VALUE_TYPES;
         $filter = $dca->activeRecord->fetchAllAssoc()[0];
+
         if (empty($filter)) {
             return $choices;
         }
         $types = \Contao\System::getContainer()->getParameter('huh.filter')['filter']['types'];
         $typeIndex = array_search($filter['type'], array_column($types, 'name'), true);
+
         if (!$typeIndex) {
             return $choices;
         }

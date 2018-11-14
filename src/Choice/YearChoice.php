@@ -11,6 +11,7 @@ namespace HeimrichHannot\FilterBundle\Choice;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\Model\Collection;
 use Contao\StringUtil;
+use Contao\System;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\UtilsBundle\Choice\AbstractChoice;
@@ -46,24 +47,32 @@ class YearChoice extends AbstractChoice
         $elements = $context['elements'];
         $columns = [];
         $values = [];
+
         foreach ($elements as $entry) {
             if ($entry->isInitial && $entry->id !== $element->id) {
                 switch ($entry->initialValueType) {
                     case AbstractType::VALUE_TYPE_SCALAR:
-                        $columns[] = $entry->field.' = ?';
+                        $operator = System::getContainer()->get('huh.utils.database')->transformVerboseOperator($entry->operator);
+
+                        $columns[] = $entry->field.$operator.'?';
                         $values[] = $entry->initialValue;
+
                         break;
+
                     case AbstractType::VALUE_TYPE_ARRAY:
                         $value = array_column(StringUtil::deserialize($entry->initialValueArray), 'value');
+
                         if (empty($value) || empty($value[0])) {
                             continue;
                         }
                         $columns[] = $entry->field.' IN ('.implode(',', $value).')';
+
                         break;
                 }
             }
         }
         $options = [];
+
         if (isset($context['latest']) && true === $context['latest']) {
             $options['order'] = $element->field.' DESC';
             $options['limit'] = 1;
@@ -73,12 +82,14 @@ class YearChoice extends AbstractChoice
             return [];
         }
         $items = $this->modelUtil->findModelInstancesBy($filter['dataContainer'], $columns, $values, $options);
+
         if (!$items) {
             return [];
         }
         $years = [];
+
         foreach ($items as $entry) {
-            $date = date('Y', $entry->date);
+            $date = date('Y', $entry->{$element->field});
             $years[$date] = $date;
         }
         krsort($years, SORT_NUMERIC);

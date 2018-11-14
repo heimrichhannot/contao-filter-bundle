@@ -35,6 +35,7 @@ class ParentType extends ChoiceType
                 $parentTable = 'tl_member_group';
 
                 break;
+
             default:
                 Controller::loadDataContainer($table);
 
@@ -42,6 +43,7 @@ class ParentType extends ChoiceType
                     $foreignKey = explode('.', $GLOBALS['TL_DCA'][$table]['fields']['pid']['foreignKey']);
                     $parentTable = $foreignKey[0];
                 }
+
                 break;
         }
 

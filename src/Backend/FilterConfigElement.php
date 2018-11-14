@@ -48,6 +48,7 @@ class FilterConfigElement
         foreach ($config['filter']['types'] as $type) {
             if (isset($type['name']) && $type['name'] === $filterConfigElement->type && isset($type['type'])) {
                 $foundType = $type['type'];
+
                 break;
             }
         }
@@ -81,6 +82,7 @@ class FilterConfigElement
         foreach ($config['filter']['types'] as $type) {
             if (isset($type['name']) && $type['name'] === $filterConfigElement->type && isset($type['class'])) {
                 $class = $type['class'];
+
                 break;
             }
         }
@@ -162,6 +164,7 @@ class FilterConfigElement
                         'Not enough permissions to create filter_element items in filter_element archive ID '.\Input::get('pid').'.'
                     );
                 }
+
                 break;
 
             case 'cut':
@@ -189,6 +192,7 @@ class FilterConfigElement
                         'Not enough permissions to '.\Input::get('act').' filter_element item ID '.$id.' of filter_element archive ID '.$objArchive->pid.'.'
                     );
                 }
+
                 break;
 
             case 'select':
@@ -215,6 +219,7 @@ class FilterConfigElement
                 $session = $session->all();
                 $session['CURRENT']['IDS'] = array_intersect($session['CURRENT']['IDS'], $objArchive->fetchEach('id'));
                 $session->replace($session);
+
                 break;
 
             default:
@@ -225,6 +230,7 @@ class FilterConfigElement
                         'Not enough permissions to access filter_element archive ID '.$id.'.'
                     );
                 }
+
                 break;
         }
     }

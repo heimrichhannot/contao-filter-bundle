@@ -57,6 +57,7 @@ class LanguageChoice extends FieldOptionsChoice
         foreach ($options as $key => $option) {
             if (!\is_array($option) && (!isset($option['label']) || !isset($option['value']))) {
                 $choices[$option] = $key;
+
                 continue;
             }
 

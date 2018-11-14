@@ -77,8 +77,10 @@ abstract class AbstractType
                 }, StringUtil::deserialize($element->defaultValueArray, true));
 
                 break;
+
             default:
                 $value = $element->defaultValue;
+
                 break;
         }
 
@@ -96,13 +98,17 @@ abstract class AbstractType
                 }, StringUtil::deserialize($element->initialValueArray, true));
 
                 break;
+
             case static::VALUE_TYPE_CONTEXTUAL:
                 if (isset($contextualValues[$element->field])) {
                     $value = $contextualValues[$element->field];
                 }
+
                 break;
+
             default:
                 $value = $element->initialValue;
+
                 break;
         }
 
@@ -244,12 +250,17 @@ abstract class AbstractType
         switch ($element->type) {
             case 'time':
                 $field = 'minTime';
+
                 break;
+
             case 'date':
                 $field = 'minDate';
+
                 break;
+
             case 'date_time':
                 $field = 'minDateTime';
+
                 break;
         }
 
@@ -274,12 +285,17 @@ abstract class AbstractType
         switch ($element->type) {
             case 'time':
                 $field = 'maxTime';
+
                 break;
+
             case 'date':
                 $field = 'maxDate';
+
                 break;
+
             case 'date_time':
                 $field = 'maxDateTime';
+
                 break;
         }
 

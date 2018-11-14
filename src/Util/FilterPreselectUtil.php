@@ -191,8 +191,10 @@ class FilterPreselectUtil
                 );
 
                 break;
+
             default:
                 $value = $element->initialValue;
+
                 break;
         }
 

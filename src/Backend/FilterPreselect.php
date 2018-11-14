@@ -50,7 +50,9 @@ class FilterPreselect
         switch ($row['initialValueType']) {
             case \HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_SCALAR:
                 $label = $choices[$row['initialValue']] ?? $row['initialValue'];
+
                 break;
+
             case \HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_ARRAY:
                 $values = array_map(
                     function ($item) {
@@ -60,7 +62,9 @@ class FilterPreselect
                 );
 
                 $label = implode(',', array_intersect_key($choices, array_flip(array_filter($values))));
+
                 break;
+
             case \HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_CONTEXTUAL:
                 $label = \HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_CONTEXTUAL;
         }
@@ -113,6 +117,7 @@ class FilterPreselect
         foreach ($config['filter']['types'] as $type) {
             if (isset($type['name']) && $type['name'] === $filterConfigElement->type && isset($type['class'])) {
                 $class = $type['class'];
+
                 break;
             }
         }

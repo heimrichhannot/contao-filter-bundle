@@ -437,6 +437,7 @@ class FilterConfig
 
         if (!empty($filter['parentFilter'])) {
             $parentFilter = $this->framework->getAdapter(FilterConfigModel::class)->findById($filter['parentFilter'])->row();
+
             if (!empty($parentFilter)) {
                 $filter['action'] = $parentFilter['action'];
                 $filter['name'] = $parentFilter['name'];

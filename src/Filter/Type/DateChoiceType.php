@@ -11,7 +11,7 @@ namespace HeimrichHannot\FilterBundle\Filter\Type;
 use Contao\Controller;
 use Contao\Date;
 use Contao\System;
-use HeimrichHannot\FilterBundle\Choice\YearChoice;
+use HeimrichHannot\FilterBundle\Choice\DateChoice;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
@@ -19,9 +19,9 @@ use HeimrichHannot\UtilsBundle\Date\DateUtil;
 use HeimrichHannot\UtilsBundle\Model\ModelUtil;
 use Symfony\Component\Form\FormBuilderInterface;
 
-class YearType extends ChoiceType
+class DateChoiceType extends ChoiceType
 {
-    const TYPE = 'year';
+    const TYPE = 'date_choice';
 
     const VALUE_TYPES = [
         self::VALUE_TYPE_SCALAR,
@@ -38,7 +38,7 @@ class YearType extends ChoiceType
      */
     protected $modelUtil;
     /**
-     * @var YearChoice
+     * @var DateChoice
      */
     protected $optionsChoice;
 
@@ -47,7 +47,7 @@ class YearType extends ChoiceType
         parent::__construct($config);
         $this->dateUtil = System::getContainer()->get('huh.utils.date');
         $this->modelUtil = System::getContainer()->get('huh.utils.model');
-        $this->optionsChoice = System::getContainer()->get('huh.filter.choice.year');
+        $this->optionsChoice = System::getContainer()->get('huh.filter.choice.date');
     }
 
     public function buildQuery(FilterQueryBuilder $builder, FilterConfigElementModel $element)
@@ -73,12 +73,18 @@ class YearType extends ChoiceType
             }
         }
 
-        if (!$this->validYear($value)) {
+        if (!$value) {
             return;
         }
 
-        $start = $this->getYearStart($value);
-        $stop = $this->getYearEnd($value);
+        $value = System::getContainer()->get('huh.utils.date')->translateMonthsToEnglish($value);
+
+        if (!$this->validDate($value, $element->dateFormat)) {
+            return;
+        }
+
+        $start = $this->getDateStart($value, $element->dateFormat);
+        $stop = $this->getDateEnd($value, $element->dateFormat);
 
         $andXA = $builder->expr()->andX();
         $andXA->add($builder->expr()->lte(':start', $field));
@@ -101,7 +107,7 @@ class YearType extends ChoiceType
                 $options['data'] = $this->getLatestValue($element);
             }
         }
-        $cssClasses = 'year' === $this->getName($element) ? $this->getName($element) : ' year '.$this->getName($element);
+        $cssClasses = 'date' === $this->getName($element) ? $this->getName($element) : ' date '.$this->getName($element);
 
         if (isset($options['attr']['class'])) {
             $options['attr']['class'] .= $cssClasses;
@@ -125,11 +131,11 @@ class YearType extends ChoiceType
             ];
 
             if ($min) {
-                $choiceOptions['min'] = Date::parse('Y', $min);
+                $choiceOptions['min'] = Date::parse($element->dateFormat, $min);
             }
 
             if ($max) {
-                $choiceOptions['max'] = Date::parse('Y', $max);
+                $choiceOptions['max'] = Date::parse($element->dateFormat, $max);
             }
 
             if (!empty($choices = $this->optionsChoice->getCachedChoices($choiceOptions))) {
@@ -137,7 +143,7 @@ class YearType extends ChoiceType
             }
         }
 
-        return $this->getYears($min, $max);
+        return $this->getDates($element->dateFormat, $min, $max);
     }
 
     /**
@@ -146,36 +152,58 @@ class YearType extends ChoiceType
      *
      * @return array
      */
-    public function getYears(string $min = null, string $max = null)
+    public function getDates(string $dateFormat, string $min = null, string $max = null)
     {
         $min = empty($min) ? '946684800' : $min;
         $max = empty($max) ? time() : $max;
-        $years = range(date('Y', $min), date('Y', $max));
+        $dates = range(date($dateFormat, $min), date($dateFormat, $max));
 
-        return array_combine($years, $years);
+        return array_combine($dates, $dates);
     }
 
-    public function validYear($year)
+    public function validDate(string $date)
     {
-        if (!is_numeric($year)) {
-            return false;
-        }
+        $date = date_parse($date);
 
-        if (checkdate(1, 1, $year) && checkdate(12, 31, $year)) {
+        if (0 == $date['error_count'] && checkdate($date['month'], $date['day'], $date['year'])) {
             return true;
         }
 
         return false;
     }
 
-    public function getYearStart(int $year)
+    public function getDateStart(string $date, string $dateFormat)
     {
-        return mktime(0, 0, 0, 1, 1, $year);
+        $dateUtil = System::getContainer()->get('huh.utils.date');
+
+        $dateTime = \DateTime::createFromFormat($dateFormat, $date);
+
+        return mktime(0, 0, 0,
+            $dateUtil->isMonthInDateFormat($dateFormat) ? $dateTime->format('m') : 1,
+            $dateUtil->isDayInDateFormat($dateFormat) ? $dateTime->format('d') : 1,
+            $dateUtil->isYearInDateFormat($dateFormat) ? $dateTime->format('Y') : date('Y')
+        );
     }
 
-    public function getYearEnd(int $year)
+    public function getDateEnd(string $date, string $dateFormat)
     {
-        return mktime(23, 59, 59, 12, 31, $year);
+        $dateUtil = System::getContainer()->get('huh.utils.date');
+
+        $dateTime = \DateTime::createFromFormat($dateFormat, $date);
+
+        $month = $dateUtil->isMonthInDateFormat($dateFormat) ? $dateTime->format('m') : 12;
+        $year = $dateUtil->isYearInDateFormat($dateFormat) ? $dateTime->format('Y') : date('Y');
+
+        if ($dateUtil->isDayInDateFormat($dateFormat)) {
+            $day = $dateTime->format('d');
+        } else {
+            // compute last day in month
+            $date = new \DateTime('last day of '.$year.'-'.$month);
+
+            $day = $date->format('d');
+        }
+
+        return mktime(23, 59, 59, $month, $day, $year);
     }
 
     /**
@@ -195,7 +223,7 @@ class YearType extends ChoiceType
         if (!empty($choices = $this->optionsChoice->getCachedChoices($choiceOptions))) {
             $value = array_pop($choices);
         } else {
-            $value = Date::parse('Y');
+            $value = Date::parse($element->dateFormat);
         }
 
         return $value;

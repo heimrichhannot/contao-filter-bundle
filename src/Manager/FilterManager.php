@@ -135,6 +135,7 @@ class FilterManager
         // get the parent filter config
         if (isset($filter['type']) && FilterConfig::FILTER_TYPE_SORT === $filter['type']) {
             $parentFilter = $this->framework->getAdapter(FilterConfigModel::class)->findById($filter['parentFilter'])->row();
+
             if (!empty($parentFilter)) {
                 $filter['action'] = $parentFilter['action'];
                 $filter['dataContainer'] = $parentFilter['dataContainer'];
@@ -151,9 +152,11 @@ class FilterManager
         if (null !== $elements && FilterConfig::FILTER_TYPE_DEFAULT === $filter['type'] && System::getContainer()->get('huh.utils.container')->isFrontend()) {
             $elementModels = $elements->getModels();
             $sort = $this->framework->getAdapter(FilterConfigModel::class)->findBy('parentFilter', $filter['id']);
+
             if (null !== $sort) {
                 foreach ($sort as $s) {
                     $sortElements = $adapter->findPublishedByPid($s->id)->getModels();
+
                     if (\is_array($sortElements) && !empty($sortElements)) {
                         $elementModels = array_merge($elementModels, $sortElements);
                     }

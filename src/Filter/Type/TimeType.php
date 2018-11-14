@@ -161,6 +161,7 @@ class TimeType extends AbstractType
                 }
 
                 break;
+
             case DateType::WIDGET_TYPE_CHOICE:
                 // time restriction must be configurable by itself
                 break;

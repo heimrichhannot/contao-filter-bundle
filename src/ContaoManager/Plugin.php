@@ -49,6 +49,7 @@ class Plugin implements BundlePluginInterface, ExtensionPluginInterface, Routing
                 // enable form plugin
                 if (!isset($extensionConfig['form'])) {
                     $extensionConfig['form']['enabled'] = true;
+
                     break;
                 }
             }

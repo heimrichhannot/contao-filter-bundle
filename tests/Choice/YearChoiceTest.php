@@ -157,10 +157,12 @@ class YearChoiceTest extends ContaoTestCase
                 $values[0] = substr($fields[0], strpos($fields[0], '(') + 1, 1);
             }
             $return = null;
+
             switch ($values[0]) {
                 default:
                 case '1':
                     return null;
+
                 case '2':
                     $return = [
                         $this->mockClassWithProperties(Model::class, ['date' => 1529916218]), //2018
@@ -169,6 +171,7 @@ class YearChoiceTest extends ContaoTestCase
                         $this->mockClassWithProperties(Model::class, ['date' => 1462406400]), //2016
                     ];
             }
+
             if (isset($options['limit']) && 1 === $options['limit']) {
                 return [$return[0]];
             }
