@@ -92,11 +92,14 @@ class DateChoice extends AbstractChoice
         if (isset($context['latest']) && true === $context['latest']) {
             $options['order'] = $element->field.' DESC';
             $options['limit'] = 1;
+        } else {
+            $options['order'] = $element->field.' ASC';
         }
 
         if (empty($columns)) {
             return [];
         }
+
         $items = $this->modelUtil->findModelInstancesBy($filter['dataContainer'], $columns, $values, $options);
 
         if (!$items) {

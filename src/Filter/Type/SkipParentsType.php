@@ -78,7 +78,7 @@ class SkipParentsType extends AbstractType
         }
 
         $columns = [
-            "$parentField IS NOT NULL AND $parentField != 0 AND $parentField != '' OR ".$filter['dataContainer'].'.id NOT IN ('.implode(',', $parentIds).')',
+            "($parentField IS NOT NULL AND $parentField != 0 AND $parentField != '' OR ".$filter['dataContainer'].'.id NOT IN ('.implode(',', $parentIds).'))',
         ];
 
         $values = [];
