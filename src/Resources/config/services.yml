@@ -105,12 +105,8 @@ services:
     - "@translator"
     tags:
     - { name: twig.extension }
-  twig.truncate.html.service:
-    class: Urodoz\Truncate\TruncateService
-  twig.extension.truncate.html:
-    class: Urodoz\Truncate\Bridge\Twig\TruncateExtension
-    arguments:
-    - "@twig.truncate.html.service"
+  dzango.twig.truncate_extension:
+    class: Dzango\Twig\Extension\Truncate
     tags:
     - { name: twig.extension }
   huh.filter.choice.sort:
@@ -128,3 +124,5 @@ services:
     public: true
     arguments:
     - "@contao.framework"
+  # Symfony 4 autowire convention fix (ambiguous namespace alias)
+  HeimrichHannot\FilterBundle\Util\FilterPreselectUtil: '@huh.filter.util.filter_preselect'
