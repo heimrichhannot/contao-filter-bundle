@@ -12,7 +12,8 @@
     "heimrichhannot/contao-fieldpalette-bundle": ">=0.2 <2.0-dev ",
     "codefog/contao-haste": "^4.18",
     "twig/extensions": "^1.5",
-    "urodoz/truncate-html": "^1.0"
+    "urodoz/truncate-html": "^1.0",
+    "symfony/form": "~3.4|~4.0"
   },
   "require-dev": {
     "contao/test-case": "^1.1",
@@ -24,8 +25,7 @@
     "php-coveralls/php-coveralls": "^2.0",
     "symfony/phpunit-bridge": "^3.2",
     "heimrichhannot/contao-categories-bundle": "^1.0-beta",
-    "codefog/tags-bundle": "^2.0",
-    "symfony/form": "~3.4|~4.0"
+    "codefog/tags-bundle": "^2.0"
   },
   "conflict": {
     "contao/core": "*",
