@@ -82,6 +82,10 @@ class FilterSession
             unset($data[FilterType::FILTER_ID_NAME]);
         }
 
+        if (isset($data[FilterType::FILTER_REFERRER_NAME])) {
+            unset($data[FilterType::FILTER_REFERRER_NAME]);
+        }
+
         // remove empty values
         if (\is_array($data)) {
             $data = array_filter($data);
