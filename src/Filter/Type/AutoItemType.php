@@ -27,6 +27,8 @@ class AutoItemType extends AbstractType
         if (!Request::hasGet('auto_item')) {
             return;
         }
+
+        $element->isInitial = true;
         $element->initialValue = Request::getGet('auto_item');
         $builder->whereElement($element, $this->getName($element), $this->config, $this->getDefaultOperator($element));
     }

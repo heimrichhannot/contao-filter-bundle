@@ -14,6 +14,7 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Haste\Model\Relations;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
+use HeimrichHannot\FilterBundle\Event\AdjustFilterValueEvent;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
@@ -110,6 +111,10 @@ class FilterQueryBuilder extends QueryBuilder
         if ($element->isInitial) {
             $value = $data[$name] ?? AbstractType::getInitialValue($element, $this->contextualValues);
 
+            if ($element->alternativeValueSource) {
+                $value = $this->getValueFromAlternativeSource($value, $data, $element, $name, $config, $dca);
+            }
+
             if (!\in_array($element->operator, [DatabaseUtil::OPERATOR_IS_EMPTY, DatabaseUtil::OPERATOR_IS_NOT_EMPTY], true) && (empty($value) || !$element->field)) {
                 return $this;
             }
@@ -131,6 +136,10 @@ class FilterQueryBuilder extends QueryBuilder
             }
         } else {
             $value = $data[$name] ?? ($element->customValue ? $element->value : null);
+
+            if ($element->alternativeValueSource) {
+                $value = $this->getValueFromAlternativeSource($value, $data, $element, $name, $config, $dca);
+            }
 
             if (empty($value) || !$element->field) {
                 return $this;
@@ -217,6 +226,10 @@ class FilterQueryBuilder extends QueryBuilder
         $value = $data[$name];
         $relation = Relations::getRelation($filter['dataContainer'], $element->field);
 
+        if ($element->alternativeValueSource) {
+            $value = $this->getValueFromAlternativeSource($value, $data, $element, $name, $config, $dca);
+        }
+
         if (false === $relation || null === $value) {
             return $this;
         }
@@ -243,9 +256,13 @@ class FilterQueryBuilder extends QueryBuilder
     {
         $filter = $config->getFilter();
         $data = $config->getData();
-        $value = $data[$name];
 
-        $value = array_filter(!\is_array($value) ? explode(',', $value) : $value);
+        if ($element->alternativeValueSource) {
+            $value = $this->getValueFromAlternativeSource($data[$name], $data, $element, $name, $config, $dca);
+        } else {
+            $value = $data[$name];
+            $value = array_filter(!\is_array($value) ? explode(',', $value) : $value);
+        }
 
         // skip if empty to avoid sql error
         if (empty($value)) {
@@ -270,6 +287,18 @@ class FilterQueryBuilder extends QueryBuilder
             )
         ));
 
+        // don't produce double results
+        $this->addGroupBy($filter['dataContainer'].'.id');
+
         return $this;
+    }
+
+    protected function getValueFromAlternativeSource($value, array $data, FilterConfigElementModel $element, string $name, FilterConfig $config, array $dca)
+    {
+        $event = $this->container->get('event_dispatcher')->dispatch(AdjustFilterValueEvent::NAME, new AdjustFilterValueEvent(
+            $value ?? null, \is_array($data) ? $data : [], $element, $name, $config, $dca
+        ));
+
+        return $event->getValue();
     }
 }
