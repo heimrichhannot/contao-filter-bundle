@@ -45,7 +45,7 @@ class DateChoice extends AbstractChoice
         /** @var FilterConfigElementModel $element */
         $element = $context['element'];
         /** @var FilterConfigElementModel[]|Collection $elements */
-        $elements = $context['elements'];
+        $elements = \is_array($context['elements']) ? $context['elements'] : [];
         $columns = [];
         $values = [];
 
