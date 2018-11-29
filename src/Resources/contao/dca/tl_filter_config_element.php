@@ -878,7 +878,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['whereSql'],
             'exclude'   => true,
             'inputType' => 'textarea',
-            'eval'      => ['rte' => 'ace|sql', 'tl_class' => 'clr'],
+            'eval'      => ['rte' => 'ace|sql', 'tl_class' => 'clr', 'decodeEntities' => true],
             'sql'       => "text NULL",
         ],
         'sortOptions'            => [

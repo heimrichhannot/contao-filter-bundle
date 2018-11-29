@@ -115,7 +115,7 @@ class FilterQueryBuilder extends QueryBuilder
                 $value = $this->getValueFromAlternativeSource($value, $data, $element, $name, $config, $dca);
             }
 
-            if (!\in_array($element->operator, [DatabaseUtil::OPERATOR_IS_EMPTY, DatabaseUtil::OPERATOR_IS_NOT_EMPTY], true) && (empty($value) || !$element->field)) {
+            if (!\in_array($element->operator, [DatabaseUtil::OPERATOR_IS_EMPTY, DatabaseUtil::OPERATOR_IS_NOT_EMPTY], true) && (null === $value || !$element->field)) {
                 return $this;
             }
 
@@ -257,7 +257,13 @@ class FilterQueryBuilder extends QueryBuilder
         $filter = $config->getFilter();
         $data = $config->getData();
 
-        if ($element->alternativeValueSource) {
+        if ($element->isInitial) {
+            $value = $data[$name] ?? AbstractType::getInitialValue($element, $this->contextualValues);
+
+            if ($value && !\is_array($value)) {
+                $value = [$value];
+            }
+        } elseif ($element->alternativeValueSource) {
             $value = $this->getValueFromAlternativeSource($data[$name], $data, $element, $name, $config, $dca);
         } else {
             $value = $data[$name];

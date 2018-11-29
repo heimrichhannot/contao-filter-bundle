@@ -30,7 +30,7 @@ class SqlType extends AbstractType
             return;
         }
 
-        $where = Controller::replaceInsertTags($element->whereSql, false);
+        $where = html_entity_decode(Controller::replaceInsertTags($element->whereSql, false));
 
         try {
             $testBuilder = clone $builder;
