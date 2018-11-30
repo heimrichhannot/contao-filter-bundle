@@ -17,7 +17,7 @@ use HeimrichHannot\FilterBundle\Filter\Type\ChoiceType;
 
 class FilterConfigElement
 {
-    const INITIAL_PALETTE = '{general_legend},title,type,isInitial;{config_legend},field,operator,initialValueType;{publish_legend},published;';
+    const INITIAL_PALETTE = '{general_legend},title,type,isInitial;{config_legend},field,operator,alternativeValueSource,initialValueType;{publish_legend},published;';
 
     /**
      * @var ContaoFrameworkInterface
@@ -60,6 +60,10 @@ class FilterConfigElement
 
         if ($filterConfigElement->isInitial && isset($dca['palettes'][$foundType]) && false !== strpos($dca['palettes'][$foundType], 'isInitial')) {
             $dca['palettes'][$filterConfigElement->type] = static::INITIAL_PALETTE;
+
+            if ($filterConfigElement->alternativeValueSource) {
+                $dca['palettes'][$filterConfigElement->type] = str_replace('initialValueType', '', $dca['palettes'][$filterConfigElement->type]);
+            }
         }
     }
 

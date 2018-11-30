@@ -71,7 +71,7 @@ class FilterQueryBuilder extends QueryBuilder
 
         $dca = $GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element->field];
 
-        if ($dca['eval']['isCategoryField']) {
+        if ($dca['eval']['isCategoryField'] && !$element->isInitial) {
             $this->whereCategoryWidget($element, $name, $config, $dca);
 
             return $this;
@@ -132,14 +132,14 @@ class FilterQueryBuilder extends QueryBuilder
 
             // db value is a serialized blob
             if (isset($dca['eval']['multiple']) && $dca['eval']['multiple']) {
-                $operator = DatabaseUtil::OPERATOR_REGEXP;
+                if (\in_array($operator, DatabaseUtil::NEGATIVE_OPERATORS)) {
+                    $operator = DatabaseUtil::OPERATOR_NOT_REGEXP;
+                } else {
+                    $operator = DatabaseUtil::OPERATOR_REGEXP;
+                }
             }
         } else {
             $value = $data[$name] ?? ($element->customValue ? $element->value : null);
-
-            if ($element->alternativeValueSource) {
-                $value = $this->getValueFromAlternativeSource($value, $data, $element, $name, $config, $dca);
-            }
 
             if (empty($value) || !$element->field) {
                 return $this;
@@ -149,7 +149,11 @@ class FilterQueryBuilder extends QueryBuilder
 
             // db value is a serialized blob
             if (isset($dca['eval']['multiple']) && $dca['eval']['multiple']) {
-                $operator = DatabaseUtil::OPERATOR_REGEXP;
+                if (\in_array($operator, DatabaseUtil::NEGATIVE_OPERATORS)) {
+                    $operator = DatabaseUtil::OPERATOR_NOT_REGEXP;
+                } else {
+                    $operator = DatabaseUtil::OPERATOR_REGEXP;
+                }
             }
 
             if ($element->customOperator && $element->operator) {
@@ -226,7 +230,7 @@ class FilterQueryBuilder extends QueryBuilder
         $value = $data[$name];
         $relation = Relations::getRelation($filter['dataContainer'], $element->field);
 
-        if ($element->alternativeValueSource) {
+        if ($element->isInitial && $element->alternativeValueSource) {
             $value = $this->getValueFromAlternativeSource($value, $data, $element, $name, $config, $dca);
         }
 
@@ -257,13 +261,7 @@ class FilterQueryBuilder extends QueryBuilder
         $filter = $config->getFilter();
         $data = $config->getData();
 
-        if ($element->isInitial) {
-            $value = $data[$name] ?? AbstractType::getInitialValue($element, $this->contextualValues);
-
-            if ($value && !\is_array($value)) {
-                $value = [$value];
-            }
-        } elseif ($element->alternativeValueSource) {
+        if ($element->isInitial && $element->alternativeValueSource) {
             $value = $this->getValueFromAlternativeSource($data[$name], $data, $element, $name, $config, $dca);
         } else {
             $value = $data[$name];
