@@ -14,6 +14,9 @@ use Contao\Model\Collection;
 use Contao\StringUtil;
 use Contao\System;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
+use HeimrichHannot\FilterBundle\Filter\Type\PublishedType;
+use HeimrichHannot\FilterBundle\Filter\Type\SkipParentsType;
+use HeimrichHannot\FilterBundle\Filter\Type\SqlType;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\UtilsBundle\Choice\AbstractChoice;
 use HeimrichHannot\UtilsBundle\Model\ModelUtil;
@@ -53,28 +56,57 @@ class YearChoice extends AbstractChoice
         $values = [];
 
         foreach ($elements as $entry) {
-            if ($entry->isInitial && $entry->id !== $element->id) {
-                switch ($entry->initialValueType) {
-                    case AbstractType::VALUE_TYPE_SCALAR:
-                        $operator = System::getContainer()->get('huh.utils.database')->transformVerboseOperator($entry->operator);
+            switch ($entry->type) {
+                case SkipParentsType::TYPE:
+                    $skipParentsType = new SkipParentsType(System::getContainer()->get('huh.filter.config'));
 
-                        $columns[] = $entry->field.' '.$operator.' ?';
-                        $values[] = $entry->initialValue;
+                    list($elementColumns, $elementValues) = $skipParentsType->buildQueryForModels($filter, $entry);
 
-                        break;
+                    $columns = array_merge($columns, $elementColumns);
+                    $values = array_merge($values, $elementValues);
 
-                    case AbstractType::VALUE_TYPE_ARRAY:
-                        $value = array_column(StringUtil::deserialize($entry->initialValueArray), 'value');
+                    break;
 
-                        if (empty($value) || empty($value[0])) {
-                            continue;
+                case PublishedType::TYPE:
+                    $publishedType = new PublishedType(System::getContainer()->get('huh.filter.config'));
+
+                    list($elementColumns, $elementValues) = $publishedType->buildQueryForModels($filter, $entry);
+
+                    $columns = array_merge($columns, $elementColumns);
+                    $values = array_merge($values, $elementValues);
+
+                    break;
+
+                case SqlType::TYPE:
+                    $columns[] = Controller::replaceInsertTags($entry->whereSql, false);
+
+                    break;
+
+                default:
+                    if ($entry->isInitial && $entry->id !== $element->id) {
+                        switch ($entry->initialValueType) {
+                            case AbstractType::VALUE_TYPE_SCALAR:
+                                $operator = System::getContainer()->get('huh.utils.database')->transformVerboseOperator($entry->operator);
+
+                                $columns[] = $entry->field.' '.$operator.' ?';
+                                $values[] = $entry->initialValue;
+
+                                break;
+
+                            case AbstractType::VALUE_TYPE_ARRAY:
+                                $value = array_column(StringUtil::deserialize($entry->initialValueArray), 'value');
+
+                                if (empty($value) || empty($value[0])) {
+                                    continue;
+                                }
+
+                                $columns[] = $entry->field.' IN ('.implode(',', $value).')';
+
+                                break;
                         }
-                        $columns[] = $entry->field.' IN ('.implode(',', $value).')';
+                    }
 
-                        break;
-                }
-            } elseif ('sql' === $entry->type) {
-                $columns[] = Controller::replaceInsertTags($entry->whereSql, false);
+                    break;
             }
         }
         $options = [];
