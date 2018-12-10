@@ -54,7 +54,7 @@ class YearChoice extends AbstractChoice
                     case AbstractType::VALUE_TYPE_SCALAR:
                         $operator = System::getContainer()->get('huh.utils.database')->transformVerboseOperator($entry->operator);
 
-                        $columns[] = $entry->field.$operator.'?';
+                        $columns[] = $entry->field.' '.$operator.' ?';
                         $values[] = $entry->initialValue;
 
                         break;

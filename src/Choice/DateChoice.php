@@ -39,13 +39,14 @@ class DateChoice extends AbstractChoice
         if (!\is_array($this->getContext()) || empty($this->getContext())) {
             return [];
         }
+
         $context = $this->getContext();
 
         $filter = $context['filter'];
         /** @var FilterConfigElementModel $element */
         $element = $context['element'];
         /** @var FilterConfigElementModel[]|Collection $elements */
-        $elements = \is_array($context['elements']) ? $context['elements'] : [];
+        $elements = \is_array($context['elements']) ? $context['elements'] : [$context['elements']];
         $columns = [];
         $values = [];
 
@@ -67,7 +68,7 @@ class DateChoice extends AbstractChoice
                             case AbstractType::VALUE_TYPE_SCALAR:
                                 $operator = System::getContainer()->get('huh.utils.database')->transformVerboseOperator($entry->operator);
 
-                                $columns[] = $entry->field.$operator.'?';
+                                $columns[] = $entry->field.' '.$operator.' ?';
                                 $values[] = $entry->initialValue;
 
                                 break;
@@ -78,6 +79,7 @@ class DateChoice extends AbstractChoice
                                 if (empty($value) || empty($value[0])) {
                                     continue;
                                 }
+
                                 $columns[] = $entry->field.' IN ('.implode(',', $value).')';
 
                                 break;
@@ -87,6 +89,7 @@ class DateChoice extends AbstractChoice
                     break;
             }
         }
+
         $options = [];
 
         if (isset($context['latest']) && true === $context['latest']) {
@@ -105,6 +108,7 @@ class DateChoice extends AbstractChoice
         if (!$items) {
             return [];
         }
+
         $dates = [];
 
         foreach ($items as $entry) {
@@ -113,6 +117,7 @@ class DateChoice extends AbstractChoice
 
             $dates[$translatedDate] = $translatedDate;
         }
+
         krsort($dates, SORT_NUMERIC);
 
         return $dates;
