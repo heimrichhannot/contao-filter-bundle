@@ -59,6 +59,34 @@ class PublishedType extends AbstractType
         $builder->andWhere($and);
     }
 
+    public function buildQueryForModels(array $filter, FilterConfigElementModel $element)
+    {
+        $columns = [];
+        $values = [];
+
+        if (!$element->field) {
+            return [$columns, $values];
+        }
+
+        if ($element->addStartAndStop && !$this->isPreviewMode((bool) $element->ignoreFePreview)) {
+            $time = Date::floorToMinute();
+
+            if ($element->startField) {
+                $columns[] = '('.$filter['dataContainer'].'.'.$element->startField.'="" OR '.$filter['dataContainer'].'.'.$element->startField.'<=?)';
+                $values[] = $time;
+            }
+
+            if ($element->stopField) {
+                $columns[] = '('.$filter['dataContainer'].'.'.$element->stopField.'="" OR '.$filter['dataContainer'].'.'.$element->stopField.'>?)';
+                $values[] = $time + 60;
+            }
+        }
+
+        $columns[] = $filter['dataContainer'].'.'.$element->field.'='.($element->invertField ? '""' : 1);
+
+        return [$columns, $values];
+    }
+
     public function buildForm(FilterConfigElementModel $element, FormBuilderInterface $builder)
     {
     }

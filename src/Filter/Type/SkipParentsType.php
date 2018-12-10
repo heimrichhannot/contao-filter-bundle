@@ -62,28 +62,29 @@ class SkipParentsType extends AbstractType
         $builder->andWhere($and);
     }
 
-    public static function generateModelArrays(array $filter, FilterConfigElementModel $element)
+    public function buildQueryForModels(array $filter, FilterConfigElementModel $element)
     {
+        $columns = [];
+        $values = [];
+
         $parentField = $filter['dataContainer'].'.'.$element->parentField;
 
         if (null === ($parents = System::getContainer()->get('huh.utils.model')->findModelInstancesBy(
                 $filter['dataContainer'], ["$parentField != '' AND $parentField IS NOT NULL AND $parentField != 0"], []))) {
-            return false;
+            return [$columns, $values];
         }
 
         $parentIds = array_unique($parents->fetchEach($element->parentField));
 
         if (empty($parentIds)) {
-            return false;
+            return [$columns, $values];
         }
 
         $columns = [
             "($parentField IS NOT NULL AND $parentField != 0 AND $parentField != '' OR ".$filter['dataContainer'].'.id NOT IN ('.implode(',', $parentIds).'))',
         ];
 
-        $values = [];
-
-        return ['columns' => $columns, 'values' => $values];
+        return [$columns, $values];
     }
 
     public function buildForm(FilterConfigElementModel $element, FormBuilderInterface $builder)

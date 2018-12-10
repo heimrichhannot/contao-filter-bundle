@@ -8,12 +8,15 @@
 
 namespace HeimrichHannot\FilterBundle\Choice;
 
+use Contao\Controller;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\Model\Collection;
 use Contao\StringUtil;
 use Contao\System;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
+use HeimrichHannot\FilterBundle\Filter\Type\PublishedType;
 use HeimrichHannot\FilterBundle\Filter\Type\SkipParentsType;
+use HeimrichHannot\FilterBundle\Filter\Type\SqlType;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\UtilsBundle\Choice\AbstractChoice;
 use HeimrichHannot\UtilsBundle\Model\ModelUtil;
@@ -43,22 +46,40 @@ class DateChoice extends AbstractChoice
         $context = $this->getContext();
 
         $filter = $context['filter'];
+
         /** @var FilterConfigElementModel $element */
         $element = $context['element'];
+
         /** @var FilterConfigElementModel[]|Collection $elements */
-        $elements = \is_array($context['elements']) ? $context['elements'] : [$context['elements']];
+        $elements = \is_array($context['elements']) || $context['elements'] instanceof \Model\Collection ? $context['elements'] : [$context['elements']];
+
         $columns = [];
         $values = [];
 
         foreach ($elements as $entry) {
             switch ($entry->type) {
                 case SkipParentsType::TYPE:
-                    $condition = SkipParentsType::generateModelArrays($filter, $entry);
+                    $skipParentsType = new SkipParentsType(System::getContainer()->get('huh.filter.config'));
 
-                    if (\is_array($condition)) {
-                        $columns = array_merge($columns, $condition['columns']);
-                        $values = array_merge($values, $condition['values']);
-                    }
+                    list($elementColumns, $elementValues) = $skipParentsType->buildQueryForModels($filter, $entry);
+
+                    $columns = array_merge($columns, $elementColumns);
+                    $values = array_merge($values, $elementValues);
+
+                    break;
+
+                case PublishedType::TYPE:
+                    $publishedType = new PublishedType(System::getContainer()->get('huh.filter.config'));
+
+                    list($elementColumns, $elementValues) = $publishedType->buildQueryForModels($filter, $entry);
+
+                    $columns = array_merge($columns, $elementColumns);
+                    $values = array_merge($values, $elementValues);
+
+                    break;
+
+                case SqlType::TYPE:
+                    $columns[] = Controller::replaceInsertTags($entry->whereSql, false);
 
                     break;
 

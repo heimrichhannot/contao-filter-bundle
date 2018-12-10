@@ -8,6 +8,7 @@
 
 namespace HeimrichHannot\FilterBundle\Choice;
 
+use Contao\Controller;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\Model\Collection;
 use Contao\StringUtil;
@@ -41,10 +42,13 @@ class YearChoice extends AbstractChoice
         $context = $this->getContext();
 
         $filter = $context['filter'];
+
         /** @var FilterConfigElementModel $element */
         $element = $context['element'];
+
         /** @var FilterConfigElementModel[]|Collection $elements */
-        $elements = $context['elements'];
+        $elements = \is_array($context['elements']) || $context['elements'] instanceof \Model\Collection ? $context['elements'] : [$context['elements']];
+
         $columns = [];
         $values = [];
 
@@ -69,6 +73,8 @@ class YearChoice extends AbstractChoice
 
                         break;
                 }
+            } elseif ('sql' === $entry->type) {
+                $columns[] = Controller::replaceInsertTags($entry->whereSql, false);
             }
         }
         $options = [];
