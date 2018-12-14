@@ -11,6 +11,7 @@ namespace HeimrichHannot\FilterBundle\Filter;
 use Contao\StringUtil;
 use Contao\System;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
+use HeimrichHannot\FilterBundle\Event\AdjustFilterOptionsEvent;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Filter\Filter;
@@ -233,7 +234,11 @@ abstract class AbstractType
 
         $options['block_name'] = $this->getName($element);
 
-        return $options;
+        $event = System::getContainer()->get('event_dispatcher')->dispatch(AdjustFilterOptionsEvent::NAME, new AdjustFilterOptionsEvent(
+            $name, $options, $element, $builder, $this->config
+        ));
+
+        return $event->getOptions();
     }
 
     /**
