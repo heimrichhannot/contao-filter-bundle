@@ -46,6 +46,7 @@ class DateChoice extends AbstractChoice
         $context = $this->getContext();
 
         $filter = $context['filter'];
+        $table = $filter['dataContainer'];
 
         /** @var FilterConfigElementModel $element */
         $element = $context['element'];
@@ -89,7 +90,7 @@ class DateChoice extends AbstractChoice
                             case AbstractType::VALUE_TYPE_SCALAR:
                                 $operator = System::getContainer()->get('huh.utils.database')->transformVerboseOperator($entry->operator);
 
-                                $columns[] = $entry->field.' '.$operator.' ?';
+                                $columns[] = $table.'.'.$entry->field.' '.$operator.' ?';
                                 $values[] = $entry->initialValue;
 
                                 break;
@@ -101,7 +102,7 @@ class DateChoice extends AbstractChoice
                                     continue;
                                 }
 
-                                $columns[] = $entry->field.' IN ('.implode(',', $value).')';
+                                $columns[] = $table.'.'.$entry->field.' IN ('.implode(',', $value).')';
 
                                 break;
                         }
@@ -114,10 +115,10 @@ class DateChoice extends AbstractChoice
         $options = [];
 
         if (isset($context['latest']) && true === $context['latest']) {
-            $options['order'] = $element->field.' DESC';
+            $options['order'] = $table.'.'.$element->field.' DESC';
             $options['limit'] = 1;
         } else {
-            $options['order'] = $element->field.' ASC';
+            $options['order'] = $table.'.'.$element->field.' ASC';
         }
 
         if (empty($columns)) {
