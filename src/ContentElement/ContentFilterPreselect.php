@@ -81,6 +81,10 @@ class ContentFilterPreselect extends ContentElement
         if (null === ($preselections = $preselections->findPublishedByPidAndTableAndField($this->id, 'tl_content', 'filterPreselect'))) {
             $filterConfig->resetData(); // reset previous filters
 
+            if (true === (bool) $this->filterReset && true !== (bool) $this->filterPreselectNoRedirect) {
+                Controller::redirect($filterConfig->getUrl());
+            }
+
             return;
         }
 
