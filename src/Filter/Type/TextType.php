@@ -16,6 +16,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class TextType extends AbstractType
 {
+    const TYPE = 'text';
+
     /**
      * {@inheritdoc}
      */
