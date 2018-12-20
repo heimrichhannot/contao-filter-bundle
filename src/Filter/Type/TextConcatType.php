@@ -11,6 +11,7 @@ namespace HeimrichHannot\FilterBundle\Filter\Type;
 use Contao\Database;
 use Contao\StringUtil;
 use Contao\System;
+use Doctrine\DBAL\Query\QueryBuilder;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
@@ -56,14 +57,16 @@ class TextConcatType extends AbstractType
                 $associationProperty = System::getContainer()->get('huh.utils.string')
                         ->removeLeadingString('tl_', $filter['dataContainer']).'_id';
 
-                $builder->innerJoin($filter['dataContainer'], $associationTable, 'ta', $filter['dataContainer'].'.id='.'ta.'.$associationProperty);
-                $builder->innerJoin($filter['dataContainer'], 'tl_cfg_tag', 'tn', 'ta.cfg_tag_id='.'tn.id');
+                $subBuilder = new QueryBuilder(System::getContainer()->get('database_connection'));
 
-                $andWhere = $builder->expr()->andX();
-                $andWhere->add('tn.name LIKE '.$wildcard);
-
-                $conditions[] = $andWhere;
-                $builder->setParameter($wildcard, '%'.strtolower($data[$name]).'%');
+                $builder->orWhere(
+                    $builder->expr()->in($filter['dataContainer'].'.id',
+                        $subBuilder->select('ta.'.$associationProperty)
+                            ->from($associationTable, 'ta')
+                            ->join('ta', 'tl_cfg_tag', 'tn', 'ta.cfg_tag_id='.'tn.id')
+                            ->where('tn.name LIKE '.$wildcard)->setParameter($wildcard, '%'.strtolower($data[$name]).'%')->getSQL()
+                    )
+                );
             } elseif (Database::getInstance()->fieldExists($field, $filter['dataContainer'])) {
                 $textualFields[] = $field;
             }
