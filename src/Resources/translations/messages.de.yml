@@ -15,26 +15,26 @@ huh.filter.label.submit: Absenden
 huh.filter.label.search: Suche
 huh.filter.label.search_action: Suchen
 huh.filter.label.filter_action: Filtern
-huh.filter.label.filter_action_colon: Filtern:
-huh.filter.label.filter_period_colon: Zeitraum:
+huh.filter.label.filter_action_colon: "Filtern:"
+huh.filter.label.filter_period_colon: "Zeitraum:"
 huh.filter.label.reset: Zurücksetzen
 
 # input group append/prepend text
-huh.filter.input_group_text.fa_at: '<span class="fas fa-at"></span>'
-huh.filter.input_group_text.fa_calendar: '<span class="fas fa-calendar"></span>'
-huh.filter.input_group_text.fa_clock_o: '<span class="fas fa-clock"></span>'
-huh.filter.input_group_text.fa_envelope: '<span class="fas fa-envelope"></span>'
-huh.filter.input_group_text.fa_search: '<span class="fas fa-search"></span>'
-huh.filter.input_group_text.button.fa_at: '<button class="btn btn-outline-secondary" type="button"><i class="fas fa-at"></i></button>'
-huh.filter.input_group_text.button.fa_calendar: '<button class="btn btn-outline-secondary" type="button"><i class="fas fa-calendar"></i></button>'
-huh.filter.input_group_text.button.fa_clock_o: '<button class="btn btn-outline-secondary" type="button"><i class="fas fa-clock"></i></button>'
-huh.filter.input_group_text.button.fa_envelope: '<button class="btn btn-outline-secondary" type="button"><i class="fas fa-envelope"></i></button>'
-huh.filter.input_group_text.button.fa_search: '<button class="btn btn-outline-secondary" type="button"><i class="fas fa-search"></i></button>'
-huh.filter.input_group_text.submit.fa_at: '<button class="btn btn-outline-secondary" type="submit"><i class="fas fa-at"></i></button>'
-huh.filter.input_group_text.submit.fa_calendar: '<button class="btn btn-outline-secondary" type="submit"><i class="fas fa-calendar"></i></button>'
-huh.filter.input_group_text.submit.fa_clock_o: '<button class="btn btn-outline-secondary" type="submit"><i class="fas fa-clock"></i></button>'
-huh.filter.input_group_text.submit.fa_envelope: '<button class="btn btn-outline-secondary" type="submit"><i class="fas fa-envelope"></i></button>'
-huh.filter.input_group_text.submit.fa_search: '<button class="btn btn-outline-secondary" type="submit"><i class="fas fa-search"></i></button>'
+huh.filter.input_group_text.fa_at: '<span class="fas fa-at" aria-hidden="true"></span>'
+huh.filter.input_group_text.fa_calendar: '<span class="fas fa-calendar" aria-hidden="true"></span>'
+huh.filter.input_group_text.fa_clock_o: '<span class="fas fa-clock" aria-hidden="true"></span>'
+huh.filter.input_group_text.fa_envelope: '<span class="fas fa-envelope" aria-hidden="true"></span>'
+huh.filter.input_group_text.fa_search: '<span class="fas fa-search" aria-hidden="true"></span>'
+huh.filter.input_group_text.button.fa_at: '<button class="btn btn-outline-secondary" type="button"><i class="fas fa-at" aria-hidden="true"></i><span class="sr-only">E-Mail</span></button>'
+huh.filter.input_group_text.button.fa_calendar: '<button class="btn btn-outline-secondary" type="button"><i class="fas fa-calendar" aria-hidden="true"></i><span class="sr-only">Datum</span></button>'
+huh.filter.input_group_text.button.fa_clock_o: '<button class="btn btn-outline-secondary" type="button"><i class="fas fa-clock" aria-hidden="true"></i><span class="sr-only">Uhrzeit</span></button>'
+huh.filter.input_group_text.button.fa_envelope: '<button class="btn btn-outline-secondary" type="button"><i class="fas fa-envelope" aria-hidden="true"></i><span class="sr-only">E-Mail</span></button>'
+huh.filter.input_group_text.button.fa_search: '<button class="btn btn-outline-secondary" type="button"><i class="fas fa-search" aria-hidden="true"></i><span class="sr-only">Suchen</span></button>'
+huh.filter.input_group_text.submit.fa_at: '<button class="btn btn-outline-secondary" type="submit"><i class="fas fa-at" aria-hidden="true"></i><span class="sr-only">Absenden</span></button>'
+huh.filter.input_group_text.submit.fa_calendar: '<button class="btn btn-outline-secondary" type="submit"><i class="fas fa-calendar" aria-hidden="true"></i><span class="sr-only">Absenden</span></button>'
+huh.filter.input_group_text.submit.fa_clock_o: '<button class="btn btn-outline-secondary" type="submit"><i class="fas fa-clock" aria-hidden="true"></i><span class="sr-only">Absenden</span></button>'
+huh.filter.input_group_text.submit.fa_envelope: '<button class="btn btn-outline-secondary" type="submit"><i class="fas fa-envelope" aria-hidden="true"></i><span class="sr-only">Absenden</span></button>'
+huh.filter.input_group_text.submit.fa_search: '<button class="btn btn-outline-secondary" type="submit"><i class="fas fa-search" aria-hidden="true"></i><span class="sr-only">Absenden</span></button>'
 
 # placeholders
 huh.sort.text.desc: 'Ergebnisse sortieren: %field% (Absteigend)'

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2018 Heimrich & Hannot GmbH
+ * Copyright (c) 2019 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -197,6 +197,8 @@ abstract class AbstractType
         $options = [];
 
         $options['label'] = (true === (bool) $element->hideLabel) ? false : ($this->getLabel($element, $builder) ?: $element->title);
+        // always label for screen readers
+        $options['attr']['aria-label'] = $this->translator->trans($this->getLabel($element, $builder) ?: $element->title);
 
         if ($element->addDefaultValue && !isset($data[$name])) {
             $options['data'] = static::getDefaultValue($element);
@@ -215,7 +217,7 @@ abstract class AbstractType
                 $prepend = $element->inputGroupPrepend;
 
                 if ($this->translator->getCatalogue()->has($prepend)) {
-                    $prepend = $this->translator->trans($prepend);
+                    $prepend = $this->translator->trans($prepend, ['%label%' => $this->translator->trans($options['label']) ?: $element->title]);
                 }
 
                 $options['input_group_prepend'] = $prepend;
@@ -225,7 +227,7 @@ abstract class AbstractType
                 $append = $element->inputGroupAppend;
 
                 if ($this->translator->getCatalogue()->has($append)) {
-                    $append = $this->translator->trans($append);
+                    $append = $this->translator->trans($append, ['%label%' => $this->translator->trans($options['label']) ?: $element->title]);
                 }
 
                 $options['input_group_append'] = $append;
