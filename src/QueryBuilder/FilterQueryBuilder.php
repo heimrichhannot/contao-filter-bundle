@@ -165,7 +165,11 @@ class FilterQueryBuilder extends QueryBuilder
             }
         }
 
-        $this->andWhere($this->container->get('huh.utils.database')->composeWhereForQueryBuilder($this, $element->field, $operator, $dca, $value));
+        $this->andWhere(
+            $this->container->get('huh.utils.database')->composeWhereForQueryBuilder(
+                $this, $config->getFilter()['dataContainer'].'.'.$element->field, $operator, $dca, $value
+            )
+        );
 
         return $this;
     }
