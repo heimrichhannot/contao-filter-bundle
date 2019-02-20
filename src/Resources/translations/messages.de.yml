@@ -18,6 +18,7 @@ huh.filter.label.filter_action: Filtern
 huh.filter.label.filter_action_colon: "Filtern:"
 huh.filter.label.filter_period_colon: "Zeitraum:"
 huh.filter.label.reset: Zurücksetzen
+huh.filter.label.groupChoice: 'Alle'
 
 # input group append/prepend text
 huh.filter.input_group_text.fa_at: '<span class="fas fa-at" aria-hidden="true"></span>'

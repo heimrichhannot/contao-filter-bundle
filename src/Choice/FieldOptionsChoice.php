@@ -250,4 +250,39 @@ class FieldOptionsChoice extends AbstractChoice
 
         return $options;
     }
+    
+    /**
+     * @param null $context
+     *
+     * @return array
+     */
+    public function getCachedChoices($context = null)
+    {
+        $choices =  parent::getCachedChoices($context);
+        $element = $context['element'];
+        
+        if($element->addGroupChoiceField) {
+            $groupChoices = $this->getGroupChoicesValue($choices,$element);
+
+            $choices = [System::getContainer()->get('translator')->trans('huh.filter.label.groupChoice') => $groupChoices] + $choices;
+        }
+        
+        return $choices;
+    }
+    
+    /**
+     * @param array                    $choices
+     * @param FilterConfigElementModel $element
+     *
+     * @return string
+     */
+    protected function getGroupChoicesValue(array $choices, FilterConfigElementModel $element): string
+    {
+        if($element->modifyGroupChoices)
+        {
+            $choices = array_intersect($choices, StringUtil::deserialize($element->groupChoices, true));
+        }
+        
+        return implode(',', $choices);
+    }
 }

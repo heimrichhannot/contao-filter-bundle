@@ -16,6 +16,7 @@ use Haste\Model\Relations;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
 use HeimrichHannot\FilterBundle\Event\AdjustFilterValueEvent;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
+use HeimrichHannot\FilterBundle\Filter\Type\ChoiceType;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -26,12 +27,12 @@ class FilterQueryBuilder extends QueryBuilder
      * @var ContaoFrameworkInterface
      */
     protected $framework;
-
+    
     /**
      * @var array
      */
     protected $contextualValues = [];
-
+    
     /**
      * List of elements that should be skipped.
      *
@@ -42,19 +43,19 @@ class FilterQueryBuilder extends QueryBuilder
      * @var ContainerInterface
      */
     private $container;
-
+    
     public function __construct(ContainerInterface $container, ContaoFrameworkInterface $framework, Connection $connection)
     {
         parent::__construct($connection);
         $this->framework = $framework;
         $this->container = $container;
     }
-
+    
     /**
      * Add where clause based on an element.
      *
      * @param FilterConfigElementModel $element
-     * @param string                   $name    The field name
+     * @param string                   $name The field name
      * @param FilterConfig             $config
      *
      * @return $this this FilterQueryBuilder instance
@@ -62,42 +63,42 @@ class FilterQueryBuilder extends QueryBuilder
     public function whereElement(FilterConfigElementModel $element, string $name, FilterConfig $config, string $defaultOperator)
     {
         $filter = $config->getFilter();
-
+        
         Controller::loadDataContainer($filter['dataContainer']);
-
+        
         if (!isset($GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element->field])) {
             return $this;
         }
-
+        
         $dca = $GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element->field];
-
+        
         if ($dca['eval']['isCategoryField'] && !$element->isInitial) {
             $this->whereCategoryWidget($element, $name, $config, $dca);
-
+            
             return $this;
         }
-
+        
         switch ($dca['inputType']) {
             case 'cfgTags':
                 if (!isset($dca['eval']['tagsManager'])) {
                     break;
                 }
                 $this->whereTagWidget($element, $name, $config, $dca);
-
+                
                 break;
-
+            
             default:
                 $this->whereWidget($element, $name, $config, $dca, $defaultOperator);
         }
-
+        
         return $this;
     }
-
+    
     /**
      * Add tag widget where clause.
      *
      * @param FilterConfigElementModel $element
-     * @param string                   $name            The field name
+     * @param string                   $name The field name
      * @param FilterConfig             $config
      * @param array                    $dca
      * @param string|null              $defaultOperator
@@ -107,18 +108,24 @@ class FilterQueryBuilder extends QueryBuilder
     public function whereWidget(FilterConfigElementModel $element, string $name, FilterConfig $config, array $dca, string $defaultOperator = null)
     {
         $data = $config->getData();
-
+        
+        if (ChoiceType::TYPE == $element->type && is_array($data[$name])) {
+            $data[$name] = $this->getGroupChoiceValues($element, $data[$name]);
+        }
+        
         if ($element->isInitial) {
             $value = $data[$name] ?? AbstractType::getInitialValue($element, $this->contextualValues);
-
+            
             if ($element->alternativeValueSource) {
                 $value = $this->getValueFromAlternativeSource($value, $data, $element, $name, $config, $dca);
             }
-
-            if (!\in_array($element->operator, [DatabaseUtil::OPERATOR_IS_EMPTY, DatabaseUtil::OPERATOR_IS_NOT_EMPTY], true) && (null === $value || !$element->field)) {
+            
+            if (!\in_array($element->operator, [DatabaseUtil::OPERATOR_IS_EMPTY, DatabaseUtil::OPERATOR_IS_NOT_EMPTY], true)
+                && (null === $value
+                    || !$element->field)) {
                 return $this;
             }
-
+            
             // never replace non initial Inserttags (user inputs), avoid injection and never cache to avoid esi:tags
             if (\is_array($value)) {
                 foreach ($value as &$val) {
@@ -127,58 +134,71 @@ class FilterQueryBuilder extends QueryBuilder
             } else {
                 $value = Controller::replaceInsertTags($value, false);
             }
+    
+            $operator = $this->getOperator($element, $defaultOperator, $dca);
 
-            $operator = $element->operator;
-
-            // db value is a serialized blob
-            if (isset($dca['eval']['multiple']) && $dca['eval']['multiple']) {
-                if (\in_array($operator, DatabaseUtil::NEGATIVE_OPERATORS)) {
-                    $operator = DatabaseUtil::OPERATOR_NOT_REGEXP;
-                } else {
-                    $operator = DatabaseUtil::OPERATOR_REGEXP;
-                }
-            }
         } else {
             $value = $data[$name] ?? ($element->customValue ? $element->value : null);
-
+            
             if (empty($value) || !$element->field) {
                 return $this;
             }
-
-            $operator = $defaultOperator;
-
-            // db value is a serialized blob
-            if (isset($dca['eval']['multiple']) && $dca['eval']['multiple']) {
-                if (\in_array($operator, DatabaseUtil::NEGATIVE_OPERATORS)) {
-                    $operator = DatabaseUtil::OPERATOR_NOT_REGEXP;
-                } else {
-                    $operator = DatabaseUtil::OPERATOR_REGEXP;
-                }
-            }
-
-            if ($element->customOperator && $element->operator) {
-                $operator = $element->operator;
-            }
-
+            
+            $operator = $this->getOperator($element, $defaultOperator, $dca);
+            
             if (!$operator) {
                 return $this;
             }
         }
-
+        
         $this->andWhere(
             $this->container->get('huh.utils.database')->composeWhereForQueryBuilder(
-                $this, $config->getFilter()['dataContainer'].'.'.$element->field, $operator, $dca, $value
+                $this, $config->getFilter()['dataContainer'] . '.' . $element->field, $operator, $dca, $value
             )
         );
-
+        
         return $this;
     }
-
+    
+    /**
+     * @param FilterConfigElementModel $element
+     * @param string                   $operator
+     * @param array                    $dca
+     *
+     * @return string
+     */
+    protected function getOperator(FilterConfigElementModel $element, string $operator, array $dca): string
+    {
+        if (isset($dca['eval']['multiple']) && $dca['eval']['multiple']) {
+            
+            if (\in_array($operator, DatabaseUtil::NEGATIVE_OPERATORS)) {
+                // db value is a serialized blob
+                if (false !== strpos($dca['sql'], 'blob')) {
+                    $operator = DatabaseUtil::OPERATOR_NOT_REGEXP;
+                } else {
+                    $operator = DatabaseUtil::OPERATOR_NOT_IN;
+                }
+            } else {
+                if (false !== strpos($dca['sql'], 'blob')) {
+                    $operator = DatabaseUtil::OPERATOR_REGEXP;
+                } else {
+                    $operator = DatabaseUtil::OPERATOR_IN;
+                }
+            }
+        }
+    
+        if ($element->customOperator && $element->operator) {
+            $operator = $element->operator;
+        }
+        
+        return $operator;
+    }
+    
     public function addContextualValue($elementId, $value)
     {
         $this->contextualValues[$elementId] = $value;
     }
-
+    
     /**
      * @return array
      */
@@ -186,7 +206,7 @@ class FilterQueryBuilder extends QueryBuilder
     {
         return $this->contextualValues;
     }
-
+    
     /**
      * Get filter skip elements.
      *
@@ -196,7 +216,7 @@ class FilterQueryBuilder extends QueryBuilder
     {
         return \is_array($this->skip) ? $this->skip : [];
     }
-
+    
     /**
      * Set filter skip elements.
      *
@@ -206,7 +226,7 @@ class FilterQueryBuilder extends QueryBuilder
     {
         $this->skip = $skip;
     }
-
+    
     /**
      * Add filter element to skip.
      *
@@ -216,12 +236,12 @@ class FilterQueryBuilder extends QueryBuilder
     {
         $this->skip[$element->id] = $element;
     }
-
+    
     /**
      * Add tag widget where clause.
      *
      * @param FilterConfigElementModel $element
-     * @param string                   $name    The field name
+     * @param string                   $name The field name
      * @param FilterConfig             $config
      * @param array                    $dca
      *
@@ -229,32 +249,33 @@ class FilterQueryBuilder extends QueryBuilder
      */
     protected function whereTagWidget(FilterConfigElementModel $element, string $name, FilterConfig $config, array $dca)
     {
-        $filter = $config->getFilter();
-        $data = $config->getData();
-        $value = $data[$name];
+        $filter   = $config->getFilter();
+        $data     = $config->getData();
+        $value    = $data[$name];
         $relation = Relations::getRelation($filter['dataContainer'], $element->field);
-
+        
         if ($element->isInitial && $element->alternativeValueSource) {
             $value = $this->getValueFromAlternativeSource($value, $data, $element, $name, $config, $dca);
         }
-
+        
         if (false === $relation || null === $value) {
             return $this;
         }
-
-        $alias = $relation['table'].'_'.$name;
-
-        $this->join($relation['reference_table'], $relation['table'], $alias, $alias.'.'.$relation['reference_field'].'='.$relation['reference_table'].'.'.$relation['reference']);
-        $this->andWhere($this->expr()->in($alias.'.'.$relation['related_field'], $value));
-
+        
+        $alias = $relation['table'] . '_' . $name;
+        
+        $this->join($relation['reference_table'], $relation['table'], $alias,
+            $alias . '.' . $relation['reference_field'] . '=' . $relation['reference_table'] . '.' . $relation['reference']);
+        $this->andWhere($this->expr()->in($alias . '.' . $relation['related_field'], $value));
+        
         return $this;
     }
-
+    
     /**
      * Add category widget where clause.
      *
      * @param FilterConfigElementModel $element
-     * @param string                   $name    The field name
+     * @param string                   $name The field name
      * @param FilterConfig             $config
      * @param array                    $dca
      *
@@ -263,50 +284,76 @@ class FilterQueryBuilder extends QueryBuilder
     protected function whereCategoryWidget(FilterConfigElementModel $element, string $name, FilterConfig $config, array $dca)
     {
         $filter = $config->getFilter();
-        $data = $config->getData();
-
+        $data   = $config->getData();
+        
         if ($element->isInitial && $element->alternativeValueSource) {
             $value = $this->getValueFromAlternativeSource($data[$name], $data, $element, $name, $config, $dca);
         } else {
             $value = $data[$name];
             $value = array_filter(!\is_array($value) ? explode(',', $value) : $value);
         }
-
+        
         // skip if empty to avoid sql error
         if (empty($value)) {
             return $this;
         }
-
-        $alias = 'tl_category_association_'.$element->field;
-
+        
+        $alias = 'tl_category_association_' . $element->field;
+        
         $this->join($filter['dataContainer'], 'tl_category_association', $alias, "
         $alias.categoryField='$element->field' AND 
-        $alias.parentTable='".$filter['dataContainer']."' AND
-        $alias.entity=".$filter['dataContainer'].'.id
+        $alias.parentTable='" . $filter['dataContainer'] . "' AND
+        $alias.entity=" . $filter['dataContainer'] . '.id
         ');
-
+        
         $this->andWhere($this->expr()->in(
-            $alias.'.category',
+            $alias . '.category',
             array_map(
                 function ($val) {
-                    return '"'.addslashes(Controller::replaceInsertTags(trim($val), false)).'"';
+                    return '"' . addslashes(Controller::replaceInsertTags(trim($val), false)) . '"';
                 },
                 $value
             )
         ));
-
+        
         // don't produce double results
-        $this->addGroupBy($filter['dataContainer'].'.id');
-
+        $this->addGroupBy($filter['dataContainer'] . '.id');
+        
         return $this;
     }
-
-    protected function getValueFromAlternativeSource($value, array $data, FilterConfigElementModel $element, string $name, FilterConfig $config, array $dca)
-    {
+    
+    protected function getValueFromAlternativeSource(
+        $value,
+        array $data,
+        FilterConfigElementModel $element,
+        string $name,
+        FilterConfig $config,
+        array $dca
+    ) {
         $event = $this->container->get('event_dispatcher')->dispatch(AdjustFilterValueEvent::NAME, new AdjustFilterValueEvent(
             $value ?? null, \is_array($data) ? $data : [], $element, $name, $config, $dca
         ));
-
+        
         return $event->getValue();
+    }
+    
+    /**
+     * @param FilterConfigElementModel $element
+     * @param array                    $values
+     *
+     * @return array
+     */
+    protected function getGroupChoiceValues(FilterConfigElementModel $element, array $values): array
+    {
+        if(!$element->addGroupChoiceField) {
+            return $values;
+        }
+        
+        $options = [];
+        foreach ($values as $value) {
+            $options = array_merge($options, explode(',', $value));
+        }
+        
+        return $options;
     }
 }

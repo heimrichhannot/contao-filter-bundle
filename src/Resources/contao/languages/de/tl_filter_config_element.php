@@ -78,6 +78,10 @@ $lang['submitOnChange']         = ['Formular bei Änderung absenden (submitOnCha
 $lang['alwaysShow']             = ['Immer anzeigen', 'Das Filterelement immer anzeigen.'];
 $lang['dynamicOptions']         = ['Dynamische Optionen', 'Aktivieren Sie diese Option, um die Optionswerte anhand der Daten zu erhalten. Initiale Filterelemente mit Skalaren oder Array-Werten werden beachtet.'];
 $lang['alternativeValueSource'] = ['Filterwert aus alternativer Quelle beziehen', 'Dieses Feld wird durch andere Bundles konfiguriert (bspw. heimrichhannot/contao-reader-bundle).'];
+$lang['addGroupChoiceField']    = ['Gruppen-Choice hinzufügen', 'Wählen Sie diese Option, wenn den Choices ein Feld hinzugefügt werden soll, welches mehrere Choices gruppiert. Im Standardfall fungiert dies als Select-All-Field.'];
+$lang['modifyGroupChoices']     = ['Gruppen-Choice-Optionen modifizieren', 'Wählen Sie diese Option, wenn Sie die Choices, die in diesem Feld gruppiert werden sollen einschränken wollen.'];
+$lang['groupChoices']           = ['Optionen' , ''];
+
 
 // sort
 $lang['sortOptions_class']     = ['Sortier-Klasse', 'Wählen Sie hier die Sortierklasse aus.'];
