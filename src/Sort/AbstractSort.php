@@ -50,7 +50,7 @@ abstract class AbstractSort
      * @param AbstractType             $type       The filter type
      * @param array                    $sortConfig
      *
-     * @return null|string
+     * @return string|null
      */
     abstract public function getFieldText(FilterConfigElementModel $element, AbstractType $type, array $sortConfig): ?string;
 
@@ -61,7 +61,7 @@ abstract class AbstractSort
      * @param AbstractType             $type       The filter type
      * @param array                    $sortConfig
      *
-     * @return null|string
+     * @return string|null
      */
     abstract public function getName(FilterConfigElementModel $element, AbstractType $type, array $sortConfig): ?string;
 }

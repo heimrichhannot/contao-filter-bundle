@@ -299,7 +299,7 @@ class FilterConfig implements \JsonSerializable
     }
 
     /**
-     * @return null|FormBuilderInterface
+     * @return FormBuilderInterface|null
      */
     public function getBuilder()
     {
@@ -485,7 +485,7 @@ class FilterConfig implements \JsonSerializable
      *
      * @param array $data Preselection data
      *
-     * @return null|string
+     * @return string|null
      */
     public function getPreselectAction(array $data = [])
     {

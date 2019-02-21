@@ -19,6 +19,25 @@ use Symfony\Component\Translation\Translator;
 class FieldOptionsChoice extends AbstractChoice
 {
     /**
+     * @param null $context
+     *
+     * @return array
+     */
+    public function getCachedChoices($context = null)
+    {
+        $choices = parent::getCachedChoices($context);
+        $element = $context['element'];
+
+        if ($element->addGroupChoiceField) {
+            $groupChoices = $this->getGroupChoicesValue($choices, $element);
+
+            $choices = [System::getContainer()->get('translator')->trans('huh.filter.label.groupChoice') => $groupChoices] + $choices;
+        }
+
+        return $choices;
+    }
+
+    /**
      * @return array
      */
     protected function collect()
@@ -250,26 +269,7 @@ class FieldOptionsChoice extends AbstractChoice
 
         return $options;
     }
-    
-    /**
-     * @param null $context
-     *
-     * @return array
-     */
-    public function getCachedChoices($context = null)
-    {
-        $choices =  parent::getCachedChoices($context);
-        $element = $context['element'];
-        
-        if($element->addGroupChoiceField) {
-            $groupChoices = $this->getGroupChoicesValue($choices,$element);
 
-            $choices = [System::getContainer()->get('translator')->trans('huh.filter.label.groupChoice') => $groupChoices] + $choices;
-        }
-        
-        return $choices;
-    }
-    
     /**
      * @param array                    $choices
      * @param FilterConfigElementModel $element
@@ -278,11 +278,10 @@ class FieldOptionsChoice extends AbstractChoice
      */
     protected function getGroupChoicesValue(array $choices, FilterConfigElementModel $element): string
     {
-        if($element->modifyGroupChoices)
-        {
+        if ($element->modifyGroupChoices) {
             $choices = array_intersect($choices, StringUtil::deserialize($element->groupChoices, true));
         }
-        
+
         return implode(',', $choices);
     }
 }

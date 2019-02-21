@@ -98,14 +98,14 @@ class ChoiceType extends AbstractType
                 $options['attr']['onchange'] = 'this.form.submit()';
             }
         }
-        
+
         // forgiving array handling
         if ($element->addDefaultValue && !isset($data[$name])) {
             if (isset($options['multiple']) && true === (bool) $options['multiple'] && isset($options['data'])) {
                 $options['data'] = !\is_array($options['data']) ? [$options['data']] : $options['data'];
             }
         }
-        
+
         return $options;
     }
 }

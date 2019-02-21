@@ -360,17 +360,16 @@ class FilterConfigElement
     {
         return ' <a href="'.Controller::addToUrl('key=option').'" title="'.specialchars($GLOBALS['TL_LANG']['MSC']['ow_import'][1]).'" onclick="Backend.getScrollOffset()">'.Image::getHtml('tablewizard.gif', $GLOBALS['TL_LANG']['MSC']['ow_import'][0]).'</a>';
     }
-    
+
     public function getOptions(DataContainer $dc)
     {
-        if($dc->activeRecord->customOptions)
-        {
+        if ($dc->activeRecord->customOptions) {
             $options = [];
-            foreach(StringUtil::deserialize($dc->activeRecord->options) as $option)
-            {
+
+            foreach (StringUtil::deserialize($dc->activeRecord->options) as $option) {
                 $options[$option['value']] = $option['label'];
             }
-            
+
             return $options;
         }
     }
