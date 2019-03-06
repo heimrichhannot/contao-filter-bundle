@@ -99,7 +99,7 @@ class DateChoice extends AbstractChoice
                                 $value = array_column(StringUtil::deserialize($entry->initialValueArray), 'value');
 
                                 if (empty($value) || empty($value[0])) {
-                                    continue;
+                                    break;
                                 }
 
                                 $columns[] = $table.'.'.$entry->field.' IN ('.implode(',', $value).')';
