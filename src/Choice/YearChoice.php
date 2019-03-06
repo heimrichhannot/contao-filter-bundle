@@ -98,7 +98,7 @@ class YearChoice extends AbstractChoice
                                 $value = array_column(StringUtil::deserialize($entry->initialValueArray), 'value');
 
                                 if (empty($value) || empty($value[0])) {
-                                    continue;
+                                    continue 3;
                                 }
 
                                 $columns[] = $table.'.'.$entry->field.' IN ('.implode(',', $value).')';
