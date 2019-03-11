@@ -83,7 +83,7 @@ class ChoiceType extends AbstractType
             unset($options['attr']['placeholder']);
 
             $options['required'] = false;
-            $options['empty_data'] = '';
+            $options['empty_data'] = true === (bool) $element->multiple ? [] : '';
         }
 
         $options['expanded'] = (bool) $element->expanded;
