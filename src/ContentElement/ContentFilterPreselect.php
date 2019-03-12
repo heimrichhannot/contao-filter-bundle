@@ -12,7 +12,6 @@ use Contao\ContentElement;
 use Contao\Controller;
 use Contao\System;
 use HeimrichHannot\FilterBundle\Model\FilterPreselectModel;
-use Patchwork\Utf8;
 
 class ContentFilterPreselect extends ContentElement
 {
@@ -28,7 +27,7 @@ class ContentFilterPreselect extends ContentElement
         if (System::getContainer()->get('huh.utils.container')->isBackend()) {
             $objTemplate = new \BackendTemplate('be_wildcard');
             $objTemplate->wildcard = implode("\n", $this->getWildcard());
-            $objTemplate->title = '### '.Utf8::strtoupper(($GLOBALS['TL_LANG']['CTE'][$this->type][0])).' ###';
+            $objTemplate->title = $this->getFilterTitle();
 
             return $objTemplate->parse();
         }
@@ -64,6 +63,20 @@ class ContentFilterPreselect extends ContentElement
         }
 
         return $wildcard;
+    }
+
+    /**
+     * Get the filter title.
+     *
+     * @return string
+     */
+    protected function getFilterTitle(): string
+    {
+        if (null === ($filterConfig = System::getContainer()->get('huh.filter.manager')->findById($this->filterConfig)) || null === ($elements = $filterConfig->getElements())) {
+            return '';
+        }
+
+        return $filterConfig->getFilter()['title'] ?? '';
     }
 
     /**
