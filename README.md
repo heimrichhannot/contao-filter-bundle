@@ -93,6 +93,15 @@ huh:
       - filter_
 ```
 
+## Developers
+
+### Events
+
+Event | Event ID
+----- | ---------
+Adjust filter options | `huh.filter.event.adjust_filter_options_event`
+Adjust filter value | `huh.filter.event.adjust_filter_value_event`
+
 ## Bootstrap 4 form snippets
 
 The following bootstrap 4 form theme snippets can be used to generate uncommon, but existing bootstrap 4 form widgets within your custom `filter_form_bootstrap4*.html.twig` template.

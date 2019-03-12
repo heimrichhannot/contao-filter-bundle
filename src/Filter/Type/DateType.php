@@ -150,7 +150,7 @@ class DateType extends AbstractType
                     break;
                 }
 
-                $options['group_attr']['class'] = 'datepicker';
+                $options['group_attr']['class'] = isset($options['group_attr']['class']) ? $options['group_attr']['class'].' datepicker' : 'datepicker';
                 $options['attr']['data-iso8601-format'] = System::getContainer()->get('huh.utils.date')->transformPhpDateFormatToISO8601($element->dateFormat);
                 $options['attr']['data-date-format'] = $element->dateFormat;
 
