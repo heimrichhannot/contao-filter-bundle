@@ -55,8 +55,9 @@ class FilterQueryBuilder extends QueryBuilder
      * Add where clause based on an element.
      *
      * @param FilterConfigElementModel $element
-     * @param string                   $name    The field name
+     * @param string                   $name            The field name
      * @param FilterConfig             $config
+     * @param string                   $defaultOperator
      *
      * @return $this this FilterQueryBuilder instance
      */
@@ -73,7 +74,7 @@ class FilterQueryBuilder extends QueryBuilder
         $dca = $GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element->field];
 
         if ($dca['eval']['isCategoryField'] && !$element->isInitial) {
-            $this->whereCategoryWidget($element, $name, $config, $dca);
+            $this->whereCategoryWidget($element, $name, $config, $dca, $defaultOperator);
 
             return $this;
         }
@@ -83,7 +84,7 @@ class FilterQueryBuilder extends QueryBuilder
                 if (!isset($dca['eval']['tagsManager'])) {
                     break;
                 }
-                $this->whereTagWidget($element, $name, $config, $dca);
+                $this->whereTagWidget($element, $name, $config, $dca, $defaultOperator);
 
                 break;
 
@@ -239,13 +240,14 @@ class FilterQueryBuilder extends QueryBuilder
      * Add tag widget where clause.
      *
      * @param FilterConfigElementModel $element
-     * @param string                   $name    The field name
+     * @param string                   $name            The field name
      * @param FilterConfig             $config
      * @param array                    $dca
+     * @param string                   $defaultOperator
      *
      * @return $this this FilterQueryBuilder instance
      */
-    protected function whereTagWidget(FilterConfigElementModel $element, string $name, FilterConfig $config, array $dca)
+    protected function whereTagWidget(FilterConfigElementModel $element, string $name, FilterConfig $config, array $dca, string $defaultOperator = null)
     {
         $filter = $config->getFilter();
         $data = $config->getData();
@@ -262,9 +264,20 @@ class FilterQueryBuilder extends QueryBuilder
 
         $alias = $relation['table'].'_'.$name;
 
+        $operator = $this->getOperator($element, $defaultOperator, $dca);
+
+        if (!$operator) {
+            return $this;
+        }
+
         $this->join($relation['reference_table'], $relation['table'], $alias,
             $alias.'.'.$relation['reference_field'].'='.$relation['reference_table'].'.'.$relation['reference']);
-        $this->andWhere($this->expr()->in($alias.'.'.$relation['related_field'], $value));
+
+        $this->andWhere(
+            $this->container->get('huh.utils.database')->composeWhereForQueryBuilder(
+                $this, $alias.'.'.$relation['related_field'], $operator, $dca, $value
+            )
+        );
 
         return $this;
     }
@@ -273,13 +286,14 @@ class FilterQueryBuilder extends QueryBuilder
      * Add category widget where clause.
      *
      * @param FilterConfigElementModel $element
-     * @param string                   $name    The field name
+     * @param string                   $name            The field name
      * @param FilterConfig             $config
      * @param array                    $dca
+     * @param string                   $defaultOperator
      *
      * @return $this this FilterQueryBuilder instance
      */
-    protected function whereCategoryWidget(FilterConfigElementModel $element, string $name, FilterConfig $config, array $dca)
+    protected function whereCategoryWidget(FilterConfigElementModel $element, string $name, FilterConfig $config, array $dca, string $defaultOperator = null)
     {
         $filter = $config->getFilter();
         $data = $config->getData();
@@ -304,15 +318,17 @@ class FilterQueryBuilder extends QueryBuilder
         $alias.entity=".$filter['dataContainer'].'.id
         ');
 
-        $this->andWhere($this->expr()->in(
-            $alias.'.category',
-            array_map(
-                function ($val) {
-                    return '"'.addslashes(Controller::replaceInsertTags(trim($val), false)).'"';
-                },
-                $value
+        $operator = $this->getOperator($element, $defaultOperator, $dca);
+
+        if (!$operator) {
+            return $this;
+        }
+
+        $this->andWhere(
+            $this->container->get('huh.utils.database')->composeWhereForQueryBuilder(
+                $this, $alias.'.category', $operator, $dca, $value
             )
-        ));
+        );
 
         // don't produce double results
         $this->addGroupBy($filter['dataContainer'].'.id');
