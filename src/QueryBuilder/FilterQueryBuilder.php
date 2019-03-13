@@ -74,7 +74,7 @@ class FilterQueryBuilder extends QueryBuilder
         $dca = $GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element->field];
 
         if ($dca['eval']['isCategoryField'] && !$element->isInitial) {
-            $this->whereCategoryWidget($element, $name, $config, $dca, $defaultOperator);
+            $this->whereCategoryWidget($element, $name, $config, $dca, DatabaseUtil::OPERATOR_IN);
 
             return $this;
         }
@@ -84,7 +84,7 @@ class FilterQueryBuilder extends QueryBuilder
                 if (!isset($dca['eval']['tagsManager'])) {
                     break;
                 }
-                $this->whereTagWidget($element, $name, $config, $dca, $defaultOperator);
+                $this->whereTagWidget($element, $name, $config, $dca, DatabaseUtil::OPERATOR_IN);
 
                 break;
 
@@ -205,14 +205,15 @@ class FilterQueryBuilder extends QueryBuilder
 
     /**
      * @param FilterConfigElementModel $element
-     * @param string                   $operator
-     * @param array                    $dca
+     * @param string $operator
+     * @param array $dca
+     * @param bool $supportSerializedBlob
      *
      * @return string
      */
-    protected function getOperator(FilterConfigElementModel $element, string $operator, array $dca): string
+    protected function getOperator(FilterConfigElementModel $element, string $operator, array $dca, bool $supportSerializedBlob = true): string
     {
-        if (isset($dca['eval']['multiple']) && $dca['eval']['multiple']) {
+        if (isset($dca['eval']['multiple']) && $dca['eval']['multiple'] && $supportSerializedBlob) {
             if (\in_array($operator, DatabaseUtil::NEGATIVE_OPERATORS)) {
                 // db value is a serialized blob
                 if (false !== strpos($dca['sql'], 'blob')) {
@@ -264,7 +265,7 @@ class FilterQueryBuilder extends QueryBuilder
 
         $alias = $relation['table'].'_'.$name;
 
-        $operator = $this->getOperator($element, $defaultOperator, $dca);
+        $operator = $this->getOperator($element, $defaultOperator, $dca, false);
 
         if (!$operator) {
             return $this;
@@ -318,7 +319,7 @@ class FilterQueryBuilder extends QueryBuilder
         $alias.entity=".$filter['dataContainer'].'.id
         ');
 
-        $operator = $this->getOperator($element, $defaultOperator, $dca);
+        $operator = $this->getOperator($element, $defaultOperator, $dca, false);
 
         if (!$operator) {
             return $this;
