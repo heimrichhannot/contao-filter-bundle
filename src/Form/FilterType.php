@@ -59,8 +59,8 @@ class FilterType extends AbstractType
         // always add a hidden field with the filter id
         $builder->add(static::FILTER_ID_NAME, HiddenType::class, ['attr' => ['value' => $this->config->getId()]]);
 
-        // always add a hidden field with the referrer url (required by reset for example to redirect back to user action page)
-        $builder->add(static::FILTER_REFERRER_NAME, HiddenType::class, ['attr' => ['value' => $request->getUri()]]);
+        // always add a hidden field with the referrer url (required by reset for example to redirect back to user action page) -> use request query string when in esi _ fragment sub-request
+        $builder->add(static::FILTER_REFERRER_NAME, HiddenType::class, ['attr' => ['value' => $request->query->has('request') ? ($request->getSchemeAndHttpHost() .'/' . $request->query->get('request')) : $request->getUri()]]);
 
         $this->buildElements($builder, $options);
     }
