@@ -205,9 +205,9 @@ class FilterQueryBuilder extends QueryBuilder
 
     /**
      * @param FilterConfigElementModel $element
-     * @param string $operator
-     * @param array $dca
-     * @param bool $supportSerializedBlob
+     * @param string                   $operator
+     * @param array                    $dca
+     * @param bool                     $supportSerializedBlob
      *
      * @return string
      */
