@@ -48,8 +48,8 @@ class FilterConfigElement
         }
 
         foreach ($config['filter']['types'] as $type) {
-            if (isset($type['name']) && $type['name'] === $filterConfigElement->type && isset($type['type'])) {
-                $foundType = $type['type'];
+            if (isset($type['name']) && $type['name'] === $filterConfigElement->type) {
+                $foundType = $type['name'];
 
                 break;
             }

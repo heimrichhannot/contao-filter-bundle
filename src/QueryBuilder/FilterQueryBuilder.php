@@ -136,7 +136,7 @@ class FilterQueryBuilder extends QueryBuilder
                 $value = Controller::replaceInsertTags($value, false);
             }
 
-            $operator = $this->getOperator($element, $defaultOperator, $dca);
+            $operator = $this->getOperator($element, $defaultOperator, $dca) ?:$defaultOperator;
         } else {
             $value = $data[$name] ?? ($element->customValue ? $element->value : null);
 
@@ -145,10 +145,10 @@ class FilterQueryBuilder extends QueryBuilder
             }
 
             $operator = $this->getOperator($element, $defaultOperator, $dca);
+        }
 
-            if (!$operator) {
-                return $this;
-            }
+        if (!$operator) {
+            return $this;
         }
 
         $this->andWhere(
