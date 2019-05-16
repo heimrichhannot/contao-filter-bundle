@@ -102,7 +102,7 @@ services:
   huh.filter.choice.year:
     class: HeimrichHannot\FilterBundle\Choice\YearChoice
     public: true
-    arguments: ['@contao.framework', '@huh.utils.model']
+    arguments: ['@service_container', '@huh.utils.model']
 
   twig.extension.text:
     class: Twig_Extensions_Extension_Text

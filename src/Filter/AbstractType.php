@@ -8,6 +8,7 @@
 
 namespace HeimrichHannot\FilterBundle\Filter;
 
+use Contao\Controller;
 use Contao\StringUtil;
 use Contao\System;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
@@ -172,8 +173,8 @@ abstract class AbstractType
             return $element->label;
         }
 
-        \Controller::loadDataContainer($filter['dataContainer']);
-        \Controller::loadLanguageFile($filter['dataContainer']);
+        Controller::loadDataContainer($filter['dataContainer']);
+        Controller::loadLanguageFile($filter['dataContainer']);
 
         if (isset($GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element->field]['label'])) {
             return $GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element->field]['label'][0];

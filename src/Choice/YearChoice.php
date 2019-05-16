@@ -9,7 +9,6 @@
 namespace HeimrichHannot\FilterBundle\Choice;
 
 use Contao\Controller;
-use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\Model\Collection;
 use Contao\StringUtil;
 use Contao\System;
@@ -20,6 +19,7 @@ use HeimrichHannot\FilterBundle\Filter\Type\SqlType;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\UtilsBundle\Choice\AbstractChoice;
 use HeimrichHannot\UtilsBundle\Model\ModelUtil;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class YearChoice extends AbstractChoice
 {
@@ -27,11 +27,16 @@ class YearChoice extends AbstractChoice
      * @var ModelUtil
      */
     private $modelUtil;
+    /**
+     * @var ContainerInterface
+     */
+    private $container;
 
-    public function __construct(ContaoFrameworkInterface $framework, ModelUtil $modelUtil)
+    public function __construct(ContainerInterface $container, ModelUtil $modelUtil)
     {
-        parent::__construct($framework);
+        parent::__construct($container->get('contao.framework'));
         $this->modelUtil = $modelUtil;
+        $this->container = $container;
     }
 
     /**
@@ -59,7 +64,7 @@ class YearChoice extends AbstractChoice
         foreach ($elements as $entry) {
             switch ($entry->type) {
                 case SkipParentsType::TYPE:
-                    $skipParentsType = new SkipParentsType(System::getContainer()->get('huh.filter.config'));
+                    $skipParentsType = new SkipParentsType($this->container->get('huh.filter.config'));
 
                     list($elementColumns, $elementValues) = $skipParentsType->buildQueryForModels($filter, $entry);
 
@@ -69,7 +74,7 @@ class YearChoice extends AbstractChoice
                     break;
 
                 case PublishedType::TYPE:
-                    $publishedType = new PublishedType(System::getContainer()->get('huh.filter.config'));
+                    $publishedType = new PublishedType($this->container->get('huh.filter.config'));
 
                     list($elementColumns, $elementValues) = $publishedType->buildQueryForModels($filter, $entry);
 
@@ -87,7 +92,7 @@ class YearChoice extends AbstractChoice
                     if ($entry->isInitial && $entry->id !== $element->id) {
                         switch ($entry->initialValueType) {
                             case AbstractType::VALUE_TYPE_SCALAR:
-                                $operator = System::getContainer()->get('huh.utils.database')->transformVerboseOperator($entry->operator);
+                                $operator = $this->container->get('huh.utils.database')->transformVerboseOperator($entry->operator);
 
                                 $columns[] = $table.'.'.$entry->field.' '.$operator.' ?';
                                 $values[] = $entry->initialValue;
@@ -127,12 +132,38 @@ class YearChoice extends AbstractChoice
         }
         $years = [];
 
+        if ($element->addOptionCount)
+        {
+            $entryCount = [];
+        }
+
         foreach ($items as $entry) {
             $date = date('Y', $entry->{$element->field});
+            if ($element->addOptionCount) {
+                $entryCount[$date] = isset($entryCount[$date]) ? ++$entryCount[$date] : 1;
+            }
             $years[$date] = $date;
         }
-        krsort($years, SORT_NUMERIC);
 
+        if ($element->addOptionCount)
+        {
+            foreach ($years as $value => $label)
+            {
+                if (!$element->optionCountLabel)
+                {
+                    $years[$value] = $label.' ('.$entryCount[$value].')';
+                }
+                else {
+                    $years[$value] = $this->container->get('translator')->trans($element->optionCountLabel, [
+                        '%value%' => $value,
+                        '%count%' => $entryCount[$value],
+                    ]);
+                }
+            }
+            $years = array_flip($years);
+        }
+
+        krsort($years, SORT_NUMERIC);
         return $years;
     }
 }

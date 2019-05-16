@@ -16,10 +16,11 @@
     "symfony/form": "~3.4|~4.0"
   },
   "require-dev": {
-    "contao/test-case": "^1.1",
+    "heimrichhannot/contao-test-utilities-bundle": "dev-master",
+    "contao/test-case": "1.1.*",
     "contao/manager-plugin": "^2.0",
     "friendsofphp/php-cs-fixer": "^2.2",
-    "phpunit/phpunit": ">=6.0 <6.5",
+    "phpunit/phpunit": "^6.5",
     "php-http/guzzle6-adapter": "^1.1",
     "php-http/message-factory": "^1.0.2",
     "php-coveralls/php-coveralls": "^2.0",
@@ -51,6 +52,15 @@
       "HeimrichHannot\\FilterBundle\\Test\\": "tests/"
     }
   },
+  "repositories": [
+    {
+      "type": "path",
+      "url": "~/Kunden/github/contao-test-utilities-bundle",
+      "options": {
+        "symlink": true
+      }
+    }
+  ],
   "config": {
     "preferred-install": "dist"
   },

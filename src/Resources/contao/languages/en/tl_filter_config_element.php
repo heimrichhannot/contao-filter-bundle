@@ -75,6 +75,8 @@ $lang['whereSql']           = ['Additional WHERE-SQL', 'Enter SQL, which will be
 $lang['submitOnChange']     = ['Submit form on change (submitOnChange)', 'Select this option if you want the user to submit the form on change.'];
 $lang['alwaysShow']         = ['Show always', 'Always show the filter element.'];
 $lang['dynamicOptions']     = ['Dynamic options', 'Use this option to get option values  based on the underlaying data. Initial filters with skalar or array values are respected.'];
+$lang['addOptionCount']     = ['Show option entries count', 'Output the count of elements for each option. Works only if dynamic options are enabled.'];
+$lang['optionCountLabel']   = ['Label for options with count', 'Choose the label format for options with count.'];
 
 /**
  * Legends

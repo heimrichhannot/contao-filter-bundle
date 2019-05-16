@@ -92,6 +92,8 @@ use HeimrichHannot\FilterBundle\Filter\AbstractType;
  * @property array  $sortOptions
  * @property bool   $submitOnChange
  * @property bool   $alwaysShow
+ * @property bool   $addOptionCount
+ * @property string $optionCountLabel
  * @property bool   $published
  * @property string $start
  * @property string $stop

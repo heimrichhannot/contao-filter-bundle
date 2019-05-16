@@ -32,3 +32,7 @@ huh.filter.input_group_text.submit.fa_calendar: '<button class="btn btn-outline-
 huh.filter.input_group_text.submit.fa_clock_o: '<button class="btn btn-outline-secondary" type="submit"><i class="fas fa-clock" aria-hidden="true"></i><span class="sr-only">Submit</span></button>'
 huh.filter.input_group_text.submit.fa_envelope: '<button class="btn btn-outline-secondary" type="submit"><i class="fas fa-envelope" aria-hidden="true"></i><span class="sr-only">Submit</span></button>'
 huh.filter.input_group_text.submit.fa_search: '<button class="btn btn-outline-secondary" type="submit"><i class="fas fa-search" aria-hidden="true"></i><span class="sr-only">Submit</span></button>'
+
+# Labels for options with count
+huh.filter.option_count:
+  default: '%value% (%count% entries)'
