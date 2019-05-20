@@ -1037,7 +1037,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'label'            => &$GLOBALS['TL_LANG']['tl_filter_config_element']['optionCountLabel'],
             'exclude'          => true,
             'inputType'        => 'select',
-            'default'          => 'huh.filter.option_count',
+            'default'          => 'huh.filter.option_count.default',
             'options_callback' => function (\Contao\DataContainer $dc) {
                 return \Contao\System::getContainer()->get('huh.utils.choice.message')->getCachedChoices('huh.filter.option_count');
             },

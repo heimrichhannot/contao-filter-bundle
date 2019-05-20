@@ -154,7 +154,7 @@ class YearChoice extends AbstractChoice
                     $years[$value] = $label.' ('.$entryCount[$value].')';
                 }
                 else {
-                    $years[$value] = $this->container->get('translator')->trans($element->optionCountLabel, [
+                    $years[$value] = $this->container->get('translator')->transChoice($element->optionCountLabel, $entryCount[$value], [
                         '%value%' => $value,
                         '%count%' => $entryCount[$value],
                     ]);
