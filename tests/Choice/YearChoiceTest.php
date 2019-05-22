@@ -223,9 +223,11 @@ class YearChoiceTest extends ContaoTestCase
                         $this->mockClassWithProperties(Model::class, ['date' => 1462406400]), //2016
                     ];
             }
+
             if (isset($options['limit']) && 1 === $options['limit']) {
                 return [$return[0]];
             }
+
             return $return;
         });
         $container->set('huh.utils.model', $modelUtil);

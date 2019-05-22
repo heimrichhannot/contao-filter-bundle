@@ -11,7 +11,6 @@ namespace HeimrichHannot\FilterBundle\Choice;
 use Contao\Controller;
 use Contao\Model\Collection;
 use Contao\StringUtil;
-use Contao\System;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
 use HeimrichHannot\FilterBundle\Filter\Type\PublishedType;
 use HeimrichHannot\FilterBundle\Filter\Type\SkipParentsType;
@@ -132,28 +131,24 @@ class YearChoice extends AbstractChoice
         }
         $years = [];
 
-        if ($element->addOptionCount)
-        {
+        if ($element->addOptionCount) {
             $entryCount = [];
         }
 
         foreach ($items as $entry) {
             $date = date('Y', $entry->{$element->field});
+
             if ($element->addOptionCount) {
                 $entryCount[$date] = isset($entryCount[$date]) ? ++$entryCount[$date] : 1;
             }
             $years[$date] = $date;
         }
 
-        if ($element->addOptionCount)
-        {
-            foreach ($years as $value => $label)
-            {
-                if (!$element->optionCountLabel)
-                {
+        if ($element->addOptionCount) {
+            foreach ($years as $value => $label) {
+                if (!$element->optionCountLabel) {
                     $years[$value] = $label.' ('.$entryCount[$value].')';
-                }
-                else {
+                } else {
                     $years[$value] = $this->container->get('translator')->transChoice($element->optionCountLabel, $entryCount[$value], [
                         '%value%' => $value,
                         '%count%' => $entryCount[$value],
@@ -164,6 +159,7 @@ class YearChoice extends AbstractChoice
         }
 
         krsort($years, SORT_NUMERIC);
+
         return $years;
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+use Symfony\Component\Intl\Intl;
+
 $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
     'config'      => [
         'dataContainer'     => 'Table',
@@ -604,7 +606,9 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'exclude'   => true,
             'inputType' => 'select',
             'default'   => 'EUR',
-            'options'   => Symfony\Component\Intl\Intl::getCurrencyBundle()->getCurrencyNames(),
+            'options_callback' => function (\Contao\DataContainer $dc) {
+                return Symfony\Component\Intl\Intl::getCurrencyBundle()->getCurrencyNames();
+            },
             'eval'      => ['tl_class' => 'clr w50 wizard', 'chosen' => 'true', 'maxlength' => 3],
             'sql'       => "varchar(3) NOT NULL default ''",
         ],
@@ -678,7 +682,9 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'exclude'   => true,
             'inputType' => 'select',
             'default'   => 'EUR',
-            'options'   => Symfony\Component\Intl\Intl::getRegionBundle()->getCountryNames(),
+            'options_callback' => function (\Contao\DataContainer $dc) {
+                return Symfony\Component\Intl\Intl::getRegionBundle()->getCountryNames();
+            },
             'eval'      => ['tl_class' => 'clr w50 wizard', 'chosen' => 'true', 'multiple' => true, 'mandatory' => true],
             'sql'       => "blob NULL",
         ],
@@ -694,7 +700,9 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'exclude'   => true,
             'inputType' => 'select',
             'default'   => 'EUR',
-            'options'   => Symfony\Component\Intl\Intl::getLanguageBundle()->getLanguageNames(),
+            'options_callback' => function (\Contao\DataContainer $dc) {
+                return Symfony\Component\Intl\Intl::getLanguageBundle()->getLanguageNames();
+            },
             'eval'      => ['tl_class' => 'clr w50 wizard', 'chosen' => 'true', 'multiple' => true, 'mandatory' => true],
             'sql'       => "blob NULL",
         ],
@@ -710,7 +718,9 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'exclude'   => true,
             'inputType' => 'select',
             'default'   => 'EUR',
-            'options'   => Symfony\Component\Intl\Intl::getLocaleBundle()->getLocaleNames(),
+            'options_callback' => function (\Contao\DataContainer $dc) {
+                return Symfony\Component\Intl\Intl::getLocaleBundle()->getLocaleNames();
+            },
             'eval'      => ['tl_class' => 'clr w50 wizard', 'chosen' => 'true', 'multiple' => true, 'mandatory' => true],
             'sql'       => "blob NULL",
         ],

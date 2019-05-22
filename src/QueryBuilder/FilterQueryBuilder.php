@@ -136,7 +136,7 @@ class FilterQueryBuilder extends QueryBuilder
                 $value = Controller::replaceInsertTags($value, false);
             }
 
-            $operator = $this->getOperator($element, $defaultOperator, $dca) ?:$defaultOperator;
+            $operator = $this->getOperator($element, $defaultOperator, $dca) ?: $defaultOperator;
         } else {
             $value = $data[$name] ?? ($element->customValue ? $element->value : null);
 
