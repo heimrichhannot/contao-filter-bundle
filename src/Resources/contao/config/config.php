@@ -42,3 +42,4 @@ $GLOBALS['TL_CTE']['filter']['filter_hyperlink'] = \HeimrichHannot\FilterBundle\
  * Hooks
  */
 $GLOBALS['TL_HOOKS']['replaceInsertTags']['huh.filter'] = ['huh.filter.listener.inserttag', 'onReplaceInsertTags'];
+$GLOBALS['TL_HOOKS']['isBlockVisibleHook']['isBlockVisible'] = ['huh.filter.listener.hooks', 'isBlockVisible'];

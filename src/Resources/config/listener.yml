@@ -1,6 +1,8 @@
 services:
   huh.filter.listener.dca.callback.filterconfigelement:
     class: HeimrichHannot\FilterBundle\EventListener\FilterConfigElementCallbackListener
+  huh.filter.listener.hooks:
+    class: HeimrichHannot\FilterBundle\EventListener\Hooks
   huh.filter.listener.inserttag:
     class: HeimrichHannot\FilterBundle\EventListener\InsertTagsListener
     arguments:
