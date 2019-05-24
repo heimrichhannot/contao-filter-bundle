@@ -7,7 +7,7 @@ namespace HeimrichHannot\FilterBundle\EventListener;
 use Contao\System;
 use HeimrichHannot\Blocks\BlockModuleModel;
 
-class Hooks
+class HookListener
 {
     /**
      * exclude/include BlockModule by filter parameter
