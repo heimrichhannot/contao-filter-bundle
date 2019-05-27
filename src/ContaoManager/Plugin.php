@@ -29,7 +29,7 @@ class Plugin implements BundlePluginInterface, ExtensionPluginInterface, Routing
     public function getBundles(ParserInterface $parser)
     {
         return [
-            BundleConfig::create(HeimrichHannotContaoFilterBundle::class)->setLoadAfter([ContaoCoreBundle::class]),
+            BundleConfig::create(HeimrichHannotContaoFilterBundle::class)->setLoadAfter([ContaoCoreBundle::class, 'blocks']),
         ];
     }
 
