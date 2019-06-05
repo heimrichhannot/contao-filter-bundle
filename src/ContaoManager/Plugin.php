@@ -29,7 +29,7 @@ class Plugin implements BundlePluginInterface, ExtensionPluginInterface, Routing
     public function getBundles(ParserInterface $parser)
     {
         return [
-            BundleConfig::create(HeimrichHannotContaoFilterBundle::class)->setLoadAfter([ContaoCoreBundle::class]),
+            BundleConfig::create(HeimrichHannotContaoFilterBundle::class)->setLoadAfter([ContaoCoreBundle::class, 'blocks']),
         ];
     }
 
@@ -54,6 +54,14 @@ class Plugin implements BundlePluginInterface, ExtensionPluginInterface, Routing
                 }
             }
         }
+
+        $extensionConfigs = ContainerUtil::mergeConfigFile(
+            'huh_encore',
+            $extensionName,
+            $extensionConfigs,
+            __DIR__.'/../Resources/config/config_encore.yml'
+        );
+
 
         return ContainerUtil::mergeConfigFile(
             'huh_filter',

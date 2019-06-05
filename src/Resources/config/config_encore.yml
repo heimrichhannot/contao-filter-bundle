@@ -1,0 +1,7 @@
+huh:
+  encore:
+    entries:
+      - { name: contao-filter-bundle, file: "vendor/heimrichhannot/contao-filter-bundle/src/Resources/assets/js/contao-filter-bundle.js"}
+    legacy:
+      js:
+        - contao-filter-bundle

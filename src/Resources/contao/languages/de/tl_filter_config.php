@@ -17,6 +17,7 @@ $lang['dateTimeFormat'] = ['Zeitformat', 'Geben Sie hier die zu verwendende Form
 $lang['mergeData']      = ['Formulardaten mergen', 'Wählen Sie diese Option um die abgesendeten Formulardaten mit anderen Formulardaten zu mergen.'];
 $lang['type']           = ['Typ', 'Wählen Sie den Typen aus.'];
 $lang['parentFilter']   = ['Eltern-Filterkonfiguration', 'Wählen Sie hier eine Filterkonfiguration aus, von der geerbt werden soll.'];
+$lang['asyncFormSubmit']     = ['Filter asynchron absenden', 'Wählen Sie diese Option, wenn der Filter asynchron abgeschickt werden soll.'];
 
 
 /**

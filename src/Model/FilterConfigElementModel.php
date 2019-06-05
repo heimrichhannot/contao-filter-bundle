@@ -97,6 +97,7 @@ use HeimrichHannot\FilterBundle\Filter\AbstractType;
  * @property bool   $published
  * @property string $start
  * @property string $stop
+ * @property bool   $useRangeSlider
  *
  * @method FilterConfigElementModel|null                                                     findById($id, array $opt = [])
  * @method FilterConfigElementModel|null                                                     findByPk($id, array $opt = [])

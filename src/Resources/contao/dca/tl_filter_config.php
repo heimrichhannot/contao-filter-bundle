@@ -82,7 +82,7 @@ $GLOBALS['TL_DCA']['tl_filter_config'] = [
     'palettes'    => [
         '__selector__' => ['published', 'type'],
         'default'      => '{general_legend},title,type;',
-        'filter'       => '{general_legend},title,type;{config_legend},authorType,author,name,dataContainer,method,action,renderEmpty,mergeData;{template_legend},template;{expert_legend},cssClass;{publish_legend},published;',
+        'filter'       => '{general_legend},title,type;{config_legend},authorType,author,name,dataContainer,method,action,renderEmpty,mergeData,asyncFormSubmit;{template_legend},template;{expert_legend},cssClass;{publish_legend},published;',
         'sort'         => '{general_legend},title,type;{config_legend},parentFilter;{template_legend},template;{expert_legend},cssClass;{publish_legend},published;',
     ],
     'subpalettes' => [
@@ -233,6 +233,13 @@ $GLOBALS['TL_DCA']['tl_filter_config'] = [
             'relation'   => ['type' => 'belongsTo', 'load' => 'eager'],
             'eval'       => ['tl_class' => 'w50 clr', 'includeBlankOption' => true, 'chosen' => true, 'mandatory' => true],
             'sql'        => "int(10) NOT NULL default '0'",
+        ],
+        'asyncFormSubmit'  => [
+            'label'      => &$GLOBALS['TL_LANG']['tl_filter_config']['asyncFormSubmit'],
+            'exclude'    => true,
+            'inputType'  => 'checkbox',
+            'eval'       => ['tl_class' => 'w50 clr', 'submitOnChange'],
+            'sql'       => "char(1) NOT NULL default ''",
         ],
     ],
 ];

@@ -35,9 +35,9 @@ class MoneyType extends TextType
     /**
      * {@inheritdoc}
      */
-    public function getOptions(FilterConfigElementModel $element, FormBuilderInterface $builder)
+    public function getOptions(FilterConfigElementModel $element, FormBuilderInterface $builder, bool $triggerEvent = true)
     {
-        $options = parent::getOptions($element, $builder);
+        $options = parent::getOptions($element, $builder, $triggerEvent);
 
         $options['currency'] = (string) $element->currency;
         $options['divisor'] = (int) $element->divisor;

@@ -35,9 +35,9 @@ class NumberType extends TextType
     /**
      * {@inheritdoc}
      */
-    public function getOptions(FilterConfigElementModel $element, FormBuilderInterface $builder)
+    public function getOptions(FilterConfigElementModel $element, FormBuilderInterface $builder, bool $triggerEvent = true)
     {
-        $options = parent::getOptions($element, $builder);
+        $options = parent::getOptions($element, $builder, $triggerEvent);
 
         $options['grouping'] = (bool) $element->grouping;
         $options['scale'] = (int) $element->scale;

@@ -188,10 +188,11 @@ abstract class AbstractType
      *
      * @param FilterConfigElementModel $element
      * @param FormBuilderInterface     $builder
+     * @param bool $triggerEvent
      *
      * @return array The field options
      */
-    public function getOptions(FilterConfigElementModel $element, FormBuilderInterface $builder)
+    public function getOptions(FilterConfigElementModel $element, FormBuilderInterface $builder, bool $triggerEvent = true)
     {
         $data = $this->config->getData();
         $name = $this->getName($element);
@@ -237,11 +238,15 @@ abstract class AbstractType
 
         $options['block_name'] = $this->getName($element);
 
-        $event = System::getContainer()->get('event_dispatcher')->dispatch(AdjustFilterOptionsEvent::NAME, new AdjustFilterOptionsEvent(
-            $name, $options, $element, $builder, $this->config
-        ));
+        if($triggerEvent){
+            $event = System::getContainer()->get('event_dispatcher')->dispatch(AdjustFilterOptionsEvent::NAME, new AdjustFilterOptionsEvent(
+                $name, $options, $element, $builder, $this->config
+            ));
 
-        return $event->getOptions();
+            return $event->getOptions();
+        }
+
+        return $options;
     }
 
     /**
