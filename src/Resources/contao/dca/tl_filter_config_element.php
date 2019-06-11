@@ -67,7 +67,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
                 'href'       => 'act=delete',
                 'icon'       => 'delete.gif',
                 'attributes' => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['MSC']['deleteConfirm']
-                                . '\'))return false;Backend.getScrollOffset()"',
+                    . '\'))return false;Backend.getScrollOffset()"',
             ],
             'toggle' => [
                 'label'           => &$GLOBALS['TL_LANG']['tl_filter_config_element']['toggle'],
@@ -86,6 +86,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
         '__selector__' => [
             'type',
             'customOptions',
+            'adjustOptionLabels',
             'customName',
             'customOperator',
             'addPlaceholder',
@@ -130,15 +131,15 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
         \HeimrichHannot\FilterBundle\Filter\Type\ColorType::TYPE
                        => '{general_legend},title,type,isInitial;{config_legend},field,customName,customOperator,addDefaultValue;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
         \HeimrichHannot\FilterBundle\Filter\Type\ChoiceType::TYPE
-                       => '{general_legend},title,type,isInitial;{config_legend},field,customOptions,sortOptionValues,customName,customOperator,addDefaultValue,expanded,multiple,submitOnChange,addGroupChoiceField;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
+                       => '{general_legend},title,type,isInitial;{config_legend},field,customOptions,adjustOptionLabels,reviseOptions,sortOptionValues,customName,customOperator,addDefaultValue,expanded,multiple,submitOnChange,addGroupChoiceField;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
         \HeimrichHannot\FilterBundle\Filter\Type\CountryType::TYPE
-                       => '{general_legend},title,type,isInitial;{config_legend},field,customCountries,customOptions,sortOptionValues,customName,customOperator,addDefaultValue,expanded,multiple;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
+                       => '{general_legend},title,type,isInitial;{config_legend},field,customCountries,customOptions,adjustOptionLabels,reviseOptions,sortOptionValues,customName,customOperator,addDefaultValue,expanded,multiple;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
         \HeimrichHannot\FilterBundle\Filter\Type\LanguageType::TYPE
-                       => '{general_legend},title,type,isInitial;{config_legend},field,customLanguages,customOptions,sortOptionValues,customName,customOperator,addDefaultValue,expanded,multiple;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
+                       => '{general_legend},title,type,isInitial;{config_legend},field,customLanguages,customOptions,adjustOptionLabels,reviseOptions,sortOptionValues,customName,customOperator,addDefaultValue,expanded,multiple;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
         \HeimrichHannot\FilterBundle\Filter\Type\LocaleType::TYPE
-                       => '{general_legend},title,type,isInitial;{config_legend},field,customLocales,customOptions,sortOptionValues,customName,customOperator,addDefaultValue,expanded,multiple;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
+                       => '{general_legend},title,type,isInitial;{config_legend},field,customLocales,customOptions,adjustOptionLabels,reviseOptions,sortOptionValues,customName,customOperator,addDefaultValue,expanded,multiple;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
         \HeimrichHannot\FilterBundle\Filter\Type\ParentType::TYPE
-                       => '{general_legend},title,type,isInitial;{config_legend},field,customOptions,sortOptionValues,customName,customOperator,addDefaultValue,expanded,multiple;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
+                       => '{general_legend},title,type,isInitial;{config_legend},field,customOptions,adjustOptionLabels,reviseOptions,sortOptionValues,customName,customOperator,addDefaultValue,expanded,multiple;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
         \HeimrichHannot\FilterBundle\Filter\Type\SkipParentsType::TYPE
                        => '{general_legend},title,type;{config_legend},parentField,customName;{publish_legend},published;',
         \HeimrichHannot\FilterBundle\Filter\Type\PublishedType::TYPE
@@ -163,9 +164,9 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
         \HeimrichHannot\FilterBundle\Filter\Type\SqlType::TYPE
                        => '{general_legend},title,type;{config_legend},whereSql;{publish_legend},published',
         \HeimrichHannot\FilterBundle\Filter\Type\YearType::TYPE
-                       => '{general_legend},title,type,isInitial;{config_legend},field,customOptions,sortOptionValues,customName,customOperator,addDefaultValue,expanded,submitOnChange,minDate,maxDate,dynamicOptions,addOptionCount;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup{expert_legend},cssClass;{publish_legend},published;',
+                       => '{general_legend},title,type,isInitial;{config_legend},field,customOptions,adjustOptionLabels,reviseOptions,sortOptionValues,customName,customOperator,addDefaultValue,expanded,submitOnChange,minDate,maxDate,dynamicOptions,addOptionCount;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup{expert_legend},cssClass;{publish_legend},published;',
         \HeimrichHannot\FilterBundle\Filter\Type\DateChoiceType::TYPE
-                       => '{general_legend},title,type,isInitial;{config_legend},field,customOptions,sortOptionValues,customName,customOperator,addDefaultValue,expanded,submitOnChange,minDate,maxDate,dynamicOptions,dateFormat;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup{expert_legend},cssClass;{publish_legend},published;',
+                       => '{general_legend},title,type,isInitial;{config_legend},field,customOptions,adjustOptionLabels,reviseOptions,sortOptionValues,customName,customOperator,addDefaultValue,expanded,submitOnChange,minDate,maxDate,dynamicOptions,dateFormat;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup{expert_legend},cssClass;{publish_legend},published;',
         \HeimrichHannot\FilterBundle\Filter\Type\AutoItemType::TYPE
                        => '{general_legend},title,type;{config_legend},field,customOperator;{publish_legend},published',
         \HeimrichHannot\FilterBundle\Filter\Type\SortType::TYPE
@@ -173,6 +174,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
     ],
     'subpalettes' => [
         'customOptions'       => 'options',
+        'adjustOptionLabels'  => 'optionLabelPattern',
         'addPlaceholder'      => 'placeholder',
         'customName'          => 'name',
         'customOperator'      => 'operator',
@@ -270,7 +272,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'options_callback' => function (\Contao\DataContainer $dc) {
                 return \Contao\System::getContainer()->get('huh.filter.util.filter_config_element')->getFields($dc);
             },
-            'eval'             => ['chosen' => true, 'includeBlankOption' => true, 'tl_class' => 'w50'],
+            'eval'             => ['chosen' => true, 'includeBlankOption' => true, 'tl_class' => 'w50', 'submitOnChange' => true],
             'sql'              => "varchar(64) NOT NULL default ''",
         ],
         'fields'                 => [
@@ -301,6 +303,30 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'inputType' => 'checkbox',
             'eval'      => ['submitOnChange' => true, 'tl_class' => 'w50'],
             'sql'       => "char(1) NOT NULL default ''",
+        ],
+        'reviseOptions'          => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['reviseOptions'],
+            'exclude'   => true,
+            'inputType' => 'checkbox',
+            'eval'      => ['submitOnChange' => true, 'tl_class' => 'w50'],
+            'sql'       => "char(1) NOT NULL default ''",
+        ],
+        'adjustOptionLabels'          => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['adjustOptionLabels'],
+            'exclude'   => true,
+            'inputType' => 'checkbox',
+            'eval'      => ['submitOnChange' => true, 'tl_class' => 'w50 clr'],
+            'sql'       => "char(1) NOT NULL default ''",
+        ],
+        'optionLabelPattern'          => [
+            'label'            => &$GLOBALS['TL_LANG']['tl_filter_config_element']['optionLabelPattern'],
+            'exclude'          => true,
+            'inputType'        => 'select',
+            'options_callback' => function (\DataContainer $dc) {
+                return \Contao\System::getContainer()->get('huh.utils.choice.message')->getCachedChoices('huh.filter.option_label');
+            },
+            'eval'             => ['chosen' => true, 'mandatory' => true, 'maxlength' => 128, 'includeBlankOption' => true, 'tl_class' => 'w50'],
+            'sql'              => "varchar(128) NOT NULL default ''",
         ],
         'options'                => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['options'],
@@ -419,11 +445,11 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'filter'           => true,
             'inputType'        => 'select',
             'options_callback' => function (\Contao\DataContainer $dc) {
-                
+
                 if (null === ($model = \Contao\System::getContainer()->get('huh.utils.model')->findModelInstanceByPk($dc->table, $dc->id))) {
                     return [];
                 }
-                
+
                 return \Contao\System::getContainer()->get('huh.filter.choice.element')->getCachedChoices([
                     'pid'   => $model->pid,
                     'types' => ['date', 'time', 'date_time'],
@@ -441,7 +467,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
                 if (null === ($model = \Contao\System::getContainer()->get('huh.utils.model')->findModelInstanceByPk($dc->table, $dc->id))) {
                     return [];
                 }
-                
+
                 return \Contao\System::getContainer()->get('huh.filter.choice.element')->getCachedChoices([
                     'pid'   => $model->pid,
                     'types' => ['date', 'time', 'date_time'],
@@ -602,15 +628,15 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'sql'       => "int(2) unsigned NOT NULL default '0'",
         ],
         'currency'               => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['currency'],
-            'exclude'   => true,
-            'inputType' => 'select',
-            'default'   => 'EUR',
+            'label'            => &$GLOBALS['TL_LANG']['tl_filter_config_element']['currency'],
+            'exclude'          => true,
+            'inputType'        => 'select',
+            'default'          => 'EUR',
             'options_callback' => function (\Contao\DataContainer $dc) {
                 return Symfony\Component\Intl\Intl::getCurrencyBundle()->getCurrencyNames();
             },
-            'eval'      => ['tl_class' => 'clr w50 wizard', 'chosen' => 'true', 'maxlength' => 3],
-            'sql'       => "varchar(3) NOT NULL default ''",
+            'eval'             => ['tl_class' => 'clr w50 wizard', 'chosen' => 'true', 'maxlength' => 3],
+            'sql'              => "varchar(3) NOT NULL default ''",
         ],
         'divisor'                => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['divisor'],
@@ -678,15 +704,15 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'sql'       => "char(1) NOT NULL default ''",
         ],
         'countries'              => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['countries'],
-            'exclude'   => true,
-            'inputType' => 'select',
-            'default'   => 'EUR',
+            'label'            => &$GLOBALS['TL_LANG']['tl_filter_config_element']['countries'],
+            'exclude'          => true,
+            'inputType'        => 'select',
+            'default'          => 'EUR',
             'options_callback' => function (\Contao\DataContainer $dc) {
                 return Symfony\Component\Intl\Intl::getRegionBundle()->getCountryNames();
             },
-            'eval'      => ['tl_class' => 'clr w50 wizard', 'chosen' => 'true', 'multiple' => true, 'mandatory' => true],
-            'sql'       => "blob NULL",
+            'eval'             => ['tl_class' => 'clr w50 wizard', 'chosen' => 'true', 'multiple' => true, 'mandatory' => true],
+            'sql'              => "blob NULL",
         ],
         'customLanguages'        => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['customLanguages'],
@@ -696,15 +722,15 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'sql'       => "char(1) NOT NULL default ''",
         ],
         'languages'              => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['languages'],
-            'exclude'   => true,
-            'inputType' => 'select',
-            'default'   => 'EUR',
+            'label'            => &$GLOBALS['TL_LANG']['tl_filter_config_element']['languages'],
+            'exclude'          => true,
+            'inputType'        => 'select',
+            'default'          => 'EUR',
             'options_callback' => function (\Contao\DataContainer $dc) {
                 return Symfony\Component\Intl\Intl::getLanguageBundle()->getLanguageNames();
             },
-            'eval'      => ['tl_class' => 'clr w50 wizard', 'chosen' => 'true', 'multiple' => true, 'mandatory' => true],
-            'sql'       => "blob NULL",
+            'eval'             => ['tl_class' => 'clr w50 wizard', 'chosen' => 'true', 'multiple' => true, 'mandatory' => true],
+            'sql'              => "blob NULL",
         ],
         'customLocales'          => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['customLocales'],
@@ -714,15 +740,15 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'sql'       => "char(1) NOT NULL default ''",
         ],
         'locales'                => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['locales'],
-            'exclude'   => true,
-            'inputType' => 'select',
-            'default'   => 'EUR',
+            'label'            => &$GLOBALS['TL_LANG']['tl_filter_config_element']['locales'],
+            'exclude'          => true,
+            'inputType'        => 'select',
+            'default'          => 'EUR',
             'options_callback' => function (\Contao\DataContainer $dc) {
                 return Symfony\Component\Intl\Intl::getLocaleBundle()->getLocaleNames();
             },
-            'eval'      => ['tl_class' => 'clr w50 wizard', 'chosen' => 'true', 'multiple' => true, 'mandatory' => true],
-            'sql'       => "blob NULL",
+            'eval'             => ['tl_class' => 'clr w50 wizard', 'chosen' => 'true', 'multiple' => true, 'mandatory' => true],
+            'sql'              => "blob NULL",
         ],
         'customValue'            => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['customValue'],
@@ -1029,21 +1055,21 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'sql'       => "char(1) NOT NULL default ''",
         ],
         'groupChoices'           => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['modifyGroupChoices'],
-            'exclude'   => true,
-            'inputType' => 'checkboxWizard',
+            'label'            => &$GLOBALS['TL_LANG']['tl_filter_config_element']['modifyGroupChoices'],
+            'exclude'          => true,
+            'inputType'        => 'checkboxWizard',
             'options_callback' => ['huh.filter.backend.filter_config_element', 'getOptions'],
-            'eval'      => ['tl_class' => 'w50', 'multiple' => true, 'mandatory' => true],
-            'sql'       => "blob NULL",
+            'eval'             => ['tl_class' => 'w50', 'multiple' => true, 'mandatory' => true],
+            'sql'              => "blob NULL",
         ],
-        'addOptionCount' => [
+        'addOptionCount'         => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['addOptionCount'],
             'exclude'   => true,
             'inputType' => 'checkbox',
             'eval'      => ['tl_class' => 'w50 clr', 'submitOnChange' => true],
             'sql'       => "char(1) NOT NULL default ''",
         ],
-        'optionCountLabel'                  => [
+        'optionCountLabel'       => [
             'label'            => &$GLOBALS['TL_LANG']['tl_filter_config_element']['optionCountLabel'],
             'exclude'          => true,
             'inputType'        => 'select',

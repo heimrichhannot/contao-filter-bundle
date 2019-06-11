@@ -12,6 +12,9 @@ $lang['field']                  = ['DCA-Feld', 'Wählen Sie hier das verknüpfte
 $lang['fields']                 = ['Felder', 'Wählen Sie hier mehrere Felder aus, die in der gewählten Reihenfolge verknüpft werden sollen.'];
 $lang['parentField']            = ['Eltern-DCA-Feld', 'Wählen Sie hier das verknüpfte Eltern-DCA-Feld aus.'];
 $lang['customOptions']          = ['Optionen anpassen', 'Wählen Sie diese Option, um benutzerdefinierte Optionswerte festzulegen.'];
+$lang['reviseOptions']          = ['Optionen bereinigen', 'Wählen Sie diese Option, um Optionswerte zu bereinigen (Optionen ohne Vorkommen in der Ergebnismenge auf Basis des aktuellen Filters). Wird nur unterstützt, wenn die Optionswerte über den Fremdschlüssel (foreignKey) des Felds ermittelt werden.'];
+$lang['adjustOptionLabels']     = ['Optionen-Labels anpassen', 'Wählen Sie diese Option, wenn Sie die Labels der Optionswerte anpassen möchten.'];
+$lang['optionLabelPattern']     = ['Optionen-Label', 'Wählen Sie ein Optionen-Label aus, auf dessen Vorlage die Optionslabels angepasst werden sollen.'];
 $lang['sortOptionValues']       = ['Optionen sortieren', 'Wählen Sie diese Option, um die Optionswerte alphabetisch zu sortieren.'];
 $lang['options']                = ['Optionen', 'Wenn JavaScript deaktiviert ist, speichern Sie Ihre Änderungen, bevor Sie die Reihenfolge verändern.'];
 $lang['customName']             = ['Name anpassen', 'Setzen Sie hier einen benutzerdefinierten Namen.'];
@@ -80,9 +83,9 @@ $lang['dynamicOptions']         = ['Dynamische Optionen', 'Aktivieren Sie diese 
 $lang['alternativeValueSource'] = ['Filterwert aus alternativer Quelle beziehen', 'Dieses Feld wird durch andere Bundles konfiguriert (bspw. heimrichhannot/contao-reader-bundle).'];
 $lang['addGroupChoiceField']    = ['Gruppen-Choice hinzufügen', 'Wählen Sie diese Option, wenn den Choices ein Feld hinzugefügt werden soll, welches mehrere Choices gruppiert. Im Standardfall fungiert dies als Select-All-Field.'];
 $lang['modifyGroupChoices']     = ['Gruppen-Choice-Optionen modifizieren', 'Wählen Sie diese Option, wenn Sie die Choices, die in diesem Feld gruppiert werden sollen einschränken wollen.'];
-$lang['groupChoices']           = ['Optionen' , ''];
-$lang['addOptionCount']         = ['Anzahl Einträge für Optionen anzeigen' , 'Die Anzahl der Elemente für jede Option mit ausgeben. Nur in Verbindung mit dynamischen Optionen.'];
-$lang['optionCountLabel']       = ['Ausgabe-Format für Optionen mit Element-Anzahl' , 'Wählen sie hier, in welchem Format die Optionen ausgegeben werden sollen.'];
+$lang['groupChoices']           = ['Optionen', ''];
+$lang['addOptionCount']         = ['Anzahl Einträge für Optionen anzeigen', 'Die Anzahl der Elemente für jede Option mit ausgeben. Nur in Verbindung mit dynamischen Optionen.'];
+$lang['optionCountLabel']       = ['Ausgabe-Format für Optionen mit Element-Anzahl', 'Wählen sie hier, in welchem Format die Optionen ausgegeben werden sollen.'];
 
 // sort
 $lang['sortOptions_class']     = ['Sortier-Klasse', 'Wählen Sie hier die Sortierklasse aus.'];
