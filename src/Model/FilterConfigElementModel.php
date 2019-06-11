@@ -24,10 +24,13 @@ use HeimrichHannot\FilterBundle\Filter\AbstractType;
  * @property string $type
  * @property string $title
  * @property string $field
- * @property array  $fields
- * @property bool   $customOptions
- * @property array  $options
- * @property bool   $customName
+ * @property array $fields
+ * @property bool $customOptions
+ * @property bool $reviseOptions
+ * @property bool $adjustOptionLabels
+ * @property bool $optionLabelPattern
+ * @property array $options
+ * @property bool $customName
  * @property string $name
  * @property bool   $addPlaceholder
  * @property string $placeholder

@@ -148,9 +148,14 @@ class FilterConfig implements \JsonSerializable
         $this->mapFormsToData();
     }
 
-    public function initQueryBuilder()
+    /**
+     * Init query builder
+     * @param array $skipElements Array with tl_filter_config_element ids that should be skipped on initQueryBuilder
+     */
+    public function initQueryBuilder(array $skipElements = [])
     {
-        $this->queryBuilder = new FilterQueryBuilder($this->container, $this->framework, $this->queryBuilder->getConnection());
+        $this->queryBuilder = new FilterQueryBuilder($this->container, $this->framework,
+            $this->queryBuilder->getConnection());
         $this->queryBuilder->from($this->getFilter()['dataContainer']);
 
         if (null === $this->getElements()) {
@@ -164,7 +169,7 @@ class FilterConfig implements \JsonSerializable
         }
 
         foreach ($this->getElements() as $element) {
-            if (!isset($types[$element->type])) {
+            if (!isset($types[$element->type]) || in_array($element->id, $skipElements)) {
                 continue;
             }
 

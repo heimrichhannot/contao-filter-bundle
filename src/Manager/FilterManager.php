@@ -51,17 +51,18 @@ class FilterManager
      * Get the query builder for a given filter id.
      *
      * @param int $id
+     * @param array $skipElements Array with tl_filter_config_element ids that should be skipped on initQueryBuilder
      *
      * @return \HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder|null
      */
-    public function getQueryBuilder(int $id)
+    public function getQueryBuilder(int $id, array $skipElements = [])
     {
         if (null === ($config = $this->findById($id))) {
             return null;
         }
 
         // always init query
-        $config->initQueryBuilder();
+        $config->initQueryBuilder($skipElements);
 
         return $config->getQueryBuilder();
     }

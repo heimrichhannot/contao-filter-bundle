@@ -86,6 +86,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
         '__selector__' => [
             'type',
             'customOptions',
+            'adjustOptionLabels',
             'customName',
             'customOperator',
             'addPlaceholder',
@@ -130,15 +131,15 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
         \HeimrichHannot\FilterBundle\Filter\Type\ColorType::TYPE
                        => '{general_legend},title,type,isInitial;{config_legend},field,customName,customOperator,addDefaultValue;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
         \HeimrichHannot\FilterBundle\Filter\Type\ChoiceType::TYPE
-                       => '{general_legend},title,type,isInitial;{config_legend},field,customOptions,sortOptionValues,customName,customOperator,addDefaultValue,expanded,multiple,submitOnChange,addGroupChoiceField;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
+                       => '{general_legend},title,type,isInitial;{config_legend},field,customOptions,adjustOptionLabels,reviseOptions,sortOptionValues,customName,customOperator,addDefaultValue,expanded,multiple,submitOnChange,addGroupChoiceField;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
         \HeimrichHannot\FilterBundle\Filter\Type\CountryType::TYPE
-                       => '{general_legend},title,type,isInitial;{config_legend},field,customCountries,customOptions,sortOptionValues,customName,customOperator,addDefaultValue,expanded,multiple;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
+                       => '{general_legend},title,type,isInitial;{config_legend},field,customCountries,customOptions,adjustOptionLabels,reviseOptions,sortOptionValues,customName,customOperator,addDefaultValue,expanded,multiple;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
         \HeimrichHannot\FilterBundle\Filter\Type\LanguageType::TYPE
-                       => '{general_legend},title,type,isInitial;{config_legend},field,customLanguages,customOptions,sortOptionValues,customName,customOperator,addDefaultValue,expanded,multiple;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
+                       => '{general_legend},title,type,isInitial;{config_legend},field,customLanguages,customOptions,adjustOptionLabels,reviseOptions,sortOptionValues,customName,customOperator,addDefaultValue,expanded,multiple;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
         \HeimrichHannot\FilterBundle\Filter\Type\LocaleType::TYPE
-                       => '{general_legend},title,type,isInitial;{config_legend},field,customLocales,customOptions,sortOptionValues,customName,customOperator,addDefaultValue,expanded,multiple;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
+                       => '{general_legend},title,type,isInitial;{config_legend},field,customLocales,customOptions,adjustOptionLabels,reviseOptions,sortOptionValues,customName,customOperator,addDefaultValue,expanded,multiple;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
         \HeimrichHannot\FilterBundle\Filter\Type\ParentType::TYPE
-                       => '{general_legend},title,type,isInitial;{config_legend},field,customOptions,sortOptionValues,customName,customOperator,addDefaultValue,expanded,multiple;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
+                       => '{general_legend},title,type,isInitial;{config_legend},field,customOptions,adjustOptionLabels,reviseOptions,sortOptionValues,customName,customOperator,addDefaultValue,expanded,multiple;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
         \HeimrichHannot\FilterBundle\Filter\Type\SkipParentsType::TYPE
                        => '{general_legend},title,type;{config_legend},parentField,customName;{publish_legend},published;',
         \HeimrichHannot\FilterBundle\Filter\Type\PublishedType::TYPE
@@ -163,9 +164,9 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
         \HeimrichHannot\FilterBundle\Filter\Type\SqlType::TYPE
                        => '{general_legend},title,type;{config_legend},whereSql;{publish_legend},published',
         \HeimrichHannot\FilterBundle\Filter\Type\YearType::TYPE
-                       => '{general_legend},title,type,isInitial;{config_legend},field,customOptions,sortOptionValues,customName,customOperator,addDefaultValue,expanded,submitOnChange,minDate,maxDate,dynamicOptions,addOptionCount;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup{expert_legend},cssClass;{publish_legend},published;',
+                       => '{general_legend},title,type,isInitial;{config_legend},field,customOptions,adjustOptionLabels,reviseOptions,sortOptionValues,customName,customOperator,addDefaultValue,expanded,submitOnChange,minDate,maxDate,dynamicOptions,addOptionCount;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup{expert_legend},cssClass;{publish_legend},published;',
         \HeimrichHannot\FilterBundle\Filter\Type\DateChoiceType::TYPE
-                       => '{general_legend},title,type,isInitial;{config_legend},field,customOptions,sortOptionValues,customName,customOperator,addDefaultValue,expanded,submitOnChange,minDate,maxDate,dynamicOptions,dateFormat;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup{expert_legend},cssClass;{publish_legend},published;',
+                       => '{general_legend},title,type,isInitial;{config_legend},field,customOptions,adjustOptionLabels,reviseOptions,sortOptionValues,customName,customOperator,addDefaultValue,expanded,submitOnChange,minDate,maxDate,dynamicOptions,dateFormat;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup{expert_legend},cssClass;{publish_legend},published;',
         \HeimrichHannot\FilterBundle\Filter\Type\AutoItemType::TYPE
                        => '{general_legend},title,type;{config_legend},field,customOperator;{publish_legend},published',
         \HeimrichHannot\FilterBundle\Filter\Type\SortType::TYPE
@@ -173,6 +174,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
     ],
     'subpalettes' => [
         'customOptions'       => 'options',
+        'adjustOptionLabels'  => 'optionLabelPattern',
         'addPlaceholder'      => 'placeholder',
         'customName'          => 'name',
         'customOperator'      => 'operator',
@@ -301,6 +303,30 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'inputType' => 'checkbox',
             'eval'      => ['submitOnChange' => true, 'tl_class' => 'w50'],
             'sql'       => "char(1) NOT NULL default ''",
+        ],
+        'reviseOptions'          => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['reviseOptions'],
+            'exclude'   => true,
+            'inputType' => 'checkbox',
+            'eval'      => ['submitOnChange' => true, 'tl_class' => 'w50'],
+            'sql'       => "char(1) NOT NULL default ''",
+        ],
+        'adjustOptionLabels'          => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['adjustOptionLabels'],
+            'exclude'   => true,
+            'inputType' => 'checkbox',
+            'eval'      => ['submitOnChange' => true, 'tl_class' => 'w50 clr'],
+            'sql'       => "char(1) NOT NULL default ''",
+        ],
+        'optionLabelPattern'          => [
+            'label'            => &$GLOBALS['TL_LANG']['tl_filter_config_element']['optionLabelPattern'],
+            'exclude'          => true,
+            'inputType'        => 'select',
+            'options_callback' => function (\DataContainer $dc) {
+                return \Contao\System::getContainer()->get('huh.utils.choice.message')->getCachedChoices('huh.filter.option_label');
+            },
+            'eval'             => ['chosen' => true, 'mandatory' => true, 'maxlength' => 128, 'includeBlankOption' => true, 'tl_class' => 'w50'],
+            'sql'              => "varchar(128) NOT NULL default ''",
         ],
         'options'                => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['options'],
