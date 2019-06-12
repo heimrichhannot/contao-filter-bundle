@@ -13,9 +13,7 @@ use Contao\StringUtil;
 use Contao\System;
 use Contao\Widget;
 use Doctrine\DBAL\FetchMode;
-use HeimrichHannot\FilterBundle\Manager\FilterManager;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
-use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 use HeimrichHannot\UtilsBundle\Choice\AbstractChoice;
 use Symfony\Component\Translation\Translator;
 
@@ -53,7 +51,7 @@ class FieldOptionsChoice extends AbstractChoice
         }
 
         $element = $context['element'];
-        $filter  = $context['filter'];
+        $filter = $context['filter'];
 
         $options = [];
 
@@ -70,7 +68,7 @@ class FieldOptionsChoice extends AbstractChoice
             return $choices;
         }
 
-        if (true === (bool)$element->customOptions) {
+        if (true === (bool) $element->customOptions) {
             $options = $this->getCustomOptions($element, $filter);
         } elseif (isset($GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element->field])) {
             $options = $this->getDcaOptions($element, $filter,
@@ -105,7 +103,7 @@ class FieldOptionsChoice extends AbstractChoice
      * Get custom options.
      *
      * @param FilterConfigElementModel $element
-     * @param array $filter
+     * @param array                    $filter
      *
      * @return array
      */
@@ -124,15 +122,15 @@ class FieldOptionsChoice extends AbstractChoice
      * Get contao dca widget options.
      *
      * @param FilterConfigElementModel $element
-     * @param array $filter
-     * @param array $dca
+     * @param array                    $filter
+     * @param array                    $dca
      *
      * @return array
      */
     protected function getDcaOptions(FilterConfigElementModel $element, array $filter, array $dca)
     {
         $options = [];
-        $dca     = $GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element->field];
+        $dca = $GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element->field];
 
         if (isset($dca['eval']['isCategoryField']) && $dca['eval']['isCategoryField']) {
             if (isset($dca['options_callback'])) {
@@ -171,8 +169,8 @@ class FieldOptionsChoice extends AbstractChoice
      * Get default contao widget options.
      *
      * @param FilterConfigElementModel $element
-     * @param array $filter
-     * @param array $dca
+     * @param array                    $filter
+     * @param array                    $dca
      *
      * @return array
      */
@@ -204,16 +202,16 @@ class FieldOptionsChoice extends AbstractChoice
         }
 
         // cleanup/revise options (remove options that do not occur result list)
-        if (true === (bool)$element->reviseOptions && !empty($options) && isset($dca['foreignKey']) && !isset($dca['options']) && !isset($dca['options_callback'])) {
+        if (true === (bool) $element->reviseOptions && !empty($options) && isset($dca['foreignKey']) && !isset($dca['options']) && !isset($dca['options_callback'])) {
             if (null !== ($filterQueryBuilder = System::getContainer()->get('huh.filter.manager')->getQueryBuilder($filter['id'], [$element->id]))) {
-                $filterQueryBuilder->select([$filter['dataContainer'] . '.' . $element->field]);
-                $filterQueryBuilder->groupBy($filter['dataContainer'] . '.' . $element->field);
+                $filterQueryBuilder->select([$filter['dataContainer'].'.'.$element->field]);
+                $filterQueryBuilder->groupBy($filter['dataContainer'].'.'.$element->field);
 
                 $ids = $filterQueryBuilder->execute()->fetchAll(FetchMode::COLUMN, 0);
 
                 if (!empty($ids)) {
                     foreach ($options as $key => $option) {
-                        if (!in_array($option['value'], $ids)) {
+                        if (!\in_array($option['value'], $ids)) {
                             unset($options[$key]);
                         }
                     }
@@ -221,10 +219,10 @@ class FieldOptionsChoice extends AbstractChoice
             }
         }
 
-        if (!empty($options) && true === (bool)$element->adjustOptionLabels && !empty($element->optionLabelPattern)) {
+        if (!empty($options) && true === (bool) $element->adjustOptionLabels && !empty($element->optionLabelPattern)) {
             if (null !== ($filterQueryBuilder = System::getContainer()->get('huh.filter.manager')->getQueryBuilder($filter['id'], [$element->id]))) {
-                $filterQueryBuilder->select([$filter['dataContainer'] . '.'. $element->field, $filter['dataContainer'] . '.*', 'COUNT(' . $filter['dataContainer'] . '.' . $element->field . ') as count']);
-                $filterQueryBuilder->groupBy($filter['dataContainer'] . '.' . $element->field);
+                $filterQueryBuilder->select([$filter['dataContainer'].'.'.$element->field, $filter['dataContainer'].'.*', 'COUNT('.$filter['dataContainer'].'.'.$element->field.') as count']);
+                $filterQueryBuilder->groupBy($filter['dataContainer'].'.'.$element->field);
 
                 $rows = $filterQueryBuilder->execute()->fetchAll(\PDO::FETCH_GROUP | \PDO::FETCH_UNIQUE);
 
@@ -233,12 +231,12 @@ class FieldOptionsChoice extends AbstractChoice
                         continue;
                     }
 
-                    $params          = $rows[$option['value']];
+                    $params = $rows[$option['value']];
                     $params['label'] = $option['label'];
 
                     foreach ($params as $key => $value) {
                         unset($params[$key]);
-                        $params['%' . $key . '%'] = $value;
+                        $params['%'.$key.'%'] = $value;
                     }
 
                     $option['label'] = System::getContainer()->get('translator')->trans($element->optionLabelPattern, $params);
@@ -246,17 +244,15 @@ class FieldOptionsChoice extends AbstractChoice
             }
         }
 
-
         return $options;
     }
-
 
     /**
      * Get tag widget options.
      *
      * @param FilterConfigElementModel $element
-     * @param array $filter
-     * @param array $dca
+     * @param array                    $filter
+     * @param array                    $dca
      *
      * @return array
      */
@@ -293,8 +289,8 @@ class FieldOptionsChoice extends AbstractChoice
      * Get category widget options.
      *
      * @param FilterConfigElementModel $element
-     * @param array $filter
-     * @param array $dca
+     * @param array                    $filter
+     * @param array                    $dca
      *
      * @return array
      */
@@ -319,7 +315,7 @@ class FieldOptionsChoice extends AbstractChoice
     }
 
     /**
-     * @param array $choices
+     * @param array                    $choices
      * @param FilterConfigElementModel $element
      *
      * @return string

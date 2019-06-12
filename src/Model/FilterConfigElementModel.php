@@ -16,46 +16,46 @@ use HeimrichHannot\FilterBundle\Filter\AbstractType;
 /**
  * Reads and writes filter.
  *
- * @property int $id
- * @property int $pid
- * @property int $sorting
- * @property int $tstamp
- * @property int $dateAdded
+ * @property int    $id
+ * @property int    $pid
+ * @property int    $sorting
+ * @property int    $tstamp
+ * @property int    $dateAdded
  * @property string $type
  * @property string $title
  * @property string $field
- * @property array $fields
- * @property bool $customOptions
- * @property bool $reviseOptions
- * @property bool $adjustOptionLabels
- * @property bool $optionLabelPattern
- * @property array $options
- * @property bool $customName
+ * @property array  $fields
+ * @property bool   $customOptions
+ * @property bool   $reviseOptions
+ * @property bool   $adjustOptionLabels
+ * @property bool   $optionLabelPattern
+ * @property array  $options
+ * @property bool   $customName
  * @property string $name
- * @property bool $addPlaceholder
+ * @property bool   $addPlaceholder
  * @property string $placeholder
- * @property bool $customLabel
+ * @property bool   $customLabel
  * @property string $label
- * @property bool $expanded
- * @property bool $multiple
- * @property bool $grouping
- * @property int $scale
- * @property int $roundingMode
- * @property int $currency
- * @property int $divisor
- * @property bool $alwaysEmpty
+ * @property bool   $expanded
+ * @property bool   $multiple
+ * @property bool   $grouping
+ * @property int    $scale
+ * @property int    $roundingMode
+ * @property int    $currency
+ * @property int    $divisor
+ * @property bool   $alwaysEmpty
  * @property string $percentType
  * @property string $defaultProtocol
  * @property string $min
  * @property string $max
  * @property string $step
- * @property bool $customCountries
- * @property array $countries
- * @property bool $customLanguages
- * @property array $languages
- * @property bool $customLocales
- * @property array $locales
- * @property bool $customValue
+ * @property bool   $customCountries
+ * @property array  $countries
+ * @property bool   $customLanguages
+ * @property array  $languages
+ * @property bool   $customLocales
+ * @property array  $locales
+ * @property bool   $customValue
  * @property string $value
  * @property string $minTime
  * @property string $maxTime
@@ -66,41 +66,41 @@ use HeimrichHannot\FilterBundle\Filter\AbstractType;
  * @property string $minDateTime
  * @property string $maxDateTime
  * @property string $dateTimeFormat
- * @property bool $html5
+ * @property bool   $html5
  * @property string $timeWidget
  * @property string $dateWidget
- * @property int $startElement
- * @property int $stopElement
- * @property bool $hideLabel
- * @property bool $inputGroup
+ * @property int    $startElement
+ * @property int    $stopElement
+ * @property bool   $hideLabel
+ * @property bool   $inputGroup
  * @property string $inputGroupAppend
  * @property string $inputGroupPrepend
  * @property string $operator
- * @property bool $customOperator
- * @property bool $addDefaultValue
- * @property array $defaultValueArray
+ * @property bool   $customOperator
+ * @property bool   $addDefaultValue
+ * @property array  $defaultValueArray
  * @property string $defaultValue
  * @property string $defaultValueType
  * @property string $cssClass
- * @property bool $isInitial
- * @property array $initialValueArray
+ * @property bool   $isInitial
+ * @property array  $initialValueArray
  * @property string $initialValue
  * @property string $initialValueType
  * @property string $startField
  * @property string $stopField
- * @property bool $addStartAndStop
- * @property bool $ignoreFePreview
- * @property bool $invertField
+ * @property bool   $addStartAndStop
+ * @property bool   $ignoreFePreview
+ * @property bool   $invertField
  * @property string $whereSql
- * @property array $sortOptions
- * @property bool $submitOnChange
- * @property bool $alwaysShow
- * @property bool $addOptionCount
+ * @property array  $sortOptions
+ * @property bool   $submitOnChange
+ * @property bool   $alwaysShow
+ * @property bool   $addOptionCount
  * @property string $optionCountLabel
- * @property bool $published
+ * @property bool   $published
  * @property string $start
  * @property string $stop
- * @property bool $useRangeSlider
+ * @property bool   $useRangeSlider
  *
  * @method FilterConfigElementModel|null                                                     findById($id, array $opt = [])
  * @method FilterConfigElementModel|null                                                     findByPk($id, array $opt = [])
@@ -144,20 +144,20 @@ class FilterConfigElementModel extends Model implements \JsonSerializable
     /**
      * Find published filte elements items by their parent ID.
      *
-     * @param int $intId The filter ID
-     * @param int $intLimit An optional limit
+     * @param int   $intId      The filter ID
+     * @param int   $intLimit   An optional limit
      * @param array $arrOptions An optional options array
      *
      * @return \Contao\Model\Collection|FilterConfigElementModel[]|FilterConfigElementModel|null A collection of models or null if there are no filter elements
      */
     public function findPublishedByPid($intId, $intLimit = 0, array $arrOptions = [])
     {
-        $t          = static::$strTable;
+        $t = static::$strTable;
         $arrColumns = ["$t.pid=?"];
 
         if (isset($arrOptions['ignoreFePreview']) || !\defined('BE_USER_LOGGED_IN') || !BE_USER_LOGGED_IN) {
-            $time         = \Date::floorToMinute();
-            $arrColumns[] = "($t.start='' OR $t.start<='$time') AND ($t.stop='' OR $t.stop>'" . ($time + 60) . "') AND $t.published='1'";
+            $time = \Date::floorToMinute();
+            $arrColumns[] = "($t.start='' OR $t.start<='$time') AND ($t.stop='' OR $t.stop>'".($time + 60)."') AND $t.published='1'";
         }
 
         if (!isset($arrOptions['order'])) {
@@ -181,21 +181,21 @@ class FilterConfigElementModel extends Model implements \JsonSerializable
     /**
      * Find published filter elements items by their parent ID and optional types.
      *
-     * @param int $intId The filter ID
-     * @param array $types The list of element types
-     * @param int $intLimit An optional limit
+     * @param int   $intId      The filter ID
+     * @param array $types      The list of element types
+     * @param int   $intLimit   An optional limit
      * @param array $arrOptions An optional options array
      *
      * @return \Contao\Model\Collection|FilterConfigElementModel[]|FilterConfigElementModel|null A collection of models or null if there are no filter elements
      */
     public function findPublishedByPidAndTypes($intId, array $types = [], $intLimit = 0, array $arrOptions = [])
     {
-        $t          = static::$strTable;
+        $t = static::$strTable;
         $arrColumns = ["$t.pid=?"];
 
         if (isset($arrOptions['ignoreFePreview']) || !\defined('BE_USER_LOGGED_IN') || !BE_USER_LOGGED_IN) {
-            $time         = \Date::floorToMinute();
-            $arrColumns[] = "($t.start='' OR $t.start<='$time') AND ($t.stop='' OR $t.stop>'" . ($time + 60) . "') AND $t.published='1'";
+            $time = \Date::floorToMinute();
+            $arrColumns[] = "($t.start='' OR $t.start<='$time') AND ($t.stop='' OR $t.stop>'".($time + 60)."') AND $t.published='1'";
         }
 
         if (!isset($arrOptions['order'])) {
@@ -247,7 +247,7 @@ class FilterConfigElementModel extends Model implements \JsonSerializable
             return null;
         }
 
-        $type  = $types[$this->type];
+        $type = $types[$this->type];
         $class = $type['class'];
 
         /** @var AbstractType $type */

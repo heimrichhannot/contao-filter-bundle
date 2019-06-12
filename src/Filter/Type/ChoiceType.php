@@ -91,7 +91,7 @@ class ChoiceType extends AbstractType
         $options['multiple'] = (bool) $element->multiple;
 
         if ($element->submitOnChange) {
-            if($this->config->getFilter()['asyncFormSubmit']) {
+            if ($this->config->getFilter()['asyncFormSubmit']) {
                 $options['attr']['data-submit-on-change'] = 1;
             } else {
                 if ($options['expanded']) {
@@ -111,8 +111,7 @@ class ChoiceType extends AbstractType
             }
         }
 
-
-        if($triggerEvent){
+        if ($triggerEvent) {
             $event = System::getContainer()->get('event_dispatcher')->dispatch(AdjustFilterOptionsEvent::NAME, new AdjustFilterOptionsEvent(
                 $name, $options, $element, $builder, $this->config
             ));

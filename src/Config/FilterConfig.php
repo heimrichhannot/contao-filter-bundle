@@ -31,13 +31,16 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
 class FilterConfig implements \JsonSerializable
 {
     const FILTER_TYPE_DEFAULT = 'filter';
-    const FILTER_TYPE_SORT    = 'sort';
+    const FILTER_TYPE_SORT = 'sort';
 
-    const FILTER_TYPES
-        = [
-            self::FILTER_TYPE_DEFAULT,
-            self::FILTER_TYPE_SORT,
-        ];
+    const FILTER_TYPES = [
+        self::FILTER_TYPE_DEFAULT,
+        self::FILTER_TYPE_SORT,
+    ];
+
+    const QUERY_BUILDER_MODE_INITIAL_ONLY = 'initial_only';
+    const QUERY_BUILDER_MODE_SKIP_INITIAL = 'skip_initial';
+    const QUERY_BUILDER_MODE_DEFAULT = 'default';
 
     /**
      * @var ContaoFrameworkInterface
@@ -87,7 +90,7 @@ class FilterConfig implements \JsonSerializable
      * Constructor.
      *
      * @param ContaoFrameworkInterface $framework
-     * @param FilterSession $session
+     * @param FilterSession            $session
      */
     public function __construct(
         ContainerInterface $container,
@@ -95,24 +98,24 @@ class FilterConfig implements \JsonSerializable
         FilterSession $session,
         Connection $connection
     ) {
-        $this->framework    = $framework;
-        $this->session      = $session;
-        $this->container    = $container;
+        $this->framework = $framework;
+        $this->session = $session;
+        $this->container = $container;
         $this->queryBuilder = new FilterQueryBuilder($this->container, $this->framework, $connection);
     }
 
     /**
      * Init the filter based on its model.
      *
-     * @param string $sessionKey
-     * @param array $filter
+     * @param string                                                   $sessionKey
+     * @param array                                                    $filter
      * @param \Contao\Model\Collection|FilterConfigElementModel[]|null $elements
      */
     public function init(string $sessionKey, array $filter, $elements = null)
     {
-        $this->filter     = $filter;
+        $this->filter = $filter;
         $this->sessionKey = $sessionKey;
-        $this->elements   = $elements;
+        $this->elements = $elements;
     }
 
     /**
@@ -128,7 +131,7 @@ class FilterConfig implements \JsonSerializable
 
         $factory = Forms::createFormFactoryBuilder()->addTypeExtensions([
             new FormTypeExtension(),
-            new FormButtonExtension()
+            new FormButtonExtension(),
         ])->getFormFactory();
 
         $options = ['filter' => $this];
@@ -149,12 +152,12 @@ class FilterConfig implements \JsonSerializable
 
         if ($this->getFilter()['asyncFormSubmit']) {
             $options['attr']['data-async'] = 1;
-            $options['attr']['data-list']  = '#huh-list-' . $this->getFilter()['ajaxList'];
+            $options['attr']['data-list'] = '#huh-list-'.$this->getFilter()['ajaxList'];
             $this->container->get('huh.filter.util.filter_ajax')->updateData($this);
             $data = $this->getData();
         }
 
-        if (isset($this->filter['renderEmpty']) && true === (bool)$this->filter['renderEmpty']) {
+        if (isset($this->filter['renderEmpty']) && true === (bool) $this->filter['renderEmpty']) {
             $data = [];
         }
 
@@ -164,10 +167,11 @@ class FilterConfig implements \JsonSerializable
     }
 
     /**
-     * Init query builder
+     * Init query builder.
+     *
      * @param array $skipElements Array with tl_filter_config_element ids that should be skipped on initQueryBuilder
      */
-    public function initQueryBuilder(array $skipElements = [])
+    public function initQueryBuilder(array $skipElements = [], $mode = self::QUERY_BUILDER_MODE_DEFAULT)
     {
         $this->queryBuilder = new FilterQueryBuilder($this->container, $this->framework,
             $this->queryBuilder->getConnection());
@@ -184,13 +188,15 @@ class FilterConfig implements \JsonSerializable
         }
 
         foreach ($this->getElements() as $element) {
-            if (!isset($types[$element->type]) || in_array($element->id, $skipElements)) {
+            if (!isset($types[$element->type]) || \in_array($element->id, $skipElements) ||
+                $mode === static::QUERY_BUILDER_MODE_INITIAL_ONLY && !$element->isInitial ||
+                $mode === static::QUERY_BUILDER_MODE_SKIP_INITIAL && $element->isInitial) {
                 continue;
             }
 
             $config = $types[$element->type];
-            $class  = $config['class'];
-            $skip   = $this->queryBuilder->getSkip();
+            $class = $config['class'];
+            $skip = $this->queryBuilder->getSkip();
 
             if (!class_exists($class) || isset($skip[$element->id])) {
                 continue;
@@ -231,7 +237,6 @@ class FilterConfig implements \JsonSerializable
             $form = $this->getBuilder()->getForm();
         }
 
-
         $form->handleRequest($request);
 
         // redirect back to tl_filter_config.action or given referrer
@@ -243,12 +248,12 @@ class FilterConfig implements \JsonSerializable
             }
 
             // form id must match
-            if ((int)$form->get(FilterType::FILTER_ID_NAME)->getData() !== $this->getId()) {
+            if ((int) $form->get(FilterType::FILTER_ID_NAME)->getData() !== $this->getId()) {
                 return null;
             }
 
             $data = $form->getData();
-            $url  = $this->container->get('huh.utils.url')->removeQueryString([$form->getName()], $url ?: null);
+            $url = $this->container->get('huh.utils.url')->removeQueryString([$form->getName()], $url ?: null);
 
             // do not save filter id in session
             $this->setData($this->filter['mergeData'] ? array_merge($this->getData(), $data) : $data);
@@ -287,8 +292,8 @@ class FilterConfig implements \JsonSerializable
     /**
      * Get a specific element by its value.
      *
-     * @param mixed $value The to search within $key
-     * @param string $key The array key
+     * @param mixed  $value The to search within $key
+     * @param string $key   The array key
      *
      * @return FilterConfigElementModel|null
      */
@@ -303,7 +308,7 @@ class FilterConfig implements \JsonSerializable
         }
 
         foreach ($this->getElements() as $element) {
-            if (null === $element->{$key} || (string)$element->{$key} !== (string)$value) {
+            if (null === $element->{$key} || (string) $element->{$key} !== (string) $value) {
                 continue;
             }
 
@@ -462,11 +467,11 @@ class FilterConfig implements \JsonSerializable
             $parentFilter = $this->framework->getAdapter(FilterConfigModel::class)->findById($filter['parentFilter'])->row();
 
             if (!empty($parentFilter)) {
-                $filter['action']        = $parentFilter['action'];
-                $filter['name']          = $parentFilter['name'];
+                $filter['action'] = $parentFilter['action'];
+                $filter['name'] = $parentFilter['name'];
                 $filter['dataContainer'] = $parentFilter['dataContainer'];
-                $filter['method']        = $parentFilter['method'];
-                $filter['mergeData']     = $parentFilter['mergeData'];
+                $filter['method'] = $parentFilter['method'];
+                $filter['mergeData'] = $parentFilter['mergeData'];
             }
         }
 
@@ -484,7 +489,7 @@ class FilterConfig implements \JsonSerializable
             $insertTagAdapter = $this->framework->getAdapter(InsertTags::class);
         }
 
-        return '/' . urldecode($insertTagAdapter->replace($filter['action']));
+        return '/'.urldecode($insertTagAdapter->replace($filter['action']));
     }
 
     /**
@@ -576,7 +581,7 @@ class FilterConfig implements \JsonSerializable
          */
         foreach ($forms as $form) {
             $propertyPath = $form->getPropertyPath();
-            $config       = $form->getConfig();
+            $config = $form->getConfig();
 
             // Write-back is disabled if the form is not synchronized (transformation failed),
             // if the form was not submitted and if the form is disabled (modification not allowed)

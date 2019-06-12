@@ -1,8 +1,12 @@
 <?php
 
+/*
+ * Copyright (c) 2019 Heimrich & Hannot GmbH
+ *
+ * @license LGPL-3.0-or-later
+ */
 
 namespace HeimrichHannot\FilterBundle\Event;
-
 
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
 use Symfony\Component\EventDispatcher\Event;
@@ -25,7 +29,7 @@ class ModifyJsonResponseEvent extends Event
     public function __construct(JsonResponse $response, FilterConfig $filter)
     {
         $this->response = $response;
-        $this->filter   = $filter;
+        $this->filter = $filter;
     }
 
     /**
