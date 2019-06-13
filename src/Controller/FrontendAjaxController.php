@@ -73,7 +73,7 @@ class FrontendAjaxController extends Controller
             ]
         );
 
-        $response->setData(['filter' => $filter]);
+        $response->setData(['filter' => $filter, 'filterName' => $request->get('filterName')]);
 
         $event = $this->container->get('event_dispatcher')->dispatch(ModifyJsonResponseEvent::NAME,
             new ModifyJsonResponseEvent($response, $filterConfig));
