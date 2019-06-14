@@ -1,0 +1,17 @@
+{
+  "name": "contao-filter-bundle",
+  "version": "1.0.0",
+  "description": "A generic contao filter.",
+  "author": "Heimrich & Hannot GmbH <digitales@heimrich-hannot.de>",
+  "license": "LGPL-3.0-or-later",
+  "dependencies": {
+    "@hundh/contao-filter-bundle": "^1.0"
+  },
+  "devDependencies": {
+    "@symfony/webpack-encore": "^0.24"
+  },
+  "scripts": {
+    "build-dev": "yarn encore dev",
+    "build-production": "yarn encore production"
+  }
+}
