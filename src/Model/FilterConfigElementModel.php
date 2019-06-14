@@ -24,13 +24,13 @@ use HeimrichHannot\FilterBundle\Filter\AbstractType;
  * @property string $type
  * @property string $title
  * @property string $field
- * @property array $fields
- * @property bool $customOptions
- * @property bool $reviseOptions
- * @property bool $adjustOptionLabels
- * @property bool $optionLabelPattern
- * @property array $options
- * @property bool $customName
+ * @property array  $fields
+ * @property bool   $customOptions
+ * @property bool   $reviseOptions
+ * @property bool   $adjustOptionLabels
+ * @property bool   $optionLabelPattern
+ * @property array  $options
+ * @property bool   $customName
  * @property string $name
  * @property bool   $addPlaceholder
  * @property string $placeholder
@@ -100,6 +100,7 @@ use HeimrichHannot\FilterBundle\Filter\AbstractType;
  * @property bool   $published
  * @property string $start
  * @property string $stop
+ * @property bool   $useRangeSlider
  *
  * @method FilterConfigElementModel|null                                                     findById($id, array $opt = [])
  * @method FilterConfigElementModel|null                                                     findByPk($id, array $opt = [])

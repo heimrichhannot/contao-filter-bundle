@@ -144,6 +144,11 @@ services:
     arguments:
     - "@contao.framework"
 
+  huh.filter.util.filter_ajax:
+    class: HeimrichHannot\FilterBundle\Util\FilterAjaxUtil
+    public: true
+    autowire: true
+
   twig.truncate.service:
     class: Urodoz\Truncate\TruncateService
 

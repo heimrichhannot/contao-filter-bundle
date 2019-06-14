@@ -55,6 +55,13 @@ class Plugin implements BundlePluginInterface, ExtensionPluginInterface, Routing
             }
         }
 
+        $extensionConfigs = ContainerUtil::mergeConfigFile(
+            'huh_encore',
+            $extensionName,
+            $extensionConfigs,
+            __DIR__.'/../Resources/config/config_encore.yml'
+        );
+
         return ContainerUtil::mergeConfigFile(
             'huh_filter',
             $extensionName,

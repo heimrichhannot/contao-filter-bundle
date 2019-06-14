@@ -13,6 +13,7 @@ use HeimrichHannot\FilterBundle\Exception\MissingFilterException;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -28,8 +29,8 @@ class FrontendController extends Controller
      * @param Request $request Current request
      * @param int     $id      Filter id
      *
-     * @throws MissingFilterException
      * @throws HandleFormException
+     * @throws MissingFilterException
      *
      * @return RedirectResponse
      */
@@ -53,14 +54,15 @@ class FrontendController extends Controller
     /**
      * @Route("/_filter/submit/{id}", name="filter_frontend_submit")
      *
-     * @param int $id Filter id
+     * @param Request $request Current request
+     * @param int     $id      Filter id
      *
-     * @throws MissingFilterException
      * @throws HandleFormException
+     * @throws MissingFilterException
      *
-     * @return RedirectResponse
+     * @return Response
      */
-    public function submitAction(int $id): RedirectResponse
+    public function submitAction(Request $request, int $id): Response
     {
         $this->get('contao.framework')->initialize();
 

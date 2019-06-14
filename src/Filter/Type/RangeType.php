@@ -13,6 +13,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class RangeType extends TextType
 {
+    const TYPE = 'range';
+
     /**
      * {@inheritdoc}
      */
@@ -24,9 +26,9 @@ class RangeType extends TextType
     /**
      * {@inheritdoc}
      */
-    public function getOptions(FilterConfigElementModel $element, FormBuilderInterface $builder)
+    public function getOptions(FilterConfigElementModel $element, FormBuilderInterface $builder, bool $triggerEvent = true)
     {
-        $options = parent::getOptions($element, $builder);
+        $options = parent::getOptions($element, $builder, $triggerEvent);
 
         $options['attr']['min'] = $element->min ?: '0';
         $options['attr']['max'] = $element->max ?: '100';

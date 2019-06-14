@@ -1,0 +1,20 @@
+{
+  "name": "@hundh/contao-filter-bundle",
+  "version": "1.2.0",
+  "description": "This package contains the frontend assets of the composer bundle heimrichhannot/contao-filter-bundle.",
+  "main": "js/contao-filter-bundle.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/heimrichhannot/contao-filter-bundle.git",
+    "directory": "src/Resources/npm-package"
+  },
+  "author": "digitales@heimrich-hannot.de",
+  "license": "LGPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/heimrichhannot/contao-filter-bundle/issues"
+  },
+  "homepage": "https://github.com/heimrichhannot/contao-contao-filter-bundle-bundle#readme"
+}

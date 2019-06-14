@@ -9,6 +9,7 @@
 namespace HeimrichHannot\FilterBundle\Filter\Type;
 
 use Contao\System;
+use HeimrichHannot\FilterBundle\Event\AdjustFilterOptionsEvent;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
@@ -67,15 +68,15 @@ class ChoiceType extends AbstractType
         return System::getContainer()->get('huh.filter.choice.field_options')->getCachedChoices(['element' => $element, 'filter' => $this->config->getFilter()]);
     }
 
-    public function getOptions(FilterConfigElementModel $element, FormBuilderInterface $builder)
+    public function getOptions(FilterConfigElementModel $element, FormBuilderInterface $builder, bool $triggerEvent = true)
     {
         $data = $this->config->getData();
         $name = $this->getName($element);
 
-        $options = parent::getOptions($element, $builder);
+        $options = parent::getOptions($element, $builder, false);
         $options['choices'] = $this->getChoices($element);
         $options['choice_translation_domain'] = false; // disable translation
-        $options['choices'] = array_filter($options['choices']); // remove empty elements (placeholders)
+//        $options['choices'] = array_filter($options['choices'], 'strlen'); // remove empty elements (placeholders)
 
         if (isset($options['attr']['placeholder'])) {
             $options['attr']['data-placeholder'] = $options['attr']['placeholder'];
@@ -90,12 +91,16 @@ class ChoiceType extends AbstractType
         $options['multiple'] = (bool) $element->multiple;
 
         if ($element->submitOnChange) {
-            if ($options['expanded']) {
-                $options['choice_attr'] = function ($choiceValue, $key, $value) {
-                    return ['onchange' => 'this.form.submit()'];
-                };
+            if ($this->config->getFilter()['asyncFormSubmit']) {
+                $options['attr']['data-submit-on-change'] = 1;
             } else {
-                $options['attr']['onchange'] = 'this.form.submit()';
+                if ($options['expanded']) {
+                    $options['choice_attr'] = function ($choiceValue, $key, $value) {
+                        return ['onchange' => 'this.form.submit()'];
+                    };
+                } else {
+                    $options['attr']['onchange'] = 'this.form.submit()';
+                }
             }
         }
 
@@ -104,6 +109,14 @@ class ChoiceType extends AbstractType
             if (isset($options['multiple']) && true === (bool) $options['multiple'] && isset($options['data'])) {
                 $options['data'] = !\is_array($options['data']) ? [$options['data']] : $options['data'];
             }
+        }
+
+        if ($triggerEvent) {
+            $event = System::getContainer()->get('event_dispatcher')->dispatch(AdjustFilterOptionsEvent::NAME, new AdjustFilterOptionsEvent(
+                $name, $options, $element, $builder, $this->config
+            ));
+
+            return $event->getOptions();
         }
 
         return $options;

@@ -83,9 +83,9 @@ $lang['dynamicOptions']         = ['Dynamische Optionen', 'Aktivieren Sie diese 
 $lang['alternativeValueSource'] = ['Filterwert aus alternativer Quelle beziehen', 'Dieses Feld wird durch andere Bundles konfiguriert (bspw. heimrichhannot/contao-reader-bundle).'];
 $lang['addGroupChoiceField']    = ['Gruppen-Choice hinzufügen', 'Wählen Sie diese Option, wenn den Choices ein Feld hinzugefügt werden soll, welches mehrere Choices gruppiert. Im Standardfall fungiert dies als Select-All-Field.'];
 $lang['modifyGroupChoices']     = ['Gruppen-Choice-Optionen modifizieren', 'Wählen Sie diese Option, wenn Sie die Choices, die in diesem Feld gruppiert werden sollen einschränken wollen.'];
-$lang['groupChoices']           = ['Optionen' , ''];
-$lang['addOptionCount']         = ['Anzahl Einträge für Optionen anzeigen' , 'Die Anzahl der Elemente für jede Option mit ausgeben. Nur in Verbindung mit dynamischen Optionen.'];
-$lang['optionCountLabel']       = ['Ausgabe-Format für Optionen mit Element-Anzahl' , 'Wählen sie hier, in welchem Format die Optionen ausgegeben werden sollen.'];
+$lang['groupChoices']           = ['Optionen', ''];
+$lang['addOptionCount']         = ['Anzahl Einträge für Optionen anzeigen', 'Die Anzahl der Elemente für jede Option mit ausgeben. Nur in Verbindung mit dynamischen Optionen.'];
+$lang['optionCountLabel']       = ['Ausgabe-Format für Optionen mit Element-Anzahl', 'Wählen sie hier, in welchem Format die Optionen ausgegeben werden sollen.'];
 
 // sort
 $lang['sortOptions_class']     = ['Sortier-Klasse', 'Wählen Sie hier die Sortierklasse aus.'];

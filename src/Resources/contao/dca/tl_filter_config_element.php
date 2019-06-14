@@ -67,7 +67,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
                 'href'       => 'act=delete',
                 'icon'       => 'delete.gif',
                 'attributes' => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['MSC']['deleteConfirm']
-                                . '\'))return false;Backend.getScrollOffset()"',
+                    . '\'))return false;Backend.getScrollOffset()"',
             ],
             'toggle' => [
                 'label'           => &$GLOBALS['TL_LANG']['tl_filter_config_element']['toggle'],
@@ -272,7 +272,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'options_callback' => function (\Contao\DataContainer $dc) {
                 return \Contao\System::getContainer()->get('huh.filter.util.filter_config_element')->getFields($dc);
             },
-            'eval'             => ['chosen' => true, 'includeBlankOption' => true, 'tl_class' => 'w50'],
+            'eval'             => ['chosen' => true, 'includeBlankOption' => true, 'tl_class' => 'w50', 'submitOnChange' => true],
             'sql'              => "varchar(64) NOT NULL default ''",
         ],
         'fields'                 => [
@@ -445,11 +445,11 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'filter'           => true,
             'inputType'        => 'select',
             'options_callback' => function (\Contao\DataContainer $dc) {
-                
+
                 if (null === ($model = \Contao\System::getContainer()->get('huh.utils.model')->findModelInstanceByPk($dc->table, $dc->id))) {
                     return [];
                 }
-                
+
                 return \Contao\System::getContainer()->get('huh.filter.choice.element')->getCachedChoices([
                     'pid'   => $model->pid,
                     'types' => ['date', 'time', 'date_time'],
@@ -467,7 +467,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
                 if (null === ($model = \Contao\System::getContainer()->get('huh.utils.model')->findModelInstanceByPk($dc->table, $dc->id))) {
                     return [];
                 }
-                
+
                 return \Contao\System::getContainer()->get('huh.filter.choice.element')->getCachedChoices([
                     'pid'   => $model->pid,
                     'types' => ['date', 'time', 'date_time'],
@@ -628,15 +628,15 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'sql'       => "int(2) unsigned NOT NULL default '0'",
         ],
         'currency'               => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['currency'],
-            'exclude'   => true,
-            'inputType' => 'select',
-            'default'   => 'EUR',
+            'label'            => &$GLOBALS['TL_LANG']['tl_filter_config_element']['currency'],
+            'exclude'          => true,
+            'inputType'        => 'select',
+            'default'          => 'EUR',
             'options_callback' => function (\Contao\DataContainer $dc) {
                 return Symfony\Component\Intl\Intl::getCurrencyBundle()->getCurrencyNames();
             },
-            'eval'      => ['tl_class' => 'clr w50 wizard', 'chosen' => 'true', 'maxlength' => 3],
-            'sql'       => "varchar(3) NOT NULL default ''",
+            'eval'             => ['tl_class' => 'clr w50 wizard', 'chosen' => 'true', 'maxlength' => 3],
+            'sql'              => "varchar(3) NOT NULL default ''",
         ],
         'divisor'                => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['divisor'],
@@ -704,15 +704,15 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'sql'       => "char(1) NOT NULL default ''",
         ],
         'countries'              => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['countries'],
-            'exclude'   => true,
-            'inputType' => 'select',
-            'default'   => 'EUR',
+            'label'            => &$GLOBALS['TL_LANG']['tl_filter_config_element']['countries'],
+            'exclude'          => true,
+            'inputType'        => 'select',
+            'default'          => 'EUR',
             'options_callback' => function (\Contao\DataContainer $dc) {
                 return Symfony\Component\Intl\Intl::getRegionBundle()->getCountryNames();
             },
-            'eval'      => ['tl_class' => 'clr w50 wizard', 'chosen' => 'true', 'multiple' => true, 'mandatory' => true],
-            'sql'       => "blob NULL",
+            'eval'             => ['tl_class' => 'clr w50 wizard', 'chosen' => 'true', 'multiple' => true, 'mandatory' => true],
+            'sql'              => "blob NULL",
         ],
         'customLanguages'        => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['customLanguages'],
@@ -722,15 +722,15 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'sql'       => "char(1) NOT NULL default ''",
         ],
         'languages'              => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['languages'],
-            'exclude'   => true,
-            'inputType' => 'select',
-            'default'   => 'EUR',
+            'label'            => &$GLOBALS['TL_LANG']['tl_filter_config_element']['languages'],
+            'exclude'          => true,
+            'inputType'        => 'select',
+            'default'          => 'EUR',
             'options_callback' => function (\Contao\DataContainer $dc) {
                 return Symfony\Component\Intl\Intl::getLanguageBundle()->getLanguageNames();
             },
-            'eval'      => ['tl_class' => 'clr w50 wizard', 'chosen' => 'true', 'multiple' => true, 'mandatory' => true],
-            'sql'       => "blob NULL",
+            'eval'             => ['tl_class' => 'clr w50 wizard', 'chosen' => 'true', 'multiple' => true, 'mandatory' => true],
+            'sql'              => "blob NULL",
         ],
         'customLocales'          => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['customLocales'],
@@ -740,15 +740,15 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'sql'       => "char(1) NOT NULL default ''",
         ],
         'locales'                => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['locales'],
-            'exclude'   => true,
-            'inputType' => 'select',
-            'default'   => 'EUR',
+            'label'            => &$GLOBALS['TL_LANG']['tl_filter_config_element']['locales'],
+            'exclude'          => true,
+            'inputType'        => 'select',
+            'default'          => 'EUR',
             'options_callback' => function (\Contao\DataContainer $dc) {
                 return Symfony\Component\Intl\Intl::getLocaleBundle()->getLocaleNames();
             },
-            'eval'      => ['tl_class' => 'clr w50 wizard', 'chosen' => 'true', 'multiple' => true, 'mandatory' => true],
-            'sql'       => "blob NULL",
+            'eval'             => ['tl_class' => 'clr w50 wizard', 'chosen' => 'true', 'multiple' => true, 'mandatory' => true],
+            'sql'              => "blob NULL",
         ],
         'customValue'            => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['customValue'],
@@ -1055,21 +1055,21 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'sql'       => "char(1) NOT NULL default ''",
         ],
         'groupChoices'           => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['modifyGroupChoices'],
-            'exclude'   => true,
-            'inputType' => 'checkboxWizard',
+            'label'            => &$GLOBALS['TL_LANG']['tl_filter_config_element']['modifyGroupChoices'],
+            'exclude'          => true,
+            'inputType'        => 'checkboxWizard',
             'options_callback' => ['huh.filter.backend.filter_config_element', 'getOptions'],
-            'eval'      => ['tl_class' => 'w50', 'multiple' => true, 'mandatory' => true],
-            'sql'       => "blob NULL",
+            'eval'             => ['tl_class' => 'w50', 'multiple' => true, 'mandatory' => true],
+            'sql'              => "blob NULL",
         ],
-        'addOptionCount' => [
+        'addOptionCount'         => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['addOptionCount'],
             'exclude'   => true,
             'inputType' => 'checkbox',
             'eval'      => ['tl_class' => 'w50 clr', 'submitOnChange' => true],
             'sql'       => "char(1) NOT NULL default ''",
         ],
-        'optionCountLabel'                  => [
+        'optionCountLabel'       => [
             'label'            => &$GLOBALS['TL_LANG']['tl_filter_config_element']['optionCountLabel'],
             'exclude'          => true,
             'inputType'        => 'select',

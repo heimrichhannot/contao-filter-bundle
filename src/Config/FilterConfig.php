@@ -38,6 +38,10 @@ class FilterConfig implements \JsonSerializable
         self::FILTER_TYPE_SORT,
     ];
 
+    const QUERY_BUILDER_MODE_INITIAL_ONLY = 'initial_only';
+    const QUERY_BUILDER_MODE_SKIP_INITIAL = 'skip_initial';
+    const QUERY_BUILDER_MODE_DEFAULT = 'default';
+
     /**
      * @var ContaoFrameworkInterface
      */
@@ -88,8 +92,12 @@ class FilterConfig implements \JsonSerializable
      * @param ContaoFrameworkInterface $framework
      * @param FilterSession            $session
      */
-    public function __construct(ContainerInterface $container, ContaoFrameworkInterface $framework, FilterSession $session, Connection $connection)
-    {
+    public function __construct(
+        ContainerInterface $container,
+        ContaoFrameworkInterface $framework,
+        FilterSession $session,
+        Connection $connection
+    ) {
         $this->framework = $framework;
         $this->session = $session;
         $this->container = $container;
@@ -121,7 +129,10 @@ class FilterConfig implements \JsonSerializable
             return;
         }
 
-        $factory = Forms::createFormFactoryBuilder()->addTypeExtensions([new FormTypeExtension(), new FormButtonExtension()])->getFormFactory();
+        $factory = Forms::createFormFactoryBuilder()->addTypeExtensions([
+            new FormTypeExtension(),
+            new FormButtonExtension(),
+        ])->getFormFactory();
 
         $options = ['filter' => $this];
 
@@ -139,6 +150,13 @@ class FilterConfig implements \JsonSerializable
             $options['attr']['class'] = implode(' ', $cssClass);
         }
 
+        if ($this->getFilter()['asyncFormSubmit']) {
+            $options['attr']['data-async'] = 1;
+            $options['attr']['data-list'] = '#huh-list-'.$this->getFilter()['ajaxList'];
+            $this->container->get('huh.filter.util.filter_ajax')->updateData($this);
+            $data = $this->getData();
+        }
+
         if (isset($this->filter['renderEmpty']) && true === (bool) $this->filter['renderEmpty']) {
             $data = [];
         }
@@ -149,10 +167,11 @@ class FilterConfig implements \JsonSerializable
     }
 
     /**
-     * Init query builder
+     * Init query builder.
+     *
      * @param array $skipElements Array with tl_filter_config_element ids that should be skipped on initQueryBuilder
      */
-    public function initQueryBuilder(array $skipElements = [])
+    public function initQueryBuilder(array $skipElements = [], $mode = self::QUERY_BUILDER_MODE_DEFAULT)
     {
         $this->queryBuilder = new FilterQueryBuilder($this->container, $this->framework,
             $this->queryBuilder->getConnection());
@@ -169,7 +188,9 @@ class FilterConfig implements \JsonSerializable
         }
 
         foreach ($this->getElements() as $element) {
-            if (!isset($types[$element->type]) || in_array($element->id, $skipElements)) {
+            if (!isset($types[$element->type]) || \in_array($element->id, $skipElements) ||
+                $mode === static::QUERY_BUILDER_MODE_INITIAL_ONLY && !$element->isInitial ||
+                $mode === static::QUERY_BUILDER_MODE_SKIP_INITIAL && $element->isInitial) {
                 continue;
             }
 
@@ -238,10 +259,12 @@ class FilterConfig implements \JsonSerializable
             $this->setData($this->filter['mergeData'] ? array_merge($this->getData(), $data) : $data);
 
             // allow reset, support different form configuration with same form name
-            if (null !== $form->getClickedButton() && \in_array($form->getClickedButton()->getName(), $this->getResetNames(), true)) {
+            if (null !== $form->getClickedButton() && \in_array($form->getClickedButton()->getName(),
+                    $this->getResetNames(), true)) {
                 $this->resetData();
                 // redirect to referrer page without filter parameters
-                $url = $this->container->get('huh.utils.url')->removeQueryString([$form->getName()], $form->get(FilterType::FILTER_REFERRER_NAME)->getData() ?: null);
+                $url = $this->container->get('huh.utils.url')->removeQueryString([$form->getName()],
+                    $form->get(FilterType::FILTER_REFERRER_NAME)->getData() ?: null);
             }
 
             return new RedirectResponse($url, 303);
@@ -482,6 +505,10 @@ class FilterConfig implements \JsonSerializable
             return null;
         }
 
+        if ($filter['asyncFormSubmit']) {
+            return $router->generate('filter_frontend_ajax_submit', ['id' => $filter['id']]);
+        }
+
         return $router->generate('filter_frontend_submit', ['id' => $filter['id']]);
     }
 
@@ -518,7 +545,8 @@ class FilterConfig implements \JsonSerializable
 
         if ($request->query->has(FilterType::FILTER_RESET_URL_PARAMETER_NAME)) {
             $this->resetData();
-            Controller::redirect($this->container->get('huh.utils.url')->removeQueryString([FilterType::FILTER_RESET_URL_PARAMETER_NAME], $request->getUri()));
+            Controller::redirect($this->container->get('huh.utils.url')->removeQueryString([FilterType::FILTER_RESET_URL_PARAMETER_NAME],
+                $request->getUri()));
         }
     }
 
@@ -560,13 +588,15 @@ class FilterConfig implements \JsonSerializable
             if (null !== $propertyPath && $config->getMapped() && $form->isSynchronized() && !$form->isDisabled()) {
                 // If the field is of type DateTime and the data is the same skip the update to
                 // keep the original object hash
-                if ($form->getData() instanceof \DateTime && $form->getData() === $propertyAccessor->getValue($data, $propertyPath)) {
+                if ($form->getData() instanceof \DateTime && $form->getData() === $propertyAccessor->getValue($data,
+                        $propertyPath)) {
                     continue;
                 }
 
                 // If the data is identical to the value in $data, we are
                 // dealing with a reference
-                if (!\is_object($data) || !$config->getByReference() || $form->getData() !== $propertyAccessor->getValue($data, $propertyPath)) {
+                if (!\is_object($data) || !$config->getByReference() || $form->getData() !== $propertyAccessor->getValue($data,
+                        $propertyPath)) {
                     $propertyAccessor->setValue($data, $propertyPath, $form->getData());
                 }
             }
