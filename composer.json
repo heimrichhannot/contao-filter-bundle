@@ -66,6 +66,7 @@
     "preferred-install": "dist"
   },
   "extra": {
-    "contao-manager-plugin": "HeimrichHannot\\FilterBundle\\ContaoManager\\Plugin"
+    "contao-manager-plugin": "HeimrichHannot\\FilterBundle\\ContaoManager\\Plugin",
+    "foxy": true
   }
 }
