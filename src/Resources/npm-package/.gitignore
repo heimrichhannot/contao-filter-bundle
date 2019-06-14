@@ -1,0 +1,17 @@
+.build/
+.buildpath
+.idea/
+nbproject/
+.project
+.settings/
+
+# nodejs
+node_modules
+package-lock.json
+
+# yarn
+yarn-error.log
+yarn.lock
+
+# others
+debug.txt
