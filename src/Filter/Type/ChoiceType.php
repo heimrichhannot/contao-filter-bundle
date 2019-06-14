@@ -76,7 +76,7 @@ class ChoiceType extends AbstractType
         $options = parent::getOptions($element, $builder, false);
         $options['choices'] = $this->getChoices($element);
         $options['choice_translation_domain'] = false; // disable translation
-        $options['choices'] = array_filter($options['choices'], 'strlen'); // remove empty elements (placeholders)
+//        $options['choices'] = array_filter($options['choices'], 'strlen'); // remove empty elements (placeholders)
 
         if (isset($options['attr']['placeholder'])) {
             $options['attr']['data-placeholder'] = $options['attr']['placeholder'];

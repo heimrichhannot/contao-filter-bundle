@@ -10,7 +10,11 @@ class FilterBundle {
     document.addEventListener('filterAsyncSubmit', function(event) {
       event.preventDefault();
       FilterBundle.asyncSubmit(event.detail.form);
-    })
+    });
+
+    utilsBundle.event.addDynamicEventListener('click', '.mod_filter form [data-submit-on-change] input[type="radio"][value=""], .mod_filter form [data-submit-on-change] input[type="checkbox"][value=""]', function(element, event) {
+      FilterBundle.resetRadioAndCheckboxField(element);
+    });
 
     utilsBundle.event.addDynamicEventListener('change',
         '.mod_filter form[data-async] input[data-submit-on-change], .mod_filter form[data-async] [data-submit-on-change] input',
@@ -87,7 +91,9 @@ class FilterBundle {
   }
 
   static beforeSubmit(url, data, config) {
-    let form = config.form;
+    let form = config.form,
+        list = document.querySelector(form.getAttribute('data-list'));
+
     form.setAttribute('data-submit-success', 0);
     form.setAttribute('data-response', '');
     form.querySelectorAll('input:not(.disabled), button[type="submit"]').forEach((elem) => {
@@ -95,10 +101,12 @@ class FilterBundle {
     });
 
     form.classList.add('submitting');
+    list.classList.add('updating');
   }
 
   static afterSubmit(url, data, config) {
     let form = config.form;
+
     form.querySelectorAll('[disabled]').forEach((elem) => {
       elem.disabled = false;
     });
@@ -131,6 +139,18 @@ class FilterBundle {
       } catch (e) {
       }
     });
+  }
+
+  static resetRadioAndCheckboxField(element) {
+    let parent = element.closest('[data-choices]'),
+        form = element.closest('form'),
+        checked = parent.querySelectorAll('input:checked');
+
+    checked.forEach((elem) => {
+      elem.checked = false;
+    });
+
+    FilterBundle.asyncSubmit(form);
   }
 }
 
