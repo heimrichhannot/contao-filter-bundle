@@ -171,11 +171,32 @@ class FilterConfig implements \JsonSerializable
      *
      * @param array $skipElements Array with tl_filter_config_element ids that should be skipped on initQueryBuilder
      */
-    public function initQueryBuilder(array $skipElements = [], $mode = self::QUERY_BUILDER_MODE_DEFAULT)
+    public function initQueryBuilder(array $skipElements = [], $mode = self::QUERY_BUILDER_MODE_DEFAULT, bool $doNotChangeExistingQueryBuilder = false)
     {
-        $this->queryBuilder = new FilterQueryBuilder($this->container, $this->framework,
-            $this->queryBuilder->getConnection());
-        $this->queryBuilder->from($this->getFilter()['dataContainer']);
+        $queryBuilder = new FilterQueryBuilder($this->container, $this->framework, $this->queryBuilder->getConnection());
+
+        if ($doNotChangeExistingQueryBuilder) {
+            $this->doInitQueryBuilder(
+                $queryBuilder,
+                $skipElements,
+                $mode
+            );
+        } else {
+            $this->queryBuilder = $queryBuilder;
+
+            $this->doInitQueryBuilder(
+                $this->queryBuilder,
+                $skipElements,
+                $mode
+            );
+        }
+
+        return $queryBuilder;
+    }
+
+    public function doInitQueryBuilder(FilterQueryBuilder $queryBuilder, array $skipElements = [], $mode = self::QUERY_BUILDER_MODE_DEFAULT)
+    {
+        $queryBuilder->from($this->getFilter()['dataContainer']);
 
         if (null === $this->getElements()) {
             return;
@@ -196,7 +217,7 @@ class FilterConfig implements \JsonSerializable
 
             $config = $types[$element->type];
             $class = $config['class'];
-            $skip = $this->queryBuilder->getSkip();
+            $skip = $queryBuilder->getSkip();
 
             if (!class_exists($class) || isset($skip[$element->id])) {
                 continue;
@@ -209,7 +230,7 @@ class FilterConfig implements \JsonSerializable
                 continue;
             }
 
-            $type->buildQuery($this->queryBuilder, $element);
+            $type->buildQuery($queryBuilder, $element);
         }
     }
 

@@ -161,6 +161,8 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
         'time'         => '{general_legend},title,type,isInitial;{config_legend},field,name,customValue,timeWidget,timeFormat,minTime,html5,maxTime;{visualization_legend},customLabel,hideLabel,inputGroup,addPlaceholder;{expert_legend},cssClass;{publish_legend},published;',
         \HeimrichHannot\FilterBundle\Filter\Type\DateRangeType::TYPE
                        => '{general_legend},title,type,isInitial;{config_legend},startElement,stopElement,name;{visualization_legend},customLabel,hideLabel;{expert_legend},cssClass;{publish_legend},published;',
+        \HeimrichHannot\FilterBundle\Filter\Type\MultipleRangeType::TYPE
+                       => '{general_legend},title,type,isInitial;{config_legend},startElement,stopElement,name;{visualization_legend},customLabel,hideLabel;{expert_legend},cssClass;{publish_legend},published;',
         \HeimrichHannot\FilterBundle\Filter\Type\SqlType::TYPE
                        => '{general_legend},title,type;{config_legend},whereSql;{publish_legend},published',
         \HeimrichHannot\FilterBundle\Filter\Type\YearType::TYPE
@@ -445,15 +447,19 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'filter'           => true,
             'inputType'        => 'select',
             'options_callback' => function (\Contao\DataContainer $dc) {
-
                 if (null === ($model = \Contao\System::getContainer()->get('huh.utils.model')->findModelInstanceByPk($dc->table, $dc->id))) {
                     return [];
                 }
 
-                return \Contao\System::getContainer()->get('huh.filter.choice.element')->getCachedChoices([
-                    'pid'   => $model->pid,
-                    'types' => ['date', 'time', 'date_time'],
-                ]);
+                $context = [
+                    'pid'   => $model->pid
+                ];
+
+                if ($model->type === \HeimrichHannot\FilterBundle\Filter\Type\DateRangeType::TYPE) {
+                    $context['types'] = ['date', 'time', 'date_time'];
+                }
+
+                return \Contao\System::getContainer()->get('huh.filter.choice.element')->getCachedChoices($context);
             },
             'eval'             => ['chosen' => true, 'tl_class' => 'w50', 'includeBlankOption' => true, 'mandatory' => true],
             'sql'              => "int(10) unsigned NOT NULL default '0'",
@@ -468,10 +474,15 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
                     return [];
                 }
 
-                return \Contao\System::getContainer()->get('huh.filter.choice.element')->getCachedChoices([
-                    'pid'   => $model->pid,
-                    'types' => ['date', 'time', 'date_time'],
-                ]);
+                $context = [
+                    'pid'   => $model->pid
+                ];
+
+                if ($model->type === \HeimrichHannot\FilterBundle\Filter\Type\DateRangeType::TYPE) {
+                    $context['types'] = ['date', 'time', 'date_time'];
+                }
+
+                return \Contao\System::getContainer()->get('huh.filter.choice.element')->getCachedChoices($context);
             },
             'eval'             => ['chosen' => true, 'tl_class' => 'w50', 'includeBlankOption' => true, 'mandatory' => true],
             'sql'              => "int(10) unsigned NOT NULL default '0'",
@@ -675,7 +686,6 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
         'min'                    => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['min'],
             'exclude'   => true,
-            'default'   => '12:00',
             'inputType' => 'text',
             'eval'      => ['tl_class' => 'w50', 'maxlength' => 12, 'mandatory' => true],
             'sql'       => "varchar(12) NOT NULL default ''",
@@ -684,14 +694,12 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['max'],
             'exclude'   => true,
             'inputType' => 'text',
-            'default'   => '14:00',
             'eval'      => ['tl_class' => 'w50', 'maxlength' => 12, 'mandatory' => true],
             'sql'       => "varchar(12) NOT NULL default ''",
         ],
         'step'                   => [
             'label'     => &$GLOBALS['TL_LANG']['tl_filter_config_element']['step'],
             'exclude'   => true,
-            'default'   => '00:15',
             'inputType' => 'text',
             'eval'      => ['tl_class' => 'w50', 'maxlength' => 12, 'mandatory' => true],
             'sql'       => "varchar(12) NOT NULL default ''",

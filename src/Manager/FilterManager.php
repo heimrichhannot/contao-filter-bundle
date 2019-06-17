@@ -55,16 +55,16 @@ class FilterManager
      *
      * @return \HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder|null
      */
-    public function getQueryBuilder(int $id, array $skipElements = [])
+    public function getQueryBuilder(int $id, array $skipElements = [], bool $doNotChangeExistingQueryBuilder = false)
     {
         if (null === ($config = $this->findById($id))) {
             return null;
         }
 
         // always init query
-        $config->initQueryBuilder($skipElements);
+        $queryBuilder = $config->initQueryBuilder($skipElements, FilterConfig::QUERY_BUILDER_MODE_DEFAULT, $doNotChangeExistingQueryBuilder);
 
-        return $config->getQueryBuilder();
+        return $doNotChangeExistingQueryBuilder ? $queryBuilder : $config->getQueryBuilder();
     }
 
     /**
@@ -75,16 +75,19 @@ class FilterManager
      *
      * @return \HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder|null
      */
-    public function getInitialQueryBuilder(int $id, array $skipElements = [])
+    public function getInitialQueryBuilder(int $id, array $skipElements = [], bool $doNotChangeExistingQueryBuilder = false)
     {
         if (null === ($config = $this->findById($id))) {
             return null;
         }
 
         // always init query
-        $config->initQueryBuilder($skipElements, FilterConfig::QUERY_BUILDER_MODE_INITIAL_ONLY);
+        $queryBuilder = $config->initQueryBuilder($skipElements,
+            FilterConfig::QUERY_BUILDER_MODE_INITIAL_ONLY,
+            $doNotChangeExistingQueryBuilder
+        );
 
-        return $config->getQueryBuilder();
+        return $doNotChangeExistingQueryBuilder ? $queryBuilder : $config->getQueryBuilder();
     }
 
     /**

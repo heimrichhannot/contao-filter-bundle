@@ -13,6 +13,7 @@ huh:
       - {name: search, class: HeimrichHannot\FilterBundle\Filter\Type\SearchType, type: text}
       - {name: url, class: HeimrichHannot\FilterBundle\Filter\Type\UrlType, type: text}
       - {name: range, class: HeimrichHannot\FilterBundle\Filter\Type\RangeType, type: text}
+      - {name: multiple_range, class: HeimrichHannot\FilterBundle\Filter\Type\MultipleRangeType, type: text, wrapper: true}
       - {name: tel, class: HeimrichHannot\FilterBundle\Filter\Type\TelType, type: text}
       - {name: color, class: HeimrichHannot\FilterBundle\Filter\Type\ColorType, type: text}
       - {name: choice, class: HeimrichHannot\FilterBundle\Filter\Type\ChoiceType, type: choice}
