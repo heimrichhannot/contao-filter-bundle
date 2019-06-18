@@ -77,26 +77,23 @@ class MultipleRangeType extends AbstractType
         $stop = $stopValue ?? 9999999999999;
 
         // get min and max from options
-        $startOptions = System::getContainer()->get('huh.utils.dca')->getConfigByArrayOrCallbackOrFunction(
+
+        // get options from first linked field
+        $options = System::getContainer()->get('huh.utils.dca')->getConfigByArrayOrCallbackOrFunction(
             $GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$this->startElement->field],
             'options'
         );
 
-        $stopOptions = System::getContainer()->get('huh.utils.dca')->getConfigByArrayOrCallbackOrFunction(
-            $GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$this->stopElement->field],
-            'options'
-        );
+        if (!empty($options)) {
+            $min = min($options);
+            $max = max($options);
 
-        $startFieldMin = min($startOptions);
-        $startFieldMax = max($startOptions);
-        $stopFieldMin = min($stopOptions);
-        $stopFieldMax = max($stopOptions);
+            $start = $start < $min ? $min : $start;
+            $start = $start > $max ? $max : $start;
 
-        $start = $start < $startFieldMin ? $startFieldMin : $start;
-        $start = $start > $startFieldMax ? $startFieldMax : $start;
-
-        $stop = $stop < $stopFieldMin ? $stopFieldMin : $stop;
-        $stop = $stop > $stopFieldMax ? $stopFieldMax : $stop;
+            $stop = $stop < $min ? $min : $stop;
+            $stop = $stop > $max ? $max : $stop;
+        }
 
         if ($startField !== $stopField) {
             $or = $builder->expr()->orX();
@@ -131,6 +128,19 @@ class MultipleRangeType extends AbstractType
             $builder->setParameter(':start', $start);
             $builder->setParameter(':stop', $stop);
         }
+    }
+
+    public function getOptions(FilterConfigElementModel $element, FormBuilderInterface $builder, bool $triggerEvent = true)
+    {
+        $options = parent::getOptions($element, $builder, true);
+
+        if ($element->submitOnChange) {
+            if ($this->config->getFilter()['asyncFormSubmit']) {
+                $options['attr']['data-submit-on-change'] = 1;
+            }
+        }
+
+        return $options;
     }
 
     /**

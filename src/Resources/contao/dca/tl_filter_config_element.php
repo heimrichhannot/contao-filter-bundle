@@ -162,7 +162,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
         \HeimrichHannot\FilterBundle\Filter\Type\DateRangeType::TYPE
                        => '{general_legend},title,type,isInitial;{config_legend},startElement,stopElement,name;{visualization_legend},customLabel,hideLabel;{expert_legend},cssClass;{publish_legend},published;',
         \HeimrichHannot\FilterBundle\Filter\Type\MultipleRangeType::TYPE
-                       => '{general_legend},title,type,isInitial;{config_legend},startElement,stopElement,name;{visualization_legend},customLabel,hideLabel;{expert_legend},cssClass;{publish_legend},published;',
+                       => '{general_legend},title,type,isInitial;{config_legend},startElement,stopElement,name,submitOnChange;{visualization_legend},customLabel,hideLabel;{expert_legend},cssClass;{publish_legend},published;',
         \HeimrichHannot\FilterBundle\Filter\Type\SqlType::TYPE
                        => '{general_legend},title,type;{config_legend},whereSql;{publish_legend},published',
         \HeimrichHannot\FilterBundle\Filter\Type\YearType::TYPE
@@ -455,8 +455,16 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
                     'pid'   => $model->pid
                 ];
 
-                if ($model->type === \HeimrichHannot\FilterBundle\Filter\Type\DateRangeType::TYPE) {
-                    $context['types'] = ['date', 'time', 'date_time'];
+                switch ($model->type)
+                {
+                    case \HeimrichHannot\FilterBundle\Filter\Type\DateRangeType::TYPE:
+                        $context['types'] = ['date', 'time', 'date_time'];
+
+                        break;
+                    case \HeimrichHannot\FilterBundle\Filter\Type\MultipleRangeType::TYPE:
+                        $context['types'] = ['choice'];
+
+                        break;
                 }
 
                 return \Contao\System::getContainer()->get('huh.filter.choice.element')->getCachedChoices($context);
