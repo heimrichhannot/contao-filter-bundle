@@ -462,7 +462,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
 
                         break;
                     case \HeimrichHannot\FilterBundle\Filter\Type\MultipleRangeType::TYPE:
-                        $context['types'] = ['choice'];
+                        $context['types'] = ['text'];
 
                         break;
                 }
