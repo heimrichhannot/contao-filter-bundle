@@ -99,19 +99,19 @@ class MultipleRangeType extends AbstractType
             $or = $builder->expr()->orX();
 
             $andXA = $builder->expr()->andX();
-            $andXA->add($builder->expr()->gte(':start', $startField));
-            $andXA->add($builder->expr()->lte(':start', $stopField));
+            $andXA->add($builder->expr()->gte(':start_'.$element->id, $startField));
+            $andXA->add($builder->expr()->lte(':start_'.$element->id, $stopField));
 
             $andXB = $builder->expr()->andX();
-            $andXB->add($builder->expr()->gte(':stop', $startField));
-            $andXB->add($builder->expr()->lte(':stop', $stopField));
+            $andXB->add($builder->expr()->gte(':stop_'.$element->id, $startField));
+            $andXB->add($builder->expr()->lte(':stop_'.$element->id, $stopField));
 
             $andXC = $builder->expr()->andX();
-            $andXC->add($builder->expr()->lte(':start', $startField));
-            $andXC->add($builder->expr()->gte(':stop', $stopField));
+            $andXC->add($builder->expr()->lte(':start_'.$element->id, $startField));
+            $andXC->add($builder->expr()->gte(':stop_'.$element->id, $stopField));
 
-            $builder->setParameter(':start', $start);
-            $builder->setParameter(':stop', $stop);
+            $builder->setParameter(':start_'.$element->id, $start);
+            $builder->setParameter(':stop_'.$element->id, $stop);
 
             $or->add($andXA);
             $or->add($andXB);
@@ -120,13 +120,13 @@ class MultipleRangeType extends AbstractType
             $builder->andWhere($or);
         } else {
             $andXA = $builder->expr()->andX();
-            $andXA->add($builder->expr()->lte(':start', $startField));
-            $andXA->add($builder->expr()->gte(':stop', $stopField));
+            $andXA->add($builder->expr()->lte(':start_'.$element->id, $startField));
+            $andXA->add($builder->expr()->gte(':stop_'.$element->id, $stopField));
 
             $builder->andWhere($andXA);
 
-            $builder->setParameter(':start', $start);
-            $builder->setParameter(':stop', $stop);
+            $builder->setParameter(':start_'.$element->id, $start);
+            $builder->setParameter(':stop_'.$element->id, $stop);
         }
     }
 
