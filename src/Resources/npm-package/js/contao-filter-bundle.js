@@ -48,20 +48,8 @@ class FilterBundle {
       onSuccess: FilterBundle.onSuccess,
       beforeSubmit: FilterBundle.beforeSubmit,
       afterSubmit: FilterBundle.afterSubmit,
-      form: form,
-      headers: FilterBundle.getRequestHeaders(form.getAttribute('method')),
+      form: form
     };
-  }
-
-  static getRequestHeaders(method) {
-    if ('get' === method || 'GET' === method) {
-      return {'X-Requested-With': 'XMLHttpRequest'};
-    } else {
-      return {
-        'X-Requested-With': 'XMLHttpRequest',
-        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8\n',
-      };
-    }
   }
 
   static onSuccess(request) {
@@ -115,18 +103,11 @@ class FilterBundle {
   }
 
   static getData(form) {
-    let json = {},
-        data = form.querySelectorAll('input:checked, input[type="hidden"], input[type="text"]:not([value=""])');
+    let formData = new FormData(form);
 
-    data.forEach((elem) => {
-      if('' !== elem.value) {
-        json[elem.name] = elem.value;
-      }
-    });
+    formData.append('filterName', form.getAttribute('name'));
 
-    json.filterName = form.getAttribute('name');
-
-    return json;
+    return formData;
   }
 
   static replaceFilterForm(form, filter) {
