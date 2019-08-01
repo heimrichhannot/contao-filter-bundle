@@ -280,6 +280,8 @@ class FilterQueryBuilder extends QueryBuilder
             )
         );
 
+        $this->groupBy($filter['dataContainer'].'.id');
+
         return $this;
     }
 
