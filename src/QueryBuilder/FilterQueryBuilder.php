@@ -73,7 +73,7 @@ class FilterQueryBuilder extends QueryBuilder
 
         $dca = $GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element->field];
 
-        if ($dca['eval']['isCategoryField'] && !$element->isInitial) {
+        if ($dca['eval']['isCategoryField']) {
             $this->whereCategoryWidget($element, $name, $config, $dca, DatabaseUtil::OPERATOR_IN);
 
             return $this;
