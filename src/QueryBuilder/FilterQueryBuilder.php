@@ -213,7 +213,7 @@ class FilterQueryBuilder extends QueryBuilder
      */
     protected function getOperator(FilterConfigElementModel $element, string $operator, array $dca, bool $supportSerializedBlob = true): string
     {
-        if (isset($dca['eval']['multiple']) && $dca['eval']['multiple'] && $supportSerializedBlob) {
+        if ((isset($dca['eval']['multiple']) && $dca['eval']['multiple'] || 'tagsinput' === $dca['eval']['inputType']) && $supportSerializedBlob) {
             if (\in_array($operator, DatabaseUtil::NEGATIVE_OPERATORS)) {
                 // db value is a serialized blob
                 if (false !== strpos($dca['sql'], 'blob')) {
