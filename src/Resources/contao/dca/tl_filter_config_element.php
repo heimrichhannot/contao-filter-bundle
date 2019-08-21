@@ -216,10 +216,8 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'relation'   => ['type' => 'belongsTo', 'load' => 'eager'],
         ],
         'sorting'                => [
-            'sorting' => true,
-            'flag'    => 2,
             'sql'     => "int(10) unsigned NOT NULL default '0'",
-        ],
+        ], 
         'tstamp'                 => [
             'label' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['tstamp'],
             'sql'   => "int(10) unsigned NOT NULL default '0'",
