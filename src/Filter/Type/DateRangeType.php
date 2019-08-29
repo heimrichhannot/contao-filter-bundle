@@ -109,12 +109,18 @@ class DateRangeType extends AbstractType
             $andXC->add($builder->expr()->lte(':start_'.$element->id, $startField));
             $andXC->add($builder->expr()->gte(':stop_'.$element->id, $stopField));
 
+            $andXD = $builder->expr()->andX();
+            $andXD->add($builder->expr()->lte(':start_'.$element->id, $startField));
+            $andXD->add($builder->expr()->gte(':stop_'.$element->id, $startField));
+            $andXD->add($builder->expr()->isNull($stopField));
+
             $builder->setParameter(':start_'.$element->id, $start);
             $builder->setParameter(':stop_'.$element->id, $stop);
 
             $or->add($andXA);
             $or->add($andXB);
             $or->add($andXC);
+            $or->add($andXD);
 
             $builder->andWhere($or);
         } else {
