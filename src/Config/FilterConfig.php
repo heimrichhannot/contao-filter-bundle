@@ -288,7 +288,7 @@ class FilterConfig implements \JsonSerializable
                     $form->get(FilterType::FILTER_REFERRER_NAME)->getData() ?: null);
             }
 
-            return new RedirectResponse($url, 303);
+            return new RedirectResponse($this->container->get('huh.utils.url')->addQueryString('t='.time(), $url), 303);
         }
 
         return null;

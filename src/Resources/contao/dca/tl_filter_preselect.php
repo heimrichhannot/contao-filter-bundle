@@ -55,10 +55,6 @@ $fields = [
             $choices = [];
 
             foreach ($config->getElements() as $element) {
-                if ($element->isInitial) {
-                    continue;
-                }
-
                 $choices[$element->id] = sprintf('%s [ID: %s]', $element->title, $element->id);
             }
 
