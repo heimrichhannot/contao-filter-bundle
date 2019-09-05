@@ -15,6 +15,7 @@ use Contao\Image;
 use Contao\StringUtil;
 use Contao\System;
 use HeimrichHannot\FilterBundle\Filter\Type\ChoiceType;
+use HeimrichHannot\FilterBundle\Filter\Type\ExternalEntityType;
 
 class FilterConfigElement
 {
@@ -65,6 +66,10 @@ class FilterConfigElement
             if ($filterConfigElement->alternativeValueSource) {
                 $dca['palettes'][$filterConfigElement->type] = str_replace('initialValueType', '', $dca['palettes'][$filterConfigElement->type]);
             }
+        }
+
+        if(ExternalEntityType::TYPE == $filterConfigElement->type && $filterConfigElement->sourceTable) {
+            $dca['fields']['sourceEntityResolve']['eval']['multiColumnEditor']['table'] = $filterConfigElement->sourceTable;
         }
     }
 
@@ -372,5 +377,18 @@ class FilterConfigElement
 
             return $options;
         }
+    }
+
+    /**
+     * @param DataContainer $dc
+     * @return array
+     */
+    public function getSourceFields(DataContainer $dc): array
+    {
+        if(!$dc->activeRecord->sourceTable) {
+            return [];
+        }
+
+        return System::getContainer()->get('huh.utils.dca')->getFields($dc->activeRecord->sourceTable);
     }
 }

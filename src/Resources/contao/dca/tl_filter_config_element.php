@@ -105,7 +105,8 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'alternativeValueSource',
             'addGroupChoiceField',
             'modifyGroupChoices',
-            'addOptionCount'
+            'addOptionCount',
+            'sourceTable'
         ],
         'default'      => '{general_legend},title,type,isInitial;{publish_legend},published;',
         'text'         => '{general_legend},title,type,isInitial;{config_legend},field,customName,customOperator,addDefaultValue;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
@@ -173,7 +174,9 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
                        => '{general_legend},title,type;{config_legend},field,customOperator;{publish_legend},published',
         \HeimrichHannot\FilterBundle\Filter\Type\SortType::TYPE
                        => '{general_legend},title,type;{config_legend},sortOptions,expanded,submitOnChange;{visualization_legend},addPlaceholder,customLabel,hideLabel;{publish_legend},published',
-    ],
+        \HeimrichHannot\FilterBundle\Filter\Type\ExternalEntityType::TYPE
+            => '{general_legend},title,type;{source_legend},sourceTable,sourceField,sourceEntityResolve,sourceEntityOverridesOrder;{config_legend},field,customOperator;{publish_legend},published;',
+],
     'subpalettes' => [
         'customOptions'       => 'options',
         'adjustOptionLabels'  => 'optionLabelPattern',
@@ -1096,5 +1099,36 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'eval'             => ['chosen' => true, 'mandatory' => true, 'maxlength' => 128, 'includeBlankOption' => true, 'tl_class' => 'w50'],
             'sql'              => "varchar(128) NOT NULL default ''",
         ],
+        'sourceTable' => [
+            'label' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['sourceTable'],
+            'inputType' => 'select',
+            'options_callback' => ['huh.utils.dca', 'getDataContainers'],
+            'eval' => [
+                'includeBlankOption' => true,
+                'mandatory' => true,
+                'submitOnChange' => true,
+                'tl_class' => 'clr w50'
+            ],
+            'sql' => "varchar(32) NOT NULL default ''"
+        ],
+        'sourceField' => [
+            'label' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['sourceField'],
+            'inputType' => 'select',
+            'options_callback' => ['huh.filter.backend.filter_config_element', 'getSourceFields'],
+            'eval' => [
+                'includeBlankOption' => true,
+                'mandatory' => true,
+                'tl_class' => 'w50'
+            ],
+            'sql' => "varchar(32) NOT NULL default ''"
+        ]
     ],
 ];
+
+\Contao\System::getContainer()->get('huh.entity_filter.manager')->addFilterToDca(
+    'sourceEntityResolve',
+    'tl_filter_config_element',
+    ''
+);
+
+$GLOBALS['TL_DCA']['tl_filter_config_element']['fields']['sourceEntityResolve']['eval']['tl_class'] = 'clr';

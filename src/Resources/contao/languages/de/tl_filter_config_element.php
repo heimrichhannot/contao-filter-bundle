@@ -88,6 +88,9 @@ $lang['modifyGroupChoices']     = ['Gruppen-Choice-Optionen modifizieren', 'Wäh
 $lang['groupChoices']           = ['Optionen', ''];
 $lang['addOptionCount']         = ['Anzahl Einträge für Optionen anzeigen', 'Die Anzahl der Elemente für jede Option mit ausgeben. Nur in Verbindung mit dynamischen Optionen.'];
 $lang['optionCountLabel']       = ['Ausgabe-Format für Optionen mit Element-Anzahl', 'Wählen sie hier, in welchem Format die Optionen ausgegeben werden sollen.'];
+$lang['sourceTable']            = ['Quell-Tabelle', 'Wählen Sie die Tabelle, in der die Quell-Entität gehalten wird.'];
+$lang['sourceField']            = ['Quell-Feld', 'Wählen Sie das Feld, dass die Filter-Werte beinhaltet.'];
+$lang['sourceEntityResolve']    = ['Bedingung zum Bestimmen der Quell-Entität', 'Erstellen Sie hier die Bedingung mit deren Hilfe die Quellentität gefunden wird.'];
 
 // sort
 $lang['sortOptions_class']     = ['Sortier-Klasse', 'Wählen Sie hier die Sortierklasse aus.'];
@@ -104,6 +107,7 @@ $lang['config_legend']        = 'Konfiguration';
 $lang['visualization_legend'] = 'Darstellung';
 $lang['expert_legend']        = 'Experten-Einstellungen';
 $lang['publish_legend']       = 'Veröffentlichung';
+$lang['source_legend']        = 'externe Entität-Einstellungen';
 
 /**
  * Buttons
@@ -159,6 +163,7 @@ $lang['reference'] = [
         \HeimrichHannot\FilterBundle\Filter\Type\SortType::TYPE          => 'Sortierung',
         \HeimrichHannot\FilterBundle\Filter\Type\YearType::TYPE          => 'Jahr',
         \HeimrichHannot\FilterBundle\Filter\Type\DateChoiceType::TYPE    => 'Datumsauswahl',
+        \HeimrichHannot\FilterBundle\Filter\Type\ExternalEntityType::TYPE=> 'externe Entität'
     ],
     'roundingMode'                                                      => [
         \Symfony\Component\Form\Extension\Core\DataTransformer\IntegerToLocalizedStringTransformer::ROUND_DOWN      => 'Abrunden (zu 0 hin)',
