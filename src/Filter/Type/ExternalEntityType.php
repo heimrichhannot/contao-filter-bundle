@@ -1,11 +1,13 @@
 <?php
 
+/*
+ * Copyright (c) 2019 Heimrich & Hannot GmbH
+ *
+ * @license LGPL-3.0-or-later
+ */
 
 namespace HeimrichHannot\FilterBundle\Filter\Type;
 
-
-use Contao\Controller;
-use Contao\Database;
 use Contao\StringUtil;
 use Contao\System;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
@@ -33,29 +35,10 @@ class ExternalEntityType extends AbstractType
 
         $where = $this->getWhere($builder, $element, $sourceValue);
         $builder->andWhere($where);
-
     }
 
     public function buildForm(FilterConfigElementModel $element, FormBuilderInterface $builder)
     {
-    }
-
-    /**
-     * @param FilterQueryBuilder $builder
-     * @param FilterConfigElementModel $element
-     * @param $sourceValue
-     * @return string
-     */
-    protected function getWhere(FilterQueryBuilder $builder, FilterConfigElementModel $element, $sourceValue): string
-    {
-        $filter = $this->config->getFilter();
-
-        $field    = $filter['dataContainer'] . '.' . $element->field;
-        $operator = $this->getOperator($element);
-        $dca      = $this->getDca($filter, $element);
-
-        return System::getContainer()->get('huh.utils.database')->composeWhereForQueryBuilder($builder, $field,
-            $operator, $dca, $sourceValue);
     }
 
     /**
@@ -76,6 +59,7 @@ class ExternalEntityType extends AbstractType
 
     /**
      * @param FilterConfigElementModel $element
+     *
      * @return mixed|null
      */
     public function getSourceEntity(FilterConfigElementModel $element)
@@ -93,8 +77,28 @@ class ExternalEntityType extends AbstractType
     }
 
     /**
+     * @param FilterQueryBuilder       $builder
+     * @param FilterConfigElementModel $element
+     * @param $sourceValue
+     *
+     * @return string
+     */
+    protected function getWhere(FilterQueryBuilder $builder, FilterConfigElementModel $element, $sourceValue): string
+    {
+        $filter = $this->config->getFilter();
+
+        $field = $filter['dataContainer'].'.'.$element->field;
+        $operator = $this->getOperator($element);
+        $dca = $this->getDca($filter, $element);
+
+        return System::getContainer()->get('huh.utils.database')->composeWhereForQueryBuilder($builder, $field,
+            $operator, $dca, $sourceValue);
+    }
+
+    /**
      * @param $entity
      * @param FilterConfigElementModel $element
+     *
      * @return string
      */
     protected function getSourceValueForFilter($entity, FilterConfigElementModel $element): string
@@ -114,8 +118,9 @@ class ExternalEntityType extends AbstractType
     }
 
     /**
-     * @param array $filter
+     * @param array                    $filter
      * @param FilterConfigElementModel $element
+     *
      * @return array
      */
     protected function getDca(array $filter, FilterConfigElementModel $element): array
@@ -125,11 +130,12 @@ class ExternalEntityType extends AbstractType
 
     /**
      * @param FilterConfigElementModel $element
+     *
      * @return string
      */
     protected function getOperator(FilterConfigElementModel $element): string
     {
-        if(!$element->customOperator) {
+        if (!$element->customOperator) {
             return $this->getDefaultOperator($element);
         }
 

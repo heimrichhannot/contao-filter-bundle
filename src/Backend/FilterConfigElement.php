@@ -68,7 +68,7 @@ class FilterConfigElement
             }
         }
 
-        if(ExternalEntityType::TYPE == $filterConfigElement->type && $filterConfigElement->sourceTable) {
+        if (ExternalEntityType::TYPE == $filterConfigElement->type && $filterConfigElement->sourceTable) {
             $dca['fields']['sourceEntityResolve']['eval']['multiColumnEditor']['table'] = $filterConfigElement->sourceTable;
         }
     }
@@ -381,11 +381,12 @@ class FilterConfigElement
 
     /**
      * @param DataContainer $dc
+     *
      * @return array
      */
     public function getSourceFields(DataContainer $dc): array
     {
-        if(!$dc->activeRecord->sourceTable) {
+        if (!$dc->activeRecord->sourceTable) {
             return [];
         }
 
