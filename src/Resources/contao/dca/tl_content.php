@@ -47,7 +47,7 @@ $fields = [
             ],
         ],
     ],
-    'filterReset' => [
+    'filterReset'               => [
         'label'     => &$GLOBALS['TL_LANG']['tl_content']['filterReset'],
         'exclude'   => true,
         'inputType' => 'checkbox',
@@ -59,6 +59,15 @@ $fields = [
         'inputType' => 'checkbox',
         'eval'      => ['doNotCopy' => true],
         'sql'       => "char(1) NOT NULL default ''",
+    ],
+    'filterPreselectJumpTo'     => [
+        'label'      => &$GLOBALS['TL_LANG']['tl_content']['filterPreselectJumpTo'],
+        'exclude'    => true,
+        'inputType'  => 'pageTree',
+        'foreignKey' => 'tl_page.title',
+        'eval'       => ['fieldType' => 'radio', 'tl_class' => 'w50'],
+        'relation'   => ['type' => 'hasOne', 'load' => 'lazy'],
+        'sql'        => "int(10) unsigned NOT NULL default '0'",
     ],
 ];
 

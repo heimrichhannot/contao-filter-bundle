@@ -91,11 +91,18 @@ class ContentFilterPreselect extends ContentElement
         /** @var FilterPreselectModel $preselections */
         $preselections = System::getContainer()->get('contao.framework')->createInstance(FilterPreselectModel::class);
 
+        $url = $filterConfig->getUrl();
+
+        if ($this->filterPreselectJumpTo &&
+            null !== ($jumpTo = System::getContainer()->get('huh.utils.url')->getJumpToPageObject($this->filterPreselectJumpTo, false))) {
+            $url = $jumpTo->getFrontendUrl();
+        }
+
         if (null === ($preselections = $preselections->findPublishedByPidAndTableAndField($this->id, 'tl_content', 'filterPreselect'))) {
             $filterConfig->resetData(); // reset previous filters
 
             if (true === (bool) $this->filterReset && true !== (bool) $this->filterPreselectNoRedirect) {
-                Controller::redirect($filterConfig->getUrl());
+                Controller::redirect($url);
             }
 
             return;
@@ -110,7 +117,7 @@ class ContentFilterPreselect extends ContentElement
         }
 
         if (true !== (bool) $this->filterPreselectNoRedirect) {
-            Controller::redirect($filterConfig->getUrl());
+            Controller::redirect($url);
         }
     }
 
