@@ -304,7 +304,7 @@ class FilterQueryBuilder extends QueryBuilder
         if ($element->isInitial && $element->alternativeValueSource) {
             $value = $this->getValueFromAlternativeSource($data[$name], $data, $element, $name, $config, $dca);
         } else {
-            $value = $data[$name];
+            $value = $data[$name] ?? AbstractType::getInitialValue($element, $this->contextualValues);
             $value = array_filter(!\is_array($value) ? explode(',', $value) : $value);
         }
 
@@ -335,6 +335,7 @@ class FilterQueryBuilder extends QueryBuilder
 
         // don't produce double results
         $this->addGroupBy($filter['dataContainer'].'.id');
+        $this->addGroupBy($alias.'.id'); // needs to be set or a sql_mode=only_full_group_by error is thrown
 
         return $this;
     }
