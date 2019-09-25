@@ -30,7 +30,7 @@ class SqlType extends AbstractType
             return;
         }
 
-        $data = System::getContainer()->get('huh.filter.config')->getData();
+        $data = $this->config->getData();
 
         if ($element->field && isset($data[$element->field]) && $data[$element->field]) {
             return;
