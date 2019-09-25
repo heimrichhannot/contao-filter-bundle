@@ -137,7 +137,13 @@ class YearType extends ChoiceType
             }
         }
 
-        return $this->getYears($min, $max);
+        $years = $this->getYears($min, $max);
+
+        if ($element->sortOptionValuesInverted) {
+            $years = array_combine(array_reverse($years), array_reverse($years));
+        }
+
+        return $years;
     }
 
     /**

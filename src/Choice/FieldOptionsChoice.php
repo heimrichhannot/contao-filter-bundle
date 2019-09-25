@@ -96,6 +96,10 @@ class FieldOptionsChoice extends AbstractChoice
             asort($choices);
         }
 
+        if ($element->sortOptionValuesInverted) {
+            $choices = array_reverse($choices);
+        }
+
         return $choices;
     }
 

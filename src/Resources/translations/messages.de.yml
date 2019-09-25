@@ -9,16 +9,17 @@ huh.filter.placeholder.from: Von
 huh.filter.placeholder.to: Bis
 huh.filter.placeholder.all: Alle
 huh.filter.placeholder.nothing: Nichts
+huh.filter.placeholder.year: Jahr
 
 # labels
 huh.filter.label.submit: Absenden
 huh.filter.label.search: Suche
 huh.filter.label.search_action: Suchen
 huh.filter.label.filter_action: Filtern
-huh.filter.label.filter_action_colon: "Filtern:"
-huh.filter.label.filter_period_colon: "Zeitraum:"
+huh.filter.label.filter_action_colon: 'Filtern:'
+huh.filter.label.filter_period_colon: 'Zeitraum:'
 huh.filter.label.reset: Zurücksetzen
-huh.filter.label.groupChoice: 'Alle'
+huh.filter.label.groupChoice: Alle
 
 # input group append/prepend text
 huh.filter.input_group_text.fa_at: '<span class="fas fa-at" aria-hidden="true"></span>'
