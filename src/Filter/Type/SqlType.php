@@ -30,6 +30,12 @@ class SqlType extends AbstractType
             return;
         }
 
+        $data = System::getContainer()->get('huh.filter.config')->getData();
+
+        if ($element->field && isset($data[$element->field]) && $data[$element->field]) {
+            return;
+        }
+
         $where = html_entity_decode(Controller::replaceInsertTags($element->whereSql, false));
 
         try {
