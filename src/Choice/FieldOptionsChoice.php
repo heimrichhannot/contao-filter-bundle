@@ -225,17 +225,30 @@ class FieldOptionsChoice extends AbstractChoice
 
         if (!empty($options) && true === (bool) $element->adjustOptionLabels && !empty($element->optionLabelPattern)) {
             if (null !== ($filterQueryBuilder = System::getContainer()->get('huh.filter.manager')->getQueryBuilder($filter['id'], [$element->id]))) {
-                $filterQueryBuilder->select([$filter['dataContainer'].'.'.$element->field, $filter['dataContainer'].'.*', 'COUNT('.$filter['dataContainer'].'.'.$element->field.') as count']);
-                $filterQueryBuilder->groupBy($filter['dataContainer'].'.'.$element->field);
+                $filterQueryBuilder->select([$filter['dataContainer'].'.'.$element->field, $filter['dataContainer'].'.*']);
+                $filterQueryBuilder->orderBy($element->field);
+                $rows = $filterQueryBuilder->execute()->fetchAll();
 
-                $rows = $filterQueryBuilder->execute()->fetchAll(\PDO::FETCH_GROUP | \PDO::FETCH_UNIQUE);
+                $data = [];
+
+                foreach ($rows as $row) {
+                    $currentValue = $row[$element->field];
+
+                    if (isset($data[$currentValue])) {
+                        $data[$currentValue]['count'] += 1;
+
+                        continue;
+                    }
+
+                    $data[$currentValue] = ['data' => $row, 'count' => 1];
+                }
 
                 foreach ($options as $key => &$option) {
                     if (!isset($option['label']) || !isset($rows[$option['value']])) {
                         continue;
                     }
 
-                    $params = $rows[$option['value']];
+                    $params = $data[$option['value']];
                     $params['label'] = $option['label'];
 
                     foreach ($params as $key => $value) {
