@@ -9,6 +9,7 @@
 namespace HeimrichHannot\FilterBundle\Form;
 
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
+use Contao\Environment;
 use Contao\System;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
 use HeimrichHannot\FilterBundle\Exception\MissingFilterConfigException;
@@ -21,8 +22,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class FilterType extends AbstractType
 {
-    const FILTER_ID_NAME = 'f_id';
-    const FILTER_REFERRER_NAME = 'f_ref';
+    const FILTER_ID_NAME                  = 'f_id';
+    const FILTER_REFERRER_NAME            = 'f_ref';
     const FILTER_RESET_URL_PARAMETER_NAME = 'f_reset';
 
     /**
@@ -37,7 +38,8 @@ class FilterType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        if (!isset($options['filter']) || !$options['filter'] instanceof FilterConfig) {
+        if (!isset($options['filter']) || !$options['filter'] instanceof FilterConfig)
+        {
             throw new MissingFilterConfigException('Missing filter configuration.');
         }
 
@@ -50,7 +52,8 @@ class FilterType extends AbstractType
 
         $builder->setAction($this->config->getAction());
 
-        if (isset($filter['method'])) {
+        if (isset($filter['method']))
+        {
             $builder->setMethod($filter['method']);
         }
 
@@ -60,7 +63,22 @@ class FilterType extends AbstractType
         $builder->add(static::FILTER_ID_NAME, HiddenType::class, ['attr' => ['value' => $this->config->getId()]]);
 
         // always add a hidden field with the referrer url (required by reset for example to redirect back to user action page) -> use request query string when in esi _ fragment sub-request
-        $builder->add(static::FILTER_REFERRER_NAME, HiddenType::class, ['attr' => ['value' => $request->query->has('request') ? ($request->getSchemeAndHttpHost().'/'.$request->query->get('request')) : $request->getUri()]]);
+        if ($request->query->has('request')) {
+            $referrerUrl  = $request->getSchemeAndHttpHost() . '/' . $request->query->get('request');
+        } else {
+            // Check if referrer is set to set again
+            if (Environment::get('isAjaxRequest') && $request->get($filter['name']) && isset($request->get($filter['name'])[static::FILTER_REFERRER_NAME])) {
+                $referrerUrl = $request->get($filter['name'])[static::FILTER_REFERRER_NAME];
+            } else {
+                $referrerUrl = $request->getUri();
+            }
+        }
+
+        $builder->add(static::FILTER_REFERRER_NAME, HiddenType::class, [
+            'attr' => [
+                'value' => $referrerUrl,
+            ]
+        ]);
 
         $this->buildElements($builder, $options);
     }
@@ -68,61 +86,69 @@ class FilterType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-                'filter' => null,
-                'framework' => null,
-            ]);
+            'filter'    => null,
+            'framework' => null,
+        ]);
     }
 
     /**
      * Build the form fields for the given elements.
      *
      * @param FormBuilderInterface $builder
-     * @param array                $options
+     * @param array $options
      */
     protected function buildElements(FormBuilderInterface $builder, array $options)
     {
         $elements = $this->config->getElements();
 
-        if (null === $elements) {
+        if (null === $elements)
+        {
             return;
         }
 
         $wrappers = [];
-        $types = \System::getContainer()->get('huh.filter.choice.type')->getCachedChoices();
+        $types    = \System::getContainer()->get('huh.filter.choice.type')->getCachedChoices();
 
-        if (!\is_array($types) || empty($types)) {
+        if (!\is_array($types) || empty($types))
+        {
             return;
         }
 
         /*
          * @var FilterConfigElementModel
          */
-        foreach ($elements as $element) {
-            if (!isset($types[$element->type])) {
+        foreach ($elements as $element)
+        {
+            if (!isset($types[$element->type]))
+            {
                 continue;
             }
 
             $config = $types[$element->type];
-            $class = $config['class'];
+            $class  = $config['class'];
 
-            if (!class_exists($class)) {
+            if (!class_exists($class))
+            {
                 continue;
             }
 
             /** @var \HeimrichHannot\FilterBundle\Filter\AbstractType $type */
             $type = new $class($this->config);
 
-            if (!is_subclass_of($type, \HeimrichHannot\FilterBundle\Filter\AbstractType::class)) {
+            if (!is_subclass_of($type, \HeimrichHannot\FilterBundle\Filter\AbstractType::class))
+            {
                 continue;
             }
 
-            if (null === ($name = $type->getName($element))) {
+            if (null === ($name = $type->getName($element)))
+            {
                 continue;
             }
 
             // collect wrappers and render afterwards
-            if (isset($config['wrapper']) && true === $config['wrapper']) {
-                $options = $type->getOptions($element, $builder);
+            if (isset($config['wrapper']) && true === $config['wrapper'])
+            {
+                $options                 = $type->getOptions($element, $builder);
                 $options['inherit_data'] = false;
                 $builder->add($builder->create($name, FormType::class, $options)); // add the group here to maintain correct form order
                 $wrappers[] = $element;
@@ -131,11 +157,14 @@ class FilterType extends AbstractType
             }
 
             // as we build the form at every request (even in back end mode), catch errors that might be thrown from invalid options, formats etc
-            try {
-                if (!$element->isInitial) {
+            try
+            {
+                if (!$element->isInitial)
+                {
                     $type->buildForm($element, $builder);
                 }
-            } catch (InvalidOptionsException $e) {
+            } catch (InvalidOptionsException $e)
+            {
                 continue;
             }
         }
@@ -146,46 +175,54 @@ class FilterType extends AbstractType
     /**
      * Build the wrapper form elements.
      *
-     * @param array                $wrappers
+     * @param array $wrappers
      * @param FormBuilderInterface $builder
-     * @param array                $options
+     * @param array $options
      */
     protected function buildWrapperElements(array $wrappers, FormBuilderInterface $builder, array $options)
     {
         $types = \System::getContainer()->get('huh.filter.choice.type')->getCachedChoices();
 
-        if (!\is_array($types) || empty($types)) {
+        if (!\is_array($types) || empty($types))
+        {
             return;
         }
 
         /*
          * @var FilterConfigElementModel
          */
-        foreach ($wrappers as $element) {
-            if (!isset($types[$element->type])) {
+        foreach ($wrappers as $element)
+        {
+            if (!isset($types[$element->type]))
+            {
                 continue;
             }
 
-            $type = $types[$element->type];
+            $type  = $types[$element->type];
             $class = $type['class'];
 
-            if (!class_exists($class)) {
+            if (!class_exists($class))
+            {
                 continue;
             }
 
             /** @var \HeimrichHannot\FilterBundle\Filter\AbstractType $type */
             $type = new $class($this->config);
 
-            if (!is_subclass_of($type, \HeimrichHannot\FilterBundle\Filter\AbstractType::class)) {
+            if (!is_subclass_of($type, \HeimrichHannot\FilterBundle\Filter\AbstractType::class))
+            {
                 continue;
             }
 
             // as we build the form at every request (even in back end mode), catch errors that might be thrown from invalid options, formats etc
-            try {
-                if (!$element->isInitial) {
+            try
+            {
+                if (!$element->isInitial)
+                {
                     $type->buildForm($element, $builder);
                 }
-            } catch (InvalidOptionsException $e) {
+            } catch (InvalidOptionsException $e)
+            {
                 continue;
             }
         }
