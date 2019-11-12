@@ -50,6 +50,7 @@ class FrontendAjaxController extends Controller
         if (null === ($response = $filter->handleForm())) {
             throw new HandleFormException('Unable to handle form for filter with id '.$id.'.');
         }
+
         if ($request->get($filter->getFilter()['name']) && isset($request->get($filter->getFilter()['name'])[FilterType::FILTER_REFERRER_NAME])) {
             Environment::set('request', $request->get($filter->getFilter()['name'])[FilterType::FILTER_REFERRER_NAME]);
         }

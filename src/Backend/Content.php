@@ -8,9 +8,9 @@
 
 namespace HeimrichHannot\FilterBundle\Backend;
 
-use Contao\ContentModel;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\DataContainer;
+use Contao\Model;
 
 class Content
 {
@@ -41,10 +41,10 @@ class Content
     /**
      * Toggle filterPreselect field on demand.
      *
-     * @param ContentModel  $content
+     * @param Model         $content
      * @param DataContainer $dc
      */
-    protected function toggleFilterPreselect(ContentModel $content, DataContainer $dc)
+    protected function toggleFilterPreselect(Model $content, DataContainer $dc)
     {
         if ($content->filterConfig < 1) {
             return;

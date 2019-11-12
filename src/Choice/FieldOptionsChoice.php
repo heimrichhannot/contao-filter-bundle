@@ -235,7 +235,7 @@ class FieldOptionsChoice extends AbstractChoice
                     $currentValue = $row[$element->field];
 
                     if (isset($data[$currentValue])) {
-                        $data[$currentValue]['count'] += 1;
+                        ++$data[$currentValue]['count'];
 
                         continue;
                     }
