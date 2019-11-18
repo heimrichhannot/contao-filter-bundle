@@ -25,6 +25,7 @@ class FilterType extends AbstractType
     const FILTER_ID_NAME = 'f_id';
     const FILTER_REFERRER_NAME = 'f_ref';
     const FILTER_RESET_URL_PARAMETER_NAME = 'f_reset';
+    const FILTER_FORM_SUBMITTED = 'f_submitted';
 
     /**
      * @var FilterConfig|null

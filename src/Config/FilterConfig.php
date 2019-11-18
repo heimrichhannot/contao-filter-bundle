@@ -87,6 +87,11 @@ class FilterConfig implements \JsonSerializable
     private $container;
 
     /**
+     * @var bool
+     */
+    protected $formSubmitted = false;
+
+    /**
      * Constructor.
      *
      * @param ContaoFrameworkInterface $framework
@@ -257,7 +262,7 @@ class FilterConfig implements \JsonSerializable
             $this->buildForm($this->getData());
             $form = $this->getBuilder()->getForm();
         }
-
+        
         $form->handleRequest($request);
 
         // redirect back to tl_filter_config.action or given referrer
@@ -274,6 +279,7 @@ class FilterConfig implements \JsonSerializable
             }
 
             $data = $form->getData();
+            $data['f_submitted'] = true;
             $url = $this->container->get('huh.utils.url')->removeQueryString([$form->getName()], $url ?: null);
 
             // do not save filter id in session
@@ -388,7 +394,19 @@ class FilterConfig implements \JsonSerializable
      */
     public function getData(): array
     {
-        return $this->session->getData($this->getSessionKey());
+        $data = $this->session->getData($this->getSessionKey());
+        if ($this->filter['resetFilterInitial']) {
+            if (isset($data[FilterType::FILTER_FORM_SUBMITTED]) && $data[FilterType::FILTER_FORM_SUBMITTED] === true) {
+                $data[FilterType::FILTER_FORM_SUBMITTED] = false;
+                $this->formSubmitted = true;
+                $this->setData($data);
+            }
+            elseif (false === $this->formSubmitted) {
+                $this->resetData();
+                $data = [];
+            }
+        }
+        return $data;
     }
 
     /**

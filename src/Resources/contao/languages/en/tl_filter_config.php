@@ -18,6 +18,9 @@ $lang['start']         = ['Show from', 'Do not publish the Filter on the website
 $lang['stop']          = ['Show until', 'Unpublish the Filter on the website after this date.'];
 $lang['tstamp']        = ['Revision date', ''];
 
+$lang['resetFilterInitial']     = ['Reset filter on page call', 'Select this option to always reset the filter when the page is loaded.'];
+
+
 /**
  * Legends
  */
