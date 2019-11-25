@@ -24,6 +24,25 @@ This bundle offers a generic filter module to use with arbitrary contao entities
 - Content element "Filter-Preselect" with optional redirect functionality to preselect filter on given page
 - Content element "Filter-Hyperlink" with filter preselect feature
 
+## Usage
+
+### Install 
+1. Install with composer or contao manager
+
+    ```
+    composer require heimrichhannot/contao-filter-bundle
+    ```
+   
+1. Update database
+
+We recommend to use this bundle toghether with [List Bundle](https://github.com/heimrichhannot/contao-list-bundle) and [Reader Bundle](https://github.com/heimrichhannot/contao-reader-bundle).
+
+### Setup
+
+1. Create a filter configuration within System -> Filter & sort configuration
+1. Add filter elements to the filter config.
+1. If you want to show the filter somewhere (for example to filter a list), create a filter/sort frontend module.
+
 ## Inserttags
 
 Insert tag | Arguments | Description
