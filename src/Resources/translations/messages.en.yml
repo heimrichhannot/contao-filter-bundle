@@ -7,6 +7,7 @@ huh.filter.placeholder.from: From
 huh.filter.placeholder.to: To
 huh.filter.placeholder.all: All
 huh.filter.placeholder.nothing: Nothing
+huh.filter.placeholder.year: Year
 
 # labels
 huh.filter.label.submit: Submit
@@ -16,6 +17,7 @@ huh.filter.label.filter_action: Filter
 huh.filter.label.filter_action_colon: "Filter:"
 huh.filter.label.filter_period_colon: "Period:"
 huh.filter.label.reset: Reset
+huh.filter.label.groupChoice: All
 
 # input group append/prepend text
 huh.filter.input_group_text.fa_clock_o: '<span class="fa fa-clock-o"></span>'

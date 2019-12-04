@@ -81,15 +81,15 @@ class FilterConfig implements \JsonSerializable
      * @var FilterQueryBuilder
      */
     protected $queryBuilder;
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
 
     /**
      * @var bool
      */
     protected $formSubmitted = false;
+    /**
+     * @var ContainerInterface
+     */
+    private $container;
 
     /**
      * Constructor.
@@ -262,7 +262,7 @@ class FilterConfig implements \JsonSerializable
             $this->buildForm($this->getData());
             $form = $this->getBuilder()->getForm();
         }
-        
+
         $form->handleRequest($request);
 
         // redirect back to tl_filter_config.action or given referrer
@@ -395,17 +395,18 @@ class FilterConfig implements \JsonSerializable
     public function getData(): array
     {
         $data = $this->session->getData($this->getSessionKey());
+
         if ($this->filter['resetFilterInitial']) {
-            if (isset($data[FilterType::FILTER_FORM_SUBMITTED]) && $data[FilterType::FILTER_FORM_SUBMITTED] === true) {
+            if (isset($data[FilterType::FILTER_FORM_SUBMITTED]) && true === $data[FilterType::FILTER_FORM_SUBMITTED]) {
                 $data[FilterType::FILTER_FORM_SUBMITTED] = false;
                 $this->formSubmitted = true;
                 $this->setData($data);
-            }
-            elseif (false === $this->formSubmitted) {
+            } elseif (false === $this->formSubmitted) {
                 $this->resetData();
                 $data = [];
             }
         }
+
         return $data;
     }
 
