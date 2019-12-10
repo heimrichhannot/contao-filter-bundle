@@ -10,6 +10,7 @@ namespace HeimrichHannot\FilterBundle\Config;
 
 use Contao\Controller;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
+use Contao\Environment;
 use Contao\InsertTags;
 use Doctrine\DBAL\Connection;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
@@ -292,6 +293,10 @@ class FilterConfig implements \JsonSerializable
                 // redirect to referrer page without filter parameters
                 $url = $this->container->get('huh.utils.url')->removeQueryString([$form->getName()],
                     $form->get(FilterType::FILTER_REFERRER_NAME)->getData() ?: null);
+            }
+
+            if (parse_url($url, PHP_URL_HOST) !== parse_url(Environment::get('url'), PHP_URL_HOST)) {
+                throw new \Exception('Invalid redirect url');
             }
 
             return new RedirectResponse($this->container->get('huh.utils.url')->addQueryString('t='.time(), $url), 303);
