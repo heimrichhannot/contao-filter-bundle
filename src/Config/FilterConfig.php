@@ -502,6 +502,8 @@ class FilterConfig implements \JsonSerializable
     /**
      * Get the redirect url based on current filter action.
      *
+     * @since 1.0.0-beta128.2 Url is absolute
+     *
      * @return string
      */
     public function getUrl()
@@ -534,7 +536,7 @@ class FilterConfig implements \JsonSerializable
             $insertTagAdapter = $this->framework->getAdapter(InsertTags::class);
         }
 
-        return '/'.urldecode($insertTagAdapter->replace($filter['action']));
+        return Environment::get('url').'/'.urldecode($insertTagAdapter->replace($filter['action']));
     }
 
     /**

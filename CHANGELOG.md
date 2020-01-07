@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.0.0-beta128.2] - 2020-01-07
+- fixed invalid redirect url exception when filter action is set as insert tag
+
 ## [1.0.0-beta128.1] - 2019-12-20
 - fixed incorrect exception in FilterType
 
