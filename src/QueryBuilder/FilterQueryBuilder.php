@@ -250,9 +250,14 @@ class FilterQueryBuilder extends QueryBuilder
      */
     protected function whereTagWidget(FilterConfigElementModel $element, string $name, FilterConfig $config, array $dca, string $defaultOperator = null)
     {
-        $filter = $config->getFilter();
         $data = $config->getData();
         $value = $data[$name];
+
+	if(empty($value)) {
+            return $this;
+        }
+
+        $filter = $config->getFilter();
         $relation = Relations::getRelation($filter['dataContainer'], $element->field);
 
         if ($element->isInitial && $element->alternativeValueSource) {

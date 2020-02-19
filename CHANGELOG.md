@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.0.0-beta128.3] - 2020-02-19
+- fixed where query for cfg tag field when value is empty
+
 ## [1.0.0-beta128.2] - 2020-01-07
 - fixed invalid redirect url exception when filter action is set as insert tag
 
