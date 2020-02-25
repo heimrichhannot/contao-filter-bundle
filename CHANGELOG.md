@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.0.0-beta128.4] - 2020-02-25
+- fixed replacement of filter for async submit
+
 ## [1.0.0-beta128.3] - 2020-02-19
 - fixed where query for cfg tag field when value is empty
 

@@ -163,6 +163,11 @@ class FilterConfig implements \JsonSerializable
             $data = $this->getData();
         }
 
+        if(isset($data['reset'])) {
+            $this->resetData();
+            $data = $this->getData();
+        }
+
         if (isset($this->filter['renderEmpty']) && true === (bool) $this->filter['renderEmpty']) {
             $data = [];
         }

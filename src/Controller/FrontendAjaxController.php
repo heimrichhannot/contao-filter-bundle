@@ -67,7 +67,8 @@ class FrontendAjaxController extends Controller
             $filter->buildForm($filter->getData());
         }
 
-        $form = $filter->getBuilder()->getForm();
+        $builder = $filter->getBuilder();
+        $form = $builder->getForm();
 
         /**
          * @var \Twig_Environment

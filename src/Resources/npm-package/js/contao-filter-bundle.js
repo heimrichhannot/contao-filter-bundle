@@ -20,21 +20,30 @@ class FilterBundle {
         '.mod_filter form[data-async] input[data-submit-on-change], .mod_filter form[data-async] [data-submit-on-change] input',
         function(element, event) {
           event.preventDefault();
-          FilterBundle.asyncSubmit(element.form);
+
+          let buttonName = element.form.name + '[submit]',
+              clickedButton = document.createElement('div');
+              clickedButton.setAttribute('name', buttonName);
+
+          FilterBundle.asyncSubmit(element.form, clickedButton);
         });
 
     utilsBundle.event.addDynamicEventListener('click', '.mod_filter form[data-async] button[type="submit"]',
         function(element, event) {
           event.preventDefault();
-          FilterBundle.asyncSubmit(element.form);
+          FilterBundle.asyncSubmit(element.form, element);
         });
   }
 
-  static asyncSubmit(form) {
+  static asyncSubmit(form, clickedButton = null) {
     let method = form.getAttribute('method'),
         action = form.getAttribute('action'),
         data = FilterBundle.getData(form),
         config = FilterBundle.getConfig(form);
+
+    if (clickedButton !== null) {
+      data.append(clickedButton.getAttribute('name'), '');
+    }
 
     if ('get' === method || 'GET' === method) {
       utilsBundle.ajax.get(action, data, config);
@@ -70,6 +79,7 @@ class FilterBundle {
     }
 
     let form = document.querySelector('form[name="' + response.filterName + '"]');
+
     FilterBundle.replaceFilterForm(form, response.filter);
 
     form.setAttribute('data-response', request.response);
@@ -104,7 +114,6 @@ class FilterBundle {
 
   static getData(form) {
     let formData = new FormData(form);
-
     formData.append('filterName', form.getAttribute('name'));
 
     return formData;

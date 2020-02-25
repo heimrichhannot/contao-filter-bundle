@@ -9,6 +9,7 @@
 namespace HeimrichHannot\FilterBundle\Util;
 
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
+use HeimrichHannot\FilterBundle\Form\FilterType;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class FilterAjaxUtil
@@ -26,20 +27,16 @@ class FilterAjaxUtil
     /**
      * @param FilterConfig $form
      */
-    public function updateData(FilterConfig $form): void
+    public function updateData(FilterConfig &$form): void
     {
         if (empty($data = $this->getSubmittedData($form))) {
             return;
         }
 
-        $updateData = [];
+        $updateData = array_merge($form->getData(),$data);
 
-        foreach ($form->getData() as $key => $value) {
-            if (!isset($data[$key])) {
-                continue;
-            }
-
-            $updateData[$key] = $data[$key];
+        if($this->isDataEmpty($data)) {
+            $updateData['reset'] = true;
         }
 
         if (empty($updateData)) {
@@ -50,6 +47,44 @@ class FilterAjaxUtil
     }
 
     /**
+     * @param array $data
+     * @return bool
+     */
+    protected function isDataEmpty(array $data): bool
+    {
+        foreach($data as $key => $value) {
+            if($this->isValueEmpty($value) || in_array($key, [FilterType::FILTER_ID_NAME, FilterType::FILTER_REFERRER_NAME])) {
+                continue;
+            }
+
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @param $value
+     * @return bool
+     */
+    protected function isValueEmpty($value): bool
+    {
+        if(is_array($value)) {
+            foreach($value as $part) {
+                if(!$part) {
+                    continue;
+                }
+
+                return false;
+            }
+        } elseif($value) {
+          return false;
+        }
+
+        return true;
+    }
+
+    /**
      * @param $builder
      *
      * @return array|null
@@ -57,11 +92,8 @@ class FilterAjaxUtil
     public function getSubmittedData(FilterConfig $form)
     {
         $filter = $form->getFilter();
+        $request = $this->container->get('huh.request');
 
-        if ('GET' == $filter['method']) {
-            return $this->container->get('huh.request')->getGet($filter['name']);
-        }
-
-        return $this->container->get('huh.request')->getPost($filter['name']);
+        return 'GET' == $filter['method'] ? $request->getGet($filter['name']) : $request->getPost($filter['name']);
     }
 }

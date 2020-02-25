@@ -66,7 +66,7 @@ class ModuleFilter extends Module
             $this->config->buildForm($this->config->getData());
         }
 
-        $form = $this->config->getBuilder()->getForm();
+            $form = $this->config->getBuilder()->getForm();
 
         /**
          * @var \Twig_Environment
