@@ -43,6 +43,11 @@ class FilterAjaxUtil
             return;
         }
 
+        if(isset($updateData['reset'])) {
+            $form->resetData();
+            return;
+        }
+
         $form->setData($updateData);
     }
 

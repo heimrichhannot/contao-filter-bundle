@@ -24,6 +24,7 @@ use HeimrichHannot\FilterBundle\Session\FilterSession;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\Forms;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -159,12 +160,10 @@ class FilterConfig implements \JsonSerializable
         if ($this->getFilter()['asyncFormSubmit']) {
             $options['attr']['data-async'] = 1;
             $options['attr']['data-list'] = '#huh-list-'.$this->getFilter()['ajaxList'];
-            $this->container->get('huh.filter.util.filter_ajax')->updateData($this);
-            $data = $this->getData();
         }
 
-        if(isset($data['reset'])) {
-            $this->resetData();
+        if($this->container->get('huh.request')->isXmlHttpRequest()){
+            $this->container->get('huh.filter.util.filter_ajax')->updateData($this);
             $data = $this->getData();
         }
 
@@ -292,8 +291,7 @@ class FilterConfig implements \JsonSerializable
             $this->setData($this->filter['mergeData'] ? array_merge($this->getData(), $data) : $data);
 
             // allow reset, support different form configuration with same form name
-            if (null !== $form->getClickedButton() && \in_array($form->getClickedButton()->getName(),
-                    $this->getResetNames(), true)) {
+            if ($this->isResetButtonClicked($form)) {
                 $this->resetData();
                 // redirect to referrer page without filter parameters
                 $url = $this->container->get('huh.utils.url')->removeQueryString([$form->getName()],
@@ -308,6 +306,30 @@ class FilterConfig implements \JsonSerializable
         }
 
         return null;
+    }
+
+
+    protected function isResetButtonClicked(FormInterface $form): bool
+    {
+      if(!(null !== $form->getClickedButton() && \in_array($form->getClickedButton()->getName(),
+              $this->getResetNames(), true))) {
+          return $this->isAsyncResetButtonClicked();
+      }
+
+      return true;
+    }
+
+    protected function isAsyncResetButtonClicked(): bool
+    {
+        $request = $this->container->get('huh.request');
+
+        if(!$request->isXmlHttpRequest()) {
+            return false;
+        }
+
+        $data = 'GET' == $request->getMethod() ? $request->getGet($this->getFilter()['name']) : $request->getPost($this->getFilter()['name']);
+
+        return isset($data['reset']);
     }
 
     /**

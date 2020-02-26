@@ -25,6 +25,9 @@ class FilterBundle {
               clickedButton = document.createElement('div');
               clickedButton.setAttribute('name', buttonName);
 
+          console.log(clickedButton);
+
+
           FilterBundle.asyncSubmit(element.form, clickedButton);
         });
 
@@ -44,6 +47,8 @@ class FilterBundle {
     if (clickedButton !== null) {
       data.append(clickedButton.getAttribute('name'), '');
     }
+
+
 
     if ('get' === method || 'GET' === method) {
       utilsBundle.ajax.get(action, data, config);

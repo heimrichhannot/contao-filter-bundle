@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.0.0-beta128.5] - 2020-02-26
+- fixed reset of form for async submit
+
 ## [1.0.0-beta128.4] - 2020-02-25
 - fixed replacement of filter for async submit
 
