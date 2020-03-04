@@ -327,7 +327,7 @@ class FilterConfig implements \JsonSerializable
             return false;
         }
 
-        $data = 'GET' == $request->getMethod() ? $request->getGet($this->getFilter()['name']) : $request->getPost($this->getFilter()['name']);
+        $data = in_array($request->getMethod(), ['GET', 'HEAD']) ? $request->getGet($this->getFilter()['name']) : $request->getPost($this->getFilter()['name']);
 
         return isset($data['reset']);
     }

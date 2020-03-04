@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.0.0-beta128.6] - 2020-03-04
+- fixed detect if form is resetted in async mode
+
 ## [1.0.0-beta128.5] - 2020-02-26
 - fixed reset of form for async submit
 
