@@ -66,8 +66,6 @@ class FilterBundle {
   static onSuccess(request) {
     let response = 'undefined' !== request.response ? JSON.parse(request.response) : null;
 
-    console.log('on success callback');
-
     if (null === response) {
       return;
     }
@@ -88,8 +86,6 @@ class FilterBundle {
 
     form.setAttribute('data-response', request.response);
     form.setAttribute('data-submit-success', 1);
-
-    console.log('success');
 
     form.dispatchEvent(new CustomEvent('filterAjaxComplete', {detail: form, bubbles: true, cancelable: true}));
   }
