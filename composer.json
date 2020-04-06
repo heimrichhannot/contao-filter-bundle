@@ -6,7 +6,7 @@
   "require": {
     "php": "^7.1",
     "contao/core-bundle": "^4.4",
-    "symfony/framework-bundle": "~3.4.26",
+    "symfony/framework-bundle": "~3.4.26|^4.0",
     "heimrichhannot/contao-utils-bundle": "^2.0",
     "heimrichhannot/contao-multi-column-editor-bundle": "^2.0",
     "heimrichhannot/contao-fieldpalette-bundle": ">=0.2 <2.0-dev",

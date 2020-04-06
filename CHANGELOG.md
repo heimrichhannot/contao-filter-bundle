@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.0.0-beta129.0] - 2020-04-06
+- allow install within contao 4.9 and symfony 4
+
 ## [1.0.0-beta128.7] - 2020-03-04
 - fixed yarn deps
 
