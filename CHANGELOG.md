@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 ## [1.0.0-beta129.1] - 2020-04-06
 - fixed an autowiring issue
 - removed an dev leftover from composer.json
+- removed unnecessary submitOnChange's in tl_filter_config
 
 ## [1.0.0-beta129.0] - 2020-04-06
 - allow install within contao 4.9 and symfony 4
