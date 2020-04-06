@@ -15,6 +15,7 @@ services:
     arguments:
     - "@contao.framework"
     - "@huh.filter.session"
+  HeimrichHannot\FilterBundle\Manager\FilterManager: '@huh.filter.manager'
 
   huh.filter.session:
     class: HeimrichHannot\FilterBundle\Session\FilterSession
@@ -143,6 +144,7 @@ services:
     public: true
     arguments:
     - "@contao.framework"
+  HeimrichHannot\FilterBundle\Util\FilterPreselectUtil: '@huh.filter.util.filter_preselect'
 
   huh.filter.util.filter_ajax:
     class: HeimrichHannot\FilterBundle\Util\FilterAjaxUtil
@@ -158,6 +160,3 @@ services:
     - "@twig.truncate.service"
     tags:
     - { name: twig.extension }
-
-  # Symfony 4 autowire convention fix (ambiguous namespace alias)
-  HeimrichHannot\FilterBundle\Util\FilterPreselectUtil: '@huh.filter.util.filter_preselect'
