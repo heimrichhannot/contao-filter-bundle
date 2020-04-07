@@ -1,4 +1,10 @@
 services:
+  _defaults:
+    public: true
+    autowire: true
+
+  HeimrichHannot\FilterBundle\EventListener\LoadDataContainerListener: ~
+
   huh.filter.listener.dca.callback.filterconfigelement:
     class: HeimrichHannot\FilterBundle\EventListener\FilterConfigElementCallbackListener
   huh.filter.listener.hooks:

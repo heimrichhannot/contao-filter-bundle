@@ -161,7 +161,7 @@ class FilterManager
             $parentFilter = $this->framework->getAdapter(FilterConfigModel::class)->findById($filter['parentFilter'])->row();
 
             if (!empty($parentFilter)) {
-                $filter['action'] = $parentFilter['action'];
+                $filter['filterFormAction'] = $parentFilter['filterFormAction'];
                 $filter['dataContainer'] = $parentFilter['dataContainer'];
                 $filter['name'] = $parentFilter['name'];
                 $filter['method'] = $parentFilter['method'];

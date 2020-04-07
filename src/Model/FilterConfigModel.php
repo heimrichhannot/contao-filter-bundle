@@ -20,7 +20,7 @@ use Contao\System;
  * @property string $title
  * @property string $dataContainer
  * @property string $method
- * @property string $action
+ * @property string $filterFormAction
  * @property string $template
  * @property string $name
  * @property string $cssClass

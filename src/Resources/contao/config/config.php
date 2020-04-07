@@ -43,3 +43,7 @@ $GLOBALS['TL_CTE']['filter']['filter_hyperlink'] = \HeimrichHannot\FilterBundle\
  */
 $GLOBALS['TL_HOOKS']['replaceInsertTags']['huh.filter'] = ['huh.filter.listener.inserttag', 'onReplaceInsertTags'];
 $GLOBALS['TL_HOOKS']['isBlockVisibleHook']['isBlockVisible'] = ['huh.filter.listener.hooks', 'isBlockVisible'];
+$GLOBALS['TL_HOOKS']['loadDataContainer']['huh.filter'] = [
+    \HeimrichHannot\FilterBundle\EventListener\LoadDataContainerListener::class,
+    'onLoadDataContainer'
+];

@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.0.0-beta130.0] - 2020-04-07
+- renamed tl_filter_config.action to tl_filter_config.filterFormAction to fix problems with contao 4.9 (field is automatically renamend by the bundle)
+
 ## [1.0.0-beta129.1] - 2020-04-06
 - fixed an autowiring issue
 - removed an dev leftover from composer.json

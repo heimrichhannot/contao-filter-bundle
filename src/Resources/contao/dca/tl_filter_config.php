@@ -82,7 +82,7 @@ $GLOBALS['TL_DCA']['tl_filter_config'] = [
     'palettes'    => [
         '__selector__' => ['published', 'type'],
         'default'      => '{general_legend},title,type;',
-        'filter'       => '{general_legend},title,type;{config_legend},authorType,author,name,dataContainer,method,action,renderEmpty,mergeData,asyncFormSubmit,resetFilterInitial;{template_legend},template;{expert_legend},cssClass;{publish_legend},published;',
+        'filter'       => '{general_legend},title,type;{config_legend},authorType,author,name,dataContainer,method,filterFormAction,renderEmpty,mergeData,asyncFormSubmit,resetFilterInitial;{template_legend},template;{expert_legend},cssClass;{publish_legend},published;',
         'sort'         => '{general_legend},title,type;{config_legend},parentFilter;{template_legend},template;{expert_legend},cssClass;{publish_legend},published;',
     ],
     'subpalettes' => [
@@ -147,8 +147,8 @@ $GLOBALS['TL_DCA']['tl_filter_config'] = [
             'exclude'   => true,
             'sql'       => "varchar(4) NOT NULL default ''",
         ],
-        'action'        => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config']['action'],
+        'filterFormAction'        => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_filter_config']['filterFormAction'],
             'exclude'   => true,
             'search'    => true,
             'inputType' => 'text',
