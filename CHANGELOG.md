@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.0.0-beta128.8] - 2020-04-08
+- added retrieve global objPage from current page when not initialized in ajax request
+
 ## [1.0.0-beta128.7] - 2020-03-04
 - fixed yarn deps
 

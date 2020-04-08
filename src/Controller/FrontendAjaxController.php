@@ -59,6 +59,11 @@ class FrontendAjaxController extends Controller
             Environment::set('request', $request->get($filter->getFilter()['name'])[FilterType::FILTER_REFERRER_NAME]);
         }
 
+        global $objPage;
+        if(null === $objPage) {
+            $objPage = System::getContainer()->get('huh.utils.page')->retrieveGlobalPageFromCurrentPageId($request->get($filter->getFilter()['name'])[FilterType::FILTER_PAGE_ID_NAME]);
+        }
+
         $index = new FrontendIndex(); // initialize BE_USER_LOGGED_IN or FE_USER_LOGGED_IN
 
         $response = new JsonResponse();
@@ -90,5 +95,10 @@ class FrontendAjaxController extends Controller
             new ModifyJsonResponseEvent($response, $filterConfig));
 
         return $event->getResponse();
+    }
+
+
+    protected function getGlobalsPage()
+    {
     }
 }

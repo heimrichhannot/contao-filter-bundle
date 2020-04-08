@@ -26,6 +26,7 @@ class FilterType extends AbstractType
     const FILTER_REFERRER_NAME = 'f_ref';
     const FILTER_RESET_URL_PARAMETER_NAME = 'f_reset';
     const FILTER_FORM_SUBMITTED = 'f_submitted';
+    const FILTER_PAGE_ID_NAME = 'f_pageId';
 
     /**
      * @var FilterConfig|null
@@ -60,6 +61,10 @@ class FilterType extends AbstractType
 
         // always add a hidden field with the filter id
         $builder->add(static::FILTER_ID_NAME, HiddenType::class, ['attr' => ['value' => $this->config->getId()]]);
+
+        // always add a hidden field with the page id
+        global $objPage;
+        $builder->add(static::FILTER_PAGE_ID_NAME, HiddenType::class, ['attr' => ['value' => $objPage->id]]);
 
         // always add a hidden field with the referrer url (required by reset for example to redirect back to user action page) -> use request query string when in esi _ fragment sub-request
         if ($request->query->has('request')) {
