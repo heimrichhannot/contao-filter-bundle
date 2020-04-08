@@ -541,7 +541,7 @@ class FilterConfig implements \JsonSerializable
             $parentFilter = $this->framework->getAdapter(FilterConfigModel::class)->findById($filter['parentFilter'])->row();
 
             if (!empty($parentFilter)) {
-                $filter['action'] = $parentFilter['action'];
+                $filter['filterFormAction'] = $parentFilter['filterFormAction'];
                 $filter['name'] = $parentFilter['name'];
                 $filter['dataContainer'] = $parentFilter['dataContainer'];
                 $filter['method'] = $parentFilter['method'];
@@ -549,7 +549,7 @@ class FilterConfig implements \JsonSerializable
             }
         }
 
-        if (!isset($filter['action']) || empty($filter['action'])) {
+        if (!isset($filter['filterFormAction']) || empty($filter['filterFormAction'])) {
             return '';
         }
 
@@ -563,7 +563,7 @@ class FilterConfig implements \JsonSerializable
             $insertTagAdapter = $this->framework->getAdapter(InsertTags::class);
         }
 
-        return Environment::get('url').'/'.urldecode($insertTagAdapter->replace($filter['action']));
+        return Environment::get('url').'/'.urldecode($insertTagAdapter->replace($filter['filterFormAction']));
     }
 
     /**

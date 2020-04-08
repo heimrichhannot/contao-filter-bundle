@@ -1,8 +1,19 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [1.0.0-beta128.8] - 2020-04-08
+## [1.0.0-beta130.1] - 2020-04-08
 - added retrieve global objPage from current page when not initialized in ajax request
+
+## [1.0.0-beta130.0] - 2020-04-07
+- renamed tl_filter_config.action to tl_filter_config.filterFormAction to fix problems with contao 4.9 (field is automatically renamend by the bundle)
+
+## [1.0.0-beta129.1] - 2020-04-06
+- fixed an autowiring issue
+- removed an dev leftover from composer.json
+- removed unnecessary submitOnChange's in tl_filter_config
+
+## [1.0.0-beta129.0] - 2020-04-06
+- allow install within contao 4.9 and symfony 4
 
 ## [1.0.0-beta128.7] - 2020-03-04
 - fixed yarn deps

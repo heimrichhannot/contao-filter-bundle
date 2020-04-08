@@ -6,7 +6,7 @@
   "require": {
     "php": "^7.1",
     "contao/core-bundle": "^4.4",
-    "symfony/framework-bundle": "~3.4.26",
+    "symfony/framework-bundle": "~3.4.26|^4.0",
     "heimrichhannot/contao-utils-bundle": "^2.0",
     "heimrichhannot/contao-multi-column-editor-bundle": "^2.0",
     "heimrichhannot/contao-fieldpalette-bundle": ">=0.2 <2.0-dev",
@@ -18,7 +18,7 @@
     "ext-pdo": "*"
   },
   "require-dev": {
-    "heimrichhannot/contao-test-utilities-bundle": "dev-master",
+    "heimrichhannot/contao-test-utilities-bundle": "^0.1",
     "contao/test-case": "1.1.*",
     "contao/manager-plugin": "^2.0",
     "friendsofphp/php-cs-fixer": "^2.2",
@@ -54,15 +54,6 @@
       "HeimrichHannot\\FilterBundle\\Test\\": "tests/"
     }
   },
-  "repositories": [
-    {
-      "type": "path",
-      "url": "~/Kunden/github/contao-test-utilities-bundle",
-      "options": {
-        "symlink": true
-      }
-    }
-  ],
   "config": {
     "preferred-install": "dist"
   },
