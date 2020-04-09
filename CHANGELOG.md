@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.0.0-beta130.2] - 2020-04-09
+- fixed error if page id is not set in ajax controller 
+
 ## [1.0.0-beta130.1] - 2020-04-08
 - added retrieve global objPage from current page when not initialized in ajax request
 

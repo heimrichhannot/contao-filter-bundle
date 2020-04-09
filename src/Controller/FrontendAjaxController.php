@@ -15,6 +15,7 @@ use HeimrichHannot\FilterBundle\Event\ModifyJsonResponseEvent;
 use HeimrichHannot\FilterBundle\Exception\HandleFormException;
 use HeimrichHannot\FilterBundle\Exception\MissingFilterException;
 use HeimrichHannot\FilterBundle\Form\FilterType;
+use HeimrichHannot\UtilsBundle\Page\PageUtil;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -28,6 +29,20 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class FrontendAjaxController extends Controller
 {
+    /**
+     * @var PageUtil
+     */
+    private $pageUtil;
+
+    /**
+     * FrontendAjaxController constructor.
+     */
+    public function __construct(PageUtil $pageUtil)
+    {
+        $this->pageUtil = $pageUtil;
+    }
+
+
     /**
      * @Route("/_filter/ajax_submit/{id}", name="filter_frontend_ajax_submit")
      *
@@ -61,7 +76,10 @@ class FrontendAjaxController extends Controller
 
         global $objPage;
         if(null === $objPage) {
-            $objPage = System::getContainer()->get('huh.utils.page')->retrieveGlobalPageFromCurrentPageId($request->get($filter->getFilter()['name'])[FilterType::FILTER_PAGE_ID_NAME]);
+            $pageId = $request->get($filter->getFilter()['name'])[FilterType::FILTER_PAGE_ID_NAME];
+            if (is_numeric($pageId)) {
+                $objPage = $this->pageUtil->retrieveGlobalPageFromCurrentPageId((int)$pageId);
+            }
         }
 
         $index = new FrontendIndex(); // initialize BE_USER_LOGGED_IN or FE_USER_LOGGED_IN
@@ -95,10 +113,5 @@ class FrontendAjaxController extends Controller
             new ModifyJsonResponseEvent($response, $filterConfig));
 
         return $event->getResponse();
-    }
-
-
-    protected function getGlobalsPage()
-    {
     }
 }
