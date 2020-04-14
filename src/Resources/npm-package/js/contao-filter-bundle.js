@@ -1,4 +1,5 @@
-import '@hundh/contao-utils-bundle';
+import EventUtil from '@hundh/contao-utils-bundle/js/event-util';
+import AjaxUtil from '@hundh/contao-utils-bundle/js/ajax-util';
 
 class FilterBundle {
 
@@ -12,12 +13,12 @@ class FilterBundle {
       FilterBundle.asyncSubmit(event.detail.form);
     });
 
-    utilsBundle.event.addDynamicEventListener('click', '.mod_filter form [data-submit-on-change] input[type="radio"][value=""], .mod_filter form [data-submit-on-change] input[type="checkbox"][value=""]', function(element, event) {
+    EventUtil.addDynamicEventListener('click', '.mod_filter form [data-submit-on-change] input[type="radio"][value=""], .mod_filter form [data-submit-on-change] input[type="checkbox"][value=""]', function(element, event) {
       FilterBundle.resetRadioAndCheckboxField(element);
     });
 
-    utilsBundle.event.addDynamicEventListener('change',
-        '.mod_filter form[data-async] input[data-submit-on-change], .mod_filter form[data-async] [data-submit-on-change] input',
+    EventUtil.addDynamicEventListener('change',
+        '.mod_filter form[data-async] input[data-submit-on-change], .mod_filter form[data-async] select[data-submit-on-change], .mod_filter form[data-async] [data-submit-on-change] input',
         function(element, event) {
           event.preventDefault();
 
@@ -28,7 +29,7 @@ class FilterBundle {
           FilterBundle.asyncSubmit(element.form, clickedButton);
         });
 
-    utilsBundle.event.addDynamicEventListener('click', '.mod_filter form[data-async] button[type="submit"]',
+    EventUtil.addDynamicEventListener('click', '.mod_filter form[data-async] button[type="submit"]',
         function(element, event) {
           event.preventDefault();
           FilterBundle.asyncSubmit(element.form, element);
@@ -48,9 +49,9 @@ class FilterBundle {
 
 
     if ('get' === method || 'GET' === method) {
-      utilsBundle.ajax.get(action, data, config);
+      AjaxUtil.get(action, data, config);
     } else {
-      utilsBundle.ajax.post(action, data, config);
+      AjaxUtil.post(action, data, config);
     }
   }
 

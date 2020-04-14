@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.0.0] - 2020-04-14
+- added async form submit support to select fields
+- updated import in filter bundle js 
+
 ## [1.0.0-beta130.2] - 2020-04-09
 - fixed error if page id is not set in ajax controller 
 
