@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.0.1] - 2020-04-14
+- fixed resolving wether reset button was clicked when `clickedButton` is not set for form
+
 ## [1.0.0] - 2020-04-14
 - added async form submit support to select fields
 - updated import in filter bundle js 

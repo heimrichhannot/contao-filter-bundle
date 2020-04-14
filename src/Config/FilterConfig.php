@@ -313,22 +313,17 @@ class FilterConfig implements \JsonSerializable
     {
       if(!(null !== $form->getClickedButton() && \in_array($form->getClickedButton()->getName(),
               $this->getResetNames(), true))) {
-          return $this->isAsyncResetButtonClicked();
+          return $this->isResetButtonClickedFromRequest();
       }
 
       return true;
     }
 
-    protected function isAsyncResetButtonClicked(): bool
+    protected function isResetButtonClickedFromRequest(): bool
     {
-        $request = $this->container->get('huh.request');
-
-        if(!$request->isXmlHttpRequest()) {
-            return false;
-        }
-
-        $data = in_array($request->getMethod(), ['GET', 'HEAD']) ? $request->getGet($this->getFilter()['name']) : $request->getPost($this->getFilter()['name']);
-
+         $request = $this->container->get('huh.request');
+         $data    = in_array($request->getMethod(), ['GET', 'HEAD']) ? $request->getGet($this->getFilter()['name']) : $request->getPost($this->getFilter()['name']);
+        
         return isset($data['reset']);
     }
 
