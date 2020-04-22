@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2019 Heimrich & Hannot GmbH
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -24,18 +24,15 @@ class FilterAjaxUtil
         $this->container = $container;
     }
 
-    /**
-     * @param FilterConfig $form
-     */
     public function updateData(FilterConfig &$form): void
     {
         if (empty($data = $this->getSubmittedData($form))) {
             return;
         }
 
-        $updateData = array_merge($form->getData(),$data);
+        $updateData = array_merge($form->getData(), $data);
 
-        if($this->isDataEmpty($data)) {
+        if ($this->isDataEmpty($data)) {
             $updateData['reset'] = true;
         }
 
@@ -43,50 +40,13 @@ class FilterAjaxUtil
             return;
         }
 
-        if(isset($updateData['reset'])) {
+        if (isset($updateData['reset'])) {
             $form->resetData();
+
             return;
         }
 
         $form->setData($updateData);
-    }
-
-    /**
-     * @param array $data
-     * @return bool
-     */
-    protected function isDataEmpty(array $data): bool
-    {
-        foreach($data as $key => $value) {
-            if($this->isValueEmpty($value) || in_array($key, [FilterType::FILTER_ID_NAME, FilterType::FILTER_REFERRER_NAME])) {
-                continue;
-            }
-
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * @param $value
-     * @return bool
-     */
-    protected function isValueEmpty($value): bool
-    {
-        if(is_array($value)) {
-            foreach($value as $part) {
-                if(!$part) {
-                    continue;
-                }
-
-                return false;
-            }
-        } elseif($value) {
-          return false;
-        }
-
-        return true;
     }
 
     /**
@@ -100,5 +60,38 @@ class FilterAjaxUtil
         $request = $this->container->get('huh.request');
 
         return 'GET' == $filter['method'] ? $request->getGet($filter['name']) : $request->getPost($filter['name']);
+    }
+
+    protected function isDataEmpty(array $data): bool
+    {
+        foreach ($data as $key => $value) {
+            if ($this->isValueEmpty($value) || \in_array($key, [FilterType::FILTER_ID_NAME, FilterType::FILTER_REFERRER_NAME])) {
+                continue;
+            }
+
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @param $value
+     */
+    protected function isValueEmpty($value): bool
+    {
+        if (\is_array($value)) {
+            foreach ($value as $part) {
+                if (!$part) {
+                    continue;
+                }
+
+                return false;
+            }
+        } elseif ($value) {
+            return false;
+        }
+
+        return true;
     }
 }

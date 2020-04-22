@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2019 Heimrich & Hannot GmbH
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -48,11 +48,6 @@ class AdjustFilterValueEvent extends Event
 
     /**
      * @param $value
-     * @param array                    $data
-     * @param FilterConfigElementModel $element
-     * @param string                   $name
-     * @param FilterConfig             $config
-     * @param array                    $dca
      */
     public function __construct($value, array $data, FilterConfigElementModel $element, string $name, FilterConfig $config, array $dca)
     {
@@ -80,81 +75,51 @@ class AdjustFilterValueEvent extends Event
         $this->value = $value;
     }
 
-    /**
-     * @return array
-     */
     public function getData(): array
     {
         return $this->data;
     }
 
-    /**
-     * @param array $data
-     */
     public function setData(array $data): void
     {
         $this->data = $data;
     }
 
-    /**
-     * @return FilterConfigElementModel
-     */
     public function getElement(): FilterConfigElementModel
     {
         return $this->element;
     }
 
-    /**
-     * @param FilterConfigElementModel $element
-     */
     public function setElement(FilterConfigElementModel $element): void
     {
         $this->element = $element;
     }
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * @param string $name
-     */
     public function setName(string $name): void
     {
         $this->name = $name;
     }
 
-    /**
-     * @return FilterConfig
-     */
     public function getConfig(): FilterConfig
     {
         return $this->config;
     }
 
-    /**
-     * @param FilterConfig $config
-     */
     public function setConfig(FilterConfig $config): void
     {
         $this->config = $config;
     }
 
-    /**
-     * @return array
-     */
     public function getDca(): array
     {
         return $this->dca;
     }
 
-    /**
-     * @param array $dca
-     */
     public function setDca(array $dca): void
     {
         $this->dca = $dca;

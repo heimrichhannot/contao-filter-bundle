@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2019 Heimrich & Hannot GmbH
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -54,8 +54,6 @@ class ChoiceType extends AbstractType
 
     /**
      * Get the list of available choices.
-     *
-     * @param FilterConfigElementModel $element
      *
      * @return array|mixed
      */

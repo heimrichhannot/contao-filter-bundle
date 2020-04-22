@@ -33,6 +33,7 @@ services:
     - "@contao.framework"
     - "@huh.filter.session"
     - "@doctrine.dbal.default_connection"
+    - "@request_stack"
 
   huh.filter.backend.filter_config_element:
     public: true

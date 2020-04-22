@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2019 Heimrich & Hannot GmbH
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -37,9 +37,6 @@ class FilterManager
 
     /**
      * Constructor.
-     *
-     * @param ContaoFrameworkInterface $framework
-     * @param FilterSession            $session
      */
     public function __construct(ContaoFrameworkInterface $framework, FilterSession $session)
     {
@@ -50,7 +47,6 @@ class FilterManager
     /**
      * Get the query builder for a given filter id.
      *
-     * @param int   $id
      * @param array $skipElements Array with tl_filter_config_element ids that should be skipped on initQueryBuilder
      *
      * @return \HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder|null
@@ -70,7 +66,6 @@ class FilterManager
     /**
      * Get the query builder containing only initial filters for a given filter id.
      *
-     * @param int   $id
      * @param array $skipElements Array with tl_filter_config_element ids that should be skipped on initQueryBuilder
      *
      * @return \HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder|null
@@ -93,8 +88,6 @@ class FilterManager
     /**
      * Get the session key for a given filter config.
      *
-     * @param array $filter
-     *
      * @return string The unique session key
      */
     public function getSessionKey(array $filter)
@@ -105,7 +98,6 @@ class FilterManager
     /**
      * Find filter by id.
      *
-     * @param int  $id
      * @param bool $cache Disable for a fresh filter/querybuilder instance
      *
      * @return FilterConfig|null The config or null if not found
@@ -139,7 +131,6 @@ class FilterManager
     /**
      * Get the config for a given filter.
      *
-     * @param array $filter
      * @param mixed $request The request to handle
      *
      * @return FilterConfig

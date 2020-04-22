@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2019 Heimrich & Hannot GmbH
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -28,6 +28,7 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\Forms;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
 class FilterConfig implements \JsonSerializable
@@ -94,28 +95,30 @@ class FilterConfig implements \JsonSerializable
     private $container;
 
     /**
+     * @var RequestStack
+     */
+    private $requestStack;
+
+    /**
      * Constructor.
-     *
-     * @param ContaoFrameworkInterface $framework
-     * @param FilterSession            $session
      */
     public function __construct(
         ContainerInterface $container,
         ContaoFrameworkInterface $framework,
         FilterSession $session,
-        Connection $connection
+        Connection $connection,
+        RequestStack $requestStack
     ) {
         $this->framework = $framework;
         $this->session = $session;
         $this->container = $container;
         $this->queryBuilder = new FilterQueryBuilder($this->container, $this->framework, $connection);
+        $this->requestStack = $requestStack;
     }
 
     /**
      * Init the filter based on its model.
      *
-     * @param string                                                   $sessionKey
-     * @param array                                                    $filter
      * @param \Contao\Model\Collection|FilterConfigElementModel[]|null $elements
      */
     public function init(string $sessionKey, array $filter, $elements = null)
@@ -127,8 +130,6 @@ class FilterConfig implements \JsonSerializable
 
     /**
      * Build the form.
-     *
-     * @param array $data
      */
     public function buildForm(array $data = [])
     {
@@ -162,7 +163,7 @@ class FilterConfig implements \JsonSerializable
             $options['attr']['data-list'] = '#huh-list-'.$this->getFilter()['ajaxList'];
         }
 
-        if($this->container->get('huh.request')->isXmlHttpRequest()){
+        if ($this->container->get('huh.request')->isXmlHttpRequest()) {
             $this->container->get('huh.filter.util.filter_ajax')->updateData($this);
             $data = $this->getData();
         }
@@ -246,8 +247,6 @@ class FilterConfig implements \JsonSerializable
 
     /**
      * @param mixed $request The request to handle
-     *
-     * @return RedirectResponse|null
      */
     public function handleForm($request = null): ?RedirectResponse
     {
@@ -308,28 +307,6 @@ class FilterConfig implements \JsonSerializable
         return null;
     }
 
-
-    protected function isResetButtonClicked(FormInterface $form): bool
-    {
-      if(!(null !== $form->getClickedButton() && \in_array($form->getClickedButton()->getName(),
-              $this->getResetNames(), true))) {
-          return $this->isResetButtonClickedFromRequest();
-      }
-
-      return true;
-    }
-
-    protected function isResetButtonClickedFromRequest(): bool
-    {
-         $request = $this->container->get('huh.request');
-         $data    = in_array($request->getMethod(), ['GET', 'HEAD']) ? $request->getGet($this->getFilter()['name']) : $request->getPost($this->getFilter()['name']);
-        
-        return isset($data['reset']);
-    }
-
-    /**
-     * @return int|null
-     */
     public function getId(): ?int
     {
         return $this->filter['id'] ?? null;
@@ -388,9 +365,6 @@ class FilterConfig implements \JsonSerializable
         return $this->builder;
     }
 
-    /**
-     * @return string
-     */
     public function getSessionKey(): string
     {
         return $this->sessionKey;
@@ -406,8 +380,6 @@ class FilterConfig implements \JsonSerializable
 
     /**
      * Set the filter data.
-     *
-     * @param array $data
      */
     public function setData(array $data = [])
     {
@@ -416,19 +388,24 @@ class FilterConfig implements \JsonSerializable
 
     /**
      * Get the filter data (e.g. form submission data).
-     *
-     * @return array
      */
     public function getData(): array
     {
         $data = $this->session->getData($this->getSessionKey());
+
+        $currentUrl = strtok($this->requestStack->getCurrentRequest()->getSchemeAndHttpHost().
+            $this->requestStack->getCurrentRequest()->getRequestUri(), '?');
+
+        $referrer = strtok($this->requestStack->getCurrentRequest()->headers->get('referer'), '?');
 
         if ($this->filter['resetFilterInitial']) {
             if (isset($data[FilterType::FILTER_FORM_SUBMITTED]) && true === $data[FilterType::FILTER_FORM_SUBMITTED]) {
                 $data[FilterType::FILTER_FORM_SUBMITTED] = false;
                 $this->formSubmitted = true;
                 $this->setData($data);
-            } elseif (false === $this->formSubmitted) {
+            } elseif (false === $this->formSubmitted && false !== $referrer && $currentUrl !== $referrer) {
+                // only reset if the visitor comes from another page than the filtered one
+                // without this restriction pagination wouldn't work
                 $this->resetData();
                 $data = [];
             }
@@ -439,8 +416,6 @@ class FilterConfig implements \JsonSerializable
 
     /**
      * Has the filter data (e.g. form submitted?).
-     *
-     * @return bool
      */
     public function hasData(): bool
     {
@@ -455,9 +430,6 @@ class FilterConfig implements \JsonSerializable
         $this->session->reset($this->getSessionKey());
     }
 
-    /**
-     * @return bool
-     */
     public function isSubmitted(): bool
     {
         $data = $this->getData();
@@ -465,17 +437,11 @@ class FilterConfig implements \JsonSerializable
         return isset($data[FilterType::FILTER_ID_NAME]);
     }
 
-    /**
-     * @return array
-     */
     public function getResetNames(): array
     {
         return !\is_array($this->resetNames) ? [$this->resetNames] : $this->resetNames;
     }
 
-    /**
-     * @param string $resetName
-     */
     public function addResetName(string $resetName)
     {
         $this->resetNames[] = $resetName;
@@ -489,9 +455,6 @@ class FilterConfig implements \JsonSerializable
         $this->resetName = $resetNames;
     }
 
-    /**
-     * @return ContaoFrameworkInterface
-     */
     public function getFramework(): ContaoFrameworkInterface
     {
         return $this->framework;
@@ -524,9 +487,9 @@ class FilterConfig implements \JsonSerializable
     /**
      * Get the redirect url based on current filter action.
      *
-     * @since 1.0.0-beta128.2 Url is absolute
-     *
      * @return string
+     *
+     * @since 1.0.0-beta128.2 Url is absolute
      */
     public function getUrl()
     {
@@ -603,8 +566,6 @@ class FilterConfig implements \JsonSerializable
 
     /**
      * Handle current request or the given one.
-     *
-     * @param Request|null $request
      */
     public function handleRequest(Request $request = null)
     {
@@ -625,6 +586,24 @@ class FilterConfig implements \JsonSerializable
     public function jsonSerialize()
     {
         return get_object_vars($this);
+    }
+
+    protected function isResetButtonClicked(FormInterface $form): bool
+    {
+        if (!(null !== $form->getClickedButton() && \in_array($form->getClickedButton()->getName(),
+                $this->getResetNames(), true))) {
+            return $this->isResetButtonClickedFromRequest();
+        }
+
+        return true;
+    }
+
+    protected function isResetButtonClickedFromRequest(): bool
+    {
+        $request = $this->container->get('huh.request');
+        $data = \in_array($request->getMethod(), ['GET', 'HEAD']) ? $request->getGet($this->getFilter()['name']) : $request->getPost($this->getFilter()['name']);
+
+        return isset($data['reset']);
     }
 
     /**

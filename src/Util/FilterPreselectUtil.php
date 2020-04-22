@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2019 Heimrich & Hannot GmbH
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -94,8 +94,6 @@ class FilterPreselectUtil
      *
      * @param int                    $id            The filter id
      * @param FilterPreselectModel[] $preselections list of preselections
-     *
-     * @return array
      */
     public function getPreselectData(int $id, array $preselections): array
     {
@@ -172,8 +170,6 @@ class FilterPreselectUtil
 
     /**
      * Get the initial value based on preselection.
-     *
-     * @param FilterPreselectModel $element
      *
      * @return array|mixed|null
      */

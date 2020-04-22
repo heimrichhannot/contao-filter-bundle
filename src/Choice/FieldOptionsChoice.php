@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2019 Heimrich & Hannot GmbH
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -106,9 +106,6 @@ class FieldOptionsChoice extends AbstractChoice
     /**
      * Get custom options.
      *
-     * @param FilterConfigElementModel $element
-     * @param array                    $filter
-     *
      * @return array
      */
     protected function getCustomOptions(FilterConfigElementModel $element, array $filter)
@@ -124,10 +121,6 @@ class FieldOptionsChoice extends AbstractChoice
 
     /**
      * Get contao dca widget options.
-     *
-     * @param FilterConfigElementModel $element
-     * @param array                    $filter
-     * @param array                    $dca
      *
      * @return array
      */
@@ -171,10 +164,6 @@ class FieldOptionsChoice extends AbstractChoice
 
     /**
      * Get default contao widget options.
-     *
-     * @param FilterConfigElementModel $element
-     * @param array                    $filter
-     * @param array                    $dca
      *
      * @return array
      */
@@ -267,10 +256,6 @@ class FieldOptionsChoice extends AbstractChoice
     /**
      * Get tag widget options.
      *
-     * @param FilterConfigElementModel $element
-     * @param array                    $filter
-     * @param array                    $dca
-     *
      * @return array
      */
     protected function getTagWidgetOptions(FilterConfigElementModel $element, array $filter, array $dca)
@@ -305,10 +290,6 @@ class FieldOptionsChoice extends AbstractChoice
     /**
      * Get category widget options.
      *
-     * @param FilterConfigElementModel $element
-     * @param array                    $filter
-     * @param array                    $dca
-     *
      * @return array
      */
     protected function getCategoryWidgetOptions(FilterConfigElementModel $element, array $filter, array $dca)
@@ -331,12 +312,6 @@ class FieldOptionsChoice extends AbstractChoice
         return $options;
     }
 
-    /**
-     * @param array                    $choices
-     * @param FilterConfigElementModel $element
-     *
-     * @return string
-     */
     protected function getGroupChoicesValue(array $choices, FilterConfigElementModel $element): string
     {
         if ($element->modifyGroupChoices) {

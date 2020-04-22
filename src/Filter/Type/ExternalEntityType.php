@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2019 Heimrich & Hannot GmbH
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -58,8 +58,6 @@ class ExternalEntityType extends AbstractType
     }
 
     /**
-     * @param FilterConfigElementModel $element
-     *
      * @return mixed|null
      */
     public function getSourceEntity(FilterConfigElementModel $element)
@@ -77,11 +75,7 @@ class ExternalEntityType extends AbstractType
     }
 
     /**
-     * @param FilterQueryBuilder       $builder
-     * @param FilterConfigElementModel $element
      * @param $sourceValue
-     *
-     * @return string
      */
     protected function getWhere(FilterQueryBuilder $builder, FilterConfigElementModel $element, $sourceValue): string
     {
@@ -97,9 +91,6 @@ class ExternalEntityType extends AbstractType
 
     /**
      * @param $entity
-     * @param FilterConfigElementModel $element
-     *
-     * @return string
      */
     protected function getSourceValueForFilter($entity, FilterConfigElementModel $element): string
     {
@@ -117,22 +108,11 @@ class ExternalEntityType extends AbstractType
         return implode(',', StringUtil::deserialize($value, true));
     }
 
-    /**
-     * @param array                    $filter
-     * @param FilterConfigElementModel $element
-     *
-     * @return array
-     */
     protected function getDca(array $filter, FilterConfigElementModel $element): array
     {
         return $GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element->field];
     }
 
-    /**
-     * @param FilterConfigElementModel $element
-     *
-     * @return string
-     */
     protected function getOperator(FilterConfigElementModel $element): string
     {
         if (!$element->customOperator) {

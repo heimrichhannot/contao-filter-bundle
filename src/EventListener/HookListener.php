@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2019 Heimrich & Hannot GmbH
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -15,10 +15,6 @@ class HookListener
 {
     /**
      * exclude/include BlockModule by filter parameter.
-     *
-     * @param BlockModuleModel $block
-     *
-     * @return bool
      */
     public function isBlockVisible(BlockModuleModel $block): bool
     {

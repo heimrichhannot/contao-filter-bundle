@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2019 Heimrich & Hannot GmbH
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -50,8 +50,6 @@ abstract class AbstractType
 
     /**
      * Get the field name.
-     *
-     * @param FilterConfigElementModel $element
      *
      * @return mixed
      */
@@ -159,9 +157,6 @@ abstract class AbstractType
     /**
      * Get the field label.
      *
-     * @param FilterConfigElementModel $element
-     * @param FormBuilderInterface     $builder
-     *
      * @return string
      */
     public function getLabel(FilterConfigElementModel $element, FormBuilderInterface $builder)
@@ -185,10 +180,6 @@ abstract class AbstractType
 
     /**
      * Get field options.
-     *
-     * @param FilterConfigElementModel $element
-     * @param FormBuilderInterface     $builder
-     * @param bool                     $triggerEvent
      *
      * @return array The field options
      */
@@ -252,8 +243,6 @@ abstract class AbstractType
     /**
      * Get min date for given element and type.
      *
-     * @param FilterConfigElementModel $element
-     *
      * @return int The min date as timestamp
      */
     protected function getMinDate(FilterConfigElementModel $element)
@@ -286,8 +275,6 @@ abstract class AbstractType
 
     /**
      * Get max date for given element and type.
-     *
-     * @param FilterConfigElementModel $element
      *
      * @return int The max date as timestamp
      */

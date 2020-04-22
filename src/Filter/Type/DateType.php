@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2019 Heimrich & Hannot GmbH
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -119,13 +119,7 @@ class DateType extends AbstractType
     /**
      * Add the options for the date_widget property.
      *
-     * @param array                    $options
-     * @param FilterConfigElementModel $element
-     * @param FormBuilderInterface     $builder
-     *
      * @throws \Exception
-     *
-     * @return array
      */
     protected function addDateWidgetOptions(array $options, FilterConfigElementModel $element, FormBuilderInterface $builder): array
     {

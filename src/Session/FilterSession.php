@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2019 Heimrich & Hannot GmbH
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -28,8 +28,6 @@ class FilterSession
 
     /**
      * Constructor.
-     *
-     * @param ContaoFrameworkInterface $framework
      */
     public function __construct(ContaoFrameworkInterface $framework, SessionInterface $session)
     {
@@ -39,9 +37,6 @@ class FilterSession
 
     /**
      * Set the filter data for a given filter key.
-     *
-     * @param string $key
-     * @param array  $data
      */
     public function setData(string $key, array $data = [])
     {
@@ -50,10 +45,6 @@ class FilterSession
 
     /**
      * Get the filter data for a given key.
-     *
-     * @param string $key
-     *
-     * @return array
      */
     public function getData(string $key): array
     {
@@ -69,10 +60,6 @@ class FilterSession
     /**
      * Has the filter data for a given key.
      * Use this function if you want to know if the form contains any user`s inputs.
-     *
-     * @param string $key
-     *
-     * @return bool
      */
     public function hasData(string $key): bool
     {
@@ -96,8 +83,6 @@ class FilterSession
 
     /**
      * Reset the filter data for a given key.
-     *
-     * @param string $key
      */
     public function reset(string $key)
     {

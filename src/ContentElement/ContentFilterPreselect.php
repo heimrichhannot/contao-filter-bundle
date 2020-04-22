@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2019 Heimrich & Hannot GmbH
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -39,8 +39,6 @@ class ContentFilterPreselect extends ContentElement
 
     /**
      * Get the wildcard from preselection.
-     *
-     * @return array
      */
     protected function getWildcard(): array
     {
@@ -67,8 +65,6 @@ class ContentFilterPreselect extends ContentElement
 
     /**
      * Get the filter title.
-     *
-     * @return string
      */
     protected function getFilterTitle(): string
     {

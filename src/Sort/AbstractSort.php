@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2019 Heimrich & Hannot GmbH
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -46,22 +46,14 @@ abstract class AbstractSort
     /**
      * Get the option label.
      *
-     * @param FilterConfigElementModel $element
-     * @param AbstractType             $type       The filter type
-     * @param array                    $sortConfig
-     *
-     * @return string|null
+     * @param AbstractType $type The filter type
      */
     abstract public function getFieldText(FilterConfigElementModel $element, AbstractType $type, array $sortConfig): ?string;
 
     /**
      * Get the option label.
      *
-     * @param FilterConfigElementModel $element
-     * @param AbstractType             $type       The filter type
-     * @param array                    $sortConfig
-     *
-     * @return string|null
+     * @param AbstractType $type The filter type
      */
     abstract public function getName(FilterConfigElementModel $element, AbstractType $type, array $sortConfig): ?string;
 }

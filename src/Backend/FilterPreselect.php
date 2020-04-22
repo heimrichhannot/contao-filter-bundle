@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2019 Heimrich & Hannot GmbH
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -74,8 +74,6 @@ class FilterPreselect
 
     /**
      * Prepare initial choices.
-     *
-     * @param DataContainer $dc
      */
     public function prepareChoiceTypes(DataContainer $dc)
     {
@@ -88,10 +86,6 @@ class FilterPreselect
 
     /**
      * Prepare choices for given element id and return options.
-     *
-     * @param int $id
-     *
-     * @return array
      */
     protected function prepareElementChoices(int $id): array
     {

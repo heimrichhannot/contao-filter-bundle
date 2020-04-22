@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2019 Heimrich & Hannot GmbH
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -32,33 +32,21 @@ class ModifyJsonResponseEvent extends Event
         $this->filter = $filter;
     }
 
-    /**
-     * @return JsonResponse
-     */
     public function getResponse(): JsonResponse
     {
         return $this->response;
     }
 
-    /**
-     * @param JsonResponse $response
-     */
     public function setResponse(JsonResponse $response): void
     {
         $this->response = $response;
     }
 
-    /**
-     * @return FilterConfig
-     */
     public function getFilter(): FilterConfig
     {
         return $this->filter;
     }
 
-    /**
-     * @param FilterConfig $filter
-     */
     public function setFilter(FilterConfig $filter): void
     {
         $this->filter = $filter;

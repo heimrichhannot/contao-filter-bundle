@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2019 Heimrich & Hannot GmbH
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -171,9 +171,7 @@ class FilterConfigElement
 
             case 'create':
                 if (!\strlen(\Input::get('pid')) || !\in_array(\Input::get('pid'), $root, true)) {
-                    throw new \Contao\CoreBundle\Exception\AccessDeniedException(
-                        'Not enough permissions to create filter_element items in filter_element archive ID '.\Input::get('pid').'.'
-                    );
+                    throw new \Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to create filter_element items in filter_element archive ID '.\Input::get('pid').'.');
                 }
 
                 break;
@@ -181,9 +179,7 @@ class FilterConfigElement
             case 'cut':
             case 'copy':
                 if (!\in_array(\Input::get('pid'), $root, true)) {
-                    throw new \Contao\CoreBundle\Exception\AccessDeniedException(
-                        'Not enough permissions to '.\Input::get('act').' filter_element item ID '.$id.' to filter_element archive ID '.\Input::get('pid').'.'
-                    );
+                    throw new \Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to '.\Input::get('act').' filter_element item ID '.$id.' to filter_element archive ID '.\Input::get('pid').'.');
                 }
             // no break STATEMENT HERE
 
@@ -199,9 +195,7 @@ class FilterConfigElement
                 }
 
                 if (!\in_array($objArchive->pid, $root, true)) {
-                    throw new \Contao\CoreBundle\Exception\AccessDeniedException(
-                        'Not enough permissions to '.\Input::get('act').' filter_element item ID '.$id.' of filter_element archive ID '.$objArchive->pid.'.'
-                    );
+                    throw new \Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to '.\Input::get('act').' filter_element item ID '.$id.' of filter_element archive ID '.$objArchive->pid.'.');
                 }
 
                 break;
@@ -213,9 +207,7 @@ class FilterConfigElement
             case 'cutAll':
             case 'copyAll':
                 if (!\in_array($id, $root, true)) {
-                    throw new \Contao\CoreBundle\Exception\AccessDeniedException(
-                        'Not enough permissions to access filter_element archive ID '.$id.'.'
-                    );
+                    throw new \Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to access filter_element archive ID '.$id.'.');
                 }
 
                 $objArchive = $database->prepare('SELECT id FROM tl_filter_config_element WHERE pid=?')->execute($id);
@@ -237,9 +229,7 @@ class FilterConfigElement
                 if (\strlen(\Input::get('act'))) {
                     throw new \Contao\CoreBundle\Exception\AccessDeniedException('Invalid command "'.\Input::get('act').'".');
                 } elseif (!\in_array($id, $root, true)) {
-                    throw new \Contao\CoreBundle\Exception\AccessDeniedException(
-                        'Not enough permissions to access filter_element archive ID '.$id.'.'
-                    );
+                    throw new \Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to access filter_element archive ID '.$id.'.');
                 }
 
                 break;
@@ -300,9 +290,7 @@ class FilterConfigElement
 
         // Check the field access
         if (!$user->hasAccess('tl_filter_config_element::published', 'alexf')) {
-            throw new \Contao\CoreBundle\Exception\AccessDeniedException(
-                'Not enough permissions to publish/unpublish filter_element item ID '.$intId.'.'
-            );
+            throw new \Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to publish/unpublish filter_element item ID '.$intId.'.');
         }
 
         // Set the current record
@@ -379,11 +367,6 @@ class FilterConfigElement
         }
     }
 
-    /**
-     * @param DataContainer $dc
-     *
-     * @return array
-     */
     public function getSourceFields(DataContainer $dc): array
     {
         if (!$dc->activeRecord->sourceTable) {

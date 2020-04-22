@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2019 Heimrich & Hannot GmbH
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -101,9 +101,6 @@ class FilterType extends AbstractType
 
     /**
      * Build the form fields for the given elements.
-     *
-     * @param FormBuilderInterface $builder
-     * @param array                $options
      */
     protected function buildElements(FormBuilderInterface $builder, array $options)
     {
@@ -171,10 +168,6 @@ class FilterType extends AbstractType
 
     /**
      * Build the wrapper form elements.
-     *
-     * @param array                $wrappers
-     * @param FormBuilderInterface $builder
-     * @param array                $options
      */
     protected function buildWrapperElements(array $wrappers, FormBuilderInterface $builder, array $options)
     {

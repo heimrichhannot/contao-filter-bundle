@@ -1,8 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.1.0] - 2020-04-22
+- fixed handling for `resetFilterInitial` -> now it's based on referrer which prevents issues with the pagination
+
 ## [1.0.1] - 2020-04-14
-- fixed resolving wether reset button was clicked when `clickedButton` is not set for form
+- fixed resolving whether reset button has been clicked when `clickedButton` is not set for form
 
 ## [1.0.0] - 2020-04-14
 - added async form submit support to select fields
@@ -19,7 +22,7 @@ All notable changes to this project will be documented in this file.
 
 ## [1.0.0-beta129.1] - 2020-04-06
 - fixed an autowiring issue
-- removed an dev leftover from composer.json
+- removed a dev leftover from composer.json
 - removed unnecessary submitOnChange's in tl_filter_config
 
 ## [1.0.0-beta129.0] - 2020-04-06

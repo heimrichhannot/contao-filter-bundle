@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2019 Heimrich & Hannot GmbH
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -31,8 +31,6 @@ class FrontendController extends Controller
      *
      * @throws HandleFormException
      * @throws MissingFilterException
-     *
-     * @return RedirectResponse
      */
     public function preselectAction(Request $request, int $id): RedirectResponse
     {
@@ -59,8 +57,6 @@ class FrontendController extends Controller
      *
      * @throws HandleFormException
      * @throws MissingFilterException
-     *
-     * @return Response
      */
     public function submitAction(Request $request, int $id): Response
     {

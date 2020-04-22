@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2019 Heimrich & Hannot GmbH
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -75,8 +75,6 @@ class ContentFilterHyperlink extends ContentHyperlink
 
     /**
      * Get the filter url based on current preselection.
-     *
-     * @return string|null
      */
     protected function getFilterUrl(): ?string
     {

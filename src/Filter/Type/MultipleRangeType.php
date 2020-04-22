@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2019 Heimrich & Hannot GmbH
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -201,17 +201,11 @@ class MultipleRangeType extends AbstractType
         return $element->name;
     }
 
-    /**
-     * @return FilterConfigElementModel|null
-     */
     public function getStartElement(): ?FilterConfigElementModel
     {
         return $this->startElement;
     }
 
-    /**
-     * @return FilterConfigElementModel|null
-     */
     public function getStopElement(): ?FilterConfigElementModel
     {
         return $this->stopElement;
@@ -227,11 +221,6 @@ class MultipleRangeType extends AbstractType
 
     /**
      * Get the options for the start field.
-     *
-     * @param FilterConfigElementModel $element
-     * @param FormBuilderInterface     $builder
-     * @param FormBuilderInterface     $start
-     * @param FormBuilderInterface     $stop
      *
      * @return array
      */
@@ -250,11 +239,6 @@ class MultipleRangeType extends AbstractType
 
     /**
      * Get the options for the stop field.
-     *
-     * @param FilterConfigElementModel $element
-     * @param FormBuilderInterface     $builder
-     * @param FormBuilderInterface     $start
-     * @param FormBuilderInterface     $stop
      *
      * @return array
      */

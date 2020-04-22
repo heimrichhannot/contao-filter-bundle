@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2019 Heimrich & Hannot GmbH
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -14,8 +14,6 @@ use HeimrichHannot\FilterBundle\Filter\AbstractType;
 class FilterConfigElementCallbackListener
 {
     /**
-     * @param DC_Table $dca
-     *
      * @return array
      */
     public function getValueTypeOptions(DC_Table $dca)

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2019 Heimrich & Hannot GmbH
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -42,7 +42,6 @@ class FrontendAjaxController extends Controller
         $this->pageUtil = $pageUtil;
     }
 
-
     /**
      * @Route("/_filter/ajax_submit/{id}", name="filter_frontend_ajax_submit")
      *
@@ -51,8 +50,6 @@ class FrontendAjaxController extends Controller
      *
      * @throws HandleFormException
      * @throws MissingFilterException
-     *
-     * @return Response
      */
     public function ajaxSubmitAction(Request $request, int $id): Response
     {
@@ -75,10 +72,12 @@ class FrontendAjaxController extends Controller
         }
 
         global $objPage;
-        if(null === $objPage) {
+
+        if (null === $objPage) {
             $pageId = $request->get($filter->getFilter()['name'])[FilterType::FILTER_PAGE_ID_NAME];
+
             if (is_numeric($pageId)) {
-                $objPage = $this->pageUtil->retrieveGlobalPageFromCurrentPageId((int)$pageId);
+                $objPage = $this->pageUtil->retrieveGlobalPageFromCurrentPageId((int) $pageId);
             }
         }
 

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2019 Heimrich & Hannot GmbH
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -71,9 +71,6 @@ class CountryChoice extends FieldOptionsChoice
 
     /**
      * Get custom country options.
-     *
-     * @param FilterConfigElementModel $element
-     * @param array                    $filter
      *
      * @return array
      */

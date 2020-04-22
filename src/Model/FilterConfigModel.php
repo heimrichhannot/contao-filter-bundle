@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2019 Heimrich & Hannot GmbH
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -83,9 +83,6 @@ class FilterConfigModel extends Model
     /**
      * Find filters by multiple dataContainers.
      *
-     * @param array $dataContainers
-     * @param array $options
-     *
      * @return \Contao\Model\Collection|FilterConfigModel[]|FilterConfigModel|null A collection of models or null if there are no filters
      */
     public function findByDataContainers(array $dataContainers, array $options = [])
@@ -109,8 +106,6 @@ class FilterConfigModel extends Model
 
     /**
      * Find published filters.
-     *
-     * @param array $options
      *
      * @return \Contao\Model\Collection|FilterConfigModel[]|FilterConfigModel|null A collection of models or null if there are no filters
      */

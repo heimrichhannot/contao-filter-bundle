@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2019 Heimrich & Hannot GmbH
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -26,8 +26,6 @@ class Content
 
     /**
      * Invoke onload_callback.
-     *
-     * @param DataContainer $dc
      */
     public function onLoad(DataContainer $dc)
     {
@@ -40,9 +38,6 @@ class Content
 
     /**
      * Toggle filterPreselect field on demand.
-     *
-     * @param Model         $content
-     * @param DataContainer $dc
      */
     protected function toggleFilterPreselect(Model $content, DataContainer $dc)
     {

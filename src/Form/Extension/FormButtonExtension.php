@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2019 Heimrich & Hannot GmbH
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -26,8 +26,6 @@ class FormButtonExtension extends AbstractTypeExtension
 
     /**
      * Add the extra row_attr option.
-     *
-     * @param OptionsResolver $resolver
      */
     public function configureOptions(OptionsResolver $resolver)
     {
@@ -40,10 +38,6 @@ class FormButtonExtension extends AbstractTypeExtension
 
     /**
      * Pass the set row_attr options to the view.
-     *
-     * @param FormView      $view
-     * @param FormInterface $form
-     * @param array         $options
      */
     public function buildView(FormView $view, FormInterface $form, array $options)
     {

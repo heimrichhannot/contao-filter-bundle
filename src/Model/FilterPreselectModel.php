@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2019 Heimrich & Hannot GmbH
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -12,7 +12,6 @@ use HeimrichHannot\FieldpaletteBundle\Model\FieldPaletteModel;
 
 /**
  * Class FilterPreselectModel.
- *
  *
  * @property int    $element
  * @property string $initialValueType

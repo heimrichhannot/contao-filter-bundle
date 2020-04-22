@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2019 Heimrich & Hannot GmbH
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -54,10 +54,7 @@ class FilterQueryBuilder extends QueryBuilder
     /**
      * Add where clause based on an element.
      *
-     * @param FilterConfigElementModel $element
-     * @param string                   $name            The field name
-     * @param FilterConfig             $config
-     * @param string                   $defaultOperator
+     * @param string $name The field name
      *
      * @return $this this FilterQueryBuilder instance
      */
@@ -98,11 +95,7 @@ class FilterQueryBuilder extends QueryBuilder
     /**
      * Add tag widget where clause.
      *
-     * @param FilterConfigElementModel $element
-     * @param string                   $name            The field name
-     * @param FilterConfig             $config
-     * @param array                    $dca
-     * @param string|null              $defaultOperator
+     * @param string $name The field name
      *
      * @return $this this FilterQueryBuilder instance
      */
@@ -165,9 +158,6 @@ class FilterQueryBuilder extends QueryBuilder
         $this->contextualValues[$elementId] = $value;
     }
 
-    /**
-     * @return array
-     */
     public function getContextualValues(): array
     {
         return $this->contextualValues;
@@ -195,22 +185,12 @@ class FilterQueryBuilder extends QueryBuilder
 
     /**
      * Add filter element to skip.
-     *
-     * @param FilterConfigElementModel $element
      */
     public function addSkip(FilterConfigElementModel $element)
     {
         $this->skip[$element->id] = $element;
     }
 
-    /**
-     * @param FilterConfigElementModel $element
-     * @param string                   $operator
-     * @param array                    $dca
-     * @param bool                     $supportSerializedBlob
-     *
-     * @return string
-     */
     protected function getOperator(FilterConfigElementModel $element, string $operator, array $dca, bool $supportSerializedBlob = true): string
     {
         if ((isset($dca['eval']['multiple']) && $dca['eval']['multiple'] || 'tagsinput' === $dca['eval']['inputType']) && $supportSerializedBlob) {
@@ -240,11 +220,8 @@ class FilterQueryBuilder extends QueryBuilder
     /**
      * Add tag widget where clause.
      *
-     * @param FilterConfigElementModel $element
-     * @param string                   $name            The field name
-     * @param FilterConfig             $config
-     * @param array                    $dca
-     * @param string                   $defaultOperator
+     * @param string $name            The field name
+     * @param string $defaultOperator
      *
      * @return $this this FilterQueryBuilder instance
      */
@@ -253,7 +230,7 @@ class FilterQueryBuilder extends QueryBuilder
         $data = $config->getData();
         $value = $data[$name];
 
-	if(empty($value)) {
+        if (empty($value)) {
             return $this;
         }
 
@@ -293,11 +270,8 @@ class FilterQueryBuilder extends QueryBuilder
     /**
      * Add category widget where clause.
      *
-     * @param FilterConfigElementModel $element
-     * @param string                   $name            The field name
-     * @param FilterConfig             $config
-     * @param array                    $dca
-     * @param string                   $defaultOperator
+     * @param string $name            The field name
+     * @param string $defaultOperator
      *
      * @return $this this FilterQueryBuilder instance
      */
@@ -360,12 +334,6 @@ class FilterQueryBuilder extends QueryBuilder
         return $event->getValue();
     }
 
-    /**
-     * @param FilterConfigElementModel $element
-     * @param array                    $values
-     *
-     * @return array
-     */
     protected function getGroupChoiceValues(FilterConfigElementModel $element, array $values): array
     {
         if (!$element->addGroupChoiceField) {
