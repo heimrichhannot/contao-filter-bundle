@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2019 Heimrich & Hannot GmbH
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -450,9 +450,6 @@ class FilterConfigElementModelTest extends ContaoTestCase
         $this->assertSame(['id' => 1, 'pid' => 1, 'type' => 'date', 'fields' => ['f1', 'f2']], $jsonArray['arrData']);
     }
 
-    /**
-     * @return string
-     */
     protected function getFixturesDir(): string
     {
         return __DIR__.\DIRECTORY_SEPARATOR.'..'.\DIRECTORY_SEPARATOR.'Fixtures';

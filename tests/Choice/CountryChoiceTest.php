@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2019 Heimrich & Hannot GmbH
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -426,9 +426,6 @@ class CountryChoiceTest extends ContaoTestCase
         $this->assertEmpty($choices);
     }
 
-    /**
-     * @return string
-     */
     protected function getFixturesDir(): string
     {
         return __DIR__.\DIRECTORY_SEPARATOR.'Fixtures';
@@ -436,9 +433,6 @@ class CountryChoiceTest extends ContaoTestCase
 
     /**
      * Mocks the plugin loader.
-     *
-     * @param \PHPUnit_Framework_MockObject_Matcher_InvokedCount $expects
-     * @param array                                              $plugins
      *
      * @return PluginLoader|\PHPUnit_Framework_MockObject_MockObject
      */

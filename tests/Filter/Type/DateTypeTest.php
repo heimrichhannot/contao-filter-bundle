@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2019 Heimrich & Hannot GmbH
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -94,9 +94,9 @@ class DateTypeTest extends ContaoTestCase
         $this->container->set('request_stack', $requestStack);
 
         $router = $this->createMock(RouterInterface::class);
-        $router->method('generate')->with('filter_frontend_submit', $this->anything())->will($this->returnCallback(function ($route, $params = []) {
+        $router->method('generate')->with('filter_frontend_submit', $this->anything())->willReturnCallback(function ($route, $params = []) {
             return '/_filter/submit/1';
-        }));
+        });
 
         $this->container->set('router', $router);
 
@@ -707,9 +707,6 @@ class DateTypeTest extends ContaoTestCase
         $this->assertSame([':start' => $value, ':stop' => $value], $config->getQueryBuilder()->getParameters());
     }
 
-    /**
-     * @return string
-     */
     protected function getFixturesDir(): string
     {
         return __DIR__.\DIRECTORY_SEPARATOR.'../..'.\DIRECTORY_SEPARATOR.'Fixtures';

@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.1.1] - 2020-04-22
+- fixed php_cs style
+
 ## [1.1.0] - 2020-04-22
 - fixed handling for `resetFilterInitial` -> now it's based on referrer which prevents issues with the pagination
 
