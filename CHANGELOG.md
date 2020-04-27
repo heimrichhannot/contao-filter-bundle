@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.2.0] - 2020-04-28
+- added new filter label `huh.filter.label.reset_filter`
+
 ## [1.1.2] - 2020-04-27
 - added necessary label tag to inputs with hidden labels, by css class sr-only
 
