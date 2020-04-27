@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.1.2] - 2020-04-27
+- added necessary label tag to inputs with hidden labels, by css class sr-only
+
 ## [1.1.1] - 2020-04-22
 - fixed php_cs style
 

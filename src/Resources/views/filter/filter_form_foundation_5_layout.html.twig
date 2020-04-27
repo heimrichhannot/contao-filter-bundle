@@ -1,6 +1,19 @@
 {% form_theme form 'foundation_5_layout.html.twig' %}
 
 {% block body %}
+    <style>
+        .sr-only {
+            border: 0;
+            clip: rect(0,0,0,0);
+            height: 1px;
+            margin: -1px;
+            overflow: hidden;
+            padding: 0;
+            position: absolute;
+            width: 1px;
+        }
+    </style>
+
     {{ form_start(form, {attr: {novalidate: 'novalidate'}}) }}
     {{ form_errors(form) }}
     {{ form_end(form) }}

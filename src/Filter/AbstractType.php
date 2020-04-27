@@ -189,7 +189,13 @@ abstract class AbstractType
         $name = $this->getName($element);
         $options = [];
 
-        $options['label'] = (true === (bool) $element->hideLabel) ? false : ($this->getLabel($element, $builder) ?: $element->title);
+        $options['label'] = $this->getLabel($element, $builder) ?: $element->title;
+
+        // sr-only style for non-bootstrap projects is shipped within the filter_form_* templates
+        if (true === (bool) $element->hideLabel) {
+            $options['label_attr'] = ['class' => 'sr-only'];
+        }
+
         // always label for screen readers
         $options['attr']['aria-label'] = $this->translator->trans($this->getLabel($element, $builder) ?: $element->title);
 

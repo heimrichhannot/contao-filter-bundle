@@ -25,6 +25,7 @@ class ChoiceType extends AbstractType
      */
     public function buildQuery(FilterQueryBuilder $builder, FilterConfigElementModel $element)
     {
+
         $builder->whereElement($element, $this->getName($element), $this->config, $this->getDefaultOperator($element));
     }
 
@@ -72,6 +73,7 @@ class ChoiceType extends AbstractType
         $name = $this->getName($element);
 
         $options = parent::getOptions($element, $builder, false);
+
         $options['choices'] = $this->getChoices($element);
         $options['choice_translation_domain'] = false; // disable translation
 //        $options['choices'] = array_filter($options['choices'], 'strlen'); // remove empty elements (placeholders)
