@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.2.1] - 2020-04-28
+- fixed issue when hash is in form action
+
 ## [1.2.0] - 2020-04-28
 - added new filter label `huh.filter.label.reset_filter`
 

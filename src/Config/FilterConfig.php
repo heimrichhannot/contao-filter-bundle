@@ -301,7 +301,18 @@ class FilterConfig implements \JsonSerializable
                 throw new \Exception('Invalid redirect url');
             }
 
-            return new RedirectResponse($this->container->get('huh.utils.url')->addQueryString('t='.time(), $url), 303);
+            // extract hash if present
+            if (false !== strpos($url, '#')) {
+                $urlParts = explode('#', $url);
+
+                $url = implode('#', \array_slice($urlParts, 0, \count($urlParts) - 1));
+
+                $url = $this->container->get('huh.utils.url')->addQueryString('t='.time(), $url).'#'.$urlParts[\count($urlParts) - 1];
+            } else {
+                $url = $this->container->get('huh.utils.url')->addQueryString('t='.time(), $url);
+            }
+
+            return new RedirectResponse($url, 303);
         }
 
         return null;
