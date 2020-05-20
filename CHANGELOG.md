@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.2.2] - 2020-05-20
+- fixed full group by issue
+
 ## [1.2.1] - 2020-04-28
 - fixed issue when hash is in form action
 
