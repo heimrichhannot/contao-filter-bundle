@@ -67,7 +67,7 @@ class LanguageChoice extends FieldOptionsChoice
                 $option['label'] = $label;
             }
 
-            $choices[$option['label']] = $option['value'];
+            $choices[$option['value']] = $option['label'];
         }
 
         return $choices;

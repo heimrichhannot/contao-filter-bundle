@@ -86,7 +86,7 @@ class SortType extends ChoiceType
                 continue;
             }
 
-            $options[$fieldText] = $name;
+            $options[$name] = $fieldText;
         }
 
         return $options;

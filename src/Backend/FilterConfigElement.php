@@ -119,7 +119,7 @@ class FilterConfigElement
             return null;
         }
 
-        $options = array_flip($choices);
+        $options = $choices;
 
         // prepare scalar fields
         $dca['fields']['defaultValue']['inputType'] = 'select';

@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.2.4] - 2020-05-27
+- fixed choice option bug (label and value were swapped)
+
 ## [1.2.3] - 2020-05-25
 - fixed group by issue in `SqlType`
 

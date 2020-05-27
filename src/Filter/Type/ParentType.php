@@ -60,6 +60,6 @@ class ParentType extends ChoiceType
             ]);
         }
 
-        return array_flip($choices);
+        return $choices;
     }
 }
