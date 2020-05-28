@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.2.5] - 2020-05-28
+- fixed choice option bug in frontend (label and value were swapped)
+
 ## [1.2.4] - 2020-05-27
 - fixed choice option bug (label and value were swapped)
 
