@@ -155,7 +155,7 @@ class YearChoice extends AbstractChoice
                     ]);
                 }
             }
-            $years = array_flip($years);
+            $years = $years;
         }
 
         krsort($years, SORT_NUMERIC);
