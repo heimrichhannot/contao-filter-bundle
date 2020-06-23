@@ -28,10 +28,14 @@ class PublishedType extends AbstractType
             return;
         }
 
+        if ($this->isPreviewMode((bool) $element->ignoreFePreview)) {
+            return;
+        }
+
         $filter = $this->config->getFilter();
         $and = $builder->expr()->andX();
 
-        if ($element->addStartAndStop && !$this->isPreviewMode((bool) $element->ignoreFePreview)) {
+        if ($element->addStartAndStop) {
             $time = Date::floorToMinute();
 
             if ($element->startField) {

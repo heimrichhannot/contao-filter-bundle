@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.2.7] - 2020-06-02
+- fixed `PublishedType` -> now supports frontend preview correctly
+
 ## [1.2.6] - 2020-06-02
 - fixed choice option bug in frontend for year filter (label and value were swapped)
 
