@@ -220,6 +220,10 @@ class FilterConfig implements \JsonSerializable
         }
 
         foreach ($this->getElements() as $element) {
+            if (!$element->published) {
+                return;
+            }
+
             if (!isset($types[$element->type]) || \in_array($element->id, $skipElements) ||
                 $mode === static::QUERY_BUILDER_MODE_INITIAL_ONLY && !$element->isInitial ||
                 $mode === static::QUERY_BUILDER_MODE_SKIP_INITIAL && $element->isInitial) {

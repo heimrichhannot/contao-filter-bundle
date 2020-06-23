@@ -1,7 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [1.2.7] - 2020-06-02
+## [1.2.8] - 2020-06-23
+- fixed bug for hidden filter config elements
+
+## [1.2.7] - 2020-06-23
 - fixed `PublishedType` -> now supports frontend preview correctly
 
 ## [1.2.6] - 2020-06-02
