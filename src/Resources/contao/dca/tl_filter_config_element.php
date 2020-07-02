@@ -1107,7 +1107,9 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
         'sourceTable' => [
             'label' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['sourceTable'],
             'inputType' => 'select',
-            'options_callback' => ['huh.utils.dca', 'getDataContainers'],
+            'options_callback' => function() {
+                return \Contao\System::getContainer()->get('huh.utils.dca')->getDataContainers();
+            },
             'eval' => [
                 'includeBlankOption' => true,
                 'mandatory' => true,
