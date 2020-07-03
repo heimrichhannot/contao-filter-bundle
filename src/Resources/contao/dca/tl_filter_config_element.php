@@ -176,6 +176,8 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
                        => '{general_legend},title,type;{config_legend},sortOptions,expanded,submitOnChange;{visualization_legend},addPlaceholder,customLabel,hideLabel;{publish_legend},published',
         \HeimrichHannot\FilterBundle\Filter\Type\ExternalEntityType::TYPE
             => '{general_legend},title,type;{source_legend},sourceTable,sourceField,sourceEntityResolve,sourceEntityOverridesOrder;{config_legend},field,customOperator;{publish_legend},published;',
+        \HeimrichHannot\FilterBundle\Filter\Type\CurrentMemberType::TYPE
+            => '{general_legend},title,type;{config_legend},field,customOperator,currentUserAssign;{publish_legend},published',
 ],
     'subpalettes' => [
         'customOptions'       => 'options',
@@ -1126,6 +1128,18 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
                 'includeBlankOption' => true,
                 'mandatory' => true,
                 'tl_class' => 'w50'
+            ],
+            'sql' => "varchar(32) NOT NULL default ''"
+        ],
+        'currentUserAssign' => [
+            'label' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['currentUserAssign'],
+            'inputType' => 'select',
+            'options'   => \HeimrichHannot\FilterBundle\Filter\Type\CurrentMemberType::TYPES,
+            'reference' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['type'],
+            'eval' => [
+                'includeBlankOption' => true,
+                'mandatory' => true,
+                'tl_class' => 'w50 clr'
             ],
             'sql' => "varchar(32) NOT NULL default ''"
         ]

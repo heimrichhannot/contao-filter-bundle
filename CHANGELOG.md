@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.3.0] - 2020-07-03
+- added new type `CurrentUserType`
+
 ## [1.2.10] - 2020-07-02
 - fixed `options_callback` for `sourceTable`
 

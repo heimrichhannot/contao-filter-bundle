@@ -39,6 +39,8 @@ class TypeChoice extends AbstractChoice
 
         foreach ($config[$filterType]['types'] as $type) {
             if (!class_exists($type['class'])) {
+                trigger_error(sprintf('Warning: Class %s does not exist.', $type['class']), E_USER_WARNING);
+
                 continue;
             }
 
