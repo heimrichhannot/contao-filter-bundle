@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.3.1] - 2020-09-02
+- fixed TextConcatType resulted in showing non published results
+
 ## [1.3.0] - 2020-07-03
 - added new type `CurrentUserType`
 

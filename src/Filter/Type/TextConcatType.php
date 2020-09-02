@@ -59,13 +59,11 @@ class TextConcatType extends AbstractType
 
                 $subBuilder = new QueryBuilder(System::getContainer()->get('database_connection'));
 
-                $builder->orWhere(
-                    $builder->expr()->in($filter['dataContainer'].'.id',
-                        $subBuilder->select('ta.'.$associationProperty)
-                            ->from($associationTable, 'ta')
-                            ->join('ta', 'tl_cfg_tag', 'tn', 'ta.cfg_tag_id='.'tn.id')
-                            ->where('tn.name LIKE '.$wildcard)->setParameter($wildcard, '%'.strtolower($data[$name]).'%')->getSQL()
-                    )
+                $conditions[] = $builder->expr()->in($filter['dataContainer'].'.id',
+                    $subBuilder->select('ta.'.$associationProperty)
+                        ->from($associationTable, 'ta')
+                        ->join('ta', 'tl_cfg_tag', 'tn', 'ta.cfg_tag_id='.'tn.id')
+                        ->where('tn.name LIKE '.$wildcard)->getSQL()
                 );
             } elseif (Database::getInstance()->fieldExists($field, $filter['dataContainer'])) {
                 $textualFields[] = $field;
@@ -84,13 +82,13 @@ class TextConcatType extends AbstractType
                 ).')';
 
             $conditions[] = $builder->expr()->like($concat, $wildcard);
-
-            $builder->setParameter($wildcard, '%'.strtolower($data[$name]).'%');
         }
 
         if (empty($conditions)) {
             return;
         }
+
+        $builder->setParameter($wildcard, '%'.strtolower($data[$name]).'%');
 
         // combine everything in a disjunction
         $or = $builder->expr()->orX();
