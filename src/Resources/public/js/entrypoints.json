@@ -1,0 +1,9 @@
+{
+  "entrypoints": {
+    "contao-filter-bundle": {
+      "js": [
+        "/public/js/contao-filter-bundle.js"
+      ]
+    }
+  }
+}

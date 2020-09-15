@@ -1,61 +1,63 @@
 huh:
   filter:
     types:
-      - {name: text, class: HeimrichHannot\FilterBundle\Filter\Type\TextType, type: text}
-      - {name: text_concat, class: HeimrichHannot\FilterBundle\Filter\Type\TextConcatType, type: text}
-      - {name: textarea, class: HeimrichHannot\FilterBundle\Filter\Type\TextareaType, type: text}
-      - {name: email, class: HeimrichHannot\FilterBundle\Filter\Type\EmailType, type: text}
-      - {name: integer, class: HeimrichHannot\FilterBundle\Filter\Type\IntegerType, type: text}
-      - {name: money, class: HeimrichHannot\FilterBundle\Filter\Type\MoneyType, type: text}
-      - {name: number, class: HeimrichHannot\FilterBundle\Filter\Type\NumberType, type: text}
-      - {name: password, class: HeimrichHannot\FilterBundle\Filter\Type\PasswordType, type: text}
-      - {name: percent, class: HeimrichHannot\FilterBundle\Filter\Type\PercentType, type: text}
-      - {name: search, class: HeimrichHannot\FilterBundle\Filter\Type\SearchType, type: text}
-      - {name: url, class: HeimrichHannot\FilterBundle\Filter\Type\UrlType, type: text}
-      - {name: range, class: HeimrichHannot\FilterBundle\Filter\Type\RangeType, type: text}
-      - {name: multiple_range, class: HeimrichHannot\FilterBundle\Filter\Type\MultipleRangeType, type: choice, wrapper: true}
-      - {name: tel, class: HeimrichHannot\FilterBundle\Filter\Type\TelType, type: text}
-      - {name: color, class: HeimrichHannot\FilterBundle\Filter\Type\ColorType, type: text}
-      - {name: choice, class: HeimrichHannot\FilterBundle\Filter\Type\ChoiceType, type: choice}
-      - {name: country, class: HeimrichHannot\FilterBundle\Filter\Type\CountryType, type: choice}
-      - {name: language, class: HeimrichHannot\FilterBundle\Filter\Type\LanguageType, type: choice}
-      - {name: locale, class: HeimrichHannot\FilterBundle\Filter\Type\LocaleType, type: choice}
-      - {name: parent, class: HeimrichHannot\FilterBundle\Filter\Type\ParentType, type: choice}
-      - {name: skip_parents, class: HeimrichHannot\FilterBundle\Filter\Type\SkipParentsType, type: other}
-      - {name: visible, class: HeimrichHannot\FilterBundle\Filter\Type\PublishedType, type: other}
-      - {name: button, class: HeimrichHannot\FilterBundle\Filter\Type\ButtonType, type: button}
-      - {name: reset, class: HeimrichHannot\FilterBundle\Filter\Type\ResetType, type: button}
-      - {name: submit, class: HeimrichHannot\FilterBundle\Filter\Type\SubmitType, type: button}
-      - {name: hidden, class: HeimrichHannot\FilterBundle\Filter\Type\HiddenType, type: other}
-      - {name: checkbox, class: HeimrichHannot\FilterBundle\Filter\Type\CheckboxType, type: other}
-      - {name: radio, class: HeimrichHannot\FilterBundle\Filter\Type\RadioType, type: other}
-      - {name: date_time, class: HeimrichHannot\FilterBundle\Filter\Type\DateTimeType, type: date}
-      - {name: date, class: HeimrichHannot\FilterBundle\Filter\Type\DateType, type: date}
-      - {name: time, class: HeimrichHannot\FilterBundle\Filter\Type\TimeType, type: date}
-      - {name: date_range, class: HeimrichHannot\FilterBundle\Filter\Type\DateRangeType, type: date, wrapper: true}
-      - {name: year, class: HeimrichHannot\FilterBundle\Filter\Type\YearType, type: date}
-      - {name: date_choice, class: HeimrichHannot\FilterBundle\Filter\Type\DateChoiceType, type: choice}
-      - {name: sql, class: HeimrichHannot\FilterBundle\Filter\Type\SqlType, type: other}
-      - {name: auto_item, class: HeimrichHannot\FilterBundle\Filter\Type\AutoItemType, type: other}
-      - {name: sort, class: HeimrichHannot\FilterBundle\Filter\Type\SortType, type: sort}
-      - {name: external_entity, class: HeimrichHannot\FilterBundle\Filter\Type\ExternalEntityType, type: other}
-      - {name: current_member, class: HeimrichHannot\FilterBundle\Filter\Type\CurrentMemberType, type: other}
+      - { name: text, class: HeimrichHannot\FilterBundle\Filter\Type\TextType, type: text }
+      - { name: text_concat, class: HeimrichHannot\FilterBundle\Filter\Type\TextConcatType, type: text }
+      - { name: textarea, class: HeimrichHannot\FilterBundle\Filter\Type\TextareaType, type: text }
+      - { name: email, class: HeimrichHannot\FilterBundle\Filter\Type\EmailType, type: text }
+      - { name: integer, class: HeimrichHannot\FilterBundle\Filter\Type\IntegerType, type: text }
+      - { name: money, class: HeimrichHannot\FilterBundle\Filter\Type\MoneyType, type: text }
+      - { name: number, class: HeimrichHannot\FilterBundle\Filter\Type\NumberType, type: text }
+      - { name: password, class: HeimrichHannot\FilterBundle\Filter\Type\PasswordType, type: text }
+      - { name: percent, class: HeimrichHannot\FilterBundle\Filter\Type\PercentType, type: text }
+      - { name: search, class: HeimrichHannot\FilterBundle\Filter\Type\SearchType, type: text }
+      - { name: url, class: HeimrichHannot\FilterBundle\Filter\Type\UrlType, type: text }
+      - { name: range, class: HeimrichHannot\FilterBundle\Filter\Type\RangeType, type: text }
+      - { name: multiple_range, class: HeimrichHannot\FilterBundle\Filter\Type\MultipleRangeType, type: choice, wrapper: true }
+      - { name: tel, class: HeimrichHannot\FilterBundle\Filter\Type\TelType, type: text }
+      - { name: color, class: HeimrichHannot\FilterBundle\Filter\Type\ColorType, type: text }
+      - { name: choice, class: HeimrichHannot\FilterBundle\Filter\Type\ChoiceType, type: choice }
+      - { name: radius_choice, class: HeimrichHannot\FilterBundle\Filter\Type\RadiusChoiceType, type: choice }
+      - { name: country, class: HeimrichHannot\FilterBundle\Filter\Type\CountryType, type: choice }
+      - { name: proximity_search, class: HeimrichHannot\FilterBundle\Filter\Type\ProximitySearchType, type: other, wrapper: true }
+      - { name: language, class: HeimrichHannot\FilterBundle\Filter\Type\LanguageType, type: choice }
+      - { name: locale, class: HeimrichHannot\FilterBundle\Filter\Type\LocaleType, type: choice }
+      - { name: parent, class: HeimrichHannot\FilterBundle\Filter\Type\ParentType, type: choice }
+      - { name: skip_parents, class: HeimrichHannot\FilterBundle\Filter\Type\SkipParentsType, type: other }
+      - { name: visible, class: HeimrichHannot\FilterBundle\Filter\Type\PublishedType, type: other }
+      - { name: button, class: HeimrichHannot\FilterBundle\Filter\Type\ButtonType, type: button }
+      - { name: reset, class: HeimrichHannot\FilterBundle\Filter\Type\ResetType, type: button }
+      - { name: submit, class: HeimrichHannot\FilterBundle\Filter\Type\SubmitType, type: button }
+      - { name: hidden, class: HeimrichHannot\FilterBundle\Filter\Type\HiddenType, type: other }
+      - { name: checkbox, class: HeimrichHannot\FilterBundle\Filter\Type\CheckboxType, type: other }
+      - { name: radio, class: HeimrichHannot\FilterBundle\Filter\Type\RadioType, type: other }
+      - { name: date_time, class: HeimrichHannot\FilterBundle\Filter\Type\DateTimeType, type: date }
+      - { name: date, class: HeimrichHannot\FilterBundle\Filter\Type\DateType, type: date }
+      - { name: time, class: HeimrichHannot\FilterBundle\Filter\Type\TimeType, type: date }
+      - { name: date_range, class: HeimrichHannot\FilterBundle\Filter\Type\DateRangeType, type: date, wrapper: true }
+      - { name: year, class: HeimrichHannot\FilterBundle\Filter\Type\YearType, type: date }
+      - { name: date_choice, class: HeimrichHannot\FilterBundle\Filter\Type\DateChoiceType, type: choice }
+      - { name: sql, class: HeimrichHannot\FilterBundle\Filter\Type\SqlType, type: other }
+      - { name: auto_item, class: HeimrichHannot\FilterBundle\Filter\Type\AutoItemType, type: other }
+      - { name: sort, class: HeimrichHannot\FilterBundle\Filter\Type\SortType, type: sort }
+      - { name: external_entity, class: HeimrichHannot\FilterBundle\Filter\Type\ExternalEntityType, type: other }
+      - { name: current_member, class: HeimrichHannot\FilterBundle\Filter\Type\CurrentMemberType, type: other }
     templates:
-      - {name: form_div_layout, template: '@HeimrichHannotContaoFilter/filter/filter_form_div_layout.html.twig'}
-      - {name: form_table_layout, template: '@HeimrichHannotContaoFilter/filter/filter_form_table_layout.html.twig'}
-      - {name: bootstrap_3_layout, template: '@HeimrichHannotContaoFilter/filter/filter_form_bootstrap_3_layout.html.twig'}
-      - {name: bootstrap_3_horizontal_layout, template: '@HeimrichHannotContaoFilter/filter/filter_form_bootstrap_3_horizontal_layout.html.twig'}
-      - {name: bootstrap_4_layout, template: '@HeimrichHannotContaoFilter/filter/filter_form_bootstrap_4_layout.html.twig'}
-      - {name: bootstrap_4_horizontal_layout, template: '@HeimrichHannotContaoFilter/filter/filter_form_bootstrap_4_horizontal_layout.html.twig'}
-      - {name: foundation_5_layout, template: '@HeimrichHannotContaoFilter/filter/filter_form_foundation_5_layout.html.twig'}
+      - { name: form_div_layout, template: '@HeimrichHannotContaoFilter/filter/filter_form_div_layout.html.twig' }
+      - { name: form_table_layout, template: '@HeimrichHannotContaoFilter/filter/filter_form_table_layout.html.twig' }
+      - { name: bootstrap_3_layout, template: '@HeimrichHannotContaoFilter/filter/filter_form_bootstrap_3_layout.html.twig' }
+      - { name: bootstrap_3_horizontal_layout, template: '@HeimrichHannotContaoFilter/filter/filter_form_bootstrap_3_horizontal_layout.html.twig' }
+      - { name: bootstrap_4_layout, template: '@HeimrichHannotContaoFilter/filter/filter_form_bootstrap_4_layout.html.twig' }
+      - { name: bootstrap_4_horizontal_layout, template: '@HeimrichHannotContaoFilter/filter/filter_form_bootstrap_4_horizontal_layout.html.twig' }
+      - { name: foundation_5_layout, template: '@HeimrichHannotContaoFilter/filter/filter_form_foundation_5_layout.html.twig' }
     template_prefixes:
       - filter_
   sort:
     types:
-      - {name: submit, class: HeimrichHannot\FilterBundle\Filter\Type\SubmitType, type: button}
-      - {name: sort, class: HeimrichHannot\FilterBundle\Filter\Type\SortType, type: sort}
+      - { name: submit, class: HeimrichHannot\FilterBundle\Filter\Type\SubmitType, type: button }
+      - { name: sort, class: HeimrichHannot\FilterBundle\Filter\Type\SortType, type: sort }
     directions:
-      - {value: DESC}
-      - {value: ASC}
+      - { value: DESC }
+      - { value: ASC }
     classes:
-      - {name: basic, class: HeimrichHannot\FilterBundle\Sort\BasicSort}
+      - { name: basic, class: HeimrichHannot\FilterBundle\Sort\BasicSort }

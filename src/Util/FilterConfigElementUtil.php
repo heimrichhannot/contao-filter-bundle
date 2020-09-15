@@ -74,4 +74,20 @@ class FilterConfigElementUtil
 
         return $directions;
     }
+
+    public function getElements(DataContainer $dc, array $options = [])
+    {
+        if (null === ($model = System::getContainer()->get('huh.utils.model')->findModelInstanceByPk($dc->table, $dc->id))) {
+            return [];
+        }
+
+        $types = $options['types'] ?? [];
+
+        $context = [
+            'pid' => $model->pid,
+            'types' => $types,
+        ];
+
+        return \Contao\System::getContainer()->get('huh.filter.choice.element')->getCachedChoices($context);
+    }
 }

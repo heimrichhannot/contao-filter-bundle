@@ -68,7 +68,7 @@ class FilterConfigElement
             }
         }
 
-        if (ExternalEntityType::TYPE == $filterConfigElement->type && $filterConfigElement->sourceTable) {
+        if (ExternalEntityType::TYPE === $filterConfigElement->type && $filterConfigElement->sourceTable) {
             $dca['fields']['sourceEntityResolve']['eval']['multiColumnEditor']['table'] = $filterConfigElement->sourceTable;
         }
     }
