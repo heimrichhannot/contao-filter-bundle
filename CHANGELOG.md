@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.4.1] - 2020-09-16
+- fixed proximity search
+
 ## [1.4.0] - 2020-09-15
 - added proximity search
 
