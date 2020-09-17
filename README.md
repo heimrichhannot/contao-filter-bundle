@@ -43,6 +43,10 @@ We recommend to use this bundle toghether with [List Bundle](https://github.com/
 1. Add filter elements to the filter config.
 1. If you want to show the filter somewhere (for example to filter a list), create a filter/sort frontend module.
 
+### Wrapper elements (DateRange, ProximitySearch, ...)
+
+The Wrapper element has to be places **before** the fields associated with them. For example the date_range wrapper element needs to be placed before the two associated date fields.
+
 ## Inserttags
 
 Insert tag | Arguments | Description

@@ -1,4 +1,4 @@
-{% use "bootstrap_4_layout.html.twig" %}
+{% use "bootstrap_3_layout.html.twig" %}
 
 {# Rows #}
 
@@ -39,7 +39,7 @@
 
 {% block form_widget_simple -%}
     {% if input_prepend is not empty %}
-        <div class="input-group-prepend">
+        <div class="input-group-{{ 'btn' in input_append ? 'btn' : 'addon' }}">
             {% if 'btn' in input_prepend %}
                 {{ input_prepend|raw }}
             {% else %}
@@ -49,7 +49,7 @@
     {% endif %}
     {{- parent() -}}
     {% if input_append is not empty %}
-        <div class="input-group-append">
+        <div class="input-group-{{ 'btn' in input_append ? 'btn' : 'addon' }}">
             {% if 'btn' in input_append %}
                 {{ input_append|raw }}
             {% else %}
