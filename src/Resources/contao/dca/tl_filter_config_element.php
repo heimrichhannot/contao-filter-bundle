@@ -966,6 +966,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'eval'      => [
                 'tl_class'          => 'long clr',
                 'multiColumnEditor' => [
+                    'sortable' => true,
                     'fields' => [
                         'class'     => [
                             'label'            => &$GLOBALS['TL_LANG']['tl_filter_config_element']['sortOptions_class'],

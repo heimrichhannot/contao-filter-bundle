@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.5.1] - 2020-10-01
+- added translation and sorting for sorting options
+
 ## [1.5.0] - 2020-09-17
 - added bootstrap 3 input groups
 
