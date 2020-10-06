@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.5.2] - 2020-10-01
+- fixed reviseOptions -> now only respects the initial filter elements, since else inconsistent situations can happen
+- added dynamicOptions to ChoiceType palette
+- added translation
+- fixed Intl bug in contao 4.9
+
 ## [1.5.1] - 2020-10-01
 - added translation and sorting for sorting options
 

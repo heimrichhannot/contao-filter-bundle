@@ -194,17 +194,44 @@ class FieldOptionsChoice extends AbstractChoice
             $options = $attributes['options'];
         }
 
-        // cleanup/revise options (remove options that do not occur result list)
-        if (true === (bool) $element->reviseOptions && !empty($options) && isset($dca['foreignKey']) && !isset($dca['options']) && !isset($dca['options_callback'])) {
-            if (null !== ($filterQueryBuilder = System::getContainer()->get('huh.filter.manager')->getQueryBuilder($filter['id'], [$element->id]))) {
-                $filterQueryBuilder->select([$filter['dataContainer'].'.'.$element->field]);
-                $filterQueryBuilder->groupBy($filter['dataContainer'].'.'.$element->field);
+        if (true === (bool) $element->dynamicOptions) {
+            $options = [];
 
-                $ids = $filterQueryBuilder->execute()->fetchAll(FetchMode::COLUMN, 0);
+            if (null !== ($queryBuilder = System::getContainer()->get('huh.filter.manager')->getInitialQueryBuilder($filter['id'], [$element->id], true))) {
+                $items = $queryBuilder->select([$filter['dataContainer'].'.'.$element->field])->execute()->fetchAll(FetchMode::COLUMN, 0);
 
-                if (!empty($ids)) {
+                // make the values unique and don't skip the empty value if available
+                $items = array_unique($items);
+
+                if (isset($dca['reference'])) {
+                    foreach ($items as $item) {
+                        $options[] = [
+                            'value' => $item,
+                            'label' => $dca['reference'][$item] ?? $item,
+                        ];
+                    }
+                } else {
+                    foreach ($items as $item) {
+                        $options[] = [
+                            'value' => $item,
+                            'label' => $item,
+                        ];
+                    }
+                }
+            }
+        } else {
+            // cleanup/revise options (remove options that do not occur result list)
+            if (true === (bool) $element->reviseOptions && !empty($options)) {
+                if (null !== ($filterQueryBuilder = System::getContainer()->get('huh.filter.manager')->getInitialQueryBuilder($filter['id'], [$element->id], true))) {
+                    $filterQueryBuilder->select([$filter['dataContainer'].'.'.$element->field]);
+
+                    $values = $filterQueryBuilder->execute()->fetchAll(FetchMode::COLUMN, 0);
+
+                    // make the values unique and don't skip the empty value if available
+                    $values = array_merge([''], array_unique($values));
+
                     foreach ($options as $key => $option) {
-                        if (!\in_array($option['value'], $ids)) {
+                        if (!\in_array($option['value'], $values)) {
                             unset($options[$key]);
                         }
                     }
