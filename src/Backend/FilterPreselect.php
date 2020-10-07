@@ -137,7 +137,7 @@ class FilterPreselect
             return [];
         }
 
-        $options = array_flip($choices);
+        $options = $choices;
 
         $dca['fields']['initialValue']['inputType'] = 'select';
         $dca['fields']['initialValue']['options'] = $options;

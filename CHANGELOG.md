@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.5.3] - 2020-10-07
+- fixed filter preselect
+
 ## [1.5.2] - 2020-10-01
 - fixed reviseOptions -> now only respects the initial filter elements, since else inconsistent situations can happen
 - added dynamicOptions to ChoiceType palette
