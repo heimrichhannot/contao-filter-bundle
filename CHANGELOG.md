@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.5.4] - 2020-10-08
+- fixed reviseOptions placeholder bug
+
 ## [1.5.3] - 2020-10-07
 - fixed filter preselect
 
