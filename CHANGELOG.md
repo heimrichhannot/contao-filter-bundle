@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.6.0] - 2020-10-29
+- added async submit for `TextConcatType` to update list while typing in field
+
 ## [1.5.4] - 2020-10-08
 - fixed reviseOptions placeholder bug
 

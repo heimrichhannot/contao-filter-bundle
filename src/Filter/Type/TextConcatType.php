@@ -123,4 +123,20 @@ class TextConcatType extends AbstractType
     {
         return DatabaseUtil::OPERATOR_LIKE;
     }
+
+    public function getOptions(FilterConfigElementModel $element, FormBuilderInterface $builder, bool $triggerEvent = true)
+    {
+        $options = parent::getOptions($element, $builder, $triggerEvent);
+        $builderOptions = $builder->getOptions();
+        $filter = $builderOptions['filter'];
+        $filterConfig = $filter->getFilter();
+
+        if ($element->submitOnInput && $filterConfig['asyncFormSubmit']) {
+            $options['attr']['data-submit-on-input'] = '1';
+            $options['attr']['data-threshold'] = $element->threshold;
+            $options['attr']['data-debounce'] = $element->debounce;
+        }
+
+        return $options;
+    }
 }

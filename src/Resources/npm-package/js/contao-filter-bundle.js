@@ -52,11 +52,28 @@ class FilterBundle {
             function(element, event) {
                 event.preventDefault();
 
-                let buttonName = element.form.name + '[submit]',
-                    clickedButton = document.createElement('div');
-                clickedButton.setAttribute('name', buttonName);
+                FilterBundle.initAsyncFormSubmit(element);
+            });
 
-                FilterBundle.asyncSubmit(element.form, clickedButton);
+        EventUtil.addDynamicEventListener('input',
+            '.mod_filter form[data-async] input[data-submit-on-input], .mod_filter form[data-async] [data-submit-on-input] input',
+            function(element, event) {
+                event.preventDefault();
+
+                if(element.dataset.threshold > element.value.length) {
+                    return;
+                }
+
+                setTimeout(function() {
+                    element.form.classList.add('keep-form');
+                    FilterBundle.initAsyncFormSubmit(element);
+                }, element.dataset.debounce);
+            });
+
+        EventUtil.addDynamicEventListener('focusout',
+            '.mod_filter form[data-async] input[data-submit-on-input], .mod_filter form[data-async] [data-submit-on-input] input',
+            function(element, event) {
+                element.form.classList.remove('keep-form');
             });
 
         EventUtil.addDynamicEventListener('click', '.mod_filter form[data-async] button[type="submit"]',
@@ -64,6 +81,15 @@ class FilterBundle {
                 event.preventDefault();
                 FilterBundle.asyncSubmit(element.form, element);
             });
+    }
+
+    static initAsyncFormSubmit(element) {
+        let buttonName = element.form.name + '[submit]',
+            clickedButton = document.createElement('div');
+
+        clickedButton.setAttribute('name', buttonName);
+
+        FilterBundle.asyncSubmit(element.form, clickedButton);
     }
 
     static asyncSubmit(form, clickedButton = null) {
@@ -112,7 +138,10 @@ class FilterBundle {
 
         let form = document.querySelector('form[name="' + response.filterName + '"]');
 
-        FilterBundle.replaceFilterForm(form, response.filter);
+        if(!form.classList.contains('keep-form')) {
+            let focussed = form.querySelectorAll('[data-submit-on-input="1"]:focus');
+            FilterBundle.replaceFilterForm(form, response.filter);
+        }
 
         form.setAttribute('data-response', request.response);
         form.setAttribute('data-submit-success', 1);
@@ -126,7 +155,7 @@ class FilterBundle {
 
         form.setAttribute('data-submit-success', 0);
         form.setAttribute('data-response', '');
-        form.querySelectorAll('input:not(.disabled), button[type="submit"]').forEach((elem) => {
+        form.querySelectorAll('input:not(.disabled):not([data-submit-on-input="1"]):not([type="hidden"]), button[type="submit"]').forEach((elem) => {
             elem.disabled = true;
         });
 
