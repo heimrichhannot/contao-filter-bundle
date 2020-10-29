@@ -116,7 +116,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'submitOnInput',
         ],
         'default' => '{general_legend},title,type,isInitial;{publish_legend},published;',
-        'text' => '{general_legend},title,type,isInitial;{config_legend},field,customName,customOperator,addDefaultValue;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
+        'text' => '{general_legend},title,type,isInitial;{config_legend},field,customName,customOperator,addDefaultValue,submitOnInput;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
         \HeimrichHannot\FilterBundle\Filter\Type\TextConcatType::TYPE => '{general_legend},title,type,isInitial;{config_legend},fields,name,submitOnInput;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
         'textarea' => '{general_legend},title,type,isInitial;{config_legend},field,customName,customOperator,addDefaultValue;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
         \HeimrichHannot\FilterBundle\Filter\Type\EmailType::TYPE => '{general_legend},title,type,isInitial;{config_legend},field,customName,customOperator,addDefaultValue;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
