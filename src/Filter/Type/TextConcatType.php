@@ -124,6 +124,9 @@ class TextConcatType extends AbstractType
         return DatabaseUtil::OPERATOR_LIKE;
     }
 
+    /**
+     * @return array
+     */
     public function getOptions(FilterConfigElementModel $element, FormBuilderInterface $builder, bool $triggerEvent = true)
     {
         $options = parent::getOptions($element, $builder, $triggerEvent);

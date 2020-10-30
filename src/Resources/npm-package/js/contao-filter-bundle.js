@@ -55,6 +55,18 @@ class FilterBundle {
                 FilterBundle.initAsyncFormSubmit(element);
             });
 
+        EventUtil.addDynamicEventListener('click', '.mod_filter form[data-async] button[type="submit"]',
+            function(element, event) {
+                event.preventDefault();
+                FilterBundle.asyncSubmit(element.form, element);
+            });
+
+        FilterBundle.initAsyncSubmitOnInput();
+    }
+
+    static initAsyncSubmitOnInput() {
+        let timeout;
+
         EventUtil.addDynamicEventListener('input',
             '.mod_filter form[data-async] input[data-submit-on-input], .mod_filter form[data-async] [data-submit-on-input] input',
             function(element, event) {
@@ -64,24 +76,20 @@ class FilterBundle {
                     return;
                 }
 
-                setTimeout(function() {
+                clearTimeout(timeout);
+                timeout = setTimeout(function() {
                     element.form.classList.add('keep-form');
                     FilterBundle.initAsyncFormSubmit(element);
                 }, element.dataset.debounce);
-            });
+        });
 
         EventUtil.addDynamicEventListener('focusout',
             '.mod_filter form[data-async] input[data-submit-on-input], .mod_filter form[data-async] [data-submit-on-input] input',
             function(element, event) {
                 element.form.classList.remove('keep-form');
-            });
-
-        EventUtil.addDynamicEventListener('click', '.mod_filter form[data-async] button[type="submit"]',
-            function(element, event) {
-                event.preventDefault();
-                FilterBundle.asyncSubmit(element.form, element);
-            });
+        });
     }
+
 
     static initAsyncFormSubmit(element) {
         let buttonName = element.form.name + '[submit]',
