@@ -153,6 +153,9 @@ Select fallback can be used on small devices, if too many options, display/hide,
                     <input type="radio" id="{{ form.categories.vars.id }}_{{ key }}" {% if choice.value == form.categories.vars.value %}checked{% endif %}
                            autocomplete="off" onchange="this.form.submit();" name="{{ form.categories.vars.full_name }}" value="{{ choice.value }}">
                     {{ choice.label }}
+                    
+
+
                 </label>
             {% endfor %}
         </div>
@@ -180,3 +183,50 @@ The following script can be used to achieve this behavior.
     });
 })(jQuery);
 ```
+
+
+## Async Form Submit 
+
+The following javascript helps you to add instantly the searchresults to the page. You have to make your asyncron. This changes the response of a filter query to JSON format. The javascript adds this to the page.
+This code likly doesn't work on Internet Explorer or 'old' browsers because of modern JS features.
+
+```
+/* find the form in your page - you have to change the selector if you have many forms with this parameters in your page */
+ let filterForm = document.querySelector("form[data-async='1']");
+ if(filterForm){
+   filterForm.addEventListener("submit",function(event){
+      /* prevent form from submit */
+      event.preventDefault();
+      /* parsing of form data  */
+      let formData = new FormData(filterForm);
+      let urlEncodedData = "", urlEncodedDataPairs = [], key;
+      /* copy the form data into a new key-value object */
+      const formEntries = Object.fromEntries(formData);
+      /* encode all the pairs for use in an url */
+      for( key in formEntries ) {
+        urlEncodedDataPairs.push(encodeURIComponent(key)+'='+encodeURIComponent(formEntries[key]));
+      }
+      /* build request */
+      const myRequest = new Request(event.target.action + "?" + urlEncodedDataPairs.join("&"), {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'default',
+      });
+
+      /* send request */
+      fetch(myRequest).then(
+            /* parse response as json */
+            response => response.json()
+       ).then(
+            html => {
+              /* add result data to the page */
+              let results = document.querySelector(event.target.dataset['list']);
+              results.innerHTML = '';
+              results.innerHTML = html.list;
+
+            }
+
+        );
+    });
+  }
+  ```
