@@ -95,7 +95,7 @@ class FilterBundle {
         let buttonName = element.form.name + '[submit]',
             clickedButton = document.createElement('div');
 
-        clickedButton.setAttribute('name', buttonName);
+        clickedButton.dataset.name = buttonName;
 
         FilterBundle.asyncSubmit(element.form, clickedButton);
     }
@@ -107,9 +107,8 @@ class FilterBundle {
             config = FilterBundle.getConfig(form);
 
         if (clickedButton !== null) {
-            data.append(clickedButton.getAttribute('name'), '');
+            data.append(clickedButton.dataset.name, '');
         }
-
 
         if ('get' === method || 'GET' === method) {
             AjaxUtil.get(action, data, config);
@@ -147,7 +146,6 @@ class FilterBundle {
         let form = document.querySelector('form[name="' + response.filterName + '"]');
 
         if(!form.classList.contains('keep-form')) {
-            let focussed = form.querySelectorAll('[data-submit-on-input="1"]:focus');
             FilterBundle.replaceFilterForm(form, response.filter);
         }
 
