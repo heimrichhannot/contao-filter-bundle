@@ -408,6 +408,10 @@ class FilterConfig implements \JsonSerializable
     {
         $data = $this->session->getData($this->getSessionKey());
 
+        if (!$this->requestStack->getCurrentRequest()) {
+            return $data;
+        }
+
         $currentUrl = strtok($this->requestStack->getCurrentRequest()->getSchemeAndHttpHost().
             $this->requestStack->getCurrentRequest()->getRequestUri(), '?');
 

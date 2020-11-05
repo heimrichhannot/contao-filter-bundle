@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.6.1] - 2020-11-05
+- added check for empty request (e.g. in command situations)
+
 ## [1.6.0] - 2020-10-29
 - added async submit for `TextConcatType` to update list while typing in field
 - added async submit for `TextType` to update list while typing in field
