@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.6.2] - 2021-01-15
+- fixed missing reference in `dca->options`-based choices
+
 ## [1.6.1] - 2020-11-05
 - added check for empty request (e.g. in command situations)
 
