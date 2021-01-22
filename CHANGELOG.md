@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.6.3] - 2021-01-22
+- fixed attribute setting in asyncFormSubmit
+
 ## [1.6.2] - 2021-01-15
 - fixed missing reference in `dca->options`-based choices
 

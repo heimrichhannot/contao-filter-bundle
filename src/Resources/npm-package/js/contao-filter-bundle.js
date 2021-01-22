@@ -81,21 +81,20 @@ class FilterBundle {
                     element.form.classList.add('keep-form');
                     FilterBundle.initAsyncFormSubmit(element);
                 }, element.dataset.debounce);
-        });
+            });
 
         EventUtil.addDynamicEventListener('focusout',
             '.mod_filter form[data-async] input[data-submit-on-input], .mod_filter form[data-async] [data-submit-on-input] input',
             function(element, event) {
                 element.form.classList.remove('keep-form');
-        });
+            });
     }
 
 
     static initAsyncFormSubmit(element) {
-        let buttonName = element.form.name + '[submit]',
-            clickedButton = document.createElement('div');
+        let clickedButton = document.createElement('div');
 
-        clickedButton.dataset.name = buttonName;
+        clickedButton.setAttribute('name', element.form.name + '[submit]') ;
 
         FilterBundle.asyncSubmit(element.form, clickedButton);
     }
@@ -107,7 +106,7 @@ class FilterBundle {
             config = FilterBundle.getConfig(form);
 
         if (clickedButton !== null) {
-            data.append(clickedButton.dataset.name, '');
+            data.append(clickedButton.getAttribute('name'), '');
         }
 
         if ('get' === method || 'GET' === method) {
