@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2020 Heimrich & Hannot GmbH
+ * Copyright (c) 2021 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -144,9 +144,9 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
         \HeimrichHannot\FilterBundle\Filter\Type\SubmitType::TYPE => '{general_legend},title,type;{config_legend},customName;{visualization_legend},customLabel,hideLabel;{expert_legend},cssClass;{publish_legend},published;',
         \HeimrichHannot\FilterBundle\Filter\Type\CheckboxType::TYPE => '{general_legend},title,type,isInitial;{config_legend},field,customName,customOperator,addDefaultValue,customValue,submitOnChange;{visualization_legend},customLabel,hideLabel;{expert_legend},cssClass;{publish_legend},published;',
         'radio' => '{general_legend},title,type,isInitial;{config_legend},field,customName,customOperator,addDefaultValue,customValue,submitOnChange;{visualization_legend},customLabel,hideLabel;{expert_legend},cssClass;{publish_legend},published;',
-        \HeimrichHannot\FilterBundle\Filter\Type\DateType::TYPE => '{general_legend},title,type,isInitial;{config_legend},field,name,customValue,dateWidget,dateFormat,html5,minDate,maxDate;{visualization_legend},customLabel,hideLabel,inputGroup,addPlaceholder;{expert_legend},cssClass;{publish_legend},published;',
-        \HeimrichHannot\FilterBundle\Filter\Type\DateTimeType::TYPE => '{general_legend},title,type,isInitial;{config_legend},field,name,customValue,dateWidget,timeWidget,html5,dateTimeFormat,minDateTime,maxDateTime;{visualization_legend},customLabel,hideLabel,inputGroup,addPlaceholder;{expert_legend},cssClass;{publish_legend},published;',
-        'time' => '{general_legend},title,type,isInitial;{config_legend},field,name,customValue,timeWidget,timeFormat,minTime,html5,maxTime;{visualization_legend},customLabel,hideLabel,inputGroup,addPlaceholder;{expert_legend},cssClass;{publish_legend},published;',
+        \HeimrichHannot\FilterBundle\Filter\Type\DateType::TYPE => '{general_legend},title,type,isInitial;{config_legend},field,name,customValue,dateWidget,dateFormat,html5,minDate,maxDate;{visualization_legend},customLabel,hideLabel,inputGroup,addPlaceholder,addFlatpickrSupport;{expert_legend},cssClass;{publish_legend},published;',
+        \HeimrichHannot\FilterBundle\Filter\Type\DateTimeType::TYPE => '{general_legend},title,type,isInitial;{config_legend},field,name,customValue,dateWidget,timeWidget,html5,dateTimeFormat,minDateTime,maxDateTime;{visualization_legend},customLabel,hideLabel,inputGroup,addPlaceholder,addFlatpickrSupport;{expert_legend},cssClass;{publish_legend},published;',
+        'time' => '{general_legend},title,type,isInitial;{config_legend},field,name,customValue,timeWidget,timeFormat,minTime,html5,maxTime;{visualization_legend},customLabel,hideLabel,inputGroup,addPlaceholder,addFlatpickrSupport;{expert_legend},cssClass;{publish_legend},published;',
         \HeimrichHannot\FilterBundle\Filter\Type\DateRangeType::TYPE => '{general_legend},title,type;{config_legend},startElement,stopElement,name;{visualization_legend},customLabel,hideLabel;{expert_legend},cssClass;{publish_legend},published;',
         \HeimrichHannot\FilterBundle\Filter\Type\MultipleRangeType::TYPE => '{general_legend},title,type,isInitial;{config_legend},startElement,stopElement,name,submitOnChange;{visualization_legend},customLabel,hideLabel;{expert_legend},cssClass;{publish_legend},published;',
         \HeimrichHannot\FilterBundle\Filter\Type\SqlType::TYPE => '{general_legend},title,type;{config_legend},field,whereSql;{publish_legend},published',
@@ -379,6 +379,13 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             },
             'eval' => ['chosen' => true, 'mandatory' => true, 'maxlength' => 128, 'includeBlankOption' => true, 'tl_class' => 'w50'],
             'sql' => "varchar(128) NOT NULL default ''",
+        ],
+        'addFlatpickrSupport' => [
+            'label' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['addFlatpickrSupport'],
+            'exclude' => true,
+            'inputType' => 'checkbox',
+            'eval' => ['tl_class' => 'w50'],
+            'sql' => "char(1) NOT NULL default ''",
         ],
         'hideLabel' => [
             'label' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['hideLabel'],
