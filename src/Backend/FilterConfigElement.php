@@ -15,6 +15,8 @@ use Contao\Image;
 use Contao\StringUtil;
 use Contao\System;
 use HeimrichHannot\FilterBundle\Filter\Type\ChoiceType;
+use HeimrichHannot\FilterBundle\Filter\Type\DateTimeType;
+use HeimrichHannot\FilterBundle\Filter\Type\DateType;
 use HeimrichHannot\FilterBundle\Filter\Type\ExternalEntityType;
 
 class FilterConfigElement
@@ -65,6 +67,10 @@ class FilterConfigElement
 
             if ($filterConfigElement->alternativeValueSource) {
                 $dca['palettes'][$filterConfigElement->type] = str_replace('initialValueType', '', $dca['palettes'][$filterConfigElement->type]);
+            }
+
+            if (\in_array($filterConfigElement->type, [DateTimeType::TYPE, DateType::TYPE, 'time'])) {
+                $dca['palettes'][$filterConfigElement->type] = str_replace('operator,', '', $dca['palettes'][$filterConfigElement->type]);
             }
         }
 

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2020 Heimrich & Hannot GmbH
+ * Copyright (c) 2021 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -140,8 +140,8 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
         \HeimrichHannot\FilterBundle\Filter\Type\PublishedType::TYPE => '{general_legend},title,type;{config_legend},field,customName,invertField,ignoreFePreview,addStartAndStop;{publish_legend},published;',
         \HeimrichHannot\FilterBundle\Filter\Type\HiddenType::TYPE => '{general_legend},title,type,isInitial;{config_legend},field,customName,customOperator,addDefaultValue;{expert_legend},cssClass;{publish_legend},published;',
         \HeimrichHannot\FilterBundle\Filter\Type\ButtonType::TYPE => '{general_legend},title,type;{config_legend},name,label;{expert_legend},cssClass;{publish_legend},published;',
-        'reset' => '{general_legend},title,type;{config_legend},customName,alwaysShow;{visualization_legend},customLabel,hideLabel;{expert_legend},cssClass;{publish_legend},published;',
-        \HeimrichHannot\FilterBundle\Filter\Type\SubmitType::TYPE => '{general_legend},title,type;{config_legend},customName;{visualization_legend},customLabel,hideLabel;{expert_legend},cssClass;{publish_legend},published;',
+        'reset' => '{general_legend},title,type;{config_legend},customName,alwaysShow;{visualization_legend},customLabel;{expert_legend},cssClass;{publish_legend},published;',
+        \HeimrichHannot\FilterBundle\Filter\Type\SubmitType::TYPE => '{general_legend},title,type;{config_legend},customName;{visualization_legend},customLabel;{expert_legend},cssClass;{publish_legend},published;',
         \HeimrichHannot\FilterBundle\Filter\Type\CheckboxType::TYPE => '{general_legend},title,type,isInitial;{config_legend},field,customName,customOperator,addDefaultValue,customValue,submitOnChange;{visualization_legend},customLabel,hideLabel;{expert_legend},cssClass;{publish_legend},published;',
         'radio' => '{general_legend},title,type,isInitial;{config_legend},field,customName,customOperator,addDefaultValue,customValue,submitOnChange;{visualization_legend},customLabel,hideLabel;{expert_legend},cssClass;{publish_legend},published;',
         \HeimrichHannot\FilterBundle\Filter\Type\DateType::TYPE => '{general_legend},title,type,isInitial;{config_legend},field,name,customValue,dateWidget,dateFormat,html5,minDate,maxDate;{visualization_legend},customLabel,hideLabel,inputGroup,addPlaceholder;{expert_legend},cssClass;{publish_legend},published;',
