@@ -70,7 +70,7 @@ class FilterConfigElement
             }
 
             if (\in_array($filterConfigElement->type, [DateTimeType::TYPE, DateType::TYPE, 'time'])) {
-                $dca['palettes'][$filterConfigElement->type] = str_replace('operator', '', $dca['palettes'][$filterConfigElement->type]);
+                $dca['palettes'][$filterConfigElement->type] = str_replace('operator,', '', $dca['palettes'][$filterConfigElement->type]);
             }
         }
 
