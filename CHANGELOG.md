@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.6.4] - 2021-01-29
+- fixed isInitial palettes from DateTimeType, DateType and time, removed attr_label from submit and reset fields (#14)
+
 ## [1.6.3] - 2021-01-22
 - fixed attribute setting in asyncFormSubmit
 
