@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.6.5] - 2021-02-08
+- made ajax list optional for async filter (a filter can also be used without a list)
+
 ## [1.6.4] - 2021-01-29
 - fixed isInitial palettes from DateTimeType, DateType and time, removed attr_label from submit and reset fields (#14)
 

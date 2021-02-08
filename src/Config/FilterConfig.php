@@ -160,7 +160,10 @@ class FilterConfig implements \JsonSerializable
 
         if ($this->getFilter()['asyncFormSubmit']) {
             $options['attr']['data-async'] = 1;
-            $options['attr']['data-list'] = '#huh-list-'.$this->getFilter()['ajaxList'];
+
+            if ($this->getFilter()['ajaxList']) {
+                $options['attr']['data-list'] = '#huh-list-'.$this->getFilter()['ajaxList'];
+            }
         }
 
         if ($this->container->get('huh.request')->isXmlHttpRequest()) {

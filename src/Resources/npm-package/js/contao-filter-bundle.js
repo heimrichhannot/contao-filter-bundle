@@ -165,7 +165,10 @@ class FilterBundle {
         });
 
         form.classList.add('submitting');
-        list.classList.add('updating');
+
+        if (null !== list) {
+            list.classList.add('updating');
+        }
     }
 
     static afterSubmit(url, data, config) {
