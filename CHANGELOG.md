@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.6.6] - 2021-02-09
+- added missing translation
+
 ## [1.6.5] - 2021-02-08
 - made ajax list optional for async filter (a filter can also be used without a list)
 

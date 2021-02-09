@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2020 Heimrich & Hannot GmbH
+ * Copyright (c) 2021 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -114,6 +114,7 @@ $lang['longField'] = ['Longitude-DCA-Feld', 'Wählen Sie hier das DCA-Feld aus, 
 $lang['proximitySearchExplanation'] = '<strong>Notwendig</strong> für eine Umkreissuche ist immer ein Radius-Filterelement (Typ Radius-Choice). Außerdem muss es in der Entität, die durchsucht werden soll, eines oder mehrere DCA-Felder geben, in denen die Koordinaten gespeichert sind.<br><br><strong>Optional</strong> können Sie verschiedene Felder wie Ort, PLZ, Land, ... festlegen, die für die Berechnung der Suchkoordinaten herangezogen werden. Die Berechnung erfolgt on-demand beim Absenden des Filters und setzt einen gesetzten Google-API-Key in den Contao-Systemeinstellungen voraus (Geocode-API!).';
 $lang['threshold'] = ['Schwellwert für Eingabe', 'Tragen Sie hier die Mindestanzahl an Zeichen ein, die eingegeben werden müssen bevor das Formular verschickt wird.'];
 $lang['debounce'] = ['Wartezeit nach Eingabe in ms', 'Tragen Sie hier die Wartezeit ein, die nach der Eingabe vergehen soll bevor das Formular verschickt wird.'];
+$lang['submitOnInput'] = ['Abschicken bei Eingabe', 'Wählen Sie diese Option, wenn das Formular abgeschickt werden soll, sobald Sie zeichen eingeben. Sie können definieren wieviele Zeichen eingegeben werden müssen um das Abschicken zu initiieren.'];
 
 // sort
 $lang['sortOptions'] = ['Sortier-Optionen', 'Fügen Sie hier die gewünschten Sortieroptionen hinzu.'];
