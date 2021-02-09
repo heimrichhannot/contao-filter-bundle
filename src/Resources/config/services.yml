@@ -15,7 +15,10 @@ services:
     arguments:
     - "@contao.framework"
     - "@huh.filter.session"
-  HeimrichHannot\FilterBundle\Manager\FilterManager: '@huh.filter.manager'
+
+  HeimrichHannot\FilterBundle\Manager\FilterManager:
+    alias: 'huh.filter.manager'
+    public: true
 
   huh.filter.session:
     class: HeimrichHannot\FilterBundle\Session\FilterSession
@@ -23,6 +26,10 @@ services:
     arguments:
     - "@contao.framework"
     - "@session"
+
+  HeimrichHannot\FilterBundle\Session\FilterSession:
+    alias: 'huh.filter.session'
+    public: true
 
   huh.filter.config:
     class: HeimrichHannot\FilterBundle\Config\FilterConfig
@@ -161,3 +168,4 @@ services:
     - "@twig.truncate.service"
     tags:
     - { name: twig.extension }
+

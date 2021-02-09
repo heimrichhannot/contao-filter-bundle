@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.6.7] - 2021-02-09
+- added service class aliases for FilterManager and FilterSession
+
 ## [1.6.6] - 2021-02-09
 - added missing translation
 
