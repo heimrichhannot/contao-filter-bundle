@@ -84,7 +84,7 @@ abstract class AbstractType
                 break;
         }
 
-        return $value;
+        return System::getContainer()->get(\HeimrichHannot\UtilsBundle\String\StringUtil::class)->replaceInsertTags($value);
     }
 
     public static function getInitialValue(FilterConfigElementModel $element, array $contextualValues = [])

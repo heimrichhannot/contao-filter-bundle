@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.6.8] - 2021-02-11
+- added insert tag support for default values
+
 ## [1.6.7] - 2021-02-09
 - added service class aliases for FilterManager and FilterSession
 
