@@ -12,16 +12,18 @@ use Contao\CoreBundle\ContaoCoreBundle;
 use Contao\ManagerPlugin\Bundle\BundlePluginInterface;
 use Contao\ManagerPlugin\Bundle\Config\BundleConfig;
 use Contao\ManagerPlugin\Bundle\Parser\ParserInterface;
+use Contao\ManagerPlugin\Config\ConfigPluginInterface;
 use Contao\ManagerPlugin\Config\ContainerBuilder;
 use Contao\ManagerPlugin\Config\ExtensionPluginInterface;
 use Contao\ManagerPlugin\Routing\RoutingPluginInterface;
 use HeimrichHannot\FilterBundle\HeimrichHannotContaoFilterBundle;
 use HeimrichHannot\UtilsBundle\Container\ContainerUtil;
+use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\Config\Loader\LoaderResolverInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\RouteCollection;
 
-class Plugin implements BundlePluginInterface, ExtensionPluginInterface, RoutingPluginInterface
+class Plugin implements BundlePluginInterface, ExtensionPluginInterface, RoutingPluginInterface, ConfigPluginInterface
 {
     /**
      * {@inheritdoc}
@@ -76,5 +78,10 @@ class Plugin implements BundlePluginInterface, ExtensionPluginInterface, Routing
         return $resolver
             ->resolve(__DIR__.'/../Resources/config/routing.yml')
             ->load(__DIR__.'/../Resources/config/routing.yml');
+    }
+
+    public function registerContainerConfiguration(LoaderInterface $loader, array $managerConfig)
+    {
+        $loader->load('@HeimrichHannotContaoFilterBundle/Resources/config/datacontainer.yml');
     }
 }

@@ -157,6 +157,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
         \HeimrichHannot\FilterBundle\Filter\Type\SortType::TYPE => '{general_legend},title,type;{config_legend},sortOptions,expanded,submitOnChange;{visualization_legend},addPlaceholder,customLabel,hideLabel;{publish_legend},published',
         \HeimrichHannot\FilterBundle\Filter\Type\ExternalEntityType::TYPE => '{general_legend},title,type;{source_legend},sourceTable,sourceField,sourceEntityResolve,sourceEntityOverridesOrder;{config_legend},field,customOperator;{publish_legend},published;',
         \HeimrichHannot\FilterBundle\Filter\Type\CurrentMemberType::TYPE => '{general_legend},title,type;{config_legend},field,customOperator,currentUserAssign;{publish_legend},published',
+        \HeimrichHannot\FilterBundle\FilterType\Type\TextType::TYPE => '',
     ],
     'subpalettes' => [
         'customOptions' => 'options',
@@ -216,9 +217,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'exclude' => true,
             'filter' => true,
             'inputType' => 'select',
-            'options_callback' => function (\DataContainer $dc) {
-                return \Contao\System::getContainer()->get('huh.filter.choice.type')->getCachedChoices($dc);
-            },
+            'options_callback' => [\HeimrichHannot\FilterBundle\DataContainer\FilterConfigElementContainer::class, 'getTypeOptions'],
             'reference' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['reference']['type'],
             'eval' => [
                 'chosen' => true,

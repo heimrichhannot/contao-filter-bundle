@@ -1,4 +1,8 @@
 services:
+  _defaults:
+    public: true
+    autowire: true
+
   huh.form_type_extension:
     class: HeimrichHannot\FilterBundle\Form\Extension\FormTypeExtension
     tags:
@@ -67,11 +71,12 @@ services:
     arguments:
     - "@contao.framework"
 
-  huh.filter.choice.type:
-    class: HeimrichHannot\FilterBundle\Choice\TypeChoice
-    public: true
-    arguments:
-    - "@contao.framework"
+  HeimrichHannot\FilterBundle\Choice\TypeChoice: ~
+  huh.filter.choice.type: '@HeimrichHannot\FilterBundle\Choice\TypeChoice'
+#    class: HeimrichHannot\FilterBundle\Choice\TypeChoice
+#    public: true
+#    arguments:
+#    - "@contao.framework"
 
   huh.filter.choice.field_options:
     class: HeimrichHannot\FilterBundle\Choice\FieldOptionsChoice
@@ -169,3 +174,11 @@ services:
     tags:
     - { name: twig.extension }
 
+  HeimrichHannot\FilterBundle\FilterType\Type\TextType: ~
+  HeimrichHannot\FilterBundle\Filter\Filter: ~
+
+  huh.filter.filter_type_locator:
+    class: Symfony\Component\DependencyInjection\ServiceLocator
+    tags: ['container.service_locator']
+    arguments:
+      - 'textType': '@HeimrichHannot\FilterBundle\FilterType\Type\TextType'
