@@ -38,21 +38,26 @@ class FilterConfigElementContainer
 
     public function getTypeOptions(DataContainer $dc)
     {
-        if ($this->bundleConfig['filter']['disable_legacy_filters']) {
-            $options = [];
-
-            foreach ($this->typeCollection->getTypes() as $key => $type) {
-                $group = $type->getGroup();
-
-                if (empty($group)) {
-                    $group = static::GROUP_DEFAULT;
-                }
-                $options[$group][] = $key;
-            }
-
-            return $options;
+        if (!$this->bundleConfig['filter']['disable_legacy_filters']) {
+            return $this->typeChoice->getCachedChoices($dc);
         }
 
-        return $this->typeChoice->getCachedChoices($dc);
+        $options = [];
+
+        foreach ($this->typeCollection->getTypes() as $key => $type) {
+            $group = $type->getGroup();
+
+            if (empty($group)) {
+                $group = static::GROUP_DEFAULT;
+            }
+
+            if ($dc->activeRecord->isInitial && \in_array($key, $this->bundleConfig['filter']['initial_types'])) {
+                $options[$group][] = $key;
+            } elseif (!$dc->activeRecord->isInitial) {
+                $options[$group][] = $key;
+            }
+        }
+
+        return $options;
     }
 }

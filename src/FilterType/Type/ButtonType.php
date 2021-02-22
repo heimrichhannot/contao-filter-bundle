@@ -9,6 +9,7 @@
 namespace HeimrichHannot\FilterBundle\FilterType\Type;
 
 use HeimrichHannot\FilterBundle\FilterType\AbstractFilterType;
+use HeimrichHannot\FilterBundle\FilterType\FilterTypeContext;
 
 class ButtonType extends AbstractFilterType
 {
@@ -29,8 +30,8 @@ class ButtonType extends AbstractFilterType
         // TODO: Implement buildForm() method.
     }
 
-    public function getPalette(): string
+    public function getPalette(FilterTypeContext $context): string
     {
-        // TODO: Implement getPalette() method.
+        return parent::getPalette($context);
     }
 }

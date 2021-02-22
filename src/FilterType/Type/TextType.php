@@ -8,7 +8,6 @@
 
 namespace HeimrichHannot\FilterBundle\FilterType\Type;
 
-use Contao\CoreBundle\DataContainer\PaletteManipulator;
 use Doctrine\ORM\EntityManagerInterface;
 use HeimrichHannot\FilterBundle\Filter\Filter;
 use HeimrichHannot\FilterBundle\FilterType\AbstractFilterType;
@@ -58,36 +57,22 @@ class TextType extends AbstractFilterType implements InitialFilterTypeInterface
     {
     }
 
-    public function getPalette(): string
+    public function getPalette(FilterTypeContext $context): string
     {
         if ($this->getContext()->isInitial()) {
-            return '{initial_legend},isInitial;{general_legend},title,type;{config_legend},field';
+            return $this->getInitialPalette();
         }
 
-        return '{initial_legend},isInitial;{general_legend},title,type;{config_legend},field';
+        return '{initial_legend},isInitial;{general_legend},title,type;{config_legend},field;{expert_legend},cssClass;{publish_legend},published;';
     }
 
-//    public function preparePalette($filterTypeContext): void
-//    {
-    ////        '{general_legend},type,isInitial;{config_legend},field,customName,customOperator,addDefaultValue,submitOnInput;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;',
-//        $paletteManipulator = PaletteManipulator::create();
-//
-//        $paletteManipulator->addField(
-//            ($filterTypeContext->isInitial() ? 'initialType' : 'type'),
-//            'general_legend',
-//            PaletteManipulator::POSITION_APPEND);
-//
-//        $paletteManipulator->applyToPalette(static::TYPE, 'tl_filter_config_element');
-//    }
-
-    public function getInitialPalette(FilterTypeContext $filterTypeContext): string
+    public function getInitialPalette(): string
     {
-        return '{initial_legend},isInitial;{general_legend},title;{config_legend},field';
+        return '{initial_legend},isInitial;{general_legend},title,type;{config_legend},field;';
     }
 
     private function initialize(): void
     {
-        $this->setContext(new FilterTypeContext());
         $this->setGroup(static::GROUP);
     }
 }

@@ -10,5 +10,5 @@ namespace HeimrichHannot\FilterBundle\FilterType;
 
 interface InitialFilterTypeInterface
 {
-    public function getInitialPalette(FilterTypeContext $filterTypeContext);
+    public function getInitialPalette();
 }

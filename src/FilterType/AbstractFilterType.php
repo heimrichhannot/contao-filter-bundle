@@ -30,9 +30,9 @@ abstract class AbstractFilterType implements FilterTypeInterface
         $this->context = $context;
     }
 
-    public function getPalette(): string
+    public function getPalette(FilterTypeContext $context): string
     {
-        return '{general_legend},title;{expert_legend},cssClass;{publish_legend},published;';
+        return '{initial_legend},isInitial;{general_legend},title,type;{config_legend},field;{expert_legend},cssClass;{publish_legend},published;';
     }
 
     public function getGroup(): string
