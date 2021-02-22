@@ -18,20 +18,22 @@ use HeimrichHannot\FilterBundle\FilterType\InitialFilterTypeInterface;
 class TextType extends AbstractFilterType implements InitialFilterTypeInterface
 {
     const TYPE = 'future_text';
+    const GROUP = 'text';
 
     /**
      * @var EntityManagerInterface
      */
-    protected EntityManagerInterface $em;
+    protected $em;
     /**
      * @var Filter
      */
-    protected Filter $filter;
+    protected $filter;
 
     public function __construct(Filter $filter, EntityManagerInterface $em)
     {
         $this->em = $em;
         $this->filter = $filter;
+        $this->initialize();
     }
 
     public static function getType(): string
@@ -52,32 +54,40 @@ class TextType extends AbstractFilterType implements InitialFilterTypeInterface
         $this->em->getFilters()->enable('huh_filter');
     }
 
-    public function buildForm($filterTypeContext)
+    public function buildForm(FilterTypeContext $filterTypeContext)
     {
-        // TODO: Implement buildForm() method.
     }
 
     public function getPalette(): string
     {
-        return '{general_legend},title,type;{config_legend},field';
-//        return parent::getPalette($filterTypeContext);
+        if ($this->getContext()->isInitial()) {
+            return '{initial_legend},isInitial;{general_legend},title,type;{config_legend},field';
+        }
+
+        return '{initial_legend},isInitial;{general_legend},title,type;{config_legend},field';
     }
 
-    public function preparePalette($filterTypeContext): void
+//    public function preparePalette($filterTypeContext): void
+//    {
+    ////        '{general_legend},type,isInitial;{config_legend},field,customName,customOperator,addDefaultValue,submitOnInput;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;',
+//        $paletteManipulator = PaletteManipulator::create();
+//
+//        $paletteManipulator->addField(
+//            ($filterTypeContext->isInitial() ? 'initialType' : 'type'),
+//            'general_legend',
+//            PaletteManipulator::POSITION_APPEND);
+//
+//        $paletteManipulator->applyToPalette(static::TYPE, 'tl_filter_config_element');
+//    }
+
+    public function getInitialPalette(FilterTypeContext $filterTypeContext): string
     {
-//        '{general_legend},type,isInitial;{config_legend},field,customName,customOperator,addDefaultValue,submitOnInput;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;',
-        $paletteManipulator = PaletteManipulator::create();
-
-        $paletteManipulator->addField(
-            ($filterTypeContext->isInitial() ? 'initialType' : 'type'),
-            'general_legend',
-            PaletteManipulator::POSITION_APPEND);
-
-        $paletteManipulator->applyToPalette(static::TYPE, 'tl_filter_config_element');
+        return '{initial_legend},isInitial;{general_legend},title;{config_legend},field';
     }
 
-    public function getInitialPalette(FilterTypeContext $filterTypeContext)
+    private function initialize(): void
     {
-        // TODO: Implement getInitialPalette() method.
+        $this->setContext(new FilterTypeContext());
+        $this->setGroup(static::GROUP);
     }
 }

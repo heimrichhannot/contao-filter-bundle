@@ -15,6 +15,11 @@ abstract class AbstractFilterType implements FilterTypeInterface
      */
     private $context;
 
+    /**
+     * @var string
+     */
+    private $group = '';
+
     public function getContext(): FilterTypeContext
     {
         return $this->context;
@@ -28,5 +33,15 @@ abstract class AbstractFilterType implements FilterTypeInterface
     public function getPalette(): string
     {
         return '{general_legend},title;{expert_legend},cssClass;{publish_legend},published;';
+    }
+
+    public function getGroup(): string
+    {
+        return $this->group;
+    }
+
+    public function setGroup(string $group): void
+    {
+        $this->group = $group;
     }
 }

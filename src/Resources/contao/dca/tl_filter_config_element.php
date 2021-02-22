@@ -157,7 +157,6 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
         \HeimrichHannot\FilterBundle\Filter\Type\SortType::TYPE => '{general_legend},title,type;{config_legend},sortOptions,expanded,submitOnChange;{visualization_legend},addPlaceholder,customLabel,hideLabel;{publish_legend},published',
         \HeimrichHannot\FilterBundle\Filter\Type\ExternalEntityType::TYPE => '{general_legend},title,type;{source_legend},sourceTable,sourceField,sourceEntityResolve,sourceEntityOverridesOrder;{config_legend},field,customOperator;{publish_legend},published;',
         \HeimrichHannot\FilterBundle\Filter\Type\CurrentMemberType::TYPE => '{general_legend},title,type;{config_legend},field,customOperator,currentUserAssign;{publish_legend},published',
-        \HeimrichHannot\FilterBundle\FilterType\Type\TextType::TYPE => '',
     ],
     'subpalettes' => [
         'customOptions' => 'options',

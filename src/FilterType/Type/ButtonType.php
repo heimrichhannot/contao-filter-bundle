@@ -12,6 +12,13 @@ use HeimrichHannot\FilterBundle\FilterType\AbstractFilterType;
 
 class ButtonType extends AbstractFilterType
 {
+    const TYPE = 'future_button';
+
+    public static function getType(): string
+    {
+        return static::TYPE;
+    }
+
     public function buildQuery($filterTypeContext): string
     {
         // TODO: Implement buildQuery() method.

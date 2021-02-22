@@ -174,11 +174,12 @@ services:
     tags:
     - { name: twig.extension }
 
-  HeimrichHannot\FilterBundle\FilterType\Type\TextType: ~
+  HeimrichHannot\FilterBundle\FilterType\Type\:
+    resource: '../../FilterType/Type/*'
+    tags: ['huh.filter.filter_type']
+
   HeimrichHannot\FilterBundle\Filter\Filter: ~
 
-  huh.filter.filter_type_locator:
-    class: Symfony\Component\DependencyInjection\ServiceLocator
-    tags: ['container.service_locator']
+  HeimrichHannot\FilterBundle\FilterType\FilterTypeCollection:
     arguments:
-      - 'textType': '@HeimrichHannot\FilterBundle\FilterType\Type\TextType'
+      - !tagged huh.filter.filter_type

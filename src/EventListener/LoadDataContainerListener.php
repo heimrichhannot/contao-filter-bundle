@@ -9,23 +9,23 @@
 namespace HeimrichHannot\FilterBundle\EventListener;
 
 use Doctrine\DBAL\Connection;
-use Psr\Container\ContainerInterface;
+use HeimrichHannot\FilterBundle\FilterType\FilterTypeCollection;
 
 class LoadDataContainerListener
 {
     /**
-     * @var ContainerInterface
+     * @var FilterTypeCollection
      */
-    protected ContainerInterface $locator;
+    protected $filterTypeCollection;
     /**
      * @var Connection
      */
     private $connection;
 
-    public function __construct(Connection $connection, ContainerInterface $locator)
+    public function __construct(Connection $connection, FilterTypeCollection $filterTypeCollection)
     {
         $this->connection = $connection;
-        $this->locator = $locator;
+        $this->filterTypeCollection = $filterTypeCollection;
     }
 
     /**
@@ -41,8 +41,10 @@ class LoadDataContainerListener
 
         if ('tl_filter_config_element' === $table) {
             $dca = &$GLOBALS['TL_DCA']['tl_filter_config_element'];
-//            $textType = $this->locator->get('huh.filter.filter_type.type.text_type');
-//            $dca['palettes'][$textType::TYPE] = $textType->getPalette();
+            $types = $this->filterTypeCollection->getTypes();
+
+            $textType = $this->filterTypeCollection->getType('future_text');
+            $dca['palettes'][$textType::TYPE] = $textType->getPalette();
         }
     }
 }
