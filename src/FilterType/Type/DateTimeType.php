@@ -9,7 +9,6 @@
 namespace HeimrichHannot\FilterBundle\FilterType\Type;
 
 use HeimrichHannot\FilterBundle\FilterType\AbstractFilterType;
-use HeimrichHannot\FilterBundle\FilterType\FilterTypeContext;
 
 class DateTimeType extends AbstractFilterType
 {
@@ -30,8 +29,8 @@ class DateTimeType extends AbstractFilterType
         // TODO: Implement buildForm() method.
     }
 
-    public function getPalette(FilterTypeContext $context): string
+    public function getPalette(): string
     {
-        return parent::getPalette($context);
+        return parent::getPalette();
     }
 }

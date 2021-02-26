@@ -10,7 +10,6 @@ namespace HeimrichHannot\FilterBundle\EventListener;
 
 use Doctrine\DBAL\Connection;
 use HeimrichHannot\FilterBundle\FilterType\FilterTypeCollection;
-use HeimrichHannot\FilterBundle\FilterType\FilterTypeContext;
 
 class LoadDataContainerListener
 {
@@ -41,19 +40,17 @@ class LoadDataContainerListener
         }
 
         if ('tl_filter_config_element' === $table) {
-            $dca = &$GLOBALS['TL_DCA']['tl_filter_config_element'];
-            $types = $this->filterTypeCollection->getTypes();
-
-            $filterTypeContext = $this->getFilterTypeContext();
-
-            foreach ($types as $key => $type) {
-                $dca['palettes'][$key] = $filterTypeContext;
-            }
+            $this->prepareFilterConfigElementDca();
         }
     }
 
-    private function getFilterTypeContext(): FilterTypeContext
+    private function prepareFilterConfigElementDca()
     {
-        return new FilterTypeContext();
+        $dca = &$GLOBALS['TL_DCA']['tl_filter_config_element'];
+        $types = $this->filterTypeCollection->getTypes();
+
+        foreach ($types as $key => $type) {
+            $dca['palettes'][$key] = $type->getPalette();
+        }
     }
 }

@@ -22,6 +22,10 @@ abstract class AbstractFilterType implements FilterTypeInterface
 
     public function getContext(): FilterTypeContext
     {
+        if (!isset($this->context)) {
+            $this->setDefaultContext();
+        }
+
         return $this->context;
     }
 
@@ -30,7 +34,7 @@ abstract class AbstractFilterType implements FilterTypeInterface
         $this->context = $context;
     }
 
-    public function getPalette(FilterTypeContext $context): string
+    public function getPalette(): string
     {
         return '{initial_legend},isInitial;{general_legend},title,type;{config_legend},field;{expert_legend},cssClass;{publish_legend},published;';
     }
@@ -43,5 +47,11 @@ abstract class AbstractFilterType implements FilterTypeInterface
     public function setGroup(string $group): void
     {
         $this->group = $group;
+    }
+
+    private function setDefaultContext()
+    {
+        $context = new FilterTypeContext();
+        $this->context = $context;
     }
 }

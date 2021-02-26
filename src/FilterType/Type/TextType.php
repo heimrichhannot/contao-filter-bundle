@@ -57,7 +57,7 @@ class TextType extends AbstractFilterType implements InitialFilterTypeInterface
     {
     }
 
-    public function getPalette(FilterTypeContext $context): string
+    public function getPalette(): string
     {
         if ($this->getContext()->isInitial()) {
             return $this->getInitialPalette();
