@@ -15,8 +15,6 @@ abstract class AbstractFilterType implements FilterTypeInterface
 {
     const GROUP_DEFAULT = 'miscellaneous';
 
-    const PREPEND_PALETTE = 'type,name';
-
     /**
      * @var EntityManagerInterface
      */

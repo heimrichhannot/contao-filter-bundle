@@ -49,6 +49,7 @@ class FilterConfigElementContainer
             $type = $this->typeCollection->getType($model->type);
 
             if ($type instanceof InitialFilterTypeInterface && $model->isInitial) {
+                $dca = &$GLOBALS['TL_DCA']['tl_filter_config_element'];
                 $prependPalette = '{initial_legend},isInitial;{general_legend},title,type;';
                 $appendPalette = '{publish_legend},published;';
 
