@@ -14,6 +14,8 @@ use Contao\Environment;
 use Contao\InsertTags;
 use Doctrine\DBAL\Connection;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
+use HeimrichHannot\FilterBundle\FilterType\AbstractFilterType;
+use HeimrichHannot\FilterBundle\FilterType\FilterTypeContext;
 use HeimrichHannot\FilterBundle\Form\Extension\FormButtonExtension;
 use HeimrichHannot\FilterBundle\Form\Extension\FormTypeExtension;
 use HeimrichHannot\FilterBundle\Form\FilterType;
@@ -226,6 +228,11 @@ class FilterConfig implements \JsonSerializable
             if (!$element->published) {
                 return;
             }
+
+//            if ($type instanceof AbstractFilterType) {
+//                $filterContext = new FilterTypeContext($element, $this->filterConfig);
+//                $typ->buildQuery($queryBuilder, $filterContext);
+//            }
 
             if (!isset($types[$element->type]) || \in_array($element->id, $skipElements) ||
                 $mode === static::QUERY_BUILDER_MODE_INITIAL_ONLY && !$element->isInitial ||

@@ -16,6 +16,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             ['huh.filter.backend.filter_config_element', 'checkPermission'],
             ['huh.filter.backend.filter_config_element', 'modifyPalette'],
             ['huh.filter.backend.filter_config_element', 'prepareChoiceTypes'],
+            [\HeimrichHannot\FilterBundle\DataContainer\FilterConfigElementContainer::class, 'onLoadCallback'],
         ],
         'onsubmit_callback' => [
             ['huh.utils.dca', 'setDateAdded'],

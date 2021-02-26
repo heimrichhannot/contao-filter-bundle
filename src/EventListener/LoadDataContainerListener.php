@@ -10,10 +10,11 @@ namespace HeimrichHannot\FilterBundle\EventListener;
 
 use Doctrine\DBAL\Connection;
 use HeimrichHannot\FilterBundle\FilterType\FilterTypeCollection;
+use HeimrichHannot\FilterBundle\FilterType\InitialFilterTypeInterface;
 
 class LoadDataContainerListener
 {
-    /**
+    /*
      * @var FilterTypeCollection
      */
     protected $filterTypeCollection;
@@ -50,7 +51,15 @@ class LoadDataContainerListener
         $types = $this->filterTypeCollection->getTypes();
 
         foreach ($types as $key => $type) {
-            $dca['palettes'][$key] = $type->getPalette();
+            $prependPalette = '{general_legend},title,type;';
+
+            if ($type instanceof InitialFilterTypeInterface) {
+                $prependPalette = '{initial_legend},isInitial;'.$prependPalette;
+            }
+
+            $appendPalette = '{publish_legend},published;';
+
+            $dca['palettes'][$key] = $type->getPalette($prependPalette, $appendPalette);
         }
     }
 }

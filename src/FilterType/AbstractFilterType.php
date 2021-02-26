@@ -8,8 +8,24 @@
 
 namespace HeimrichHannot\FilterBundle\FilterType;
 
+use Doctrine\ORM\EntityManagerInterface;
+use HeimrichHannot\FilterBundle\Filter\Filter;
+
 abstract class AbstractFilterType implements FilterTypeInterface
 {
+    const GROUP_DEFAULT = 'miscellaneous';
+
+    const PREPEND_PALETTE = 'type,name';
+
+    /**
+     * @var EntityManagerInterface
+     */
+    protected $em;
+    /**
+     * @var Filter
+     */
+    protected $filter;
+
     /**
      * @var FilterTypeContext
      */
@@ -19,6 +35,13 @@ abstract class AbstractFilterType implements FilterTypeInterface
      * @var string
      */
     private $group = '';
+
+    public function __construct(Filter $filter, EntityManagerInterface $em)
+    {
+        $this->em = $em;
+        $this->filter = $filter;
+        $this->initialize();
+    }
 
     public function getContext(): FilterTypeContext
     {
@@ -34,9 +57,9 @@ abstract class AbstractFilterType implements FilterTypeInterface
         $this->context = $context;
     }
 
-    public function getPalette(): string
+    public function getPalette(string $prependPalette, string $appendPalette): string
     {
-        return '{initial_legend},isInitial;{general_legend},title,type;{config_legend},field;{expert_legend},cssClass;{publish_legend},published;';
+        return $prependPalette.$appendPalette;
     }
 
     public function getGroup(): string
@@ -49,9 +72,17 @@ abstract class AbstractFilterType implements FilterTypeInterface
         $this->group = $group;
     }
 
+    protected function initialize(): void
+    {
+        if (empty($this->group) && !\defined('static::GROUP')) {
+            $this->setGroup(static::GROUP_DEFAULT);
+        } else {
+            $this->setGroup(static::GROUP);
+        }
+    }
+
     private function setDefaultContext()
     {
-        $context = new FilterTypeContext();
-        $this->context = $context;
+        $this->context = new FilterTypeContext();
     }
 }

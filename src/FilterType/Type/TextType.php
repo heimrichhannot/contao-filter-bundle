@@ -8,32 +8,14 @@
 
 namespace HeimrichHannot\FilterBundle\FilterType\Type;
 
-use Doctrine\ORM\EntityManagerInterface;
-use HeimrichHannot\FilterBundle\Filter\Filter;
 use HeimrichHannot\FilterBundle\FilterType\AbstractFilterType;
 use HeimrichHannot\FilterBundle\FilterType\FilterTypeContext;
 use HeimrichHannot\FilterBundle\FilterType\InitialFilterTypeInterface;
 
 class TextType extends AbstractFilterType implements InitialFilterTypeInterface
 {
-    const TYPE = 'future_text';
+    const TYPE = 'text_type';
     const GROUP = 'text';
-
-    /**
-     * @var EntityManagerInterface
-     */
-    protected $em;
-    /**
-     * @var Filter
-     */
-    protected $filter;
-
-    public function __construct(Filter $filter, EntityManagerInterface $em)
-    {
-        $this->em = $em;
-        $this->filter = $filter;
-        $this->initialize();
-    }
 
     public static function getType(): string
     {
@@ -57,22 +39,13 @@ class TextType extends AbstractFilterType implements InitialFilterTypeInterface
     {
     }
 
-    public function getPalette(): string
+    public function getPalette(string $prependPalette, string $appendPalette): string
     {
-        if ($this->getContext()->isInitial()) {
-            return $this->getInitialPalette();
-        }
-
-        return '{initial_legend},isInitial;{general_legend},title,type;{config_legend},field;{expert_legend},cssClass;{publish_legend},published;';
+        return $prependPalette.'{config_legend},field;{expert_legend},cssClass;'.$appendPalette;
     }
 
-    public function getInitialPalette(): string
+    public function getInitialPalette(string $prependPalette, string $appendPalette): string
     {
-        return '{initial_legend},isInitial;{general_legend},title,type;{config_legend},field;';
-    }
-
-    private function initialize(): void
-    {
-        $this->setGroup(static::GROUP);
+        return $prependPalette.'{config_legend},field;'.$appendPalette;
     }
 }

@@ -12,7 +12,12 @@ use HeimrichHannot\FilterBundle\FilterType\AbstractFilterType;
 
 class DateTimeType extends AbstractFilterType
 {
-    const TYPE = 'future_date_time';
+    const TYPE = 'date_time_type';
+
+    public static function test(): string
+    {
+        return 'test';
+    }
 
     public static function getType(): string
     {
@@ -29,8 +34,8 @@ class DateTimeType extends AbstractFilterType
         // TODO: Implement buildForm() method.
     }
 
-    public function getPalette(): string
+    public function getPalette(string $prependPalette, string $appendPalette): string
     {
-        return parent::getPalette();
+        return parent::getPalette($prependPalette, $appendPalette);
     }
 }

@@ -12,7 +12,7 @@ use HeimrichHannot\FilterBundle\FilterType\AbstractFilterType;
 
 class ButtonType extends AbstractFilterType
 {
-    const TYPE = 'future_button';
+    const TYPE = 'button_type';
 
     public static function getType(): string
     {
@@ -29,8 +29,8 @@ class ButtonType extends AbstractFilterType
         // TODO: Implement buildForm() method.
     }
 
-    public function getPalette(): string
+    public function getPalette(string $prependPalette, string $appendPalette): string
     {
-        return parent::getPalette();
+        return parent::getPalette($prependPalette, $appendPalette);
     }
 }
