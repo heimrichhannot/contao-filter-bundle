@@ -108,7 +108,7 @@ class FilterQueryBuilder extends QueryBuilder
         }
 
         if ($element->isInitial) {
-            $value = $data[$name] ?? AbstractType::getInitialValue($element, $this->contextualValues);
+            $value = AbstractType::getInitialValue($element, $this->contextualValues);
 
             if ($element->alternativeValueSource) {
                 $value = $this->getValueFromAlternativeSource($value, $data, $element, $name, $config, $dca);

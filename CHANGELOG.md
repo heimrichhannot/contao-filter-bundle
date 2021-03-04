@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.7.0] - 2021-03-04
+- removed session interaction for initial filters
+- fixed getWidgetOptions in FieldOptionsChoice to display correct options, according to element configuration
+
 ## [1.6.8] - 2021-02-11
 - added insert tag support for default values
 
