@@ -130,7 +130,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
         'range' => '{general_legend},title,type,isInitial;{config_legend},field,customName,customOperator,addDefaultValue,min,max,step;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
         'tel' => '{general_legend},title,type,isInitial;{config_legend},field,customName,customOperator,addDefaultValue;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
         \HeimrichHannot\FilterBundle\Filter\Type\ColorType::TYPE => '{general_legend},title,type,isInitial;{config_legend},field,customName,customOperator,addDefaultValue;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
-        \HeimrichHannot\FilterBundle\Filter\Type\ChoiceType::TYPE => '{general_legend},title,type,isInitial;{config_legend},field,customOptions,adjustOptionLabels,reviseOptions,dynamicOptions,sortOptionValues,customName,customOperator,addDefaultValue,expanded,multiple,submitOnChange,addGroupChoiceField;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
+        \HeimrichHannot\FilterBundle\Filter\Type\ChoiceType::TYPE => '{general_legend},title,type,isInitial;{config_legend},field,customOptions,adjustOptionLabels,reviseOptions,dynamicOptions,sortOptionValues,customName,customOperator,addDefaultValue,expanded,multiple,submitOnChange,addGroupChoiceField,doNotCacheOptions;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
         \HeimrichHannot\FilterBundle\Filter\Type\CountryType::TYPE => '{general_legend},title,type,isInitial;{config_legend},field,customCountries,customOptions,adjustOptionLabels,reviseOptions,sortOptionValues,customName,customOperator,addDefaultValue,expanded,multiple;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
         \HeimrichHannot\FilterBundle\Filter\Type\ProximitySearchType::TYPE => '{general_legend},title,type;{config_legend},name,proximitySearchExplanation,radiusElement,coordinatesMode,allowHtmlGeoLocation,cityElement,postalElement,stateElement,countryElement;{expert_legend},cssClass;{publish_legend},published;',
         \HeimrichHannot\FilterBundle\Filter\Type\LanguageType::TYPE => '{general_legend},title,type,isInitial;{config_legend},field,customLanguages,customOptions,adjustOptionLabels,reviseOptions,sortOptionValues,customName,customOperator,addDefaultValue,expanded,multiple;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
@@ -1070,6 +1070,13 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'exclude' => true,
             'inputType' => 'checkbox',
             'eval' => ['tl_class' => 'w50 clr', 'submitOnChange' => true],
+            'sql' => "char(1) NOT NULL default ''",
+        ],
+        'doNotCacheOptions' => [
+            'label' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['doNotCacheOptions'],
+            'exclude' => true,
+            'inputType' => 'checkbox',
+            'eval' => ['tl_class' => 'w50'],
             'sql' => "char(1) NOT NULL default ''",
         ],
         'modifyGroupChoices' => [

@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.8.0] - 2021-03-15
+- added field "doNotCacheOptions" for `ChoiceType`
+
 ## [1.7.0] - 2021-03-04
 - removed session interaction for initial filters
 - fixed getWidgetOptions in FieldOptionsChoice to display correct options, according to element configuration
