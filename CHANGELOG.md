@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.8.1] - 2021-03-15
+- fixed insert tag issue
+
 ## [1.8.0] - 2021-03-15
 - added field "doNotCacheOptions" for `ChoiceType`
 
