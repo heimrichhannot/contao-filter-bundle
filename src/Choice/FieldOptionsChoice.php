@@ -316,7 +316,11 @@ class FieldOptionsChoice extends AbstractChoice
             $dca['eval']['tagsManager']
         );
 
-        $tags = $tagsManager->findMultiple();
+        if (method_exists($tagsManager, 'findMultiple')) {
+            $tags = $tagsManager->findMultiple();
+        } else {
+            $tags = $tagsManager->getAllTags();
+        }
 
         if (null === $tags) {
             return $options;

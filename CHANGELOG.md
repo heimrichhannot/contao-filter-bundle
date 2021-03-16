@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.9.1] - 2021-03-16
+- fixed issue concerning different tags bundle versions
+
 ## [1.9.0] - 2021-03-16
 - added initial value support for codefog-tags-based fields
 
