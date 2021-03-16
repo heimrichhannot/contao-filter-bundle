@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.9.0] - 2021-03-16
+- added initial value support for codefog-tags-based fields
+
 ## [1.8.1] - 2021-03-15
 - fixed insert tag issue
 
