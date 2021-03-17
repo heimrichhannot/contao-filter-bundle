@@ -61,7 +61,28 @@ class FilterBundle {
                 FilterBundle.asyncSubmit(element.form, element);
             });
 
+        FilterBundle.registerFormAsyncSubmitEvents();
         FilterBundle.initAsyncSubmitOnInput();
+
+        document.addEventListener('filterAjaxComplete', (event) => {
+            FilterBundle.registerFormAsyncSubmitEvents();
+        });
+    }
+
+    /**
+     * Register events for form async submit.
+     *
+     * These events need to be reintialized after form reload.
+     */
+    static registerFormAsyncSubmitEvents()
+    {
+        document.querySelector('.mod_filter form[data-async] input[type="text"]').addEventListener('keydown', (event) => {
+            if (event.code == 'Enter') {
+                event.preventDefault();
+                event.stopPropagation();
+                FilterBundle.asyncSubmit(event.target.form);
+            }
+        });
     }
 
     static initAsyncSubmitOnInput() {
