@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.9.2] - 2021-03-18
+- Fix enter key behavios on async forms (#16)
+
 ## [1.9.1] - 2021-03-16
 - fixed issue concerning different tags bundle versions
 
