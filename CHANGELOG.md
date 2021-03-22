@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.9.3] - 2021-03-22
+- adjust service definition for `FieldOptionsChoice`
+
 ## [1.9.2] - 2021-03-18
 - Fix enter key behavios on async forms (#16)
 
