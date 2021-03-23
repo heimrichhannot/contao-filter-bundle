@@ -146,7 +146,12 @@ class FilterQueryBuilder extends QueryBuilder
 
         $this->andWhere(
             $this->container->get('huh.utils.database')->composeWhereForQueryBuilder(
-                $this, $config->getFilter()['dataContainer'].'.'.$element->field, $operator, $dca, $value
+                $this,
+                $config->getFilter()['dataContainer'].'.'.$element->field,
+                $operator,
+                $dca,
+                $value,
+                ['wildcardSuffix' => '_'.$element->id]
             )
         );
 
