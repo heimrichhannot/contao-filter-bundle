@@ -72,16 +72,18 @@ class FilterBundle {
     /**
      * Register events for form async submit.
      *
-     * These events need to be reintialized after form reload.
+     * These events need to be reinitialized after form reload.
      */
     static registerFormAsyncSubmitEvents()
     {
-        document.querySelector('.mod_filter form[data-async] input[type="text"]').addEventListener('keydown', (event) => {
-            if (event.key === 'Enter') {
-                event.preventDefault();
-                event.stopPropagation();
-                FilterBundle.asyncSubmit(event.target.form);
-            }
+        document.querySelectorAll('.mod_filter form[data-async] input[type="text"]').forEach((element) => {
+            element.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    FilterBundle.asyncSubmit(event.target.form);
+                }
+            });
         });
     }
 
