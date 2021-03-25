@@ -1,8 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.10.1] - 2021-03-25
+- fixed error in js code introduced in 1.9.2
+
 ## [1.10.0] - 2021-03-23
-- aded wildcardSuffix options to whereWidget #17
+- added wildcardSuffix options to whereWidget #17
 
 ## [1.9.3] - 2021-03-22
 - adjust service definition for `FieldOptionsChoice`
