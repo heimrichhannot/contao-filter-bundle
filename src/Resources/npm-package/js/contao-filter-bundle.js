@@ -76,7 +76,7 @@ class FilterBundle {
      */
     static registerFormAsyncSubmitEvents()
     {
-        document.querySelectorAll('.mod_filter form[data-async] input[type="text"]').forEach(function(element) {
+        document.querySelectorAll('.mod_filter form[data-async] input[type="text"]').forEach((element) => {
             element.addEventListener('keydown', (event) => {
                 if (event.key === 'Enter') {
                     event.preventDefault();
