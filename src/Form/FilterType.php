@@ -13,6 +13,10 @@ use Contao\Environment;
 use Contao\System;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
 use HeimrichHannot\FilterBundle\Exception\MissingFilterConfigException;
+use HeimrichHannot\FilterBundle\FilterType\FilterTypeContext;
+use HeimrichHannot\FilterBundle\FilterType\FilterTypeInterface;
+use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
+use Symfony\Component\Console\Exception\InvalidOptionException;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
@@ -113,6 +117,9 @@ class FilterType extends AbstractType
         $wrappers = [];
         $types = \System::getContainer()->get('huh.filter.choice.type')->getCachedChoices();
 
+        $newTypes = \System::getContainer()->get('huh.filter.filter_type.collection')->getTypes();
+        $types = array_merge($types, $newTypes);
+
         if (!\is_array($types) || empty($types)) {
             return;
         }
@@ -126,6 +133,13 @@ class FilterType extends AbstractType
             }
 
             $config = $types[$element->type];
+
+            if (!\is_array($config)) {
+                $this->buildFilterTypeElement($element, $config, $builder);
+
+                continue;
+            }
+
             $class = $config['class'];
 
             if (!class_exists($class)) {
@@ -164,6 +178,26 @@ class FilterType extends AbstractType
         }
 
         $this->buildWrapperElements($wrappers, $builder, $options);
+    }
+
+    protected function buildFilterTypeElement(FilterConfigElementModel $element, FilterTypeInterface $filterType, FormBuilderInterface $builder)
+    {
+        $context = new FilterTypeContext();
+
+        if ((bool) $element->isInitial) {
+            return;
+        }
+
+        $context->setName($element->type.'_'.$element->id);
+        $context->setValue($element->value);
+        $context->setDefaultValue($element->defaultValue);
+        $context->setBuilder($builder);
+
+        try {
+            $filterType->buildForm($context);
+        } catch (InvalidOptionException $e) {
+            return;
+        }
     }
 
     /**

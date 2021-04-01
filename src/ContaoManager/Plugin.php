@@ -83,5 +83,6 @@ class Plugin implements BundlePluginInterface, ExtensionPluginInterface, Routing
     public function registerContainerConfiguration(LoaderInterface $loader, array $managerConfig)
     {
         $loader->load('@HeimrichHannotContaoFilterBundle/Resources/config/datacontainer.yml');
+        $loader->load('@HeimrichHannotContaoFilterBundle/Resources/config/filter.yml');
     }
 }

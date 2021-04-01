@@ -1,0 +1,4 @@
+doctrine:
+  orm:
+    filters:
+      text_type: HeimrichHannot\FilterBundle\Filter\Filter

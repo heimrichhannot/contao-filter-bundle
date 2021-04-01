@@ -16,6 +16,7 @@ use Doctrine\DBAL\Connection;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
 use HeimrichHannot\FilterBundle\FilterType\AbstractFilterType;
 use HeimrichHannot\FilterBundle\FilterType\FilterTypeContext;
+use HeimrichHannot\FilterBundle\FilterType\FilterTypeInterface;
 use HeimrichHannot\FilterBundle\Form\Extension\FormButtonExtension;
 use HeimrichHannot\FilterBundle\Form\Extension\FormTypeExtension;
 use HeimrichHannot\FilterBundle\Form\FilterType;
@@ -220,6 +221,9 @@ class FilterConfig implements \JsonSerializable
 
         $types = $this->container->get('huh.filter.choice.type')->getCachedChoices();
 
+        $newTypes = \System::getContainer()->get('huh.filter.filter_type.collection')->getTypes();
+        $types = array_merge($types, $newTypes);
+
         if (!\is_array($types) || empty($types)) {
             return;
         }
@@ -230,13 +234,19 @@ class FilterConfig implements \JsonSerializable
             }
 
 //            if ($type instanceof AbstractFilterType) {
-//                $filterContext = new FilterTypeContext($element, $this->filterConfig);
-//                $typ->buildQuery($queryBuilder, $filterContext);
+//                $filterContext = new FilterTypeContext();
+//                $type->buildQuery($filterContext);
 //            }
 
             if (!isset($types[$element->type]) || \in_array($element->id, $skipElements) ||
                 $mode === static::QUERY_BUILDER_MODE_INITIAL_ONLY && !$element->isInitial ||
                 $mode === static::QUERY_BUILDER_MODE_SKIP_INITIAL && $element->isInitial) {
+                continue;
+            }
+
+            if (!\is_array($types[$element->type])) {
+                $this->processFilterType($element, $types[$element->type]);
+
                 continue;
             }
 
@@ -615,6 +625,17 @@ class FilterConfig implements \JsonSerializable
     public function jsonSerialize()
     {
         return get_object_vars($this);
+    }
+
+    protected function processFilterType(FilterConfigElementModel $config, FilterTypeInterface $filter)
+    {
+        $context = new FilterTypeContext();
+        $context->setValue($config->value);
+        $context->setDefaultValue($config->defaultValue);
+        $context->setName($config->type.'_'.$config->id);
+        $context->setParent($config->pid);
+
+        $filter->buildQuery($context);
     }
 
     protected function isResetButtonClicked(FormInterface $form): bool

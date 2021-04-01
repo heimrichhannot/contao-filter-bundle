@@ -8,6 +8,8 @@
 
 namespace HeimrichHannot\FilterBundle\FilterType;
 
+use Symfony\Component\Form\FormBuilderInterface;
+
 class FilterTypeContext implements \IteratorAggregate
 {
     /**
@@ -22,6 +24,16 @@ class FilterTypeContext implements \IteratorAggregate
      * @var string
      */
     private $value = '';
+
+    /**
+     * @var FormBuilderInterface
+     */
+    private $builder;
+
+    /**
+     * @var string
+     */
+    private $parent = '';
 
     /**
      * @var bool
@@ -50,6 +62,10 @@ class FilterTypeContext implements \IteratorAggregate
 
     public function getValue(): string
     {
+        if (empty($this->value)) {
+            return $this->getDefaultValue();
+        }
+
         return $this->value;
     }
 
@@ -76,5 +92,25 @@ class FilterTypeContext implements \IteratorAggregate
     public function setInitial(): void
     {
         $this->initial = true;
+    }
+
+    public function getBuilder(): FormBuilderInterface
+    {
+        return $this->builder;
+    }
+
+    public function setBuilder(FormBuilderInterface $builder): void
+    {
+        $this->builder = $builder;
+    }
+
+    public function getParent(): string
+    {
+        return $this->parent;
+    }
+
+    public function setParent(string $parent): void
+    {
+        $this->parent = $parent;
     }
 }

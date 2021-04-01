@@ -183,3 +183,5 @@ services:
   HeimrichHannot\FilterBundle\FilterType\FilterTypeCollection:
     arguments:
       - !tagged huh.filter.filter_type
+
+  huh.filter.filter_type.collection: '@HeimrichHannot\FilterBundle\FilterType\FilterTypeCollection'
