@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.10.1] - 2021-04-06
+- Fix FilterBundle.registerFormAsyncSubmitEvents (#18)
+
 ## [1.10.0] - 2021-03-23
 - aded wildcardSuffix options to whereWidget #17
 
