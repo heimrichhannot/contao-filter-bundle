@@ -9,12 +9,13 @@
 namespace HeimrichHannot\FilterBundle\Config;
 
 use Contao\Controller;
+use Contao\CoreBundle\Doctrine\Schema\DcaSchemaProvider;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\Environment;
 use Contao\InsertTags;
 use Doctrine\DBAL\Connection;
+use Doctrine\ORM\EntityManagerInterface;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
-use HeimrichHannot\FilterBundle\FilterType\AbstractFilterType;
 use HeimrichHannot\FilterBundle\FilterType\FilterTypeContext;
 use HeimrichHannot\FilterBundle\FilterType\FilterTypeInterface;
 use HeimrichHannot\FilterBundle\Form\Extension\FormButtonExtension;
@@ -93,6 +94,14 @@ class FilterConfig implements \JsonSerializable
      */
     protected $formSubmitted = false;
     /**
+     * @var DcaSchemaProvider
+     */
+    protected $schemaProvider;
+    /**
+     * @var EntityManagerInterface
+     */
+    protected EntityManagerInterface $em;
+    /**
      * @var ContainerInterface
      */
     private $container;
@@ -110,13 +119,17 @@ class FilterConfig implements \JsonSerializable
         ContaoFrameworkInterface $framework,
         FilterSession $session,
         Connection $connection,
-        RequestStack $requestStack
+        RequestStack $requestStack,
+        DcaSchemaProvider $schemaProvider,
+        EntityManagerInterface $em
     ) {
         $this->framework = $framework;
         $this->session = $session;
         $this->container = $container;
         $this->queryBuilder = new FilterQueryBuilder($this->container, $this->framework, $connection);
         $this->requestStack = $requestStack;
+        $this->schemaProvider = $schemaProvider;
+        $this->em = $em;
     }
 
     /**
@@ -633,7 +646,9 @@ class FilterConfig implements \JsonSerializable
         $context->setValue($config->value);
         $context->setDefaultValue($config->defaultValue);
         $context->setName($config->type.'_'.$config->id);
-        $context->setParent($config->pid);
+        $context->setParent($config->getRelated('pid'));
+
+        $context->setQueryBuilder($this->queryBuilder);
 
         $filter->buildQuery($context);
     }

@@ -191,7 +191,8 @@ class FilterType extends AbstractType
         $context->setName($element->type.'_'.$element->id);
         $context->setValue($element->value);
         $context->setDefaultValue($element->defaultValue);
-        $context->setBuilder($builder);
+
+        $context->setFormBuilder($builder);
 
         try {
             $filterType->buildForm($context);

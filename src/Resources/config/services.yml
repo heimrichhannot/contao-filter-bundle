@@ -45,6 +45,8 @@ services:
     - "@huh.filter.session"
     - "@doctrine.dbal.default_connection"
     - "@request_stack"
+    - "@contao.doctrine.schema_provider"
+    - "@doctrine.orm.entity_manager"
 
   huh.filter.backend.filter_config_element:
     public: true

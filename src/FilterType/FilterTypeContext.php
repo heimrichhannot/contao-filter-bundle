@@ -8,6 +8,8 @@
 
 namespace HeimrichHannot\FilterBundle\FilterType;
 
+use Contao\Model;
+use Doctrine\DBAL\Query\QueryBuilder;
 use Symfony\Component\Form\FormBuilderInterface;
 
 class FilterTypeContext implements \IteratorAggregate
@@ -28,12 +30,17 @@ class FilterTypeContext implements \IteratorAggregate
     /**
      * @var FormBuilderInterface
      */
-    private $builder;
+    private $formBuilder;
 
     /**
-     * @var string
+     * @var QueryBuilder
      */
-    private $parent = '';
+    private $queryBuilder;
+
+    /**
+     * @var Model
+     */
+    private $parent = null;
 
     /**
      * @var bool
@@ -94,23 +101,39 @@ class FilterTypeContext implements \IteratorAggregate
         $this->initial = true;
     }
 
-    public function getBuilder(): FormBuilderInterface
-    {
-        return $this->builder;
-    }
-
-    public function setBuilder(FormBuilderInterface $builder): void
-    {
-        $this->builder = $builder;
-    }
-
-    public function getParent(): string
+    /**
+     * @return Model
+     */
+    public function getParent(): ?Model
     {
         return $this->parent;
     }
 
-    public function setParent(string $parent): void
+    /**
+     * @param Model $parent
+     */
+    public function setParent(?Model $parent): void
     {
         $this->parent = $parent;
+    }
+
+    public function getQueryBuilder(): QueryBuilder
+    {
+        return $this->queryBuilder;
+    }
+
+    public function setQueryBuilder(QueryBuilder $queryBuilder): void
+    {
+        $this->queryBuilder = $queryBuilder;
+    }
+
+    public function getFormBuilder(): FormBuilderInterface
+    {
+        return $this->formBuilder;
+    }
+
+    public function setFormBuilder(FormBuilderInterface $formBuilder): void
+    {
+        $this->formBuilder = $formBuilder;
     }
 }

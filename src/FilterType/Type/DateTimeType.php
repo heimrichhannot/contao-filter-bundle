@@ -9,6 +9,7 @@
 namespace HeimrichHannot\FilterBundle\FilterType\Type;
 
 use HeimrichHannot\FilterBundle\FilterType\AbstractFilterType;
+use HeimrichHannot\FilterBundle\FilterType\FilterTypeContext;
 
 class DateTimeType extends AbstractFilterType
 {
@@ -24,7 +25,7 @@ class DateTimeType extends AbstractFilterType
         return static::TYPE;
     }
 
-    public function buildQuery($filterTypeContext): string
+    public function buildQuery(FilterTypeContext $filterTypeContext): string
     {
         // TODO: Implement buildQuery() method.
     }

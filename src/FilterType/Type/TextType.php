@@ -25,21 +25,13 @@ class TextType extends AbstractFilterType implements InitialFilterTypeInterface
 
     public function buildQuery(FilterTypeContext $filterTypeContext)
     {
-//        try {
-//            foreach ($filterTypeContext->getIterator() as $param) {
-//                $this->filter->setParameter($param->key(), $param->current());
-//            }
-//        } catch (\Exception $e) {
-//            throw new \Exception($e->getMessage());
-//        }
-
-        $filter = $this->em->getFilters()->enable('text_type');
-//        $filter->setParameter();
+        $queryBuilder = $filterTypeContext->getQueryBuilder();
+        $queryBuilder->whereElement();
     }
 
     public function buildForm(FilterTypeContext $filterTypeContext)
     {
-        $builder = $filterTypeContext->getBuilder();
+        $builder = $filterTypeContext->getFormBuilder();
 
         $builder->add($filterTypeContext->getName(), SymfonyTextType::class);
     }
