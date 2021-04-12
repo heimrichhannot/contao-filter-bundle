@@ -10,18 +10,27 @@ namespace HeimrichHannot\FilterBundle\FilterType;
 
 use Contao\Model;
 use Doctrine\DBAL\Query\QueryBuilder;
+use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 use Symfony\Component\Form\FormBuilderInterface;
 
 class FilterTypeContext implements \IteratorAggregate
 {
     /**
-     * @var string
+     * @var DatabaseUtil
      */
-    private $name = '';
+    private $databaseUtil;
     /**
      * @var string
      */
     private $defaultValue = '';
+    /**
+     * @var string
+     */
+    private $field = '';
+    /**
+     * @var string
+     */
+    private $name = '';
     /**
      * @var string
      */
@@ -33,14 +42,17 @@ class FilterTypeContext implements \IteratorAggregate
     private $formBuilder;
 
     /**
-     * @var QueryBuilder
+     * @var string
      */
-    private $queryBuilder;
-
+    private $operator;
     /**
      * @var Model
      */
     private $parent = null;
+    /**
+     * @var QueryBuilder
+     */
+    private $queryBuilder;
 
     /**
      * @var bool
@@ -135,5 +147,35 @@ class FilterTypeContext implements \IteratorAggregate
     public function setFormBuilder(FormBuilderInterface $formBuilder): void
     {
         $this->formBuilder = $formBuilder;
+    }
+
+    public function getDatabaseUtil(): DatabaseUtil
+    {
+        return $this->databaseUtil;
+    }
+
+    public function setDatabaseUtil(DatabaseUtil $databaseUtil): void
+    {
+        $this->databaseUtil = $databaseUtil;
+    }
+
+    public function getField(): string
+    {
+        return $this->field;
+    }
+
+    public function setField(string $field): void
+    {
+        $this->field = $field;
+    }
+
+    public function getOperator(): string
+    {
+        return $this->operator;
+    }
+
+    public function setOperator(string $operator): void
+    {
+        $this->operator = $operator;
     }
 }

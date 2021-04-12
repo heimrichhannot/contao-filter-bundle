@@ -25,6 +25,7 @@ use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\Model\FilterConfigModel;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 use HeimrichHannot\FilterBundle\Session\FilterSession;
+use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -100,7 +101,8 @@ class FilterConfig implements \JsonSerializable
     /**
      * @var EntityManagerInterface
      */
-    protected EntityManagerInterface $em;
+    protected $em;
+    protected $databaseUtil;
     /**
      * @var ContainerInterface
      */
@@ -121,7 +123,8 @@ class FilterConfig implements \JsonSerializable
         Connection $connection,
         RequestStack $requestStack,
         DcaSchemaProvider $schemaProvider,
-        EntityManagerInterface $em
+        EntityManagerInterface $em,
+        DatabaseUtil $databaseUtil
     ) {
         $this->framework = $framework;
         $this->session = $session;
@@ -130,6 +133,7 @@ class FilterConfig implements \JsonSerializable
         $this->requestStack = $requestStack;
         $this->schemaProvider = $schemaProvider;
         $this->em = $em;
+        $this->databaseUtil = $databaseUtil;
     }
 
     /**
@@ -643,12 +647,19 @@ class FilterConfig implements \JsonSerializable
     protected function processFilterType(FilterConfigElementModel $config, FilterTypeInterface $filter)
     {
         $context = new FilterTypeContext();
-        $context->setValue($config->value);
-        $context->setDefaultValue($config->defaultValue);
         $context->setName($config->type.'_'.$config->id);
-        $context->setParent($config->getRelated('pid'));
+        $context->setField($config->field);
+        $context->setValue($this->getData()[$context->getName()]);
 
+        if (!empty($config->operator)) {
+            $context->setOperator($config->operator);
+        } else {
+            $context->setOperator(DatabaseUtil::OPERATOR_LIKE);
+        }
+        $context->setDefaultValue($config->defaultValue);
+        $context->setParent($config->getRelated('pid'));
         $context->setQueryBuilder($this->queryBuilder);
+        $context->setDatabaseUtil($this->databaseUtil);
 
         $filter->buildQuery($context);
     }

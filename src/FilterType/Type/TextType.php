@@ -26,7 +26,16 @@ class TextType extends AbstractFilterType implements InitialFilterTypeInterface
     public function buildQuery(FilterTypeContext $filterTypeContext)
     {
         $queryBuilder = $filterTypeContext->getQueryBuilder();
-        $queryBuilder->whereElement();
+        $where = $filterTypeContext->getDatabaseUtil()->composeWhereForQueryBuilder(
+            $filterTypeContext->getQueryBuilder(),
+            $filterTypeContext->getField(),
+            $filterTypeContext->getOperator(),
+            null,
+            $filterTypeContext->getValue()
+        );
+
+        $queryBuilder->andWhere($where);
+//        $queryBuilder->setParameter()
     }
 
     public function buildForm(FilterTypeContext $filterTypeContext)
