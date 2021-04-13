@@ -9,13 +9,14 @@
 namespace HeimrichHannot\FilterBundle\Config;
 
 use Contao\Controller;
-use Contao\CoreBundle\Doctrine\Schema\DcaSchemaProvider;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\Environment;
 use Contao\InsertTags;
 use Doctrine\DBAL\Connection;
-use Doctrine\ORM\EntityManagerInterface;
+use HeimrichHannot\FilterBundle\Event\ModifyFilterQueryPartsEvent;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
+use HeimrichHannot\FilterBundle\Filter\FilterQueryPartCollection;
+use HeimrichHannot\FilterBundle\FilterType\AbstractFilterType;
 use HeimrichHannot\FilterBundle\FilterType\FilterTypeContext;
 use HeimrichHannot\FilterBundle\FilterType\FilterTypeInterface;
 use HeimrichHannot\FilterBundle\Form\Extension\FormButtonExtension;
@@ -27,6 +28,7 @@ use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 use HeimrichHannot\FilterBundle\Session\FilterSession;
 use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
@@ -94,15 +96,13 @@ class FilterConfig implements \JsonSerializable
      * @var bool
      */
     protected $formSubmitted = false;
+
     /**
-     * @var DcaSchemaProvider
+     * @var FilterQueryPartCollection
      */
-    protected $schemaProvider;
-    /**
-     * @var EntityManagerInterface
-     */
-    protected $em;
-    protected $databaseUtil;
+    protected $filterQueryPartCollection;
+    protected EventDispatcherInterface $eventDispatcher;
+
     /**
      * @var ContainerInterface
      */
@@ -122,18 +122,16 @@ class FilterConfig implements \JsonSerializable
         FilterSession $session,
         Connection $connection,
         RequestStack $requestStack,
-        DcaSchemaProvider $schemaProvider,
-        EntityManagerInterface $em,
-        DatabaseUtil $databaseUtil
+        FilterQueryPartCollection $filterQueryPartCollection,
+        EventDispatcherInterface $eventDispatcher
     ) {
         $this->framework = $framework;
         $this->session = $session;
         $this->container = $container;
         $this->queryBuilder = new FilterQueryBuilder($this->container, $this->framework, $connection);
         $this->requestStack = $requestStack;
-        $this->schemaProvider = $schemaProvider;
-        $this->em = $em;
-        $this->databaseUtil = $databaseUtil;
+        $this->filterQueryPartCollection = $filterQueryPartCollection;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
@@ -250,10 +248,9 @@ class FilterConfig implements \JsonSerializable
                 return;
             }
 
-//            if ($type instanceof AbstractFilterType) {
-//                $filterContext = new FilterTypeContext();
-//                $type->buildQuery($filterContext);
-//            }
+            if ($types[$element->type] instanceof AbstractFilterType) {
+                $this->processFilterType($element, $types[$element->type]);
+            }
 
             if (!isset($types[$element->type]) || \in_array($element->id, $skipElements) ||
                 $mode === static::QUERY_BUILDER_MODE_INITIAL_ONLY && !$element->isInitial ||
@@ -283,6 +280,13 @@ class FilterConfig implements \JsonSerializable
             }
 
             $type->buildQuery($queryBuilder, $element);
+        }
+
+        //apply parts from FilterQueryPartCollection
+        $event = $this->eventDispatcher->dispatch(ModifyFilterQueryPartsEvent::NAME, new ModifyFilterQueryPartsEvent($this->filterQueryPartCollection));
+
+        foreach ($event->getPartsCollection()->getParts() as $part) {
+            $this->queryBuilder->andWhere($part->query);
         }
     }
 
@@ -647,6 +651,7 @@ class FilterConfig implements \JsonSerializable
     protected function processFilterType(FilterConfigElementModel $config, FilterTypeInterface $filter)
     {
         $context = new FilterTypeContext();
+        $context->setId($config->id);
         $context->setName($config->type.'_'.$config->id);
         $context->setField($config->field);
         $context->setValue($this->getData()[$context->getName()]);
@@ -659,7 +664,6 @@ class FilterConfig implements \JsonSerializable
         $context->setDefaultValue($config->defaultValue);
         $context->setParent($config->getRelated('pid'));
         $context->setQueryBuilder($this->queryBuilder);
-        $context->setDatabaseUtil($this->databaseUtil);
 
         $filter->buildQuery($context);
     }

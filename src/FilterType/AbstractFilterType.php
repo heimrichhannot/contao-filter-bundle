@@ -8,21 +8,22 @@
 
 namespace HeimrichHannot\FilterBundle\FilterType;
 
-use Doctrine\ORM\EntityManagerInterface;
-use HeimrichHannot\FilterBundle\Filter\Filter;
+use HeimrichHannot\FilterBundle\Filter\FilterQueryPartCollection;
+use HeimrichHannot\FilterBundle\Filter\FilterQueryPartProcessor;
 
 abstract class AbstractFilterType implements FilterTypeInterface
 {
     const GROUP_DEFAULT = 'miscellaneous';
 
     /**
-     * @var EntityManagerInterface
+     * @var FilterQueryPartProcessor
      */
-    protected $em;
+    protected $filterQueryPartProcessor;
+
     /**
-     * @var Filter
+     * @var FilterQueryPartCollection
      */
-    protected $filter;
+    protected $filterQueryPartCollection;
 
     /**
      * @var FilterTypeContext
@@ -34,11 +35,11 @@ abstract class AbstractFilterType implements FilterTypeInterface
      */
     private $group = '';
 
-    public function __construct(Filter $filter, EntityManagerInterface $em)
+    public function __construct(FilterQueryPartProcessor $filterQueryPartProcessor, FilterQueryPartCollection $filterQueryPartCollection)
     {
-        $this->em = $em;
-        $this->filter = $filter;
         $this->initialize();
+        $this->filterQueryPartProcessor = $filterQueryPartProcessor;
+        $this->filterQueryPartCollection = $filterQueryPartCollection;
     }
 
     public function getContext(): FilterTypeContext

@@ -25,17 +25,7 @@ class TextType extends AbstractFilterType implements InitialFilterTypeInterface
 
     public function buildQuery(FilterTypeContext $filterTypeContext)
     {
-        $queryBuilder = $filterTypeContext->getQueryBuilder();
-        $where = $filterTypeContext->getDatabaseUtil()->composeWhereForQueryBuilder(
-            $filterTypeContext->getQueryBuilder(),
-            $filterTypeContext->getField(),
-            $filterTypeContext->getOperator(),
-            null,
-            $filterTypeContext->getValue()
-        );
-
-        $queryBuilder->andWhere($where);
-//        $queryBuilder->setParameter()
+        $this->filterQueryPartCollection->addPart($this->filterQueryPartProcessor->composeQueryPart($filterTypeContext));
     }
 
     public function buildForm(FilterTypeContext $filterTypeContext)
@@ -52,6 +42,6 @@ class TextType extends AbstractFilterType implements InitialFilterTypeInterface
 
     public function getInitialPalette(string $prependPalette, string $appendPalette): string
     {
-        return $prependPalette.'{config_legend},field;'.$appendPalette;
+        return $prependPalette.'{config_legend},field,operator;'.$appendPalette;
     }
 }

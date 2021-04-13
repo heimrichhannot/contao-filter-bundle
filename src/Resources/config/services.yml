@@ -45,8 +45,6 @@ services:
     - "@huh.filter.session"
     - "@doctrine.dbal.default_connection"
     - "@request_stack"
-    - "@contao.doctrine.schema_provider"
-    - "@doctrine.orm.entity_manager"
 
   huh.filter.backend.filter_config_element:
     public: true
@@ -187,3 +185,10 @@ services:
       - !tagged huh.filter.filter_type
 
   huh.filter.filter_type.collection: '@HeimrichHannot\FilterBundle\FilterType\FilterTypeCollection'
+
+  HeimrichHannot\FilterBundle\Filter\FilterQueryPartCollection:
+
+  huh.filter.filter_query_part_collection: '@HeimrichHannot\FilterBundle\Filter\FilterQueryPartCollection'
+
+  HeimrichHannot\FilterBundle\Filter\FilterQueryPartProcessor:
+  huh.filter.filter_query_part_processor: '@HeimrichHannot\FilterBundle\Filter\FilterQueryPartProcessor'

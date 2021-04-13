@@ -8,36 +8,23 @@
 
 namespace HeimrichHannot\FilterBundle\Filter;
 
+use HeimrichHannot\FilterBundle\FilterType\FilterTypeContext;
+use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
+
 class FilterQueryPartProcessor
 {
     /**
-     * @var FilterQueryPart[]
+     * @var DatabaseUtil
      */
-    private array $parts = [];
+    protected $databaseUtil;
 
-    /**
-     * @return FilterQueryPart[]
-     */
-    public function getParts(): array
+    public function __construct(DatabaseUtil $databaseUtil)
     {
-        return $this->parts;
+        $this->databaseUtil = $databaseUtil;
     }
 
-    /**
-     * @param FilterQueryPart[] $parts
-     */
-    public function setParts(array $parts): void
+    public function composeQueryPart(FilterTypeContext $context): FilterQueryPart
     {
-        $this->parts = $parts;
-    }
-
-    public function addPart(FilterQueryPart $part): void
-    {
-        $this->parts[$part->name] = $part;
-    }
-
-    public function removePart(string $name): void
-    {
-        unset($name, $this->parts);
+        return new FilterQueryPart($context, $this->databaseUtil);
     }
 }

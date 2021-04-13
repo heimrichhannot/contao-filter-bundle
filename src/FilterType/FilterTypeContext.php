@@ -10,15 +10,10 @@ namespace HeimrichHannot\FilterBundle\FilterType;
 
 use Contao\Model;
 use Doctrine\DBAL\Query\QueryBuilder;
-use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 use Symfony\Component\Form\FormBuilderInterface;
 
 class FilterTypeContext implements \IteratorAggregate
 {
-    /**
-     * @var DatabaseUtil
-     */
-    private $databaseUtil;
     /**
      * @var string
      */
@@ -53,6 +48,11 @@ class FilterTypeContext implements \IteratorAggregate
      * @var QueryBuilder
      */
     private $queryBuilder;
+
+    /**
+     * @var int
+     */
+    private $id;
 
     /**
      * @var bool
@@ -149,16 +149,6 @@ class FilterTypeContext implements \IteratorAggregate
         $this->formBuilder = $formBuilder;
     }
 
-    public function getDatabaseUtil(): DatabaseUtil
-    {
-        return $this->databaseUtil;
-    }
-
-    public function setDatabaseUtil(DatabaseUtil $databaseUtil): void
-    {
-        $this->databaseUtil = $databaseUtil;
-    }
-
     public function getField(): string
     {
         return $this->field;
@@ -177,5 +167,15 @@ class FilterTypeContext implements \IteratorAggregate
     public function setOperator(string $operator): void
     {
         $this->operator = $operator;
+    }
+
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    public function setId(int $id): void
+    {
+        $this->id = $id;
     }
 }
