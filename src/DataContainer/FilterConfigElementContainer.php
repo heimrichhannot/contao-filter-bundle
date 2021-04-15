@@ -14,6 +14,7 @@ use HeimrichHannot\FilterBundle\FilterType\FilterTypeCollection;
 use HeimrichHannot\FilterBundle\FilterType\InitialFilterTypeInterface;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\UtilsBundle\Container\ContainerUtil;
+use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 
 class FilterConfigElementContainer
 {
@@ -77,5 +78,14 @@ class FilterConfigElementContainer
         }
 
         return $options;
+    }
+
+    public function getOperators(DataContainer $dc)
+    {
+        if (!$this->bundleConfig['filter']['disable_legacy_filters']) {
+            return DatabaseUtil::OPERATORS;
+        }
+
+        return $this->typeCollection->getType($dc->activeRecord->type)->getOperators();
     }
 }

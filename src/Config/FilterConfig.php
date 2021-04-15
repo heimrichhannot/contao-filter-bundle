@@ -26,7 +26,6 @@ use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\Model\FilterConfigModel;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 use HeimrichHannot\FilterBundle\Session\FilterSession;
-use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\Exception\TransformationFailedException;
@@ -654,16 +653,11 @@ class FilterConfig implements \JsonSerializable
         $context->setId($config->id);
         $context->setName($config->type.'_'.$config->id);
         $context->setField($config->field);
-        $context->setValue($this->getData()[$context->getName()]);
-
-        if (!empty($config->operator)) {
-            $context->setOperator($config->operator);
-        } else {
-            $context->setOperator(DatabaseUtil::OPERATOR_LIKE);
-        }
+        $context->setOperator($config->operator);
+        $context->setValue($this->getData()[$context->getName()] ?: '');
         $context->setDefaultValue($config->defaultValue);
-        $context->setParent($config->getRelated('pid'));
         $context->setQueryBuilder($this->queryBuilder);
+        $context->setParent($config->getRelated('pid'));
 
         $filter->buildQuery($context);
     }

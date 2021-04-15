@@ -184,15 +184,21 @@ class FilterType extends AbstractType
     {
         $context = new FilterTypeContext();
 
-        if ((bool) $element->isInitial) {
+        if ($element->isInitial) {
             return;
         }
 
         $context->setName($element->type.'_'.$element->id);
         $context->setValue($element->value);
         $context->setDefaultValue($element->defaultValue);
-
+        $context->setPlaceholder($element->placeholder);
         $context->setFormBuilder($builder);
+        $context->setTitle($element->title);
+        $context->setLabel($element->label);
+
+        if ($element->hideLabel) {
+            $context->hideLabel();
+        }
 
         try {
             $filterType->buildForm($context);

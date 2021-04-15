@@ -22,32 +22,11 @@ class FilterTypeContext implements \IteratorAggregate
      * @var string
      */
     private $field = '';
-    /**
-     * @var string
-     */
-    private $name = '';
-    /**
-     * @var string
-     */
-    private $value = '';
 
     /**
      * @var FormBuilderInterface
      */
     private $formBuilder;
-
-    /**
-     * @var string
-     */
-    private $operator;
-    /**
-     * @var Model
-     */
-    private $parent = null;
-    /**
-     * @var QueryBuilder
-     */
-    private $queryBuilder;
 
     /**
      * @var int
@@ -59,6 +38,48 @@ class FilterTypeContext implements \IteratorAggregate
      */
     private $initial = false;
 
+    /**
+     * @var string
+     */
+    private $label = '';
+
+    /**
+     * @var bool
+     */
+    private $isLabelHidden = false;
+
+    /**
+     * @var string
+     */
+    private $name = '';
+    /**
+     * @var string
+     */
+    private $operator = '';
+    /**
+     * @var Model
+     */
+    private $parent = null;
+
+    /**
+     * string.
+     */
+    private $placeholder = null;
+
+    /**
+     * @var QueryBuilder
+     */
+    private $queryBuilder;
+    /**
+     * @var string
+     */
+    private $title;
+
+    /**
+     * @var string
+     */
+    private $value = '';
+
     public function getName(): string
     {
         return $this->name;
@@ -67,16 +88,6 @@ class FilterTypeContext implements \IteratorAggregate
     public function setName(string $name): void
     {
         $this->name = $name;
-    }
-
-    public function getDefaultValue(): string
-    {
-        return $this->defaultValue;
-    }
-
-    public function setDefaultValue(string $defaultValue): void
-    {
-        $this->defaultValue = $defaultValue;
     }
 
     public function getValue(): string
@@ -91,6 +102,16 @@ class FilterTypeContext implements \IteratorAggregate
     public function setValue(string $value): void
     {
         $this->value = $value;
+    }
+
+    public function getDefaultValue(): string
+    {
+        return $this->defaultValue;
+    }
+
+    public function setDefaultValue(string $defaultValue): void
+    {
+        $this->defaultValue = $defaultValue;
     }
 
     public function getContext(): self
@@ -127,16 +148,6 @@ class FilterTypeContext implements \IteratorAggregate
     public function setParent(?Model $parent): void
     {
         $this->parent = $parent;
-    }
-
-    public function getQueryBuilder(): QueryBuilder
-    {
-        return $this->queryBuilder;
-    }
-
-    public function setQueryBuilder(QueryBuilder $queryBuilder): void
-    {
-        $this->queryBuilder = $queryBuilder;
     }
 
     public function getFormBuilder(): FormBuilderInterface
@@ -177,5 +188,61 @@ class FilterTypeContext implements \IteratorAggregate
     public function setId(int $id): void
     {
         $this->id = $id;
+    }
+
+    /**
+     * @return null
+     */
+    public function getPlaceholder()
+    {
+        return $this->placeholder;
+    }
+
+    /**
+     * @param null $placeholder
+     */
+    public function setPlaceholder($placeholder): void
+    {
+        $this->placeholder = $placeholder;
+    }
+
+    public function getTitle(): string
+    {
+        return $this->title;
+    }
+
+    public function setTitle(string $title): void
+    {
+        $this->title = $title;
+    }
+
+    public function getLabel(): string
+    {
+        return $this->label;
+    }
+
+    public function setLabel(string $label): void
+    {
+        $this->label = $label;
+    }
+
+    public function isLabelHidden(): bool
+    {
+        return $this->isLabelHidden;
+    }
+
+    public function hideLabel(): void
+    {
+        $this->isLabelHidden = true;
+    }
+
+    public function getQueryBuilder(): QueryBuilder
+    {
+        return $this->queryBuilder;
+    }
+
+    public function setQueryBuilder(QueryBuilder $queryBuilder): void
+    {
+        $this->queryBuilder = $queryBuilder;
     }
 }

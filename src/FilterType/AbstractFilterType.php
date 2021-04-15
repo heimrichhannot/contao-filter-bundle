@@ -10,6 +10,8 @@ namespace HeimrichHannot\FilterBundle\FilterType;
 
 use HeimrichHannot\FilterBundle\Filter\FilterQueryPartCollection;
 use HeimrichHannot\FilterBundle\Filter\FilterQueryPartProcessor;
+use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 abstract class AbstractFilterType implements FilterTypeInterface
 {
@@ -26,6 +28,11 @@ abstract class AbstractFilterType implements FilterTypeInterface
     protected $filterQueryPartCollection;
 
     /**
+     * @var TranslatorInterface
+     */
+    protected $translator;
+
+    /**
      * @var FilterTypeContext
      */
     private $context;
@@ -35,11 +42,15 @@ abstract class AbstractFilterType implements FilterTypeInterface
      */
     private $group = '';
 
-    public function __construct(FilterQueryPartProcessor $filterQueryPartProcessor, FilterQueryPartCollection $filterQueryPartCollection)
-    {
+    public function __construct(
+        FilterQueryPartProcessor $filterQueryPartProcessor,
+        FilterQueryPartCollection $filterQueryPartCollection,
+        TranslatorInterface $translator
+    ) {
         $this->initialize();
         $this->filterQueryPartProcessor = $filterQueryPartProcessor;
         $this->filterQueryPartCollection = $filterQueryPartCollection;
+        $this->translator = $translator;
     }
 
     public function getContext(): FilterTypeContext
@@ -69,6 +80,37 @@ abstract class AbstractFilterType implements FilterTypeInterface
     public function setGroup(string $group): void
     {
         $this->group = $group;
+    }
+
+    public function getOperators(): array
+    {
+        return DatabaseUtil::OPERATORS;
+    }
+
+    public function buildQuery(FilterTypeContext $filterTypeContext)
+    {
+        $this->filterQueryPartCollection->addPart($this->filterQueryPartProcessor->composeQueryPart($filterTypeContext));
+    }
+
+    public function getOptions(FilterTypeContext $context): array
+    {
+        $options = [];
+
+        if ('' !== $context->getPlaceholder()) {
+            $options['attr']['placeholder'] = $this->translator->trans($context->getPlaceholder(), ['%label%' => $this->translator->trans($options['label']) ?: $context->getTitle()]);
+        }
+
+        $options['label'] = $context->getLabel() ?: $context->getTitle();
+
+        // sr-only style for non-bootstrap projects is shipped within the filter_form_* templates
+        if (true === $context->isLabelHidden()) {
+            $options['label_attr'] = ['class' => 'sr-only'];
+        }
+
+        // always label for screen readers
+        $options['attr']['aria-label'] = $this->translator->trans($context->getLabel() ?: $context->getTitle());
+
+        return $options;
     }
 
     protected function initialize(): void

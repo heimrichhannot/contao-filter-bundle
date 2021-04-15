@@ -9,7 +9,8 @@
 namespace HeimrichHannot\FilterBundle\FilterType\Type;
 
 use HeimrichHannot\FilterBundle\FilterType\AbstractFilterType;
-use HeimrichHannot\FilterBundle\FilterType\FilterTypeContext;
+use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType as SymfonyChoiceType;
 
 class ChoiceType extends AbstractFilterType
 {
@@ -20,18 +21,30 @@ class ChoiceType extends AbstractFilterType
         return static::TYPE;
     }
 
-    public function buildQuery(FilterTypeContext $filterTypeContext): string
-    {
-        // TODO: Implement buildQuery() method.
-    }
-
     public function buildForm($filterTypeContext)
     {
-        // TODO: Implement buildForm() method.
+        $builder = $filterTypeContext->getFormBuilder();
+
+        $builder->add($filterTypeContext->getName(), SymfonyChoiceType::class, $this->getOptions($filterTypeContext));
     }
 
     public function getPalette(string $prependPalette, string $appendPalette): string
     {
-        return parent::getPalette($prependPalette, $appendPalette);
+        return $prependPalette.'{config_legend},field,operator;{visualization_legend},addPlaceholder,customLabel,hideLabel;{expert_legend},cssClass;'.$appendPalette;
+    }
+
+    public function getOperators(): array
+    {
+        //remove this operators from the DatabaseUtil::OPERATORS array
+        $remove = [
+            DatabaseUtil::OPERATOR_LIKE,
+            DatabaseUtil::OPERATOR_UNLIKE,
+            DatabaseUtil::OPERATOR_GREATER,
+            DatabaseUtil::OPERATOR_GREATER_EQUAL,
+            DatabaseUtil::OPERATOR_LOWER,
+            DatabaseUtil::OPERATOR_LOWER_EQUAL,
+        ];
+
+        return array_values(array_diff(parent::getOperators(), $remove));
     }
 }

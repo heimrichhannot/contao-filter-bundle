@@ -357,7 +357,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
         'operator' => [
             'label' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['operator'],
             'inputType' => 'select',
-            'options' => \HeimrichHannot\UtilsBundle\Database\DatabaseUtil::OPERATORS,
+            'options_callback' => [\HeimrichHannot\FilterBundle\DataContainer\FilterConfigElementContainer::class, 'getOperators'],
             'reference' => &$GLOBALS['TL_LANG']['MSC']['databaseOperators'],
             'eval' => ['tl_class' => 'w50', 'mandatory' => true, 'includeBlankOption' => true],
             'sql' => "varchar(16) NOT NULL default ''",
