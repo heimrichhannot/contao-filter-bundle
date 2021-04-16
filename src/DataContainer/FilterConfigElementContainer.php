@@ -88,4 +88,20 @@ class FilterConfigElementContainer
 
         return $this->typeCollection->getType($dc->activeRecord->type)->getOperators();
     }
+
+    public function getDateWidgetOptions(DataContainer $dc): array
+    {
+        if ($this->bundleConfig['filter']['disable_legacy_filers']) {
+            return [
+                \HeimrichHannot\FilterBundle\Filter\Type\DateType::WIDGET_TYPE_CHOICE,
+                \HeimrichHannot\FilterBundle\Filter\Type\DateType::WIDGET_TYPE_TEXT,
+                \HeimrichHannot\FilterBundle\Filter\Type\DateType::WIDGET_TYPE_SINGLE_TEXT,
+            ];
+        }
+
+        return [
+            \HeimrichHannot\FilterBundle\Filter\Type\DateType::WIDGET_TYPE_CHOICE,
+            \HeimrichHannot\FilterBundle\Filter\Type\DateType::WIDGET_TYPE_SINGLE_TEXT,
+        ];
+    }
 }

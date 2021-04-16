@@ -528,11 +528,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'exclude' => true,
             'inputType' => 'select',
             'default' => \HeimrichHannot\FilterBundle\Filter\Type\DateType::WIDGET_TYPE_SINGLE_TEXT,
-            'options' => [
-                \HeimrichHannot\FilterBundle\Filter\Type\DateType::WIDGET_TYPE_CHOICE,
-                \HeimrichHannot\FilterBundle\Filter\Type\DateType::WIDGET_TYPE_TEXT,
-                \HeimrichHannot\FilterBundle\Filter\Type\DateType::WIDGET_TYPE_SINGLE_TEXT,
-            ],
+            'options_callback' => [\HeimrichHannot\FilterBundle\DataContainer\FilterConfigElementContainer::class, 'getDateWidgetOptions'],
             'eval' => ['tl_class' => 'w50', 'chosen' => true, 'submitOnChange' => true],
             'sql' => "varchar(16) NOT NULL default ''",
         ],

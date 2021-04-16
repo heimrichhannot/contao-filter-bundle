@@ -200,6 +200,9 @@ class FilterType extends AbstractType
         $context->setSubmitOnChange($element->submitOnChange);
         $context->setExpanded($element->expanded);
         $context->setMultiple($element->multiple);
+        $context->setDateTimeFormat($element->dateTimeFormat);
+        $context->setMinDateTime($element->minDateTime);
+        $context->setMaxDateTime($element->maxDateTime);
 
         if ($element->hideLabel) {
             $context->hideLabel();

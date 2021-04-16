@@ -15,6 +15,11 @@ use Symfony\Component\Form\FormBuilderInterface;
 class FilterTypeContext implements \IteratorAggregate
 {
     /**
+     * @var string
+     */
+    private $dateTimeFormat;
+
+    /**
      * @var string|array
      */
     private $defaultValue;
@@ -57,6 +62,16 @@ class FilterTypeContext implements \IteratorAggregate
      * @var bool
      */
     private $isMultiple = false;
+
+    /**
+     * @var string
+     */
+    private $maxDateTime;
+
+    /**
+     * @var string
+     */
+    private $minDateTime;
 
     /**
      * @var string
@@ -296,5 +311,35 @@ class FilterTypeContext implements \IteratorAggregate
     public function setExpanded(bool $expanded): void
     {
         $this->expanded = $expanded;
+    }
+
+    public function getDateTimeFormat(): string
+    {
+        return $this->dateTimeFormat;
+    }
+
+    public function setDateTimeFormat(string $dateTimeFormat): void
+    {
+        $this->dateTimeFormat = $dateTimeFormat;
+    }
+
+    public function getMaxDateTime(): string
+    {
+        return $this->maxDateTime;
+    }
+
+    public function setMaxDateTime(string $maxDateTime): void
+    {
+        $this->maxDateTime = $maxDateTime;
+    }
+
+    public function getMinDateTime(): string
+    {
+        return $this->minDateTime;
+    }
+
+    public function setMinDateTime(string $minDateTime): void
+    {
+        $this->minDateTime = $minDateTime;
     }
 }

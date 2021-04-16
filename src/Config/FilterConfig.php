@@ -661,6 +661,9 @@ class FilterConfig implements \JsonSerializable
         $context->setSubmitOnChange($config->submitOnChange);
         $context->setExpanded($config->expanded);
         $context->setMultiple($config->multiple);
+        $context->setDateTimeFormat($config->dateTimeFormat);
+        $context->setMinDateTime($config->minDateTime);
+        $context->setMaxDateTime($config->maxDateTime);
 
         $filter->buildQuery($context);
     }

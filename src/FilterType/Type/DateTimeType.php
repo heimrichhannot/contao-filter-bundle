@@ -8,16 +8,29 @@
 
 namespace HeimrichHannot\FilterBundle\FilterType\Type;
 
+use Contao\Date;
+use HeimrichHannot\FilterBundle\Filter\FilterQueryPartCollection;
+use HeimrichHannot\FilterBundle\Filter\FilterQueryPartProcessor;
 use HeimrichHannot\FilterBundle\FilterType\AbstractFilterType;
 use HeimrichHannot\FilterBundle\FilterType\FilterTypeContext;
+use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
+use HeimrichHannot\UtilsBundle\Date\DateUtil;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType as SymfonyDateTimeType;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class DateTimeType extends AbstractFilterType
 {
     const TYPE = 'date_time_type';
+    protected DateUtil $dateUtil;
 
-    public static function test(): string
-    {
-        return 'test';
+    public function __construct(
+        FilterQueryPartProcessor $filterQueryPartProcessor,
+        FilterQueryPartCollection $filterQueryPartCollection,
+        TranslatorInterface $translator,
+        DateUtil $dateUtil
+    ) {
+        parent::__construct($filterQueryPartProcessor, $filterQueryPartCollection, $translator);
+        $this->dateUtil = $dateUtil;
     }
 
     public static function getType(): string
@@ -25,18 +38,78 @@ class DateTimeType extends AbstractFilterType
         return static::TYPE;
     }
 
-    public function buildQuery(FilterTypeContext $filterTypeContext): string
+    public function buildQuery(FilterTypeContext $filterTypeContext)
     {
-        // TODO: Implement buildQuery() method.
+        $this->filterQueryPartCollection->addPart($this->filterQueryPartProcessor->composeQueryPart($filterTypeContext));
     }
 
     public function buildForm($filterTypeContext)
     {
-        // TODO: Implement buildForm() method.
+        $builder = $filterTypeContext->getFormBuilder();
+
+        $builder->add($filterTypeContext->getName(), SymfonyDateTimeType::class, $this->getOptions($filterTypeContext));
     }
 
     public function getPalette(string $prependPalette, string $appendPalette): string
     {
-        return parent::getPalette($prependPalette, $appendPalette);
+        return $prependPalette.'{config_legend},field,operator,dateTimeFormat,minDateTime,maxDateTime;{visualization_legend},dateWidget,customLabel,hideLabel,addPlaceholder;'.$appendPalette;
+    }
+
+    public function getOperators(): array
+    {
+        //remove this operators from the DatabaseUtil::OPERATORS array
+        $remove = [
+            DatabaseUtil::OPERATOR_IN,
+            DatabaseUtil::OPERATOR_NOT_IN,
+            DatabaseUtil::OPERATOR_LIKE,
+            DatabaseUtil::OPERATOR_UNLIKE,
+            DatabaseUtil::OPERATOR_REGEXP,
+            DatabaseUtil::OPERATOR_NOT_REGEXP,
+            DatabaseUtil::OPERATOR_IS_NULL,
+            DatabaseUtil::OPERATOR_IS_NOT_NULL,
+            DatabaseUtil::OPERATOR_IS_EMPTY,
+            DatabaseUtil::OPERATOR_IS_NOT_EMPTY,
+        ];
+
+        return array_values(array_diff(parent::getOperators(), $remove));
+    }
+
+    public function getOptions(FilterTypeContext $filterTypeContext): array
+    {
+        $options = parent::getOptions($filterTypeContext);
+
+//        $time = time();
+
+        $format = $filterTypeContext->getDateTimeFormat() ?: 'd.m.Y H:i';
+        $options['html5'] = true;
+        $options['format'] = $this->dateUtil->transformPhpDateFormatToRFC3339($format);
+
+        if (true === $options['html5']) {
+            if ($filterTypeContext->getMinDateTime()) {
+                $options['attr']['min'] = Date::parse('Y-m-d\TH:i', $this->dateUtil->getTimeStamp($filterTypeContext->getMinDateTime())); // valid rfc 3339 date `YYYY-MM-DD` format must be used
+            }
+
+            if ($filterTypeContext->getMaxDateTime()) {
+                $options['attr']['max'] = Date::parse('Y-m-d\TH:i', $this->dateUtil->getTimeStamp($filterTypeContext->getMaxDateTime())); // valid rfc 3339 date `YYYY-MM-DD` format must be used
+            }
+        }
+
+        $options['group_attr']['class'] = isset($options['group_attr']['class']) ? $options['group_attr']['class'].' datepicker timepicker' : 'datepicker timepicker';
+        $options['attr']['data-iso8601-format'] = $this->dateUtil->transformPhpDateFormatToISO8601($format);
+        $options['attr']['data-enable-time'] = 'true';
+        $options['attr']['data-date-format'] = $format;
+
+        if ($filterTypeContext->getMinDateTime()) {
+            $options['attr']['data-min-date'] = Date::parse($format, $this->dateUtil->getTimeStamp($filterTypeContext->getMinDateTime()));
+        }
+
+        if ($filterTypeContext->getMaxDateTime()) {
+            $options['attr']['data-max-date'] = Date::parse($format, $this->dateUtil->getTimeStamp($filterTypeContext->getMaxDateTime()));
+        }
+
+//        $options['widget'] = 'choice';
+        $options['widget'] = 'single_text';
+
+        return $options;
     }
 }
