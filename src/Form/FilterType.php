@@ -198,6 +198,8 @@ class FilterType extends AbstractType
         $context->setLabel($element->label);
         $context->setParent($element->getRelated('pid'));
         $context->setSubmitOnChange($element->submitOnChange);
+        $context->setExpanded($element->expanded);
+        $context->setMultiple($element->multiple);
 
         if ($element->hideLabel) {
             $context->hideLabel();

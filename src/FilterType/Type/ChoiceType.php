@@ -54,7 +54,7 @@ class ChoiceType extends AbstractFilterType
 
     public function getPalette(string $prependPalette, string $appendPalette): string
     {
-        return $prependPalette.'{config_legend},field,operator,submitOnChange;{visualization_legend},addPlaceholder,customLabel,hideLabel;{expert_legend},cssClass;'.$appendPalette;
+        return $prependPalette.'{config_legend},field,operator,submitOnChange,expanded,multiple;{visualization_legend},addPlaceholder,customLabel,hideLabel;{expert_legend},cssClass;'.$appendPalette;
     }
 
     public function getOperators(): array
@@ -78,6 +78,8 @@ class ChoiceType extends AbstractFilterType
     {
         $options = parent::getOptions($filterTypeContext);
         $options['choices'] = array_flip($this->collectChoices($filterTypeContext));
+        $options['choice_translation_domain'] = false;
+        $options['expanded'] = $filterTypeContext->isExpanded();
 
         if ($filterTypeContext->isSubmitOnChange()) {
             if ($filterTypeContext->getParent()->asyncFormSubmit) {
@@ -91,6 +93,22 @@ class ChoiceType extends AbstractFilterType
                     $options['attr']['onchange'] = 'this.form.submit()';
                 }
             }
+        }
+
+        if (isset($options['attr']['placeholder'])) {
+            $options['attr']['data-placeholder'] = $options['attr']['placeholder'];
+            $options['placeholder'] = $options['attr']['placeholder'];
+            unset($options['attr']['placeholder']);
+
+            $options['required'] = false;
+            $options['empty_data'] = true === $filterTypeContext->isMultiple() ? [] : '';
+        }
+
+        $options['multiple'] = $filterTypeContext->isMultiple();
+
+        // forgiving array handling
+        if (true === $filterTypeContext->isMultiple() && isset($options['data'])) {
+            $options['data'] = !\is_array($options['data']) ? [$options['data']] : $options['data'];
         }
 
         return $options;

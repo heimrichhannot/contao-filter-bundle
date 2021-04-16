@@ -15,9 +15,14 @@ use Symfony\Component\Form\FormBuilderInterface;
 class FilterTypeContext implements \IteratorAggregate
 {
     /**
-     * @var string
+     * @var string|array
      */
-    private $defaultValue = '';
+    private $defaultValue;
+
+    /**
+     * @var bool
+     */
+    private $expanded = false;
     /**
      * @var string
      */
@@ -47,6 +52,11 @@ class FilterTypeContext implements \IteratorAggregate
      * @var bool
      */
     private $isLabelHidden = false;
+
+    /**
+     * @var bool
+     */
+    private $isMultiple = false;
 
     /**
      * @var string
@@ -82,9 +92,9 @@ class FilterTypeContext implements \IteratorAggregate
     private $title;
 
     /**
-     * @var string
+     * @var string|array
      */
-    private $value = '';
+    private $value;
 
     public function getName(): string
     {
@@ -96,7 +106,10 @@ class FilterTypeContext implements \IteratorAggregate
         $this->name = $name;
     }
 
-    public function getValue(): string
+    /**
+     * @return array|string
+     */
+    public function getValue()
     {
         if (empty($this->value)) {
             return $this->getDefaultValue();
@@ -105,7 +118,10 @@ class FilterTypeContext implements \IteratorAggregate
         return $this->value;
     }
 
-    public function setValue(string $value): void
+    /**
+     * @param string|array $value
+     */
+    public function setValue($value): void
     {
         $this->value = $value;
     }
@@ -260,5 +276,25 @@ class FilterTypeContext implements \IteratorAggregate
     public function setSubmitOnChange(bool $submitOnChange): void
     {
         $this->submitOnChange = $submitOnChange;
+    }
+
+    public function isMultiple(): bool
+    {
+        return $this->isMultiple;
+    }
+
+    public function setMultiple(bool $isMultiple): void
+    {
+        $this->isMultiple = $isMultiple;
+    }
+
+    public function isExpanded(): bool
+    {
+        return $this->expanded;
+    }
+
+    public function setExpanded(bool $expanded): void
+    {
+        $this->expanded = $expanded;
     }
 }
