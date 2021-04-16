@@ -188,6 +188,7 @@ class FilterType extends AbstractType
             return;
         }
 
+        $context->setId($element->id);
         $context->setName($element->type.'_'.$element->id);
         $context->setValue($element->value);
         $context->setDefaultValue($element->defaultValue);
@@ -195,6 +196,8 @@ class FilterType extends AbstractType
         $context->setFormBuilder($builder);
         $context->setTitle($element->title);
         $context->setLabel($element->label);
+        $context->setParent($element->getRelated('pid'));
+        $context->setSubmitOnChange($element->submitOnChange);
 
         if ($element->hideLabel) {
             $context->hideLabel();

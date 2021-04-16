@@ -70,6 +70,12 @@ class FilterTypeContext implements \IteratorAggregate
      * @var QueryBuilder
      */
     private $queryBuilder;
+
+    /**
+     * @var bool
+     */
+    private $submitOnChange = false;
+
     /**
      * @var string
      */
@@ -244,5 +250,15 @@ class FilterTypeContext implements \IteratorAggregate
     public function setQueryBuilder(QueryBuilder $queryBuilder): void
     {
         $this->queryBuilder = $queryBuilder;
+    }
+
+    public function isSubmitOnChange(): bool
+    {
+        return $this->submitOnChange;
+    }
+
+    public function setSubmitOnChange(bool $submitOnChange): void
+    {
+        $this->submitOnChange = $submitOnChange;
     }
 }

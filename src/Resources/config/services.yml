@@ -78,6 +78,7 @@ services:
 #    arguments:
 #    - "@contao.framework"
 
+  HeimrichHannot\FilterBundle\Choice\FieldOptionsChoice: ~
   huh.filter.choice.field_options:
     class: HeimrichHannot\FilterBundle\Choice\FieldOptionsChoice
     public: true

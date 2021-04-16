@@ -658,6 +658,7 @@ class FilterConfig implements \JsonSerializable
         $context->setDefaultValue($config->defaultValue);
         $context->setQueryBuilder($this->queryBuilder);
         $context->setParent($config->getRelated('pid'));
+        $context->setSubmitOnChange($config->submitOnChange);
 
         $filter->buildQuery($context);
     }
