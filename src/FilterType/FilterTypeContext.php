@@ -107,7 +107,7 @@ class FilterTypeContext implements \IteratorAggregate
     private $title;
 
     /**
-     * @var string|array
+     * @var string|array|int
      */
     private $value;
 
@@ -122,7 +122,7 @@ class FilterTypeContext implements \IteratorAggregate
     }
 
     /**
-     * @return array|string
+     * @return array|string|int
      */
     public function getValue()
     {
@@ -134,7 +134,7 @@ class FilterTypeContext implements \IteratorAggregate
     }
 
     /**
-     * @param string|array $value
+     * @param string|array|int $value
      */
     public function setValue($value): void
     {

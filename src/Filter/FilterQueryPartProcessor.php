@@ -9,22 +9,11 @@
 namespace HeimrichHannot\FilterBundle\Filter;
 
 use HeimrichHannot\FilterBundle\FilterType\FilterTypeContext;
-use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 
 class FilterQueryPartProcessor
 {
-    /**
-     * @var DatabaseUtil
-     */
-    protected $databaseUtil;
-
-    public function __construct(DatabaseUtil $databaseUtil)
-    {
-        $this->databaseUtil = $databaseUtil;
-    }
-
     public function composeQueryPart(FilterTypeContext $context): FilterQueryPart
     {
-        return new FilterQueryPart($context, $this->databaseUtil);
+        return new FilterQueryPart($context);
     }
 }
