@@ -9,7 +9,6 @@
 namespace HeimrichHannot\FilterBundle\FilterType;
 
 use Contao\Model;
-use Doctrine\DBAL\Query\QueryBuilder;
 use Symfony\Component\Form\FormBuilderInterface;
 
 class FilterTypeContext implements \IteratorAggregate
@@ -90,11 +89,6 @@ class FilterTypeContext implements \IteratorAggregate
      * string.
      */
     private $placeholder = null;
-
-    /**
-     * @var QueryBuilder
-     */
-    private $queryBuilder;
 
     /**
      * @var bool
@@ -271,16 +265,6 @@ class FilterTypeContext implements \IteratorAggregate
     public function hideLabel(): void
     {
         $this->isLabelHidden = true;
-    }
-
-    public function getQueryBuilder(): QueryBuilder
-    {
-        return $this->queryBuilder;
-    }
-
-    public function setQueryBuilder(QueryBuilder $queryBuilder): void
-    {
-        $this->queryBuilder = $queryBuilder;
     }
 
     public function isSubmitOnChange(): bool

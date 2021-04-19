@@ -289,7 +289,7 @@ class FilterConfig implements \JsonSerializable
         //apply parts from FilterQueryPartCollection
         $event = $this->eventDispatcher->dispatch(ModifyFilterQueryPartsEvent::NAME, new ModifyFilterQueryPartsEvent($this->filterQueryPartCollection));
 
-        /**
+        /*
          * @var FilterQueryPart
          */
         foreach ($event->getPartsCollection()->getParts() as $part) {
@@ -669,7 +669,6 @@ class FilterConfig implements \JsonSerializable
         $context->setOperator($config->operator);
         $context->setValue($this->getData()[$context->getName()] ?: '');
         $context->setDefaultValue($config->defaultValue);
-        $context->setQueryBuilder($this->queryBuilder);
         $context->setParent($config->getRelated('pid'));
         $context->setSubmitOnChange($config->submitOnChange);
         $context->setExpanded($config->expanded);

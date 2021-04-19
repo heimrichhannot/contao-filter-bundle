@@ -21,7 +21,11 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class DateTimeType extends AbstractFilterType
 {
     const TYPE = 'date_time_type';
-    protected DateUtil $dateUtil;
+
+    /**
+     * @var DateUtil
+     */
+    protected $dateUtil;
 
     public function __construct(
         FilterQueryPartProcessor $filterQueryPartProcessor,

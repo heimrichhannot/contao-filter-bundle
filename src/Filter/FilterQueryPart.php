@@ -10,22 +10,17 @@ namespace HeimrichHannot\FilterBundle\Filter;
 
 use Contao\Controller;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\DBAL\Types\Types;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Query\Parameter;
 use HeimrichHannot\FilterBundle\FilterType\FilterTypeContext;
 use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 
-class FilterQueryPart extends EntityManager
+class FilterQueryPart
 {
     /**
      * @var string
      */
     public $name;
-    /**
-     * @var Parameter
-     */
-    public $parameter;
     /**
      * @var string
      */
@@ -50,8 +45,14 @@ class FilterQueryPart extends EntityManager
      */
     protected $filterElementId;
 
-    public function __construct(FilterTypeContext $context)
+    /**
+     * @var Connection
+     */
+    protected $connection;
+
+    public function __construct(FilterTypeContext $context, Connection $connection)
     {
+        $this->connection = $connection;
         $this->name = $context->getName();
         $this->filterElementId = $context->getId();
         $this->query = $this->composeQuery($context);
@@ -75,11 +76,9 @@ class FilterQueryPart extends EntityManager
      *                       valueType: string
      *                       }
      */
-    public function composeWhereForQueryBuilder(string $field, string $operator, $value, array $options = []): string
+    public function composeWhereForQueryBuilder(string $field, string $operator, $value, array $dca = null, array $options = []): string
     {
-        $queryBuilder = $this->createQueryBuilder();
-
-        $dca = $GLOBALS['TL_DCA']['tl_filter_config_element'][''];
+        $queryBuilder = new QueryBuilder($this->connection);
 
         $valueType = $options['valueType'] ?? null;
         $wildcardSuffix = $options['wildcardSuffix'] ?? '';
@@ -232,16 +231,6 @@ class FilterQueryPart extends EntityManager
         return $where;
     }
 
-    public function getParameter(): Parameter
-    {
-        return $this->parameter;
-    }
-
-    public function setParameter(Parameter $parameter): void
-    {
-        $this->parameter = $parameter;
-    }
-
     public function applyParameterValues(string $wildcard, $value, string $valueType): void
     {
         $this->setWildcard($wildcard);
@@ -306,6 +295,7 @@ class FilterQueryPart extends EntityManager
             $filterTypeContext->getField(),
             $filterTypeContext->getOperator(),
             $filterTypeContext->getValue(),
+            $GLOBALS['TL_DCA'][$filterTypeContext->getParent()->row()['dataContainer']][$filterTypeContext->getField()],
             $options
         );
     }
