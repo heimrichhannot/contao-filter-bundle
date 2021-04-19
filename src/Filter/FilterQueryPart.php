@@ -37,7 +37,7 @@ class FilterQueryPart
     public $value;
 
     /**
-     * @var string
+     * @var int|string|null
      */
     public $valueType;
     /**
@@ -231,7 +231,7 @@ class FilterQueryPart
         return $where;
     }
 
-    public function applyParameterValues(string $wildcard, $value, string $valueType): void
+    public function applyParameterValues(string $wildcard, $value, $valueType): void
     {
         $this->setWildcard($wildcard);
         $this->setValue($value);
@@ -264,12 +264,12 @@ class FilterQueryPart
         $this->value = $value;
     }
 
-    public function getValueType(): string
+    public function getValueType()
     {
         return $this->valueType;
     }
 
-    public function setValueType(string $valueType): void
+    public function setValueType($valueType): void
     {
         $this->valueType = $valueType;
     }
@@ -295,7 +295,7 @@ class FilterQueryPart
             $filterTypeContext->getField(),
             $filterTypeContext->getOperator(),
             $filterTypeContext->getValue(),
-            $GLOBALS['TL_DCA'][$filterTypeContext->getParent()->row()['dataContainer']][$filterTypeContext->getField()],
+            $GLOBALS['TL_DCA'][$filterTypeContext->getParent()->row()['dataContainer']]['fields'][$filterTypeContext->getField()],
             $options
         );
     }

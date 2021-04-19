@@ -104,4 +104,9 @@ class FilterConfigElementContainer
             \HeimrichHannot\FilterBundle\Filter\Type\DateType::WIDGET_TYPE_SINGLE_TEXT,
         ];
     }
+
+    public function getButtonTypes(DataContainer $dc): array
+    {
+        return ['button', 'reset', 'submit'];
+    }
 }

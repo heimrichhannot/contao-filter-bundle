@@ -10,10 +10,23 @@ namespace HeimrichHannot\FilterBundle\FilterType\Type;
 
 use HeimrichHannot\FilterBundle\FilterType\AbstractFilterType;
 use HeimrichHannot\FilterBundle\FilterType\FilterTypeContext;
+use Symfony\Component\Form\Extension\Core\Type\ButtonType as SymfonyButtonType;
+use Symfony\Component\Form\Extension\Core\Type\ResetType as SymfonyResetType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType as SymfonySubmitType;
 
 class ButtonType extends AbstractFilterType
 {
     const TYPE = 'button_type';
+    const GROUP = 'button';
+
+    const BUTTON_TYPE_BUTTON = 'button';
+    const BUTTON_TYPE_RESET = 'reset';
+    const BUTTON_TYPE_SUBMIT = 'submit';
+    const BUTTON_TYPES = [
+        self::BUTTON_TYPE_BUTTON,
+        self::BUTTON_TYPE_RESET,
+        self::BUTTON_TYPE_SUBMIT,
+    ];
 
     public static function getType(): string
     {
@@ -22,16 +35,35 @@ class ButtonType extends AbstractFilterType
 
     public function buildQuery(FilterTypeContext $filterTypeContext): string
     {
-        // TODO: Implement buildQuery() method.
+        return '';
     }
 
-    public function buildForm($filterTypeContext)
+    public function buildForm(FilterTypeContext $filterTypeContext)
     {
-        // TODO: Implement buildForm() method.
+        $builder = $filterTypeContext->getFormBuilder();
+
+        switch ($filterTypeContext->getButtonType()) {
+            case static::BUTTON_TYPE_RESET:
+                $symfonyButton = SymfonyResetType::class;
+
+                break;
+
+            case static::BUTTON_TYPE_SUBMIT:
+                $symfonyButton = SymfonySubmitType::class;
+
+                break;
+
+            default:
+                $symfonyButton = SymfonyButtonType::class;
+
+                break;
+        }
+
+        $builder->add($filterTypeContext->getName(), $symfonyButton, $this->getOptions($filterTypeContext));
     }
 
     public function getPalette(string $prependPalette, string $appendPalette): string
     {
-        return parent::getPalette($prependPalette, $appendPalette);
+        return $prependPalette.'{config_legend},buttonType;{visualization_legend},customLabel;'.$appendPalette;
     }
 }

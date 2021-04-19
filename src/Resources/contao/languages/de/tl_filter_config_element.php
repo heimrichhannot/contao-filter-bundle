@@ -195,6 +195,10 @@ $lang['reference'] = [
         \HeimrichHannot\FilterBundle\Filter\Type\CurrentMemberType::TYPE => 'aktuelles Mitglied',
         \HeimrichHannot\FilterBundle\Filter\Type\CurrentMemberType::TYPE_ID => 'ID',
         \HeimrichHannot\FilterBundle\Filter\Type\CurrentMemberType::TYPE_USERNAME => 'Benutzername',
+        \HeimrichHannot\FilterBundle\FilterType\Type\TextType::TYPE => 'Text',
+        \HeimrichHannot\FilterBundle\FilterType\Type\ChoiceType::TYPE => 'Choice',
+        \HeimrichHannot\FilterBundle\FilterType\Type\DateTimeType::TYPE => 'Datum & Zeit',
+        \HeimrichHannot\FilterBundle\FilterType\Type\ButtonType::TYPE => 'Button',
     ],
     'roundingMode' => [
         \Symfony\Component\Form\Extension\Core\DataTransformer\IntegerToLocalizedStringTransformer::ROUND_DOWN => 'Abrunden (zu 0 hin)',

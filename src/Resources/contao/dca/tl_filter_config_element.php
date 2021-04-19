@@ -886,6 +886,19 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'eval' => ['chosen' => true, 'includeBlankOption' => true, 'tl_class' => 'w50', 'mandatory' => true],
             'sql' => "varchar(64) NOT NULL default ''",
         ],
+        'buttonType' => [
+            'label' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['buttonType'],
+            'exclude' => true,
+            'search' => true,
+            'inputType' => 'select',
+            'options_callback' => [\HeimrichHannot\FilterBundle\DataContainer\FilterConfigElementContainer::class, 'getButtonTypes'],
+            'eval' => [
+                'tl_class' => 'w50',
+                'mandatory' => true,
+                'includeBlankOption' => true,
+            ],
+            'sql' => "varchar(16) NOT NULL default ''",
+        ],
         'cssClass' => [
             'label' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['cssClass'],
             'exclude' => true,

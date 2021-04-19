@@ -101,6 +101,7 @@ use HeimrichHannot\FilterBundle\Filter\AbstractType;
  * @property string $start
  * @property string $stop
  * @property bool   $useRangeSlider
+ * @property string $buttonType
  *
  * @method FilterConfigElementModel|null                                                     findById($id, array $opt = [])
  * @method FilterConfigElementModel|null                                                     findByPk($id, array $opt = [])

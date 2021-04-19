@@ -96,8 +96,12 @@ abstract class AbstractFilterType implements FilterTypeInterface
     {
         $options = [];
 
-        if ('' !== $context->getPlaceholder()) {
+        if ($context->getPlaceholder()) {
             $options['attr']['placeholder'] = $this->translator->trans($context->getPlaceholder(), ['%label%' => $this->translator->trans($options['label']) ?: $context->getTitle()]);
+        }
+
+        if ($context->getCssClass()) {
+            $options['attr']['class'] = $context->getCssClass();
         }
 
         $options['label'] = $context->getLabel() ?: $context->getTitle();

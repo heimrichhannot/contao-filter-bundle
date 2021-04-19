@@ -203,6 +203,8 @@ class FilterType extends AbstractType
         $context->setDateTimeFormat($element->dateTimeFormat);
         $context->setMinDateTime($element->minDateTime);
         $context->setMaxDateTime($element->maxDateTime);
+        $context->setCssClass($element->cssClass);
+        $context->setButtonType($element->buttonType);
 
         if ($element->hideLabel) {
             $context->hideLabel();

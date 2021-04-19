@@ -16,6 +16,15 @@ class FilterTypeContext implements \IteratorAggregate
     /**
      * @var string
      */
+    private $buttonType;
+
+    /**
+     * @var string
+     */
+    private $cssClass;
+    /**
+     * @var string
+     */
     private $dateTimeFormat;
 
     /**
@@ -325,5 +334,25 @@ class FilterTypeContext implements \IteratorAggregate
     public function setMinDateTime(string $minDateTime): void
     {
         $this->minDateTime = $minDateTime;
+    }
+
+    public function getCssClass(): string
+    {
+        return $this->cssClass;
+    }
+
+    public function setCssClass(string $class): void
+    {
+        $this->cssClass = $class;
+    }
+
+    public function getButtonType(): string
+    {
+        return $this->buttonType;
+    }
+
+    public function setButtonType(string $buttonType): void
+    {
+        $this->buttonType = $buttonType;
     }
 }

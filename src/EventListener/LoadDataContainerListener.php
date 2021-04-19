@@ -57,7 +57,7 @@ class LoadDataContainerListener
                 $prependPalette = '{initial_legend},isInitial;'.$prependPalette;
             }
 
-            $appendPalette = '{publish_legend},published;';
+            $appendPalette = '{expert_legend},cssClass;{publish_legend},published;';
 
             $dca['palettes'][$key] = $type->getPalette($prependPalette, $appendPalette);
         }
