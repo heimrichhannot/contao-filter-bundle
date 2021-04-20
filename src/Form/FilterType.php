@@ -188,7 +188,7 @@ class FilterType extends AbstractType
 
         $context = new FilterTypeContext();
         $context->setId($element->id);
-        $context->setName($element->type.'_'.$element->id);
+        $context->setName($element->getElementName());
         $context->setValue($element->value);
         $context->setDefaultValue($element->defaultValue);
         $context->setPlaceholder($element->placeholder);

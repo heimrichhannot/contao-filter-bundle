@@ -19,6 +19,7 @@ use HeimrichHannot\FilterBundle\Filter\FilterQueryPartCollection;
 use HeimrichHannot\FilterBundle\FilterType\AbstractFilterType;
 use HeimrichHannot\FilterBundle\FilterType\FilterTypeContext;
 use HeimrichHannot\FilterBundle\FilterType\FilterTypeInterface;
+use HeimrichHannot\FilterBundle\FilterType\Type\ButtonType;
 use HeimrichHannot\FilterBundle\Form\Extension\FormButtonExtension;
 use HeimrichHannot\FilterBundle\Form\Extension\FormTypeExtension;
 use HeimrichHannot\FilterBundle\Form\FilterType;
@@ -198,6 +199,12 @@ class FilterConfig implements \JsonSerializable
 
         $this->builder = $factory->createNamedBuilder($this->filter['name'], FilterType::class, $data, $options);
 
+        foreach ($this->elements as $element) {
+            if (ButtonType::TYPE === $element->type && ButtonType::BUTTON_TYPE_RESET === $element->buttonType) {
+                $this->addResetName($element->getElementName());
+            }
+        }
+
         $this->mapFormsToData();
     }
 
@@ -251,17 +258,13 @@ class FilterConfig implements \JsonSerializable
                 return;
             }
 
-            if ($types[$element->type] instanceof AbstractFilterType) {
-                $this->processFilterType($element, $types[$element->type]);
-            }
-
             if (!isset($types[$element->type]) || \in_array($element->id, $skipElements) ||
                 $mode === static::QUERY_BUILDER_MODE_INITIAL_ONLY && !$element->isInitial ||
                 $mode === static::QUERY_BUILDER_MODE_SKIP_INITIAL && $element->isInitial) {
                 continue;
             }
 
-            if (!\is_array($types[$element->type])) {
+            if (!\is_array($types[$element->type]) && $types[$element->type] instanceof AbstractFilterType) {
                 $this->processFilterType($element, $types[$element->type]);
 
                 continue;
@@ -286,6 +289,8 @@ class FilterConfig implements \JsonSerializable
         }
 
         //apply parts from FilterQueryPartCollection
+        /** @noinspection PhpMethodParametersCountMismatchInspection */
+        /** @noinspection PhpParamsInspection */
         $event = $this->eventDispatcher->dispatch(ModifyFilterQueryPartsEvent::NAME, new ModifyFilterQueryPartsEvent($this->filterQueryPartCollection));
 
         /*
@@ -659,11 +664,11 @@ class FilterConfig implements \JsonSerializable
         return get_object_vars($this);
     }
 
-    protected function processFilterType(FilterConfigElementModel $config, FilterTypeInterface $filter)
+    protected function processFilterType(FilterConfigElementModel $config, FilterTypeInterface $filterType)
     {
         $context = new FilterTypeContext();
         $context->setId($config->id);
-        $context->setName($config->type.'_'.$config->id);
+        $context->setName($config->getElementName());
         $context->setField($config->field);
         $context->setOperator($config->operator);
         $context->setValue($this->getData()[$context->getName()] ?: '');
@@ -677,7 +682,7 @@ class FilterConfig implements \JsonSerializable
         $context->setMaxDateTime($config->maxDateTime);
         $context->setCustomLabel($config->customLabel);
 
-        $filter->buildQuery($context);
+        $filterType->buildQuery($context);
     }
 
     protected function isResetButtonClicked(FormInterface $form): bool

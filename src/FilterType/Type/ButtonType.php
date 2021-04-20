@@ -11,7 +11,6 @@ namespace HeimrichHannot\FilterBundle\FilterType\Type;
 use HeimrichHannot\FilterBundle\FilterType\AbstractFilterType;
 use HeimrichHannot\FilterBundle\FilterType\FilterTypeContext;
 use Symfony\Component\Form\Extension\Core\Type\ButtonType as SymfonyButtonType;
-use Symfony\Component\Form\Extension\Core\Type\ResetType as SymfonyResetType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType as SymfonySubmitType;
 
 class ButtonType extends AbstractFilterType
@@ -45,10 +44,6 @@ class ButtonType extends AbstractFilterType
 
         switch ($filterTypeContext->getButtonType()) {
             case static::BUTTON_TYPE_RESET:
-                $symfonyButton = SymfonyResetType::class;
-
-                break;
-
             case static::BUTTON_TYPE_SUBMIT:
                 $symfonyButton = SymfonySubmitType::class;
 
@@ -66,16 +61,5 @@ class ButtonType extends AbstractFilterType
     public function getPalette(string $prependPalette, string $appendPalette): string
     {
         return $prependPalette.'{config_legend},buttonType;{visualization_legend},customLabel;'.$appendPalette;
-    }
-
-    public function getOptions(FilterTypeContext $filterTypeContext): array
-    {
-        $options = parent::getOptions($filterTypeContext);
-
-//        if ($filterTypeContext->getButtonType() === static::BUTTON_TYPE_RESET) {
-//            $options['attr']['onclick'] = 'this.form.submit()';
-//        }
-
-        return $options;
     }
 }

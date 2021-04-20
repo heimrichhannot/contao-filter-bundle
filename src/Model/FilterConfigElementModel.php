@@ -271,4 +271,9 @@ class FilterConfigElementModel extends Model implements \JsonSerializable
     {
         return get_object_vars($this);
     }
+
+    public function getElementName(): string
+    {
+        return $this->type.'_'.$this->id;
+    }
 }
