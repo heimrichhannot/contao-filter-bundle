@@ -12,6 +12,7 @@ use Contao\DataContainer;
 use HeimrichHannot\FilterBundle\Choice\TypeChoice;
 use HeimrichHannot\FilterBundle\FilterType\FilterTypeCollection;
 use HeimrichHannot\FilterBundle\FilterType\InitialFilterTypeInterface;
+use HeimrichHannot\FilterBundle\FilterType\Type\ButtonType;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\UtilsBundle\Container\ContainerUtil;
 use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
@@ -107,6 +108,6 @@ class FilterConfigElementContainer
 
     public function getButtonTypes(DataContainer $dc): array
     {
-        return ['button', 'reset', 'submit'];
+        return ButtonType::BUTTON_TYPES;
     }
 }

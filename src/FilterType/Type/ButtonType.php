@@ -22,6 +22,7 @@ class ButtonType extends AbstractFilterType
     const BUTTON_TYPE_BUTTON = 'button';
     const BUTTON_TYPE_RESET = 'reset';
     const BUTTON_TYPE_SUBMIT = 'submit';
+
     const BUTTON_TYPES = [
         self::BUTTON_TYPE_BUTTON,
         self::BUTTON_TYPE_RESET,
@@ -65,5 +66,16 @@ class ButtonType extends AbstractFilterType
     public function getPalette(string $prependPalette, string $appendPalette): string
     {
         return $prependPalette.'{config_legend},buttonType;{visualization_legend},customLabel;'.$appendPalette;
+    }
+
+    public function getOptions(FilterTypeContext $filterTypeContext): array
+    {
+        $options = parent::getOptions($filterTypeContext);
+
+//        if ($filterTypeContext->getButtonType() === static::BUTTON_TYPE_RESET) {
+//            $options['attr']['onclick'] = 'this.form.submit()';
+//        }
+
+        return $options;
     }
 }

@@ -15,7 +15,6 @@ use Contao\InsertTags;
 use Doctrine\DBAL\Connection;
 use HeimrichHannot\FilterBundle\Event\ModifyFilterQueryPartsEvent;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
-use HeimrichHannot\FilterBundle\Filter\FilterQueryPart;
 use HeimrichHannot\FilterBundle\Filter\FilterQueryPartCollection;
 use HeimrichHannot\FilterBundle\FilterType\AbstractFilterType;
 use HeimrichHannot\FilterBundle\FilterType\FilterTypeContext;
@@ -676,6 +675,7 @@ class FilterConfig implements \JsonSerializable
         $context->setDateTimeFormat($config->dateTimeFormat);
         $context->setMinDateTime($config->minDateTime);
         $context->setMaxDateTime($config->maxDateTime);
+        $context->setCustomLabel($config->customLabel);
 
         $filter->buildQuery($context);
     }

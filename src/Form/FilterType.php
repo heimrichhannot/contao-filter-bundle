@@ -182,12 +182,11 @@ class FilterType extends AbstractType
 
     protected function buildFilterTypeElement(FilterConfigElementModel $element, FilterTypeInterface $filterType, FormBuilderInterface $builder)
     {
-        $context = new FilterTypeContext();
-
         if ($element->isInitial) {
             return;
         }
 
+        $context = new FilterTypeContext();
         $context->setId($element->id);
         $context->setName($element->type.'_'.$element->id);
         $context->setValue($element->value);
@@ -205,6 +204,9 @@ class FilterType extends AbstractType
         $context->setMaxDateTime($element->maxDateTime);
         $context->setCssClass($element->cssClass);
         $context->setButtonType($element->buttonType);
+        $context->setCustomLabel($element->customLabel);
+        $context->setHtml5($element->html5);
+        $context->setWidget($element->dateWidget);
 
         if ($element->hideLabel) {
             $context->hideLabel();

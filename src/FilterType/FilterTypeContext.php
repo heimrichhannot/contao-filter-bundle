@@ -22,6 +22,12 @@ class FilterTypeContext implements \IteratorAggregate
      * @var string
      */
     private $cssClass;
+
+    /**
+     * @var bool
+     */
+    private $customLabel = false;
+
     /**
      * @var string
      */
@@ -36,6 +42,7 @@ class FilterTypeContext implements \IteratorAggregate
      * @var bool
      */
     private $expanded = false;
+
     /**
      * @var string
      */
@@ -45,6 +52,11 @@ class FilterTypeContext implements \IteratorAggregate
      * @var FormBuilderInterface
      */
     private $formBuilder;
+
+    /**
+     * @var bool
+     */
+    private $html5 = false;
 
     /**
      * @var int
@@ -85,10 +97,12 @@ class FilterTypeContext implements \IteratorAggregate
      * @var string
      */
     private $name = '';
+
     /**
      * @var string
      */
     private $operator = '';
+
     /**
      * @var Model
      */
@@ -113,6 +127,11 @@ class FilterTypeContext implements \IteratorAggregate
      * @var string|array|int
      */
     private $value;
+
+    /**
+     * @var string
+     */
+    private $widget;
 
     public function getName(): string
     {
@@ -354,5 +373,35 @@ class FilterTypeContext implements \IteratorAggregate
     public function setButtonType(string $buttonType): void
     {
         $this->buttonType = $buttonType;
+    }
+
+    public function isCustomLabel(): bool
+    {
+        return $this->customLabel;
+    }
+
+    public function setCustomLabel(bool $customLabel): void
+    {
+        $this->customLabel = $customLabel;
+    }
+
+    public function isHtml5(): bool
+    {
+        return $this->html5;
+    }
+
+    public function setHtml5(bool $html5): void
+    {
+        $this->html5 = $html5;
+    }
+
+    public function getWidget(): string
+    {
+        return $this->widget;
+    }
+
+    public function setWidget(string $widget): void
+    {
+        $this->widget = $widget;
     }
 }

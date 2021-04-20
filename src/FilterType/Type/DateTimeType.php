@@ -56,7 +56,7 @@ class DateTimeType extends AbstractFilterType
 
     public function getPalette(string $prependPalette, string $appendPalette): string
     {
-        return $prependPalette.'{config_legend},field,operator,dateTimeFormat,minDateTime,maxDateTime;{visualization_legend},dateWidget,customLabel,hideLabel,addPlaceholder;'.$appendPalette;
+        return $prependPalette.'{config_legend},field,operator,dateTimeFormat,minDateTime,maxDateTime;{visualization_legend},html5,dateWidget,customLabel,hideLabel,addPlaceholder;'.$appendPalette;
     }
 
     public function getOperators(): array
@@ -81,14 +81,12 @@ class DateTimeType extends AbstractFilterType
     public function getOptions(FilterTypeContext $filterTypeContext): array
     {
         $options = parent::getOptions($filterTypeContext);
-
-//        $time = time();
-
         $format = $filterTypeContext->getDateTimeFormat() ?: 'd.m.Y H:i';
-        $options['html5'] = true;
-        $options['format'] = $this->dateUtil->transformPhpDateFormatToRFC3339($format);
+        $options['html5'] = $filterTypeContext->isHtml5();
 
         if (true === $options['html5']) {
+            $options['date_format'] = $this->dateUtil->transformPhpDateFormatToRFC3339($format);
+
             if ($filterTypeContext->getMinDateTime()) {
                 $options['attr']['min'] = Date::parse('Y-m-d\TH:i', $this->dateUtil->getTimeStamp($filterTypeContext->getMinDateTime())); // valid rfc 3339 date `YYYY-MM-DD` format must be used
             }
@@ -96,6 +94,8 @@ class DateTimeType extends AbstractFilterType
             if ($filterTypeContext->getMaxDateTime()) {
                 $options['attr']['max'] = Date::parse('Y-m-d\TH:i', $this->dateUtil->getTimeStamp($filterTypeContext->getMaxDateTime())); // valid rfc 3339 date `YYYY-MM-DD` format must be used
             }
+        } else {
+            $options['format'] = $this->dateUtil->transformPhpDateFormatToRFC3339($format);
         }
 
         $options['group_attr']['class'] = isset($options['group_attr']['class']) ? $options['group_attr']['class'].' datepicker timepicker' : 'datepicker timepicker';
@@ -111,8 +111,7 @@ class DateTimeType extends AbstractFilterType
             $options['attr']['data-max-date'] = Date::parse($format, $this->dateUtil->getTimeStamp($filterTypeContext->getMaxDateTime()));
         }
 
-//        $options['widget'] = 'choice';
-        $options['widget'] = 'single_text';
+        $options['widget'] = $filterTypeContext->getWidget();
 
         return $options;
     }
