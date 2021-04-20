@@ -6,7 +6,7 @@
  * @license LGPL-3.0-or-later
  */
 
-namespace HeimrichHannot\FilterBundle\Filter;
+namespace HeimrichHannot\FilterBundle\FilterQuery;
 
 use Contao\Controller;
 use Doctrine\DBAL\Connection;
@@ -15,68 +15,58 @@ use Doctrine\DBAL\Types\Types;
 use HeimrichHannot\FilterBundle\FilterType\FilterTypeContext;
 use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 
-class FilterQueryPart
+class FilterQueryPartProcessor
 {
-    /**
-     * @var string
-     */
-    public $name;
-    /**
-     * @var string
-     */
-    public $query;
+    protected Connection $connection;
 
-    /**
-     * @var string
-     */
-    public $wildcard;
-
-    /**
-     * @var string|int|array|\DateTime
-     */
-    public $value;
-
-    /**
-     * @var int|string|null
-     */
-    public $valueType;
-    /**
-     * @var int
-     */
-    protected $filterElementId;
-
-    /**
-     * @var Connection
-     */
-    protected $connection;
-
-    public function __construct(FilterTypeContext $context, Connection $connection)
+    public function __construct(Connection $connection)
     {
         $this->connection = $connection;
-        $this->name = $context->getName();
-        $this->filterElementId = $context->getId();
-        $this->query = $this->composeQuery($context);
     }
 
-    public function getFilterElementId(): int
+    public function composeQueryPart(FilterTypeContext $context): FilterQueryPart
     {
-        return $this->filterElementId;
+        $queryPart = new FilterQueryPart($context);
+        $queryPart->query = $this->composeQuery($context, $queryPart);
+
+        return $queryPart;
     }
 
-    public function setFilterElementId(int $filterElementId): void
+    private function composeQuery(FilterTypeContext $filterTypeContext, FilterQueryPart $filterQueryPart): string
     {
-        $this->filterElementId = $filterElementId;
+        $options = [
+            'wildcardSuffix' => $filterTypeContext->getId(),
+            'valueType' => null,
+        ];
+
+        if ($filterTypeContext->getValue() instanceof \DateTime) {
+            /**
+             * @var \DateTime
+             */
+            $date = $filterTypeContext->getValue();
+
+            $filterTypeContext->setValue($date->getTimeStamp());
+            $options['valueType'] = Types::INTEGER;
+        }
+
+        return $this->composeWhereForQueryBuilder(
+            $filterTypeContext->getField(),
+            $filterTypeContext->getOperator(),
+            $filterTypeContext->getValue(),
+            $GLOBALS['TL_DCA'][$filterTypeContext->getParent()->row()['dataContainer']]['fields'][$filterTypeContext->getField()],
+            $filterQueryPart,
+            $options
+        );
     }
 
     /**
      * @param null  $value
-     * @param array $options
-     *                       {
-     *                       wildcardSuffix: string,
-     *                       valueType: string
+     * @param array $options {
+     *                          wildcardSuffix: string,
+     *                          valueType: string
      *                       }
      */
-    public function composeWhereForQueryBuilder(string $field, string $operator, $value, array $dca = null, array $options = []): string
+    public function composeWhereForQueryBuilder(string $field, string $operator, $value, array $dca = null, FilterQueryPart $filterQueryPart, array $options = []): string
     {
         $queryBuilder = new QueryBuilder($this->connection);
 
@@ -92,49 +82,49 @@ class FilterQueryPart
         switch ($operator) {
             case DatabaseUtil::OPERATOR_LIKE:
                 $where = $queryBuilder->expr()->like($field, $wildcard);
-                $this->applyParameterValues($wildcard, '%'.$value.'%', $valueType);
+                $this->applyParameterValues($filterQueryPart, $wildcard, '%'.$value.'%', $valueType);
 
                 break;
 
             case DatabaseUtil::OPERATOR_UNLIKE:
                 $where = $queryBuilder->expr()->notLike($field, $wildcard);
-                $this->applyParameterValues($wildcard, '%'.$value.'%', $valueType);
+                $this->applyParameterValues($filterQueryPart, $wildcard, '%'.$value.'%', $valueType);
 
                 break;
 
             case DatabaseUtil::OPERATOR_EQUAL:
                 $where = $queryBuilder->expr()->eq($field, $wildcard);
-                $this->applyParameterValues($wildcard, $value, $valueType);
+                $this->applyParameterValues($filterQueryPart, $wildcard, $value, $valueType);
 
                 break;
 
             case DatabaseUtil::OPERATOR_UNEQUAL:
                 $where = $queryBuilder->expr()->neq($field, $wildcard);
-                $this->applyParameterValues($wildcard, $value, $valueType);
+                $this->applyParameterValues($filterQueryPart, $wildcard, $value, $valueType);
 
                 break;
 
             case DatabaseUtil::OPERATOR_LOWER:
                 $where = $queryBuilder->expr()->lt($field, $wildcard);
-                $this->applyParameterValues($wildcard, $value, $valueType);
+                $this->applyParameterValues($filterQueryPart, $wildcard, $value, $valueType);
 
                 break;
 
             case DatabaseUtil::OPERATOR_LOWER_EQUAL:
                 $where = $queryBuilder->expr()->lte($field, $wildcard);
-                $this->applyParameterValues($wildcard, $value, $valueType);
+                $this->applyParameterValues($filterQueryPart, $wildcard, $value, $valueType);
 
                 break;
 
             case DatabaseUtil::OPERATOR_GREATER:
                 $where = $queryBuilder->expr()->gt($field, $wildcard);
-                $this->applyParameterValues($wildcard, $value, $valueType);
+                $this->applyParameterValues($filterQueryPart, $wildcard, $value, $valueType);
 
                 break;
 
             case DatabaseUtil::OPERATOR_GREATER_EQUAL:
                 $where = $queryBuilder->expr()->gte($field, $wildcard);
-                $this->applyParameterValues($wildcard, $value, $valueType);
+                $this->applyParameterValues($filterQueryPart, $wildcard, $value, $valueType);
 
                 break;
 
@@ -152,7 +142,7 @@ class FilterQueryPart
                         },
                         $value
                     );
-                    $this->applyParameterValues($wildcard, $preparedValue, Connection::PARAM_STR_ARRAY);
+                    $this->applyParameterValues($filterQueryPart, $wildcard, $preparedValue, Connection::PARAM_STR_ARRAY);
                 }
 
                 break;
@@ -171,7 +161,7 @@ class FilterQueryPart
                         },
                         $value
                     );
-                    $this->applyParameterValues($wildcard, $preparedValue, Connection::PARAM_STR_ARRAY);
+                    $this->applyParameterValues($filterQueryPart, $wildcard, $preparedValue, Connection::PARAM_STR_ARRAY);
                 }
 
                 break;
@@ -205,6 +195,7 @@ class FilterQueryPart
                     if (\is_array($value)) {
                         // build a regexp alternative, e.g. (:"1";|:"2";)
                         $this->applyParameterValues(
+                            $filterQueryPart,
                             $wildcard,
                             '('.implode(
                                 '|',
@@ -218,11 +209,11 @@ class FilterQueryPart
                             $valueType
                         );
                     } else {
-                        $this->applyParameterValues($wildcard, ':"'.$value.'";', $valueType);
+                        $this->applyParameterValues($filterQueryPart, $wildcard, ':"'.$value.'";', $valueType);
                     }
                 } else {
                     // TODO: this makes no sense, yet
-                    $this->applyParameterValues($wildcard, $value, $valueType);
+                    $this->applyParameterValues($filterQueryPart, $wildcard, $value, $valueType);
                 }
 
                 break;
@@ -231,72 +222,10 @@ class FilterQueryPart
         return $where;
     }
 
-    public function applyParameterValues(string $wildcard, $value, $valueType): void
+    public function applyParameterValues(FilterQueryPart $filterQueryPart, string $wildcard, $value, $valueType): void
     {
-        $this->setWildcard($wildcard);
-        $this->setValue($value);
-        $this->setValueType($valueType);
-    }
-
-    public function getWildcard(): string
-    {
-        return $this->wildcard;
-    }
-
-    public function setWildcard(string $wildcard): void
-    {
-        $this->wildcard = $wildcard;
-    }
-
-    /**
-     * @return array|\DateTime|int|string
-     */
-    public function getValue()
-    {
-        return $this->value;
-    }
-
-    /**
-     * @param array|\DateTime|int|string $value
-     */
-    public function setValue($value): void
-    {
-        $this->value = $value;
-    }
-
-    public function getValueType()
-    {
-        return $this->valueType;
-    }
-
-    public function setValueType($valueType): void
-    {
-        $this->valueType = $valueType;
-    }
-
-    private function composeQuery(FilterTypeContext $filterTypeContext): string
-    {
-        $options = [
-            'wildcardSuffix' => $filterTypeContext->getId(),
-            'valueType' => null,
-        ];
-
-        if ($filterTypeContext->getValue() instanceof \DateTime) {
-            /**
-             * @var \DateTime
-             */
-            $date = $filterTypeContext->getValue();
-
-            $filterTypeContext->setValue($date->getTimeStamp());
-            $options['valueType'] = Types::INTEGER;
-        }
-
-        return $this->composeWhereForQueryBuilder(
-            $filterTypeContext->getField(),
-            $filterTypeContext->getOperator(),
-            $filterTypeContext->getValue(),
-            $GLOBALS['TL_DCA'][$filterTypeContext->getParent()->row()['dataContainer']]['fields'][$filterTypeContext->getField()],
-            $options
-        );
+        $filterQueryPart->setWildcard($wildcard);
+        $filterQueryPart->setValue($value);
+        $filterQueryPart->setValueType($valueType);
     }
 }

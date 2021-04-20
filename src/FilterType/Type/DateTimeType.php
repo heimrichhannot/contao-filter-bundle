@@ -9,8 +9,8 @@
 namespace HeimrichHannot\FilterBundle\FilterType\Type;
 
 use Contao\Date;
-use HeimrichHannot\FilterBundle\Filter\FilterQueryPartCollection;
-use HeimrichHannot\FilterBundle\Filter\FilterQueryPartProcessor;
+use HeimrichHannot\FilterBundle\FilterQuery\FilterQueryPartCollection;
+use HeimrichHannot\FilterBundle\FilterQuery\FilterQueryPartProcessor;
 use HeimrichHannot\FilterBundle\FilterType\AbstractFilterType;
 use HeimrichHannot\FilterBundle\FilterType\FilterTypeContext;
 use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;

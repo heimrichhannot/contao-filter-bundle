@@ -5,7 +5,7 @@
  * @license LGPL-3.0-or-later
  */
 
-namespace HeimrichHannot\FilterBundle\Filter;
+namespace HeimrichHannot\FilterBundle\FilterQuery;
 
 
 class FilterQueryPartCollection

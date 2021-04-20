@@ -8,8 +8,8 @@
 
 namespace HeimrichHannot\FilterBundle\FilterType;
 
-use HeimrichHannot\FilterBundle\Filter\FilterQueryPartCollection;
-use HeimrichHannot\FilterBundle\Filter\FilterQueryPartProcessor;
+use HeimrichHannot\FilterBundle\FilterQuery\FilterQueryPartCollection;
+use HeimrichHannot\FilterBundle\FilterQuery\FilterQueryPartProcessor;
 use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 use Symfony\Contracts\Translation\TranslatorInterface;
 

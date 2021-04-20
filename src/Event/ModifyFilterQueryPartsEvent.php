@@ -8,7 +8,7 @@
 
 namespace HeimrichHannot\FilterBundle\Event;
 
-use HeimrichHannot\FilterBundle\Filter\FilterQueryPartCollection;
+use HeimrichHannot\FilterBundle\FilterQuery\FilterQueryPartCollection;
 use Symfony\Component\EventDispatcher\Event;
 
 class ModifyFilterQueryPartsEvent extends Event

@@ -187,8 +187,8 @@ services:
 
   huh.filter.filter_type.collection: '@HeimrichHannot\FilterBundle\FilterType\FilterTypeCollection'
 
-  HeimrichHannot\FilterBundle\Filter\FilterQueryPartCollection:
-  huh.filter.filter_query_part_collection: '@HeimrichHannot\FilterBundle\Filter\FilterQueryPartCollection'
+  HeimrichHannot\FilterBundle\FilterQuery\FilterQueryPartCollection:
+  huh.filter.filter_query_part_collection: '@HeimrichHannot\FilterBundle\FilterQuery\FilterQueryPartCollection'
 
-  HeimrichHannot\FilterBundle\Filter\FilterQueryPartProcessor:
-  huh.filter.filter_query_part_processor: '@HeimrichHannot\FilterBundle\Filter\FilterQueryPartProcessor'
+  HeimrichHannot\FilterBundle\FilterQuery\FilterQueryPartProcessor:
+  huh.filter.filter_query_part_processor: '@HeimrichHannot\FilterBundle\FilterQuery\FilterQueryPartProcessor'

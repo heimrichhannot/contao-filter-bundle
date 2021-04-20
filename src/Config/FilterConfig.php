@@ -15,7 +15,7 @@ use Contao\InsertTags;
 use Doctrine\DBAL\Connection;
 use HeimrichHannot\FilterBundle\Event\ModifyFilterQueryPartsEvent;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
-use HeimrichHannot\FilterBundle\Filter\FilterQueryPartCollection;
+use HeimrichHannot\FilterBundle\FilterQuery\FilterQueryPartCollection;
 use HeimrichHannot\FilterBundle\FilterType\AbstractFilterType;
 use HeimrichHannot\FilterBundle\FilterType\FilterTypeContext;
 use HeimrichHannot\FilterBundle\FilterType\FilterTypeInterface;
@@ -666,12 +666,16 @@ class FilterConfig implements \JsonSerializable
 
     protected function processFilterType(FilterConfigElementModel $config, FilterTypeInterface $filterType)
     {
+        if (!$this->getData()[$config->getElementName()]) {
+            return;
+        }
+
         $context = new FilterTypeContext();
         $context->setId($config->id);
         $context->setName($config->getElementName());
         $context->setField($config->field);
         $context->setOperator($config->operator);
-        $context->setValue($this->getData()[$context->getName()] ?: '');
+        $context->setValue($this->getData()[$config->getElementName()] ?: '');
         $context->setDefaultValue($config->defaultValue);
         $context->setParent($config->getRelated('pid'));
         $context->setSubmitOnChange($config->submitOnChange);
