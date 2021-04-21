@@ -190,7 +190,7 @@ class FilterType extends AbstractType
         $context->setId($element->id);
         $context->setName($element->getElementName());
         $context->setValue($element->value);
-        $context->setDefaultValue($element->defaultValue);
+        $context->setDefaultValue($element->addDefaultValue ? $element->defaultValue : '');
         $context->setPlaceholder($element->placeholder);
         $context->setFormBuilder($builder);
         $context->setTitle($element->title);
@@ -207,6 +207,18 @@ class FilterType extends AbstractType
         $context->setCustomLabel($element->customLabel);
         $context->setHtml5($element->html5);
         $context->setWidget($element->dateWidget);
+
+        if ($element->submitOnInput) {
+            $context->setSubmitOnInput($element->submitOnInput);
+            $context->setThreshold($element->threshold);
+            $context->setDebounce($element->debounce);
+        }
+
+        if ((bool) $element->inputGroup) {
+            $context->setInputGroup(true);
+            $context->setInputGroupAppend($element->inputGroupAppend);
+            $context->setInputGroupPrepend($element->inputGroupPrepend);
+        }
 
         if ($element->hideLabel) {
             $context->hideLabel();

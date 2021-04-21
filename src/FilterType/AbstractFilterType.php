@@ -112,6 +112,34 @@ abstract class AbstractFilterType implements FilterTypeInterface
             $options['attr']['class'] = $filterTypeContext->getCssClass();
         }
 
+        if ($filterTypeContext->getDefaultValue()) {
+            $options['data'] = $filterTypeContext->getDefaultValue();
+        }
+
+        if ($filterTypeContext->hasInputGroup()) {
+            if ('' !== $filterTypeContext->getInputGroupPrepend()) {
+                $prepend = $filterTypeContext->getInputGroupPrepend();
+
+                if ($this->translator->getCatalogue()->has($prepend)) {
+                    $prepend = $this->translator->trans($prepend, ['%label%' => $this->translator->trans($options['label']) ?: $filterTypeContext->getTitle()]);
+                }
+
+                $options['input_group_prepend'] = $prepend;
+            }
+
+            if ('' !== $filterTypeContext->getInputGroupAppend()) {
+                $append = $filterTypeContext->getInputGroupAppend();
+
+                if ($this->translator->getCatalogue()->has($append)) {
+                    $append = $this->translator->trans($append, ['%label%' => $this->translator->trans($options['label']) ?: $filterTypeContext->getTitle()]);
+                }
+
+                $options['input_group_append'] = $append;
+            }
+        }
+
+        $options['block_name'] = $filterTypeContext->getName();
+
         return $options;
     }
 

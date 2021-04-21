@@ -14,6 +14,11 @@ use Symfony\Component\Form\FormBuilderInterface;
 class FilterTypeContext implements \IteratorAggregate
 {
     /**
+     * @var bool
+     */
+    private $addInputGroup = false;
+
+    /**
      * @var string
      */
     private $buttonType;
@@ -32,6 +37,11 @@ class FilterTypeContext implements \IteratorAggregate
      * @var string
      */
     private $dateTimeFormat;
+
+    /**
+     * @var int
+     */
+    private $debounce = 0;
 
     /**
      * @var string|array
@@ -67,6 +77,16 @@ class FilterTypeContext implements \IteratorAggregate
      * @var bool
      */
     private $initial = false;
+
+    /**
+     * @var string
+     */
+    private $inputGroupAppend;
+
+    /**
+     * @var string
+     */
+    private $inputGroupPrepend;
 
     /**
      * @var string
@@ -119,9 +139,19 @@ class FilterTypeContext implements \IteratorAggregate
     private $submitOnChange = false;
 
     /**
+     * @var bool
+     */
+    private $submitOnInput = false;
+
+    /**
      * @var string
      */
     private $title;
+
+    /**
+     * @var int
+     */
+    private $threshold = 0;
 
     /**
      * @var string|array|int
@@ -403,5 +433,65 @@ class FilterTypeContext implements \IteratorAggregate
     public function setWidget(string $widget): void
     {
         $this->widget = $widget;
+    }
+
+    public function getThreshold(): int
+    {
+        return $this->threshold;
+    }
+
+    public function setThreshold(int $threshold): void
+    {
+        $this->threshold = $threshold;
+    }
+
+    public function getDebounce(): int
+    {
+        return $this->debounce;
+    }
+
+    public function setDebounce(int $debounce): void
+    {
+        $this->debounce = $debounce;
+    }
+
+    public function isSubmitOnInput(): bool
+    {
+        return $this->submitOnInput;
+    }
+
+    public function setSubmitOnInput(bool $submitOnInput): void
+    {
+        $this->submitOnInput = $submitOnInput;
+    }
+
+    public function hasInputGroup(): bool
+    {
+        return $this->addInputGroup;
+    }
+
+    public function setInputGroup(bool $addInputGroup): void
+    {
+        $this->addInputGroup = $addInputGroup;
+    }
+
+    public function getInputGroupAppend(): string
+    {
+        return $this->inputGroupAppend;
+    }
+
+    public function setInputGroupAppend(string $inputGroupAppend): void
+    {
+        $this->inputGroupAppend = $inputGroupAppend;
+    }
+
+    public function getInputGroupPrepend(): string
+    {
+        return $this->inputGroupPrepend;
+    }
+
+    public function setInputGroupPrepend(string $inputGroupPrepend): void
+    {
+        $this->inputGroupPrepend = $inputGroupPrepend;
     }
 }

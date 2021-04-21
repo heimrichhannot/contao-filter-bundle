@@ -32,38 +32,11 @@ class FilterQueryPartProcessor
         return $queryPart;
     }
 
-    private function composeQuery(FilterTypeContext $filterTypeContext, FilterQueryPart $filterQueryPart): string
-    {
-        $options = [
-            'wildcardSuffix' => $filterTypeContext->getId(),
-            'valueType' => null,
-        ];
-
-        if ($filterTypeContext->getValue() instanceof \DateTime) {
-            /**
-             * @var \DateTime
-             */
-            $date = $filterTypeContext->getValue();
-
-            $filterTypeContext->setValue($date->getTimeStamp());
-            $options['valueType'] = Types::INTEGER;
-        }
-
-        return $this->composeWhereForQueryBuilder(
-            $filterTypeContext->getField(),
-            $filterTypeContext->getOperator(),
-            $filterTypeContext->getValue(),
-            $GLOBALS['TL_DCA'][$filterTypeContext->getParent()->row()['dataContainer']]['fields'][$filterTypeContext->getField()],
-            $filterQueryPart,
-            $options
-        );
-    }
-
     /**
      * @param null  $value
      * @param array $options {
-     *                          wildcardSuffix: string,
-     *                          valueType: string
+     *                       wildcardSuffix: string,
+     *                       valueType: string
      *                       }
      */
     public function composeWhereForQueryBuilder(string $field, string $operator, $value, array $dca = null, FilterQueryPart $filterQueryPart, array $options = []): string
@@ -212,7 +185,6 @@ class FilterQueryPartProcessor
                         $this->applyParameterValues($filterQueryPart, $wildcard, ':"'.$value.'";', $valueType);
                     }
                 } else {
-                    // TODO: this makes no sense, yet
                     $this->applyParameterValues($filterQueryPart, $wildcard, $value, $valueType);
                 }
 
@@ -227,5 +199,32 @@ class FilterQueryPartProcessor
         $filterQueryPart->setWildcard($wildcard);
         $filterQueryPart->setValue($value);
         $filterQueryPart->setValueType($valueType);
+    }
+
+    private function composeQuery(FilterTypeContext $filterTypeContext, FilterQueryPart $filterQueryPart): string
+    {
+        $options = [
+            'wildcardSuffix' => $filterTypeContext->getId(),
+            'valueType' => null,
+        ];
+
+        if ($filterTypeContext->getValue() instanceof \DateTime) {
+            /**
+             * @var \DateTime
+             */
+            $date = $filterTypeContext->getValue();
+
+            $filterTypeContext->setValue($date->getTimeStamp());
+            $options['valueType'] = Types::INTEGER;
+        }
+
+        return $this->composeWhereForQueryBuilder(
+            $filterTypeContext->getField(),
+            $filterTypeContext->getOperator(),
+            $filterTypeContext->getValue(),
+            $GLOBALS['TL_DCA'][$filterTypeContext->getParent()->row()['dataContainer']]['fields'][$filterTypeContext->getField()],
+            $filterQueryPart,
+            $options
+        );
     }
 }

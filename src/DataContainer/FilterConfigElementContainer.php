@@ -14,6 +14,7 @@ use HeimrichHannot\FilterBundle\FilterType\FilterTypeCollection;
 use HeimrichHannot\FilterBundle\FilterType\InitialFilterTypeInterface;
 use HeimrichHannot\FilterBundle\FilterType\Type\ButtonType;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
+use HeimrichHannot\UtilsBundle\Choice\MessageChoice;
 use HeimrichHannot\UtilsBundle\Container\ContainerUtil;
 use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 
@@ -34,14 +35,24 @@ class FilterConfigElementContainer
     /**
      * @var ContainerUtil
      */
-    protected ContainerUtil $container;
+    protected $container;
+    /**
+     * @var MessageChoice
+     */
+    protected $messageChoice;
 
-    public function __construct(array $bundleConfig, TypeChoice $typeChoice, FilterTypeCollection $typeCollection, ContainerUtil $container)
-    {
+    public function __construct(
+        array $bundleConfig,
+        TypeChoice $typeChoice,
+        FilterTypeCollection $typeCollection,
+        ContainerUtil $container,
+        MessageChoice $messageChoice
+    ) {
         $this->bundleConfig = $bundleConfig;
         $this->typeChoice = $typeChoice;
         $this->typeCollection = $typeCollection;
         $this->container = $container;
+        $this->messageChoice = $messageChoice;
     }
 
     public function onLoadCallback(DataContainer $dc): void
@@ -109,5 +120,15 @@ class FilterConfigElementContainer
     public function getButtonTypes(DataContainer $dc): array
     {
         return ButtonType::BUTTON_TYPES;
+    }
+
+    public function getInputGroupAppendOptions(DataContainer $dc): array
+    {
+        return $this->messageChoice->getCachedChoices('huh.filter.input_group_text');
+    }
+
+    public function getInputGroupPrependOptions(DataContainer $dc): array
+    {
+        return $this->messageChoice->getCachedChoices('huh.filter.input_group_text');
     }
 }

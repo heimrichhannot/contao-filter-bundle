@@ -564,9 +564,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'label' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['inputGroupPrepend'],
             'exclude' => true,
             'inputType' => 'select',
-            'options_callback' => function (\DataContainer $dc) {
-                return \Contao\System::getContainer()->get('huh.utils.choice.message')->getCachedChoices('huh.filter.input_group_text');
-            },
+            'options_callback' => [\HeimrichHannot\FilterBundle\DataContainer\FilterConfigElementContainer::class, 'getInputGroupPrependOptions'],
             'eval' => ['chosen' => true, 'maxlength' => 128, 'includeBlankOption' => true, 'tl_class' => 'w50'],
             'sql' => "varchar(128) NOT NULL default ''",
         ],
@@ -574,9 +572,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'label' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['inputGroupAppend'],
             'exclude' => true,
             'inputType' => 'select',
-            'options_callback' => function (\DataContainer $dc) {
-                return \Contao\System::getContainer()->get('huh.utils.choice.message')->getCachedChoices('huh.filter.input_group_text');
-            },
+            'options_callback' => [\HeimrichHannot\FilterBundle\DataContainer\FilterConfigElementContainer::class, 'getInputGroupAppendOptions'],
             'eval' => ['chosen' => true, 'maxlength' => 128, 'includeBlankOption' => true, 'tl_class' => 'w50'],
             'sql' => "varchar(128) NOT NULL default ''",
         ],

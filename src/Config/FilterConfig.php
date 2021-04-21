@@ -676,7 +676,7 @@ class FilterConfig implements \JsonSerializable
         $context->setField($config->field);
         $context->setOperator($config->operator);
         $context->setValue($this->getData()[$config->getElementName()] ?: '');
-        $context->setDefaultValue($config->defaultValue);
+        $context->setDefaultValue($config->addDefaultValue ? $config->defaultValue : '');
         $context->setParent($config->getRelated('pid'));
         $context->setSubmitOnChange($config->submitOnChange);
         $context->setExpanded($config->expanded);
