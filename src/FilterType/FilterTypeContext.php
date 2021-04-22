@@ -154,9 +154,14 @@ class FilterTypeContext implements \IteratorAggregate
     private $threshold = 0;
 
     /**
-     * @var string|array|int
+     * @var string|array|int|\DateTime|\Date
      */
     private $value;
+
+    /**
+     * @var string
+     */
+    private $valueType;
 
     /**
      * @var string
@@ -493,5 +498,15 @@ class FilterTypeContext implements \IteratorAggregate
     public function setInputGroupPrepend(string $inputGroupPrepend): void
     {
         $this->inputGroupPrepend = $inputGroupPrepend;
+    }
+
+    public function getValueType(): string
+    {
+        return $this->valueType;
+    }
+
+    public function setValueType(string $valueType): void
+    {
+        $this->valueType = $valueType;
     }
 }

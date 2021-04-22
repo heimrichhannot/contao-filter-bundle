@@ -9,6 +9,7 @@
 namespace HeimrichHannot\FilterBundle\FilterType\Type;
 
 use Contao\Date;
+use Doctrine\DBAL\Types\Types;
 use HeimrichHannot\FilterBundle\FilterQuery\FilterQueryPartCollection;
 use HeimrichHannot\FilterBundle\FilterQuery\FilterQueryPartProcessor;
 use HeimrichHannot\FilterBundle\FilterType\AbstractFilterType;
@@ -21,6 +22,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class DateTimeType extends AbstractFilterType
 {
     const TYPE = 'date_time_type';
+
+    const WIDGET_TYPE_CHOICE = 'choice';
+    const WIDGET_TYPE_SINGLE_TEXT = 'single_text';
 
     /**
      * @var DateUtil
@@ -44,13 +48,15 @@ class DateTimeType extends AbstractFilterType
 
     public function buildQuery(FilterTypeContext $filterTypeContext)
     {
+        $filterTypeContext->setValue($this->dateUtil->getTimeStamp($filterTypeContext->getValue()));
+        $filterTypeContext->setValueType(Types::INTEGER);
+
         $this->filterQueryPartCollection->addPart($this->filterQueryPartProcessor->composeQueryPart($filterTypeContext));
     }
 
     public function buildForm($filterTypeContext)
     {
         $builder = $filterTypeContext->getFormBuilder();
-
         $builder->add($filterTypeContext->getName(), SymfonyDateTimeType::class, $this->getOptions($filterTypeContext));
     }
 
@@ -82,36 +88,61 @@ class DateTimeType extends AbstractFilterType
     {
         $options = parent::getOptions($filterTypeContext);
         $format = $filterTypeContext->getDateTimeFormat() ?: 'd.m.Y H:i';
-        $options['html5'] = $filterTypeContext->isHtml5();
-
-        if (true === $options['html5']) {
-            $options['date_format'] = $this->dateUtil->transformPhpDateFormatToRFC3339($format);
-
-            if ($filterTypeContext->getMinDateTime()) {
-                $options['attr']['min'] = Date::parse('Y-m-d\TH:i', $this->dateUtil->getTimeStamp($filterTypeContext->getMinDateTime())); // valid rfc 3339 date `YYYY-MM-DD` format must be used
-            }
-
-            if ($filterTypeContext->getMaxDateTime()) {
-                $options['attr']['max'] = Date::parse('Y-m-d\TH:i', $this->dateUtil->getTimeStamp($filterTypeContext->getMaxDateTime())); // valid rfc 3339 date `YYYY-MM-DD` format must be used
-            }
-        } else {
-            $options['format'] = $this->dateUtil->transformPhpDateFormatToRFC3339($format);
-        }
-
-        $options['group_attr']['class'] = isset($options['group_attr']['class']) ? $options['group_attr']['class'].' datepicker timepicker' : 'datepicker timepicker';
-        $options['attr']['data-iso8601-format'] = $this->dateUtil->transformPhpDateFormatToISO8601($format);
-        $options['attr']['data-enable-time'] = 'true';
-        $options['attr']['data-date-format'] = $format;
-
-        if ($filterTypeContext->getMinDateTime()) {
-            $options['attr']['data-min-date'] = Date::parse($format, $this->dateUtil->getTimeStamp($filterTypeContext->getMinDateTime()));
-        }
-
-        if ($filterTypeContext->getMaxDateTime()) {
-            $options['attr']['data-max-date'] = Date::parse($format, $this->dateUtil->getTimeStamp($filterTypeContext->getMaxDateTime()));
-        }
 
         $options['widget'] = $filterTypeContext->getWidget();
+
+        switch ($filterTypeContext->getWidget()) {
+            case static::WIDGET_TYPE_SINGLE_TEXT:
+                if ($filterTypeContext->isHtml5()) {
+                    $options['html5'] = $filterTypeContext->isHtml5();
+                    $options['date_format'] = $this->dateUtil->transformPhpDateFormatToRFC3339($format);
+
+                    if ($filterTypeContext->getMinDateTime()) {
+                        $options['attr']['min'] = Date::parse('Y-m-d\TH:i', $this->dateUtil->getTimeStamp($filterTypeContext->getMinDateTime())); // valid rfc 3339 date `YYYY-MM-DD` format must be used
+                    }
+
+                    if ($filterTypeContext->getMaxDateTime()) {
+                        $options['attr']['max'] = Date::parse('Y-m-d\TH:i', $this->dateUtil->getTimeStamp($filterTypeContext->getMaxDateTime())); // valid rfc 3339 date `YYYY-MM-DD` format must be used
+                    }
+                } else {
+                    $options['format'] = $this->dateUtil->transformPhpDateFormatToRFC3339($format);
+                }
+
+                $options['group_attr']['class'] = isset($options['group_attr']['class']) ? $options['group_attr']['class'].' datepicker timepicker' : 'datepicker timepicker';
+                $options['attr']['data-iso8601-format'] = $this->dateUtil->transformPhpDateFormatToISO8601($format);
+                $options['attr']['data-enable-time'] = 'true';
+                $options['attr']['data-date-format'] = $format;
+
+                if ($filterTypeContext->getMinDateTime()) {
+                    $options['attr']['data-min-date'] = Date::parse($format, $this->dateUtil->getTimeStamp($filterTypeContext->getMinDateTime()));
+                }
+
+                if ($filterTypeContext->getMaxDateTime()) {
+                    $options['attr']['data-max-date'] = Date::parse($format, $this->dateUtil->getTimeStamp($filterTypeContext->getMaxDateTime()));
+                }
+
+                break;
+
+            case static::WIDGET_TYPE_CHOICE:
+                // months and days restriction cant be configured from min and max date
+
+                $time = time();
+
+                $minYear = Date::parse('Y', strtotime('-5 year', $time));
+                $maxYear = Date::parse('Y', strtotime('+5 year', $time));
+
+                if ($filterTypeContext->getMinDateTime()) {
+                    $minYear = Date::parse('Y', $this->dateUtil->getTimeStamp($filterTypeContext->getMinDateTime()));
+                }
+
+                if ($filterTypeContext->getMaxDateTime()) {
+                    $maxYear = Date::parse('Y', $this->dateUtil->getTimeStamp($filterTypeContext->getMaxDateTime()));
+                }
+
+                $options['years'] = range($minYear, $maxYear, 1);
+
+                break;
+        }
 
         return $options;
     }

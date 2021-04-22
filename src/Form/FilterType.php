@@ -21,6 +21,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -186,10 +187,16 @@ class FilterType extends AbstractType
             return;
         }
 
+        $request = Request::createFromGlobals();
+
         $context = new FilterTypeContext();
+
+        if (null !== $request->query->get($element->getRelated('pid')->name)[$element->getElementName()]) {
+            $context->setValue($request->query->get($element->getRelated('pid')->name)[$element->getElementName()]);
+        }
+
         $context->setId($element->id);
         $context->setName($element->getElementName());
-        $context->setValue($element->value);
         $context->setDefaultValue($element->addDefaultValue ? $element->defaultValue : '');
         $context->setPlaceholder($element->placeholder);
         $context->setFormBuilder($builder);

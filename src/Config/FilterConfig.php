@@ -675,8 +675,8 @@ class FilterConfig implements \JsonSerializable
         $context->setName($config->getElementName());
         $context->setField($config->field);
         $context->setOperator($config->operator);
-        $context->setValue($this->getData()[$config->getElementName()] ?: '');
-        $context->setDefaultValue($config->addDefaultValue ? $config->defaultValue : '');
+        $context->setValue($this->getData()[$config->getElementName()]);
+        $context->setDefaultValue($config->addDefaultValue ?: $config->defaultValue);
         $context->setParent($config->getRelated('pid'));
         $context->setSubmitOnChange($config->submitOnChange);
         $context->setExpanded($config->expanded);
@@ -737,15 +737,14 @@ class FilterConfig implements \JsonSerializable
             if (null !== $propertyPath && $config->getMapped() && $form->isSynchronized() && !$form->isDisabled()) {
                 // If the field is of type DateTime and the data is the same skip the update to
                 // keep the original object hash
-                if ($form->getData() instanceof \DateTime && $form->getData() === $propertyAccessor->getValue($data,
+                if ($form->getData() instanceof \DateTimeInterface && $form->getData() === $propertyAccessor->getValue($data,
                         $propertyPath)) {
                     continue;
                 }
 
                 // If the data is identical to the value in $data, we are
                 // dealing with a reference
-                if (!\is_object($data) || !$config->getByReference() || $form->getData() !== $propertyAccessor->getValue($data,
-                        $propertyPath)) {
+                if (!\is_object($data) || !$config->getByReference() || $form->getData() !== $propertyAccessor->getValue($data, $propertyPath)) {
                     $propertyAccessor->setValue($data, $propertyPath, $form->getData());
                 }
             }

@@ -11,17 +11,19 @@ namespace HeimrichHannot\FilterBundle\FilterQuery;
 use Contao\Controller;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
-use Doctrine\DBAL\Types\Types;
 use HeimrichHannot\FilterBundle\FilterType\FilterTypeContext;
 use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
+use HeimrichHannot\UtilsBundle\Date\DateUtil;
 
 class FilterQueryPartProcessor
 {
     protected Connection $connection;
+    protected DateUtil   $dateUtil;
 
-    public function __construct(Connection $connection)
+    public function __construct(Connection $connection, DateUtil $dateUtil)
     {
         $this->connection = $connection;
+        $this->dateUtil = $dateUtil;
     }
 
     public function composeQueryPart(FilterTypeContext $context): FilterQueryPart
@@ -207,16 +209,6 @@ class FilterQueryPartProcessor
             'wildcardSuffix' => $filterTypeContext->getId(),
             'valueType' => null,
         ];
-
-        if ($filterTypeContext->getValue() instanceof \DateTime) {
-            /**
-             * @var \DateTime
-             */
-            $date = $filterTypeContext->getValue();
-
-            $filterTypeContext->setValue($date->getTimeStamp());
-            $options['valueType'] = Types::INTEGER;
-        }
 
         return $this->composeWhereForQueryBuilder(
             $filterTypeContext->getField(),
