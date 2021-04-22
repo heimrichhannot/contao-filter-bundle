@@ -144,6 +144,13 @@ class DateTimeType extends AbstractFilterType
                 break;
         }
 
+        //TODO: double check if correct
+        if (empty($filterTypeContext->getValue())) {
+            $options['data'] = null;
+        } else {
+            $options['data'] = date_create_from_format($filterTypeContext->getDateTimeFormat(), $filterTypeContext->getValue());
+        }
+
         return $options;
     }
 }
