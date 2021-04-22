@@ -48,7 +48,6 @@ class ChoiceType extends AbstractFilterType
     public function buildForm($filterTypeContext)
     {
         $builder = $filterTypeContext->getFormBuilder();
-
         $builder->add($filterTypeContext->getName(), SymfonyChoiceType::class, $this->getOptions($filterTypeContext));
     }
 
@@ -110,6 +109,8 @@ class ChoiceType extends AbstractFilterType
         if (true === $filterTypeContext->isMultiple() && isset($options['data'])) {
             $options['data'] = !\is_array($options['data']) ? [$options['data']] : $options['data'];
         }
+
+        $options['data'] = $filterTypeContext->getValue();
 
         return $options;
     }

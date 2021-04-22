@@ -14,12 +14,13 @@ use HeimrichHannot\FilterBundle\FilterQuery\FilterQueryPartCollection;
 use HeimrichHannot\FilterBundle\FilterQuery\FilterQueryPartProcessor;
 use HeimrichHannot\FilterBundle\FilterType\AbstractFilterType;
 use HeimrichHannot\FilterBundle\FilterType\FilterTypeContext;
+use HeimrichHannot\FilterBundle\FilterType\InitialFilterTypeInterface;
 use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 use HeimrichHannot\UtilsBundle\Date\DateUtil;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType as SymfonyDateTimeType;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-class DateTimeType extends AbstractFilterType
+class DateTimeType extends AbstractFilterType implements InitialFilterTypeInterface
 {
     const TYPE = 'date_time_type';
 
@@ -63,6 +64,11 @@ class DateTimeType extends AbstractFilterType
     public function getPalette(string $prependPalette, string $appendPalette): string
     {
         return $prependPalette.'{config_legend},field,operator,dateTimeFormat,minDateTime,maxDateTime;{visualization_legend},html5,dateWidget,customLabel,hideLabel,addPlaceholder;'.$appendPalette;
+    }
+
+    public function getInitialPalette(string $prependPalette, string $appendPalette)
+    {
+        return $prependPalette.'{config_legend},field,operator,dateTimeFormat,minDateTime,maxDateTime;'.$appendPalette;
     }
 
     public function getOperators(): array
