@@ -71,7 +71,7 @@ class FilterConfigElementContainer
         }
     }
 
-    public function getTypeOptions(DataContainer $dc)
+    public function onTypeOptionsCallback(DataContainer $dc)
     {
         if (!$this->bundleConfig['filter']['disable_legacy_filters']) {
             return $this->typeChoice->getCachedChoices($dc);
@@ -92,7 +92,7 @@ class FilterConfigElementContainer
         return $options;
     }
 
-    public function getOperators(DataContainer $dc)
+    public function onOperatorOptionsCallback(DataContainer $dc)
     {
         if (!$this->bundleConfig['filter']['disable_legacy_filters']) {
             return DatabaseUtil::OPERATORS;
@@ -101,7 +101,7 @@ class FilterConfigElementContainer
         return $this->typeCollection->getType($dc->activeRecord->type)->getOperators();
     }
 
-    public function getDateWidgetOptions(DataContainer $dc): array
+    public function onDateWidgetOptionsCallback(DataContainer $dc): array
     {
         if ($this->bundleConfig['filter']['disable_legacy_filers']) {
             return [
@@ -117,17 +117,17 @@ class FilterConfigElementContainer
         ];
     }
 
-    public function getButtonTypes(DataContainer $dc): array
+    public function onButtonTypeOptionsCallback(DataContainer $dc): array
     {
         return ButtonType::BUTTON_TYPES;
     }
 
-    public function getInputGroupAppendOptions(DataContainer $dc): array
+    public function onInputGroupAppendOptionsCallback(DataContainer $dc): array
     {
         return $this->messageChoice->getCachedChoices('huh.filter.input_group_text');
     }
 
-    public function getInputGroupPrependOptions(DataContainer $dc): array
+    public function onInputGroupPrependOptionsCallback(DataContainer $dc): array
     {
         return $this->messageChoice->getCachedChoices('huh.filter.input_group_text');
     }
