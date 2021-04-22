@@ -105,12 +105,12 @@ class ChoiceType extends AbstractFilterType
 
         $options['multiple'] = $filterTypeContext->isMultiple();
 
+        $options['data'] = $filterTypeContext->getValue();
+
         // forgiving array handling
         if (true === $filterTypeContext->isMultiple() && isset($options['data'])) {
             $options['data'] = !\is_array($options['data']) ? [$options['data']] : $options['data'];
         }
-
-        $options['data'] = $filterTypeContext->getValue();
 
         return $options;
     }

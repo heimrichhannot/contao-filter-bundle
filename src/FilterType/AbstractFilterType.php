@@ -33,11 +33,6 @@ abstract class AbstractFilterType implements FilterTypeInterface
     protected $translator;
 
     /**
-     * @var FilterTypeContext
-     */
-    private $context;
-
-    /**
      * @var string
      */
     private $group = '';
@@ -51,20 +46,6 @@ abstract class AbstractFilterType implements FilterTypeInterface
         $this->filterQueryPartProcessor = $filterQueryPartProcessor;
         $this->filterQueryPartCollection = $filterQueryPartCollection;
         $this->translator = $translator;
-    }
-
-    public function getContext(): FilterTypeContext
-    {
-        if (!isset($this->context)) {
-            $this->setDefaultContext();
-        }
-
-        return $this->context;
-    }
-
-    public function setContext(FilterTypeContext $context)
-    {
-        $this->context = $context;
     }
 
     public function getPalette(string $prependPalette, string $appendPalette): string
@@ -150,10 +131,5 @@ abstract class AbstractFilterType implements FilterTypeInterface
         } else {
             $this->setGroup(static::GROUP);
         }
-    }
-
-    private function setDefaultContext()
-    {
-        $this->context = new FilterTypeContext();
     }
 }

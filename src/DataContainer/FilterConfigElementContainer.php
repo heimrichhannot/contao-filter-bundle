@@ -101,6 +101,15 @@ class FilterConfigElementContainer
         return $this->typeCollection->getType($dc->activeRecord->type)->getOperators();
     }
 
+    public function onPlaceholderOptionsCallback(DataContainer $dc): array
+    {
+        if (!$this->bundleConfig['filter']['disable_legacy_filers']) {
+            return $this->messageChoice->getCachedChoices('huh.filter.placeholder');
+        }
+
+        return $this->typeCollection->getType($dc->activeRecord->type)->getPlaceholders();
+    }
+
     public function onDateWidgetOptionsCallback(DataContainer $dc): array
     {
         if ($this->bundleConfig['filter']['disable_legacy_filers']) {
