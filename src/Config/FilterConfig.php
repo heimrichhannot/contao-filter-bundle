@@ -15,6 +15,7 @@ use Contao\InsertTags;
 use Doctrine\DBAL\Connection;
 use HeimrichHannot\FilterBundle\Event\ModifyFilterQueryPartsEvent;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
+use HeimrichHannot\FilterBundle\FilterQuery\FilterQueryPart;
 use HeimrichHannot\FilterBundle\FilterQuery\FilterQueryPartCollection;
 use HeimrichHannot\FilterBundle\FilterQuery\FilterQueryPartProcessor;
 use HeimrichHannot\FilterBundle\FilterType\FilterTypeCollection;
@@ -301,7 +302,7 @@ class FilterConfig implements \JsonSerializable
         /** @noinspection PhpParamsInspection */
         $event = $this->eventDispatcher->dispatch(ModifyFilterQueryPartsEvent::NAME, new ModifyFilterQueryPartsEvent($this->filterQueryPartCollection, $this->getFilter()));
 
-        /*
+        /**
          * @var FilterQueryPart
          */
         foreach ($event->getPartsCollection()->getParts() as $part) {

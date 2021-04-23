@@ -12,6 +12,7 @@ use Contao\DataContainer;
 use HeimrichHannot\FilterBundle\Choice\TypeChoice;
 use HeimrichHannot\FilterBundle\FilterType\FilterTypeCollection;
 use HeimrichHannot\FilterBundle\FilterType\InitialFilterTypeInterface;
+use HeimrichHannot\FilterBundle\FilterType\PlaceholderFilterTypeInterface;
 use HeimrichHannot\FilterBundle\FilterType\Type\ButtonType;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\UtilsBundle\Choice\MessageChoice;
@@ -99,11 +100,13 @@ class FilterConfigElementContainer
 
     public function onPlaceholderOptionsCallback(DataContainer $dc): array
     {
-        if (!$this->bundleConfig['filter']['disable_legacy_filers']) {
-            return $this->messageChoice->getCachedChoices('huh.filter.placeholder');
+        $placeholders = $this->messageChoice->getCachedChoices('huh.filter.placeholder');
+
+        if ($dc->activeRecord->type instanceof PlaceholderFilterTypeInterface) {
+            return array_merge($placeholders, $this->typeCollection->getType($dc->activeRecord->type)->getPlaceholders());
         }
 
-        return $this->typeCollection->getType($dc->activeRecord->type)->getPlaceholders();
+        return $placeholders;
     }
 
     public function onDateWidgetOptionsCallback(DataContainer $dc): array

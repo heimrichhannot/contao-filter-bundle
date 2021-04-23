@@ -11,9 +11,10 @@ namespace HeimrichHannot\FilterBundle\FilterType\Type;
 use HeimrichHannot\FilterBundle\FilterType\AbstractFilterType;
 use HeimrichHannot\FilterBundle\FilterType\FilterTypeContext;
 use HeimrichHannot\FilterBundle\FilterType\InitialFilterTypeInterface;
+use HeimrichHannot\FilterBundle\FilterType\PlaceholderFilterTypeInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextType as SymfonyTextType;
 
-class TextType extends AbstractFilterType implements InitialFilterTypeInterface
+class TextType extends AbstractFilterType implements InitialFilterTypeInterface, PlaceholderFilterTypeInterface
 {
     const TYPE = 'text_type';
     const GROUP = 'text';
@@ -57,5 +58,10 @@ class TextType extends AbstractFilterType implements InitialFilterTypeInterface
         }
 
         return $options;
+    }
+
+    public function getPlaceholders(): array
+    {
+        return [];
     }
 }
