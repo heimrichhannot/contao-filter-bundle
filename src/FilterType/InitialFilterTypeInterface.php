@@ -11,4 +11,6 @@ namespace HeimrichHannot\FilterBundle\FilterType;
 interface InitialFilterTypeInterface
 {
     public function getInitialPalette(string $prependPalette, string $appendPalette);
+
+    public function getInitialValueTypes(array $types): array;
 }

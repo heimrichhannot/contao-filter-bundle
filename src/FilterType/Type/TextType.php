@@ -42,7 +42,16 @@ class TextType extends AbstractFilterType implements InitialFilterTypeInterface,
 
     public function getInitialPalette(string $prependPalette, string $appendPalette): string
     {
-        return $prependPalette.'{config_legend},field,operator;'.$appendPalette;
+        return $prependPalette.'{config_legend},field,operator,initialValueType;'.$appendPalette;
+    }
+
+    public function getInitialValueTypes(array $types): array
+    {
+        $remove = [
+            AbstractFilterType::VALUE_TYPE_ARRAY,
+        ];
+
+        return array_values(array_diff($types, $remove));
     }
 
     public function getOptions(FilterTypeContext $filterTypeContext): array

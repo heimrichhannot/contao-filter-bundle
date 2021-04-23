@@ -17,6 +17,17 @@ abstract class AbstractFilterType implements FilterTypeInterface
 {
     const GROUP_DEFAULT = 'miscellaneous';
 
+    const VALUE_TYPE_SCALAR = 'scalar';
+    const VALUE_TYPE_ARRAY = 'array';
+    const VALUE_TYPE_CONTEXTUAL = 'contextual';
+    const VALUE_TYPE_LATEST = 'latest';
+
+    const VALUE_TYPES = [
+        self::VALUE_TYPE_SCALAR,
+        self::VALUE_TYPE_ARRAY,
+        self::VALUE_TYPE_CONTEXTUAL,
+    ];
+
     /**
      * @var FilterQueryPartProcessor
      */

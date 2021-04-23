@@ -9,7 +9,10 @@
 namespace HeimrichHannot\FilterBundle\DataContainer;
 
 use Contao\DataContainer;
+use Contao\DC_Table;
+use Contao\System;
 use HeimrichHannot\FilterBundle\Choice\TypeChoice;
+use HeimrichHannot\FilterBundle\FilterType\AbstractFilterType;
 use HeimrichHannot\FilterBundle\FilterType\FilterTypeCollection;
 use HeimrichHannot\FilterBundle\FilterType\InitialFilterTypeInterface;
 use HeimrichHannot\FilterBundle\FilterType\PlaceholderFilterTypeInterface;
@@ -72,7 +75,7 @@ class FilterConfigElementContainer
         }
     }
 
-    public function onTypeOptionsCallback(DataContainer $dc)
+    public function onTypeOptionsCallback(DataContainer $dc): array
     {
         $options = $this->typeChoice->getCachedChoices($dc);
 
@@ -87,6 +90,27 @@ class FilterConfigElementContainer
         }
 
         return $options;
+    }
+
+    public function onInitialValueTypeCallback(DC_Table $dc): array
+    {
+        $choices = AbstractFilterType::VALUE_TYPES;
+        $activeRecord = $dc->activeRecord->fetchAllAssoc()[0];
+
+        if (empty($activeRecord)) {
+            return $choices;
+        }
+
+        $types = System::getContainer()->getParameter('huh.filter')['filter']['types'];
+        $typeIndex = array_search($activeRecord['type'], array_column($types, 'name'), true);
+
+        if (!$typeIndex && $this->typeCollection->getType($activeRecord['type']) instanceof InitialFilterTypeInterface) {
+            return $this->typeCollection->getType($activeRecord['type'])->getInitialValueTypes($choices);
+        }
+
+        $class = $types[$typeIndex]['class'];
+
+        return $class::VALUE_TYPES;
     }
 
     public function onOperatorOptionsCallback(DataContainer $dc)

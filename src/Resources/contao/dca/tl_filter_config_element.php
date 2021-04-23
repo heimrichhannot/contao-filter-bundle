@@ -763,7 +763,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'exclude' => true,
             'filter' => true,
             'inputType' => 'select',
-            'options_callback' => ['huh.filter.listener.dca.callback.filterconfigelement', 'getValueTypeOptions'],
+            'options_callback' => [\HeimrichHannot\FilterBundle\DataContainer\FilterConfigElementContainer::class, 'onInitialValueTypeCallback'],
             'reference' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['reference'],
             'eval' => ['tl_class' => 'w50 clr', 'mandatory' => true, 'includeBlankOption' => true, 'submitOnChange' => true],
             'sql' => "varchar(16) NOT NULL default ''",

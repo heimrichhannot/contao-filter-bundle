@@ -71,6 +71,11 @@ class DateTimeType extends AbstractFilterType implements InitialFilterTypeInterf
         return $prependPalette.'{config_legend},field,operator,dateTimeFormat,defaultValue;'.$appendPalette;
     }
 
+    public function getInitialValueTypes(array $types): array
+    {
+        return $types;
+    }
+
     public function getOperators(): array
     {
         //remove this operators from the DatabaseUtil::OPERATORS array
