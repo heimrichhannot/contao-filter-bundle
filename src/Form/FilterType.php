@@ -13,6 +13,7 @@ use Contao\Environment;
 use Contao\System;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
 use HeimrichHannot\FilterBundle\Exception\MissingFilterConfigException;
+use HeimrichHannot\FilterBundle\FilterType\FilterTypeCollection;
 use HeimrichHannot\FilterBundle\FilterType\FilterTypeContext;
 use HeimrichHannot\FilterBundle\FilterType\FilterTypeInterface;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
@@ -116,9 +117,9 @@ class FilterType extends AbstractType
         }
 
         $wrappers = [];
-        $types = \System::getContainer()->get('huh.filter.choice.type')->getCachedChoices();
+        $types = System::getContainer()->get('huh.filter.choice.type')->getCachedChoices();
 
-        $newTypes = \System::getContainer()->get('huh.filter.filter_type.collection')->getTypes();
+        $newTypes = System::getContainer()->get(FilterTypeCollection::class)->getTypes();
         $types = array_merge($types, $newTypes);
 
         if (!\is_array($types) || empty($types)) {
@@ -188,48 +189,14 @@ class FilterType extends AbstractType
         }
 
         $request = Request::createFromGlobals();
-
         $context = new FilterTypeContext();
 
         if (null !== $request->query->get($element->getRelated('pid')->name)[$element->getElementName()]) {
             $context->setValue($request->query->get($element->getRelated('pid')->name)[$element->getElementName()]);
         }
-
-        $context->setId($element->id);
-        $context->setName($element->getElementName());
-        $context->setDefaultValue($element->addDefaultValue ? $element->defaultValue : '');
-        $context->setPlaceholder($element->placeholder);
+        $context->setElementConfig($element);
         $context->setFormBuilder($builder);
-        $context->setTitle($element->title);
-        $context->setLabel($element->label);
         $context->setParent($element->getRelated('pid'));
-        $context->setSubmitOnChange($element->submitOnChange);
-        $context->setExpanded($element->expanded);
-        $context->setMultiple($element->multiple);
-        $context->setDateTimeFormat($element->dateTimeFormat);
-        $context->setMinDateTime($element->minDateTime);
-        $context->setMaxDateTime($element->maxDateTime);
-        $context->setCssClass($element->cssClass);
-        $context->setButtonType($element->buttonType);
-        $context->setCustomLabel($element->customLabel);
-        $context->setHtml5($element->html5);
-        $context->setWidget($element->dateWidget);
-
-        if ($element->submitOnInput) {
-            $context->setSubmitOnInput($element->submitOnInput);
-            $context->setThreshold($element->threshold);
-            $context->setDebounce($element->debounce);
-        }
-
-        if ((bool) $element->inputGroup) {
-            $context->setInputGroup(true);
-            $context->setInputGroupAppend($element->inputGroupAppend);
-            $context->setInputGroupPrepend($element->inputGroupPrepend);
-        }
-
-        if ($element->hideLabel) {
-            $context->hideLabel();
-        }
 
         try {
             $filterType->buildForm($context);

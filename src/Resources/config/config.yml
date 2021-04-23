@@ -1,6 +1,6 @@
 huh:
   filter:
-    disable_legacy_filters: true
+#    disable_legacy_filters: true
     types:
       - { name: text, class: HeimrichHannot\FilterBundle\Filter\Type\TextType, type: text }
       - { name: text_concat, class: HeimrichHannot\FilterBundle\Filter\Type\TextConcatType, type: text }

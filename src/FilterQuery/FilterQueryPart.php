@@ -15,35 +15,49 @@ class FilterQueryPart
     /**
      * @var string
      */
-    public $name;
+    private $field;
+
     /**
-     * @var string
+     * @var int
      */
-    public $query;
+    private $filterElementId;
 
     /**
      * @var string
      */
-    public $wildcard;
+    private $name;
+
+    /**
+     * @var string
+     */
+    private $operator;
 
     /**
      * @var string|int|array|\DateTime
      */
-    public $value;
+    private $value;
 
     /**
      * @var int|string|null
      */
-    public $valueType;
-    /**
-     * @var int
-     */
-    protected $filterElementId;
+    private $valueType;
 
-    public function __construct(FilterTypeContext $context)
+    /**
+     * @var string
+     */
+    private $wildcard;
+
+    public function __construct(FilterTypeContext $filterTypeContext)
     {
-        $this->name = $context->getName();
-        $this->filterElementId = $context->getId();
+        $elementConfig = $filterTypeContext->getElementConfig();
+
+        $this->name = $elementConfig->getElementName();
+        $this->filterElementId = $elementConfig->id;
+        $this->operator = $elementConfig->operator;
+        $this->field = $elementConfig->field;
+        $this->value = $filterTypeContext->getValue();
+        $this->valueType = $filterTypeContext->getValueType();
+        $this->wildcard = ':'.str_replace('.', '_', $elementConfig->field).'_'.$elementConfig->id;
     }
 
     public function getWildcard(): string
@@ -72,13 +86,59 @@ class FilterQueryPart
         $this->value = $value;
     }
 
+    /**
+     * @return int|string|null
+     */
     public function getValueType()
     {
         return $this->valueType;
     }
 
+    /**
+     * @param $valueType
+     */
     public function setValueType($valueType): void
     {
         $this->valueType = $valueType;
+    }
+
+    public function getField(): string
+    {
+        return $this->field;
+    }
+
+    public function setField(string $field): void
+    {
+        $this->field = $field;
+    }
+
+    public function getFilterElementId(): int
+    {
+        return $this->filterElementId;
+    }
+
+    public function setFilterElementId(int $filterElementId): void
+    {
+        $this->filterElementId = $filterElementId;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): void
+    {
+        $this->name = $name;
+    }
+
+    public function getOperator(): string
+    {
+        return $this->operator;
+    }
+
+    public function setOperator(string $operator): void
+    {
+        $this->operator = $operator;
     }
 }

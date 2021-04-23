@@ -11,7 +11,6 @@ namespace HeimrichHannot\FilterBundle\FilterType\Type;
 use HeimrichHannot\FilterBundle\FilterType\AbstractFilterType;
 use HeimrichHannot\FilterBundle\FilterType\FilterTypeContext;
 use HeimrichHannot\FilterBundle\FilterType\InitialFilterTypeInterface;
-use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 use Symfony\Component\Form\Extension\Core\Type\TextType as SymfonyTextType;
 
 class TextType extends AbstractFilterType implements InitialFilterTypeInterface
@@ -32,8 +31,7 @@ class TextType extends AbstractFilterType implements InitialFilterTypeInterface
     public function buildForm(FilterTypeContext $filterTypeContext)
     {
         $builder = $filterTypeContext->getFormBuilder();
-
-        $builder->add($filterTypeContext->getName(), SymfonyTextType::class, $this->getOptions($filterTypeContext));
+        $builder->add($filterTypeContext->getElementConfig()->getElementName(), SymfonyTextType::class, $this->getOptions($filterTypeContext));
     }
 
     public function getPalette(string $prependPalette, string $appendPalette): string
@@ -46,33 +44,16 @@ class TextType extends AbstractFilterType implements InitialFilterTypeInterface
         return $prependPalette.'{config_legend},field,operator;'.$appendPalette;
     }
 
-    public function getOperators(): array
-    {
-        //remove this operators from the DatabaseUtil::OPERATORS array
-        $remove = [
-            DatabaseUtil::OPERATOR_GREATER,
-            DatabaseUtil::OPERATOR_GREATER_EQUAL,
-            DatabaseUtil::OPERATOR_LOWER,
-            DatabaseUtil::OPERATOR_LOWER_EQUAL,
-            DatabaseUtil::OPERATOR_IN,
-            DatabaseUtil::OPERATOR_NOT_IN,
-            DatabaseUtil::OPERATOR_IS_NULL,
-            DatabaseUtil::OPERATOR_IS_NOT_NULL,
-            DatabaseUtil::OPERATOR_IS_EMPTY,
-            DatabaseUtil::OPERATOR_IS_NOT_EMPTY,
-        ];
-
-        return array_values(array_diff(parent::getOperators(), $remove));
-    }
-
     public function getOptions(FilterTypeContext $filterTypeContext): array
     {
         $options = parent::getOptions($filterTypeContext);
 
-        if ($filterTypeContext->isSubmitOnInput() && (bool) $filterTypeContext->getParent()->row()['asyncFormSubmit']) {
+        $elementConfig = $filterTypeContext->getElementConfig();
+
+        if ((bool) $elementConfig->submitOnInput && (bool) $filterTypeContext->getParent()->row()['asyncFormSubmit']) {
             $options['attr']['data-submit-on-input'] = '1';
-            $options['attr']['data-threshold'] = $filterTypeContext->getThreshold();
-            $options['attr']['data-debounce'] = $filterTypeContext->getDebounce();
+            $options['attr']['data-threshold'] = $elementConfig->threshold ?: '0';
+            $options['attr']['data-debounce'] = $elementConfig->debounce ?: '0';
         }
 
         return $options;

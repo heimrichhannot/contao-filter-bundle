@@ -22,9 +22,19 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class ChoiceType extends AbstractFilterType
 {
     const TYPE = 'choice_type';
-    protected FieldOptionsChoice $fieldOptionsChoice;
-    protected ModelUtil          $modelUtil;
-    protected Connection         $connection;
+
+    /**
+     * @var FieldOptionsChoice
+     */
+    protected $fieldOptionsChoice;
+    /**
+     * @var ModelUtil
+     */
+    protected $modelUtil;
+    /**
+     * @var Connection
+     */
+    protected $connection;
 
     public function __construct(
         FilterQueryPartProcessor $filterQueryPartProcessor,
@@ -48,7 +58,7 @@ class ChoiceType extends AbstractFilterType
     public function buildForm($filterTypeContext)
     {
         $builder = $filterTypeContext->getFormBuilder();
-        $builder->add($filterTypeContext->getName(), SymfonyChoiceType::class, $this->getOptions($filterTypeContext));
+        $builder->add($filterTypeContext->getElementConfig()->getElementName(), SymfonyChoiceType::class, $this->getOptions($filterTypeContext));
     }
 
     public function getPalette(string $prependPalette, string $appendPalette): string
@@ -75,12 +85,13 @@ class ChoiceType extends AbstractFilterType
 
     public function getOptions(FilterTypeContext $filterTypeContext): array
     {
+        $elementConfig = $filterTypeContext->getElementConfig();
         $options = parent::getOptions($filterTypeContext);
         $options['choices'] = array_flip($this->collectChoices($filterTypeContext));
         $options['choice_translation_domain'] = false;
-        $options['expanded'] = $filterTypeContext->isExpanded();
+        $options['expanded'] = $elementConfig->expanded;
 
-        if ($filterTypeContext->isSubmitOnChange()) {
+        if ((bool) $elementConfig->submitOnChange) {
             if ($filterTypeContext->getParent()->asyncFormSubmit) {
                 $options['attr']['data-submit-on-change'] = 1;
             } else {
@@ -100,15 +111,15 @@ class ChoiceType extends AbstractFilterType
             unset($options['attr']['placeholder']);
 
             $options['required'] = false;
-            $options['empty_data'] = true === $filterTypeContext->isMultiple() ? [] : '';
+            $options['empty_data'] = true === $elementConfig->multiple ? [] : '';
         }
 
-        $options['multiple'] = $filterTypeContext->isMultiple();
+        $options['multiple'] = $elementConfig->multiple;
 
         $options['data'] = $filterTypeContext->getValue();
 
         // forgiving array handling
-        if (true === $filterTypeContext->isMultiple() && isset($options['data'])) {
+        if ((bool) $elementConfig->multiple && isset($options['data'])) {
             $options['data'] = !\is_array($options['data']) ? [$options['data']] : $options['data'];
         }
 
@@ -118,15 +129,15 @@ class ChoiceType extends AbstractFilterType
     /**
      * Get the list of available choices.
      */
-    public function collectChoices(FilterTypeContext $context): array
+    public function collectChoices(FilterTypeContext $filterTypeContext): array
     {
-        if (null === ($element = $this->modelUtil->findModelInstanceByPk('tl_filter_config_element', $context->getId()))) {
+        if (null === $filterTypeContext->getElementConfig()) {
             return [];
         }
 
         return $this->fieldOptionsChoice->getCachedChoices([
-            'element' => $element,
-            'filter' => $context->getParent()->row(),
+            'element' => $filterTypeContext->getElementConfig(),
+            'filter' => $filterTypeContext->getParent()->row(),
         ]);
     }
 }

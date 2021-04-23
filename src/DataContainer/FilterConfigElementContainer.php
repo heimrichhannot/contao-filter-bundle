@@ -73,11 +73,7 @@ class FilterConfigElementContainer
 
     public function onTypeOptionsCallback(DataContainer $dc)
     {
-        if (!$this->bundleConfig['filter']['disable_legacy_filters']) {
-            return $this->typeChoice->getCachedChoices($dc);
-        }
-
-        $options = [];
+        $options = $this->typeChoice->getCachedChoices($dc);
 
         foreach ($this->typeCollection->getTypes() as $key => $type) {
             $group = $type->getGroup();

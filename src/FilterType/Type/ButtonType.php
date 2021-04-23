@@ -41,8 +41,9 @@ class ButtonType extends AbstractFilterType
     public function buildForm(FilterTypeContext $filterTypeContext)
     {
         $builder = $filterTypeContext->getFormBuilder();
+        $elementConfig = $filterTypeContext->getElementConfig();
 
-        switch ($filterTypeContext->getButtonType()) {
+        switch ($elementConfig->buttonType) {
             case static::BUTTON_TYPE_RESET:
             case static::BUTTON_TYPE_SUBMIT:
                 $symfonyButton = SymfonySubmitType::class;
@@ -55,7 +56,7 @@ class ButtonType extends AbstractFilterType
                 break;
         }
 
-        $builder->add($filterTypeContext->getName(), $symfonyButton, $this->getOptions($filterTypeContext));
+        $builder->add($elementConfig->getElementName(), $symfonyButton, $this->getOptions($filterTypeContext));
     }
 
     public function getPalette(string $prependPalette, string $appendPalette): string

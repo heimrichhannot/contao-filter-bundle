@@ -185,10 +185,6 @@ services:
     arguments:
       - !tagged huh.filter.filter_type
 
-  huh.filter.filter_type.collection: '@HeimrichHannot\FilterBundle\FilterType\FilterTypeCollection'
+  HeimrichHannot\FilterBundle\FilterQuery\FilterQueryPartCollection: ~
 
-  HeimrichHannot\FilterBundle\FilterQuery\FilterQueryPartCollection:
-  huh.filter.filter_query_part_collection: '@HeimrichHannot\FilterBundle\FilterQuery\FilterQueryPartCollection'
-
-  HeimrichHannot\FilterBundle\FilterQuery\FilterQueryPartProcessor:
-  huh.filter.filter_query_part_processor: '@HeimrichHannot\FilterBundle\FilterQuery\FilterQueryPartProcessor'
+  HeimrichHannot\FilterBundle\FilterQuery\FilterQueryPartProcessor: ~

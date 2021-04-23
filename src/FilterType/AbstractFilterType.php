@@ -65,7 +65,22 @@ abstract class AbstractFilterType implements FilterTypeInterface
 
     public function getOperators(): array
     {
-        return DatabaseUtil::OPERATORS;
+        return [
+            DatabaseUtil::OPERATOR_LIKE,
+            DatabaseUtil::OPERATOR_UNLIKE,
+            DatabaseUtil::OPERATOR_EQUAL,
+            DatabaseUtil::OPERATOR_UNEQUAL,
+            DatabaseUtil::OPERATOR_LOWER,
+            DatabaseUtil::OPERATOR_LOWER_EQUAL,
+            DatabaseUtil::OPERATOR_GREATER,
+            DatabaseUtil::OPERATOR_GREATER_EQUAL,
+            DatabaseUtil::OPERATOR_IN,
+            DatabaseUtil::OPERATOR_NOT_IN,
+            DatabaseUtil::OPERATOR_IS_NULL,
+            DatabaseUtil::OPERATOR_IS_NOT_NULL,
+            DatabaseUtil::OPERATOR_REGEXP,
+            DatabaseUtil::OPERATOR_NOT_REGEXP,
+        ];
     }
 
     public function buildQuery(FilterTypeContext $filterTypeContext)
@@ -75,51 +90,50 @@ abstract class AbstractFilterType implements FilterTypeInterface
 
     public function getOptions(FilterTypeContext $filterTypeContext): array
     {
+        $elementConfig = $filterTypeContext->getElementConfig();
         $options = [];
-        $options['label'] = $filterTypeContext->isCustomLabel() ? $filterTypeContext->getLabel() : $filterTypeContext->getTitle();
+        $options['label'] = $elementConfig->customLabel ? $elementConfig->label : $elementConfig->title;
 
         // sr-only style for non-bootstrap projects is shipped within the filter_form_* templates
-        if (true === $filterTypeContext->isLabelHidden()) {
+        if (true === (bool) $elementConfig->hideLabel) {
             $options['label_attr'] = ['class' => 'sr-only'];
         }
         // always label for screen readers
-        $options['attr']['aria-label'] = $this->translator->trans($filterTypeContext->isCustomLabel() ? $filterTypeContext->getLabel() : $filterTypeContext->getTitle());
+        $options['attr']['aria-label'] = $this->translator->trans($elementConfig->customLabel ? $elementConfig->label : $elementConfig->title);
 
-        if ($filterTypeContext->getPlaceholder()) {
-            $options['attr']['placeholder'] = $this->translator->trans($filterTypeContext->getPlaceholder(), ['%label%' => $this->translator->trans($options['label']) ?: $filterTypeContext->getTitle()]);
+        if ((bool) $elementConfig->addPlaceholder) {
+            $options['attr']['placeholder'] = $this->translator->trans($elementConfig->placeholder, ['%label%' => $this->translator->trans($options['label']) ?: $elementConfig->title]);
         }
 
-        if ($filterTypeContext->getCssClass()) {
-            $options['attr']['class'] = $filterTypeContext->getCssClass();
+        if (!empty($elementConfig->cssClass)) {
+            $options['attr']['class'] = $elementConfig->cssClass;
         }
 
-        if ($filterTypeContext->getDefaultValue()) {
-            $options['data'] = $filterTypeContext->getDefaultValue();
+        if ((bool) $elementConfig->addDefaultValue) {
+            $options['data'] = $elementConfig->defaultValue;
         }
 
-        if ($filterTypeContext->hasInputGroup()) {
-            if ('' !== $filterTypeContext->getInputGroupPrepend()) {
-                $prepend = $filterTypeContext->getInputGroupPrepend();
+        if ((bool) $elementConfig->inputGroup && !empty($elementConfig->inputGroupPrepend)) {
+            $prepend = $elementConfig->inputGroupPrepend;
 
-                if ($this->translator->getCatalogue()->has($prepend)) {
-                    $prepend = $this->translator->trans($prepend, ['%label%' => $this->translator->trans($options['label']) ?: $filterTypeContext->getTitle()]);
-                }
-
-                $options['input_group_prepend'] = $prepend;
+            if ($this->translator->getCatalogue()->has($prepend)) {
+                $prepend = $this->translator->trans($prepend, ['%label%' => $this->translator->trans($options['label']) ?: $elementConfig->title]);
             }
 
-            if ('' !== $filterTypeContext->getInputGroupAppend()) {
-                $append = $filterTypeContext->getInputGroupAppend();
-
-                if ($this->translator->getCatalogue()->has($append)) {
-                    $append = $this->translator->trans($append, ['%label%' => $this->translator->trans($options['label']) ?: $filterTypeContext->getTitle()]);
-                }
-
-                $options['input_group_append'] = $append;
-            }
+            $options['input_group_prepend'] = $prepend;
         }
 
-        $options['block_name'] = $filterTypeContext->getName();
+        if ((bool) $elementConfig->inputGroup && !empty($elementConfig->inputGroupAppend)) {
+            $append = $elementConfig->inputGroupAppend;
+
+            if ($this->translator->getCatalogue()->has($append)) {
+                $append = $this->translator->trans($append, ['%label%' => $this->translator->trans($options['label']) ?: $elementConfig->title]);
+            }
+
+            $options['input_group_append'] = $append;
+        }
+
+        $options['block_name'] = $elementConfig->getElementName();
 
         return $options;
     }

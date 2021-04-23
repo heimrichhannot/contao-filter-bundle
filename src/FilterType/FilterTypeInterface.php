@@ -15,4 +15,6 @@ interface FilterTypeInterface
     public function buildForm(FilterTypeContext $filterTypeContext);
 
     public function getPalette(string $prependPalette, string $appendPalette): string;
+
+    public function getOperators(): array;
 }

@@ -16,7 +16,8 @@ use Doctrine\DBAL\Connection;
 use HeimrichHannot\FilterBundle\Event\ModifyFilterQueryPartsEvent;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
 use HeimrichHannot\FilterBundle\FilterQuery\FilterQueryPartCollection;
-use HeimrichHannot\FilterBundle\FilterType\AbstractFilterType;
+use HeimrichHannot\FilterBundle\FilterQuery\FilterQueryPartProcessor;
+use HeimrichHannot\FilterBundle\FilterType\FilterTypeCollection;
 use HeimrichHannot\FilterBundle\FilterType\FilterTypeContext;
 use HeimrichHannot\FilterBundle\FilterType\FilterTypeInterface;
 use HeimrichHannot\FilterBundle\FilterType\Type\ButtonType;
@@ -108,6 +109,11 @@ class FilterConfig implements \JsonSerializable
     protected $eventDispatcher;
 
     /**
+     * @var FilterQueryPartProcessor
+     */
+    protected $filterQueryPartProcessor;
+
+    /**
      * @var ContainerInterface
      */
     private $container;
@@ -127,7 +133,8 @@ class FilterConfig implements \JsonSerializable
         Connection $connection,
         RequestStack $requestStack,
         FilterQueryPartCollection $filterQueryPartCollection,
-        EventDispatcherInterface $eventDispatcher
+        EventDispatcherInterface $eventDispatcher,
+        FilterQueryPartProcessor $filterQueryPartProcessor
     ) {
         $this->framework = $framework;
         $this->session = $session;
@@ -136,6 +143,7 @@ class FilterConfig implements \JsonSerializable
         $this->requestStack = $requestStack;
         $this->filterQueryPartCollection = $filterQueryPartCollection;
         $this->eventDispatcher = $eventDispatcher;
+        $this->filterQueryPartProcessor = $filterQueryPartProcessor;
     }
 
     /**
@@ -246,7 +254,7 @@ class FilterConfig implements \JsonSerializable
 
         $types = $this->container->get('huh.filter.choice.type')->getCachedChoices();
 
-        $newTypes = \System::getContainer()->get('huh.filter.filter_type.collection')->getTypes();
+        $newTypes = \System::getContainer()->get(FilterTypeCollection::class)->getTypes();
         $types = array_merge($types, $newTypes);
 
         if (!\is_array($types) || empty($types)) {
@@ -264,7 +272,7 @@ class FilterConfig implements \JsonSerializable
                 continue;
             }
 
-            if (!\is_array($types[$element->type]) && $types[$element->type] instanceof AbstractFilterType) {
+            if (!\is_array($types[$element->type]) && $types[$element->type] instanceof FilterTypeInterface) {
                 $this->processFilterType($element, $types[$element->type]);
 
                 continue;
@@ -291,13 +299,13 @@ class FilterConfig implements \JsonSerializable
         //apply parts from FilterQueryPartCollection
         /** @noinspection PhpMethodParametersCountMismatchInspection */
         /** @noinspection PhpParamsInspection */
-        $event = $this->eventDispatcher->dispatch(ModifyFilterQueryPartsEvent::NAME, new ModifyFilterQueryPartsEvent($this->filterQueryPartCollection));
+        $event = $this->eventDispatcher->dispatch(ModifyFilterQueryPartsEvent::NAME, new ModifyFilterQueryPartsEvent($this->filterQueryPartCollection, $this->getFilter()));
 
         /*
          * @var FilterQueryPart
          */
         foreach ($event->getPartsCollection()->getParts() as $part) {
-            $this->queryBuilder->andWhere($part->query);
+            $this->queryBuilder->andWhere($this->filterQueryPartProcessor->composeWhereForQueryBuilder($part, $this->queryBuilder));
             $this->queryBuilder->setParameter(
                 $part->getWildcard(),
                 $part->getValue(),
@@ -671,20 +679,9 @@ class FilterConfig implements \JsonSerializable
         }
 
         $context = new FilterTypeContext();
-        $context->setId($config->id);
-        $context->setName($config->getElementName());
-        $context->setField($config->field);
-        $context->setOperator($config->operator);
         $context->setValue($this->getData()[$config->getElementName()]);
-        $context->setDefaultValue($config->addDefaultValue ?: $config->defaultValue);
+        $context->setElementConfig($config);
         $context->setParent($config->getRelated('pid'));
-        $context->setSubmitOnChange($config->submitOnChange);
-        $context->setExpanded($config->expanded);
-        $context->setMultiple($config->multiple);
-        $context->setDateTimeFormat($config->dateTimeFormat);
-        $context->setMinDateTime($config->minDateTime);
-        $context->setMaxDateTime($config->maxDateTime);
-        $context->setCustomLabel($config->customLabel);
 
         $filterType->buildQuery($context);
     }
@@ -720,6 +717,8 @@ class FilterConfig implements \JsonSerializable
         } catch (TransformationFailedException $e) {
             $this->resetData();
             $this->builder->setData($this->getData());
+
+            return;
             $forms = $this->builder->getForm();
         }
 
