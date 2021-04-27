@@ -66,7 +66,11 @@ class ChoiceType extends AbstractType
             return [];
         }
 
-        return System::getContainer()->get('huh.filter.choice.field_options')->getCachedChoices(['element' => $element, 'filter' => $this->config->getFilter()]);
+        $method = $element->doNotCacheOptions ? 'getChoices' : 'getCachedChoices';
+
+        return System::getContainer()->get('huh.filter.choice.field_options')->{$method}(
+            ['element' => $element, 'filter' => $this->config->getFilter()]
+        );
     }
 
     public function getOptions(FilterConfigElementModel $element, FormBuilderInterface $builder, bool $triggerEvent = true)

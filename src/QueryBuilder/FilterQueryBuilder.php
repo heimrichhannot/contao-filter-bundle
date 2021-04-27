@@ -108,7 +108,7 @@ class FilterQueryBuilder extends QueryBuilder
         }
 
         if ($element->isInitial) {
-            $value = $data[$name] ?? AbstractType::getInitialValue($element, $this->contextualValues);
+            $value = AbstractType::getInitialValue($element, $this->contextualValues);
 
             if ($element->alternativeValueSource) {
                 $value = $this->getValueFromAlternativeSource($value, $data, $element, $name, $config, $dca);
@@ -146,7 +146,12 @@ class FilterQueryBuilder extends QueryBuilder
 
         $this->andWhere(
             $this->container->get('huh.utils.database')->composeWhereForQueryBuilder(
-                $this, $config->getFilter()['dataContainer'].'.'.$element->field, $operator, $dca, $value
+                $this,
+                $config->getFilter()['dataContainer'].'.'.$element->field,
+                $operator,
+                $dca,
+                $value,
+                ['wildcardSuffix' => '_'.$element->id]
             )
         );
 
@@ -228,7 +233,13 @@ class FilterQueryBuilder extends QueryBuilder
     protected function whereTagWidget(FilterConfigElementModel $element, string $name, FilterConfig $config, array $dca, string $defaultOperator = null)
     {
         $data = $config->getData();
-        $value = $data[$name];
+
+        if ($element->isInitial && $element->alternativeValueSource) {
+            $value = $this->getValueFromAlternativeSource($data[$name], $data, $element, $name, $config, $dca);
+        } else {
+            $value = $data[$name] ?? AbstractType::getInitialValue($element, $this->contextualValues);
+            $value = array_filter(!\is_array($value) ? explode(',', $value) : $value);
+        }
 
         if (empty($value)) {
             return $this;
@@ -236,10 +247,6 @@ class FilterQueryBuilder extends QueryBuilder
 
         $filter = $config->getFilter();
         $relation = Relations::getRelation($filter['dataContainer'], $element->field);
-
-        if ($element->isInitial && $element->alternativeValueSource) {
-            $value = $this->getValueFromAlternativeSource($value, $data, $element, $name, $config, $dca);
-        }
 
         if (false === $relation || null === $value) {
             return $this;

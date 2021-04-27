@@ -73,17 +73,9 @@ services:
 
   HeimrichHannot\FilterBundle\Choice\TypeChoice: ~
   huh.filter.choice.type: '@HeimrichHannot\FilterBundle\Choice\TypeChoice'
-#    class: HeimrichHannot\FilterBundle\Choice\TypeChoice
-#    public: true
-#    arguments:
-#    - "@contao.framework"
 
   HeimrichHannot\FilterBundle\Choice\FieldOptionsChoice: ~
-  huh.filter.choice.field_options:
-    class: HeimrichHannot\FilterBundle\Choice\FieldOptionsChoice
-    public: true
-    arguments:
-    - "@contao.framework"
+    huh.filter.choice.field_options: '@HeimrichHannot\FilterBundle\Choice\FieldOptionsChoice'
 
   huh.filter.choice.country:
     class: HeimrichHannot\FilterBundle\Choice\CountryChoice

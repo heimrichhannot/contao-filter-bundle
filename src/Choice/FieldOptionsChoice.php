@@ -15,6 +15,7 @@ use Contao\Widget;
 use Doctrine\DBAL\FetchMode;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\UtilsBundle\Choice\AbstractChoice;
+use HeimrichHannot\UtilsBundle\Model\ModelUtil;
 use Symfony\Component\Translation\Translator;
 
 class FieldOptionsChoice extends AbstractChoice
@@ -204,7 +205,21 @@ class FieldOptionsChoice extends AbstractChoice
                 // make the values unique
                 $items = array_unique($items);
 
-                if (isset($dca['reference'])) {
+                if (isset($dca['foreignKey'])) {
+                    [$foreignTable, $foreignField] = explode('.', $dca['foreignKey']);
+
+                    if (null !== ($instances = System::getContainer()->get(ModelUtil::class)->findModelInstancesBy(
+                        $foreignTable, [$foreignTable.'.id IN ('.implode(',', $items).')'], []))) {
+                        $labels = array_combine($instances->fetchEach('id'), $instances->fetchEach($foreignField));
+
+                        foreach ($items as $item) {
+                            $options[] = [
+                                'value' => $item,
+                                'label' => $labels[$item] ?? $item,
+                            ];
+                        }
+                    }
+                } elseif (isset($dca['reference'])) {
                     foreach ($items as $item) {
                         $options[] = [
                             'value' => $item,
@@ -301,7 +316,11 @@ class FieldOptionsChoice extends AbstractChoice
             $dca['eval']['tagsManager']
         );
 
-        $tags = $tagsManager->findMultiple();
+        if (method_exists($tagsManager, 'findMultiple')) {
+            $tags = $tagsManager->findMultiple();
+        } else {
+            $tags = $tagsManager->getAllTags();
+        }
 
         if (null === $tags) {
             return $options;

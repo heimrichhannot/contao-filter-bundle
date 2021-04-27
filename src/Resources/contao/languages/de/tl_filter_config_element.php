@@ -115,6 +115,7 @@ $lang['proximitySearchExplanation'] = '<strong>Notwendig</strong> für eine Umkr
 $lang['threshold'] = ['Schwellwert für Eingabe', 'Tragen Sie hier die Mindestanzahl an Zeichen ein, die eingegeben werden müssen bevor das Formular verschickt wird.'];
 $lang['debounce'] = ['Wartezeit nach Eingabe in ms', 'Tragen Sie hier die Wartezeit ein, die nach der Eingabe vergehen soll bevor das Formular verschickt wird.'];
 $lang['submitOnInput'] = ['Abschicken bei Eingabe', 'Wählen Sie diese Option, wenn das Formular abgeschickt werden soll, sobald Sie zeichen eingeben. Sie können definieren wieviele Zeichen eingegeben werden müssen um das Abschicken zu initiieren.'];
+$lang['doNotCacheOptions'] = ['Cache für Optionswerte deaktivieren', 'Wählen Sie diese Option, wenn die Optionswerte im Produktionsmodus nicht gecachet werden sollen.'];
 
 // sort
 $lang['sortOptions'] = ['Sortier-Optionen', 'Fügen Sie hier die gewünschten Sortieroptionen hinzu.'];

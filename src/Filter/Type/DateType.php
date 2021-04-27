@@ -176,6 +176,7 @@ class DateType extends AbstractType
                 // months and days restriction must be configurable by itself
                 break;
         }
+        $options['attr']['type'] = $type;
 
         return $options;
     }

@@ -1,6 +1,34 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.10.1] - 2021-03-25
+- fixed error in js code introduced in 1.9.2 (#18)
+
+## [1.10.0] - 2021-03-23
+- added wildcardSuffix options to whereWidget (#17)
+
+## [1.9.3] - 2021-03-22
+- adjust service definition for `FieldOptionsChoice`
+
+## [1.9.2] - 2021-03-18
+- Fix enter key behavios on async forms (#16)
+
+## [1.9.1] - 2021-03-16
+- fixed issue concerning different tags bundle versions
+
+## [1.9.0] - 2021-03-16
+- added initial value support for codefog-tags-based fields
+
+## [1.8.1] - 2021-03-15
+- fixed insert tag issue
+
+## [1.8.0] - 2021-03-15
+- added field "doNotCacheOptions" for `ChoiceType`
+
+## [1.7.0] - 2021-03-04
+- removed session interaction for initial filters
+- fixed getWidgetOptions in FieldOptionsChoice to display correct options, according to element configuration
+
 ## [1.6.8] - 2021-02-11
 - added insert tag support for default values
 
