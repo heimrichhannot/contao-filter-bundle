@@ -9,21 +9,36 @@
 namespace HeimrichHannot\FilterBundle\FilterQuery;
 
 use Contao\Controller;
+use Contao\StringUtil;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
+use HeimrichHannot\FilterBundle\FilterType\AbstractFilterType;
 use HeimrichHannot\FilterBundle\FilterType\FilterTypeContext;
 use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 use HeimrichHannot\UtilsBundle\Date\DateUtil;
 
 class FilterQueryPartProcessor
 {
-    protected Connection $connection;
-    protected DateUtil   $dateUtil;
+    /**
+     * @var Connection
+     */
+    protected $connection;
 
-    public function __construct(Connection $connection, DateUtil $dateUtil)
+    /**
+     * @var DateUtil
+     */
+    protected $dateUtil;
+
+    /**
+     * @var DatabaseUtil
+     */
+    protected $databaseUtil;
+
+    public function __construct(Connection $connection, DateUtil $dateUtil, DatabaseUtil $databaseUtil)
     {
         $this->connection = $connection;
         $this->dateUtil = $dateUtil;
+        $this->databaseUtil = $databaseUtil;
     }
 
     public function composeQueryPart(FilterTypeContext $filterTypeContext): FilterQueryPart
@@ -41,11 +56,15 @@ class FilterQueryPartProcessor
             $value = Controller::replaceInsertTags(\is_array($value) ? implode(' ', $value) : $value, false);
         }
 
+        $this->updateInitialFilterProperties($filterQueryPart);
+
         switch ($filterQueryPart->getOperator()) {
             case DatabaseUtil::OPERATOR_LIKE:
                 $where = $queryBuilder->expr()->like($filterQueryPart->getField(), $filterQueryPart->getWildcard());
 
-                if (false === strpos($value, '%')) {
+                if (('%' === substr($value, -1)) || ('%' === substr($value, 0, 1))) {
+                    $filterQueryPart->setValue($value);
+                } else {
                     $filterQueryPart->setValue('%'.$value.'%');
                 }
 
@@ -54,7 +73,9 @@ class FilterQueryPartProcessor
             case DatabaseUtil::OPERATOR_UNLIKE:
                 $where = $queryBuilder->expr()->notLike($filterQueryPart->getField(), $filterQueryPart->getWildcard());
 
-                if (false === strpos($value, '%')) {
+                if (('%' === substr($value, -1)) || ('%' === substr($value, 0, 1))) {
+                    $filterQueryPart->setValue($value);
+                } else {
                     $filterQueryPart->setValue('%'.$value.'%');
                 }
 
@@ -182,5 +203,25 @@ class FilterQueryPartProcessor
         }
 
         return $where;
+    }
+
+    public function updateInitialFilterProperties(FilterQueryPart &$filterPart): void
+    {
+        if (null === $filterPart->getInitialValue()) {
+            return;
+        }
+
+        switch ($filterPart->getInitialValueType()) {
+            case AbstractFilterType::VALUE_TYPE_SCALAR:
+                $filterPart->setValue($filterPart->getInitialValue());
+
+                break;
+
+            case AbstractFilterType::VALUE_TYPE_ARRAY:
+                $filterPart->setValue(array_column(StringUtil::deserialize($filterPart->getInitialValue()), 'value'));
+                $filterPart->setValueType(Connection::PARAM_STR_ARRAY);
+
+                break;
+        }
     }
 }

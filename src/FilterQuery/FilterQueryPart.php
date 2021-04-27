@@ -13,6 +13,11 @@ use HeimrichHannot\FilterBundle\FilterType\FilterTypeContext;
 class FilterQueryPart
 {
     /**
+     * @var bool
+     */
+    private $disabled = false;
+
+    /**
      * @var string
      */
     private $field;
@@ -23,6 +28,21 @@ class FilterQueryPart
     private $filterElementId;
 
     /**
+     * @var bool
+     */
+    private $initial = false;
+
+    /**
+     * @var mixed
+     */
+    private $initialValue;
+
+    /**
+     * @var string
+     */
+    private $initialValueType;
+
+    /**
      * @var string
      */
     private $name;
@@ -31,6 +51,11 @@ class FilterQueryPart
      * @var string
      */
     private $operator;
+
+    /**
+     * @var bool
+     */
+    private $overridable = true;
 
     /**
      * @var string|int|array|\DateTime
@@ -54,10 +79,19 @@ class FilterQueryPart
         $this->name = $elementConfig->getElementName();
         $this->filterElementId = $elementConfig->id;
         $this->operator = $elementConfig->operator;
-        $this->field = $elementConfig->field;
-        $this->value = $filterTypeContext->getValue();
-        $this->valueType = $filterTypeContext->getValueType();
+        $this->field = $filterTypeContext->getParent()->row()['dataContainer'].'.'.$elementConfig->field;
         $this->wildcard = ':'.str_replace('.', '_', $elementConfig->field).'_'.$elementConfig->id;
+
+        if ($elementConfig->isInitial) {
+            $this->initial = $elementConfig->isInitial;
+            $this->initialValue = $elementConfig->initialValue ?: $elementConfig->initialValueArray;
+            $this->initialValueType = $elementConfig->initialValueType;
+            $this->value = $this->initialValue;
+            $this->overridable = $elementConfig->isInitialOverridable;
+        } else {
+            $this->value = $filterTypeContext->getValue();
+            $this->valueType = $filterTypeContext->getValueType();
+        }
     }
 
     public function getWildcard(): string
@@ -140,5 +174,61 @@ class FilterQueryPart
     public function setOperator(string $operator): void
     {
         $this->operator = $operator;
+    }
+
+    public function isInitial(): bool
+    {
+        return $this->initial;
+    }
+
+    public function setInitial(bool $initial): void
+    {
+        $this->initial = $initial;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getInitialValue()
+    {
+        return $this->initialValue;
+    }
+
+    /**
+     * @param mixed $initialValue
+     */
+    public function setInitialValue($initialValue): void
+    {
+        $this->initialValue = $initialValue;
+    }
+
+    public function getInitialValueType(): string
+    {
+        return $this->initialValueType;
+    }
+
+    public function setInitialValueType(string $initialValueType): void
+    {
+        $this->initialValueType = $initialValueType;
+    }
+
+    public function isDisabled(): bool
+    {
+        return $this->disabled;
+    }
+
+    public function setDisabled(bool $disabled): void
+    {
+        $this->disabled = $disabled;
+    }
+
+    public function isOverridable(): bool
+    {
+        return $this->overridable;
+    }
+
+    public function setOverridable(bool $overridable): void
+    {
+        $this->overridable = $overridable;
     }
 }

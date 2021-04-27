@@ -235,6 +235,13 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'eval' => ['tl_class' => 'w50', 'submitOnChange' => true],
             'sql' => "char(1) NOT NULL default ''",
         ],
+        'isInitialOverridable' => [
+            'label' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['isInitialOverridable'],
+            'exclude' => true,
+            'inputType' => 'checkbox',
+            'eval' => ['tl_class' => 'w50'],
+            'sql' => "char(1) NOT NULL default ''",
+        ],
         'title' => [
             'label' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['title'],
             'exclude' => true,

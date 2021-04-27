@@ -105,6 +105,7 @@ use HeimrichHannot\FilterBundle\Filter\AbstractType;
  * @property string $threshold
  * @property string $debounce
  * @property bool   $submitOnInput
+ * @property bool   $isInitialOverridable
  *
  * @method FilterConfigElementModel|null                                                     findById($id, array $opt = [])
  * @method FilterConfigElementModel|null                                                     findByPk($id, array $opt = [])

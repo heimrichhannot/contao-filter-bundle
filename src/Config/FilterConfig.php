@@ -29,6 +29,7 @@ use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\Model\FilterConfigModel;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 use HeimrichHannot\FilterBundle\Session\FilterSession;
+use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\Exception\TransformationFailedException;
@@ -39,6 +40,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\PropertyAccess\PropertyAccess;
+use System;
 
 class FilterConfig implements \JsonSerializable
 {
@@ -253,10 +255,8 @@ class FilterConfig implements \JsonSerializable
             return;
         }
 
-        $types = $this->container->get('huh.filter.choice.type')->getCachedChoices();
-
-        $newTypes = \System::getContainer()->get(FilterTypeCollection::class)->getTypes();
-        $types = array_merge($types, $newTypes);
+        $types = array_merge($this->container->get('huh.filter.choice.type')->getCachedChoices(),
+            System::getContainer()->get(FilterTypeCollection::class)->getTypes());
 
         if (!\is_array($types) || empty($types)) {
             return;
@@ -275,6 +275,18 @@ class FilterConfig implements \JsonSerializable
 
             if (!\is_array($types[$element->type]) && $types[$element->type] instanceof FilterTypeInterface) {
                 $this->processFilterType($element, $types[$element->type]);
+
+                continue;
+            }
+
+            if (!class_exists($types[$element->type]['class'])) {
+                continue;
+            }
+
+            $filterClass = new $types[$element->type]['class']($this);
+
+            if (\is_array($types[$element->type]) && $filterClass instanceof AbstractType) {
+                $this->processOriginFilterType($element, $types[$element->type]);
 
                 continue;
             }
@@ -302,16 +314,64 @@ class FilterConfig implements \JsonSerializable
         /** @noinspection PhpParamsInspection */
         $event = $this->eventDispatcher->dispatch(ModifyFilterQueryPartsEvent::NAME, new ModifyFilterQueryPartsEvent($this->filterQueryPartCollection, $this->getFilter()));
 
+        /* prepare FilterQueryParts to behave like in the original implementation
+         * (initial filters are overwritten by other filters for the same field, if they are after the initial filter)
+         * TODO: this needs to be refactored after removing legacy filters
+        */
+        $filterTargetFields = $this->filterQueryPartCollection->getTargetFields();
+
+        foreach ($filterTargetFields as $targetField) {
+            if (1 >= \count($targetField)) {
+                continue;
+            }
+
+            $initialFilters = array_combine(array_keys($targetField), array_column($targetField, 'initial'));
+
+            foreach ($initialFilters as $key => $filterElement) {
+                if (!$targetField[$key]['initial']) {
+                    continue;
+                }
+                //check if this filter is overridable
+                if (!$targetField[$key]['overridable']) {
+                    continue;
+                }
+
+                //check if there are other not initial filters for this field
+                $targetKey = array_search($key, array_keys($targetField), true);
+
+                if (false !== $targetKey) {
+                    $leftover = \array_slice($targetField, $targetKey + 1, null, true);
+
+                    if (!empty($leftover)) {
+                        foreach ($leftover as $leftoverElement) {
+                            if (!$leftoverElement['initial'] && null !== ($element = $this->filterQueryPartCollection->getPartByName($key))) {
+                                $element->setDisabled(true);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         /**
          * @var FilterQueryPart
          */
         foreach ($event->getPartsCollection()->getParts() as $part) {
+            if ($part->isDisabled()) {
+                $this->filterQueryPartCollection->removePartByName($part->getName());
+
+                continue;
+            }
+
             $this->queryBuilder->andWhere($this->filterQueryPartProcessor->composeWhereForQueryBuilder($part, $this->queryBuilder));
+
             $this->queryBuilder->setParameter(
                 $part->getWildcard(),
                 $part->getValue(),
                 $part->getValueType()
             );
+
+            $this->filterQueryPartCollection->removePartByName($part->getName());
         }
     }
 
@@ -675,7 +735,7 @@ class FilterConfig implements \JsonSerializable
 
     protected function processFilterType(FilterConfigElementModel $config, FilterTypeInterface $filterType)
     {
-        if (!$this->getData()[$config->getElementName()]) {
+        if (!$this->getData()[$config->getElementName()] && !(bool) $config->isInitial) {
             return;
         }
 
@@ -685,6 +745,26 @@ class FilterConfig implements \JsonSerializable
         $context->setParent($config->getRelated('pid'));
 
         $filterType->buildQuery($context);
+    }
+
+    protected function processOriginFilterType(FilterConfigElementModel $config, array $element)
+    {
+        if (!$this->getData()[$config->field]) {
+            return;
+        }
+
+        if ('' === $config->operator && '' !== $config->customOperator) {
+            $config->operator = $config->customOperator;
+        } elseif ('' === $config->operator && '' === $config->customOperator) {
+            $config->operator = DatabaseUtil::OPERATOR_EQUAL;
+        }
+
+        $context = new FilterTypeContext();
+        $context->setValue($this->getData()[$config->field]);
+        $context->setElementConfig($config);
+        $context->setParent($config->getRelated('pid'));
+
+        $this->filterQueryPartCollection->addPart($this->filterQueryPartProcessor->composeQueryPart($context));
     }
 
     protected function isResetButtonClicked(FormInterface $form): bool
@@ -718,19 +798,19 @@ class FilterConfig implements \JsonSerializable
         } catch (TransformationFailedException $e) {
             $this->resetData();
             $this->builder->setData($this->getData());
-
-            return;
             $forms = $this->builder->getForm();
         }
 
         $propertyAccessor = PropertyAccess::createPropertyAccessor();
 
-        /*
+        /**
          * @var FormInterface
          */
         foreach ($forms as $form) {
             $propertyPath = $form->getPropertyPath();
             $config = $form->getConfig();
+
+            $singleData = $form->getData();
 
             // Write-back is disabled if the form is not synchronized (transformation failed),
             // if the form was not submitted and if the form is disabled (modification not allowed)
