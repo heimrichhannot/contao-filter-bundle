@@ -75,7 +75,7 @@ services:
   huh.filter.choice.type: '@HeimrichHannot\FilterBundle\Choice\TypeChoice'
 
   HeimrichHannot\FilterBundle\Choice\FieldOptionsChoice: ~
-    huh.filter.choice.field_options: '@HeimrichHannot\FilterBundle\Choice\FieldOptionsChoice'
+  huh.filter.choice.field_options: '@HeimrichHannot\FilterBundle\Choice\FieldOptionsChoice'
 
   huh.filter.choice.country:
     class: HeimrichHannot\FilterBundle\Choice\CountryChoice
