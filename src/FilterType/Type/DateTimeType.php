@@ -156,12 +156,11 @@ class DateTimeType extends AbstractFilterType implements InitialFilterTypeInterf
                 break;
         }
 
-        //TODO: double check if correct
-//        if (empty($filterTypeContext->getValue())) {
-//            $options['data'] = null;
-//        } else {
-//            $options['data'] = date_create_from_format($format, $filterTypeContext->getValue());
-//        }
+        if ('' === (string) $filterTypeContext->getValue()) {
+            $options['data'] = null;
+        } else {
+            $options['data'] = date_create_from_format($format, $filterTypeContext->getValue());
+        }
 
         return $options;
     }

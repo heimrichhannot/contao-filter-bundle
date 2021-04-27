@@ -353,7 +353,7 @@ class FilterConfig implements \JsonSerializable
             }
         }
 
-        /**
+        /*
          * @var FilterQueryPart
          */
         foreach ($event->getPartsCollection()->getParts() as $part) {
@@ -803,14 +803,12 @@ class FilterConfig implements \JsonSerializable
 
         $propertyAccessor = PropertyAccess::createPropertyAccessor();
 
-        /**
+        /*
          * @var FormInterface
          */
         foreach ($forms as $form) {
             $propertyPath = $form->getPropertyPath();
             $config = $form->getConfig();
-
-            $singleData = $form->getData();
 
             // Write-back is disabled if the form is not synchronized (transformation failed),
             // if the form was not submitted and if the form is disabled (modification not allowed)
