@@ -6,15 +6,15 @@
  * @license LGPL-3.0-or-later
  */
 
-namespace HeimrichHannot\FilterBundle\FilterType\Type;
+namespace HeimrichHannot\FilterBundle\Type\Concrete;
 
 use Contao\Date;
 use Doctrine\DBAL\Types\Types;
 use HeimrichHannot\FilterBundle\FilterQuery\FilterQueryPartCollection;
 use HeimrichHannot\FilterBundle\FilterQuery\FilterQueryPartProcessor;
-use HeimrichHannot\FilterBundle\FilterType\AbstractFilterType;
-use HeimrichHannot\FilterBundle\FilterType\FilterTypeContext;
-use HeimrichHannot\FilterBundle\FilterType\InitialFilterTypeInterface;
+use HeimrichHannot\FilterBundle\Type\AbstractFilterType;
+use HeimrichHannot\FilterBundle\Type\FilterTypeContext;
+use HeimrichHannot\FilterBundle\Type\InitialFilterTypeInterface;
 use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 use HeimrichHannot\UtilsBundle\Date\DateUtil;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType as SymfonyDateTimeType;

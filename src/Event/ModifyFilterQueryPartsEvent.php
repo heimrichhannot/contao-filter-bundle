@@ -9,6 +9,7 @@
 namespace HeimrichHannot\FilterBundle\Event;
 
 use HeimrichHannot\FilterBundle\FilterQuery\FilterQueryPartCollection;
+use HeimrichHannot\FilterBundle\Processor\FilterContext;
 use Symfony\Component\EventDispatcher\Event;
 
 class ModifyFilterQueryPartsEvent extends Event
@@ -21,11 +22,11 @@ class ModifyFilterQueryPartsEvent extends Event
     protected $partsCollection;
 
     /**
-     * @var array|null
+     * @var FilterContext
      */
     protected $filter;
 
-    public function __construct(FilterQueryPartCollection $partsCollection, ?array $filter)
+    public function __construct(FilterQueryPartCollection $partsCollection, FilterContext $filter)
     {
         $this->partsCollection = $partsCollection;
         $this->filter = $filter;
@@ -41,13 +42,8 @@ class ModifyFilterQueryPartsEvent extends Event
         $this->partsCollection = $partsCollection;
     }
 
-    public function getFilter(): ?array
+    public function getFilter(): FilterContext
     {
         return $this->filter;
-    }
-
-    public function setFilter(array $filter): void
-    {
-        $this->filter = $filter;
     }
 }

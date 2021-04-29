@@ -8,7 +8,7 @@
 
 namespace HeimrichHannot\FilterBundle\FilterQuery;
 
-use HeimrichHannot\FilterBundle\FilterType\FilterTypeContext;
+use HeimrichHannot\FilterBundle\Type\FilterTypeContext;
 
 class FilterQueryPart
 {
@@ -58,7 +58,7 @@ class FilterQueryPart
     private $overridable = true;
 
     /**
-     * @var string|int|array|\DateTime
+     * @var string|int|array|\DateTimeInterface
      */
     private $value;
 
@@ -79,7 +79,7 @@ class FilterQueryPart
         $this->name = $elementConfig->getElementName();
         $this->filterElementId = $elementConfig->id;
         $this->operator = $elementConfig->operator;
-        $this->field = $filterTypeContext->getParent()->row()['dataContainer'].'.'.$elementConfig->field;
+        $this->field = $filterTypeContext->getFilterConfig()->row()['dataContainer'].'.'.$elementConfig->field;
         $this->wildcard = ':'.str_replace('.', '_', $elementConfig->field).'_'.$elementConfig->id;
 
         if ($elementConfig->isInitial) {
@@ -105,7 +105,7 @@ class FilterQueryPart
     }
 
     /**
-     * @return array|\DateTime|int|string
+     * @return array|\DateTimeInterface|int|string
      */
     public function getValue()
     {
@@ -113,7 +113,7 @@ class FilterQueryPart
     }
 
     /**
-     * @param array|\DateTime|int|string $value
+     * @param array|\DateTimeInterface|int|string $value
      */
     public function setValue($value): void
     {

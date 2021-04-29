@@ -147,7 +147,7 @@ class FilterConfigElementModel extends Model implements \JsonSerializable
     protected $formName;
 
     /**
-     * Find published filte elements items by their parent ID.
+     * Find published filte elements items by their filterConfig ID.
      *
      * @param int   $intId      The filter ID
      * @param int   $intLimit   An optional limit
@@ -184,7 +184,7 @@ class FilterConfigElementModel extends Model implements \JsonSerializable
     }
 
     /**
-     * Find published filter elements items by their parent ID and optional types.
+     * Find published filter elements items by their filterConfig ID and optional types.
      *
      * @param int   $intId      The filter ID
      * @param array $types      The list of element types

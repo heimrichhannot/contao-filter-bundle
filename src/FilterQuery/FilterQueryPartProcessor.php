@@ -12,8 +12,8 @@ use Contao\Controller;
 use Contao\StringUtil;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
-use HeimrichHannot\FilterBundle\FilterType\AbstractFilterType;
-use HeimrichHannot\FilterBundle\FilterType\FilterTypeContext;
+use HeimrichHannot\FilterBundle\Type\AbstractFilterType;
+use HeimrichHannot\FilterBundle\Type\FilterTypeContext;
 use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 use HeimrichHannot\UtilsBundle\Date\DateUtil;
 
@@ -205,7 +205,7 @@ class FilterQueryPartProcessor
         return $where;
     }
 
-    public function updateInitialFilterProperties(FilterQueryPart &$filterPart): void
+    public function updateInitialFilterProperties(FilterQueryPart $filterPart): void
     {
         if (null === $filterPart->getInitialValue()) {
             return;

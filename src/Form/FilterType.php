@@ -13,10 +13,10 @@ use Contao\Environment;
 use Contao\System;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
 use HeimrichHannot\FilterBundle\Exception\MissingFilterConfigException;
-use HeimrichHannot\FilterBundle\FilterType\FilterTypeCollection;
-use HeimrichHannot\FilterBundle\FilterType\FilterTypeContext;
-use HeimrichHannot\FilterBundle\FilterType\FilterTypeInterface;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
+use HeimrichHannot\FilterBundle\Type\FilterTypeCollection;
+use HeimrichHannot\FilterBundle\Type\FilterTypeContext;
+use HeimrichHannot\FilterBundle\Type\FilterTypeInterface;
 use Symfony\Component\Console\Exception\InvalidOptionException;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
@@ -196,7 +196,7 @@ class FilterType extends AbstractType
         }
         $context->setElementConfig($element);
         $context->setFormBuilder($builder);
-        $context->setParent($element->getRelated('pid'));
+        $context->setFilterConfig($element->getRelated('pid'));
 
         try {
             $filterType->buildForm($context);

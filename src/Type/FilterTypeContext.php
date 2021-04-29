@@ -6,7 +6,7 @@
  * @license LGPL-3.0-or-later
  */
 
-namespace HeimrichHannot\FilterBundle\FilterType;
+namespace HeimrichHannot\FilterBundle\Type;
 
 use Contao\Model;
 use DateTimeInterface;
@@ -28,10 +28,10 @@ class FilterTypeContext
     /**
      * @var Model
      */
-    private $parent = null;
+    private $filterConfig = null;
 
     /**
-     * @var string|array|int|DateTimeInterface
+     * @var mixed
      */
     private $value;
 
@@ -41,7 +41,7 @@ class FilterTypeContext
     private $valueType;
 
     /**
-     * @return array|string|int|DateTimeInterface
+     * @return mixed
      */
     public function getValue()
     {
@@ -49,7 +49,7 @@ class FilterTypeContext
     }
 
     /**
-     * @param string|array|int|DateTimeInterface $value
+     * @param mixed $value
      */
     public function setValue($value): void
     {
@@ -59,14 +59,14 @@ class FilterTypeContext
     /**
      * @return Model
      */
-    public function getParent(): ?Model
+    public function getFilterConfig(): ?Model
     {
-        return $this->parent;
+        return $this->filterConfig;
     }
 
-    public function setParent(?Model $parent): void
+    public function setFilterConfig(?Model $filterConfig): void
     {
-        $this->parent = $parent;
+        $this->filterConfig = $filterConfig;
     }
 
     public function getFormBuilder(): FormBuilderInterface

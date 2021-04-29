@@ -112,7 +112,7 @@ class PluginTest extends ContaoTestCase
         $this->assertContains(['name' => 'country', 'class' => 'HeimrichHannot\FilterBundle\Filter\Type\CountryType', 'type' => 'choice'], $extensionConfigs['huh']['filter']['types']);
         $this->assertContains(['name' => 'language', 'class' => 'HeimrichHannot\FilterBundle\Filter\Type\LanguageType', 'type' => 'choice'], $extensionConfigs['huh']['filter']['types']);
         $this->assertContains(['name' => 'locale', 'class' => 'HeimrichHannot\FilterBundle\Filter\Type\LocaleType', 'type' => 'choice'], $extensionConfigs['huh']['filter']['types']);
-        $this->assertContains(['name' => 'parent', 'class' => 'HeimrichHannot\FilterBundle\Filter\Type\ParentType', 'type' => 'choice'], $extensionConfigs['huh']['filter']['types']);
+        $this->assertContains(['name' => 'filterConfig', 'class' => 'HeimrichHannot\FilterBundle\Filter\Type\ParentType', 'type' => 'choice'], $extensionConfigs['huh']['filter']['types']);
         $this->assertContains(['name' => 'button', 'class' => 'HeimrichHannot\FilterBundle\Filter\Type\ButtonType', 'type' => 'button'], $extensionConfigs['huh']['filter']['types']);
         $this->assertContains(['name' => 'reset', 'class' => 'HeimrichHannot\FilterBundle\Filter\Type\ResetType', 'type' => 'button'], $extensionConfigs['huh']['filter']['types']);
         $this->assertContains(['name' => 'submit', 'class' => 'HeimrichHannot\FilterBundle\Filter\Type\SubmitType', 'type' => 'button'], $extensionConfigs['huh']['filter']['types']);

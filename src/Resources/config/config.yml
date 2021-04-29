@@ -23,7 +23,7 @@ huh:
       - { name: proximity_search, class: HeimrichHannot\FilterBundle\Filter\Type\ProximitySearchType, type: other, wrapper: true }
       - { name: language, class: HeimrichHannot\FilterBundle\Filter\Type\LanguageType, type: choice }
       - { name: locale, class: HeimrichHannot\FilterBundle\Filter\Type\LocaleType, type: choice }
-      - { name: parent, class: HeimrichHannot\FilterBundle\Filter\Type\ParentType, type: choice }
+      - { name: filterConfig, class: HeimrichHannot\FilterBundle\Filter\Type\ParentType, type: choice }
       - { name: skip_parents, class: HeimrichHannot\FilterBundle\Filter\Type\SkipParentsType, type: other }
       - { name: visible, class: HeimrichHannot\FilterBundle\Filter\Type\PublishedType, type: other }
       - { name: button, class: HeimrichHannot\FilterBundle\Filter\Type\ButtonType, type: button }

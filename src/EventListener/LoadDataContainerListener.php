@@ -9,8 +9,8 @@
 namespace HeimrichHannot\FilterBundle\EventListener;
 
 use Doctrine\DBAL\Connection;
-use HeimrichHannot\FilterBundle\FilterType\FilterTypeCollection;
-use HeimrichHannot\FilterBundle\FilterType\InitialFilterTypeInterface;
+use HeimrichHannot\FilterBundle\Type\FilterTypeCollection;
+use HeimrichHannot\FilterBundle\Type\InitialFilterTypeInterface;
 
 class LoadDataContainerListener
 {

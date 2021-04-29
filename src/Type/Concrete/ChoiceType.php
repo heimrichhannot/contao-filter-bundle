@@ -6,14 +6,14 @@
  * @license LGPL-3.0-or-later
  */
 
-namespace HeimrichHannot\FilterBundle\FilterType\Type;
+namespace HeimrichHannot\FilterBundle\Type\Concrete;
 
 use Doctrine\DBAL\Driver\Connection;
 use HeimrichHannot\FilterBundle\Choice\FieldOptionsChoice;
 use HeimrichHannot\FilterBundle\FilterQuery\FilterQueryPartCollection;
 use HeimrichHannot\FilterBundle\FilterQuery\FilterQueryPartProcessor;
-use HeimrichHannot\FilterBundle\FilterType\AbstractFilterType;
-use HeimrichHannot\FilterBundle\FilterType\FilterTypeContext;
+use HeimrichHannot\FilterBundle\Type\AbstractFilterType;
+use HeimrichHannot\FilterBundle\Type\FilterTypeContext;
 use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 use HeimrichHannot\UtilsBundle\Model\ModelUtil;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType as SymfonyChoiceType;
@@ -92,7 +92,7 @@ class ChoiceType extends AbstractFilterType
         $options['expanded'] = $elementConfig->expanded;
 
         if ((bool) $elementConfig->submitOnChange) {
-            if ($filterTypeContext->getParent()->asyncFormSubmit) {
+            if ($filterTypeContext->getFilterConfig()->asyncFormSubmit) {
                 $options['attr']['data-submit-on-change'] = 1;
             } else {
                 if ($options['expanded']) {
@@ -137,7 +137,7 @@ class ChoiceType extends AbstractFilterType
 
         return $this->fieldOptionsChoice->getCachedChoices([
             'element' => $filterTypeContext->getElementConfig(),
-            'filter' => $filterTypeContext->getParent()->row(),
+            'filter' => $filterTypeContext->getFilterConfig()->row(),
         ]);
     }
 }

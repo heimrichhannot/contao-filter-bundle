@@ -6,12 +6,12 @@
  * @license LGPL-3.0-or-later
  */
 
-namespace HeimrichHannot\FilterBundle\FilterType\Type;
+namespace HeimrichHannot\FilterBundle\Type\Concrete;
 
-use HeimrichHannot\FilterBundle\FilterType\AbstractFilterType;
-use HeimrichHannot\FilterBundle\FilterType\FilterTypeContext;
-use HeimrichHannot\FilterBundle\FilterType\InitialFilterTypeInterface;
-use HeimrichHannot\FilterBundle\FilterType\PlaceholderFilterTypeInterface;
+use HeimrichHannot\FilterBundle\Type\AbstractFilterType;
+use HeimrichHannot\FilterBundle\Type\FilterTypeContext;
+use HeimrichHannot\FilterBundle\Type\InitialFilterTypeInterface;
+use HeimrichHannot\FilterBundle\Type\PlaceholderFilterTypeInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextType as SymfonyTextType;
 
 class TextType extends AbstractFilterType implements InitialFilterTypeInterface, PlaceholderFilterTypeInterface
@@ -60,7 +60,7 @@ class TextType extends AbstractFilterType implements InitialFilterTypeInterface,
 
         $elementConfig = $filterTypeContext->getElementConfig();
 
-        if ((bool) $elementConfig->submitOnInput && (bool) $filterTypeContext->getParent()->row()['asyncFormSubmit']) {
+        if ((bool) $elementConfig->submitOnInput && (bool)$filterTypeContext->getFilterConfig()->row()['asyncFormSubmit']) {
             $options['attr']['data-submit-on-input'] = '1';
             $options['attr']['data-threshold'] = $elementConfig->threshold ?: '0';
             $options['attr']['data-debounce'] = $elementConfig->debounce ?: '0';

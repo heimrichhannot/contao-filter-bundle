@@ -6,7 +6,7 @@
  * @license LGPL-3.0-or-later
  */
 
-namespace HeimrichHannot\FilterBundle\FilterType;
+namespace HeimrichHannot\FilterBundle\Type;
 
 use HeimrichHannot\FilterBundle\FilterQuery\FilterQueryPartCollection;
 use HeimrichHannot\FilterBundle\FilterQuery\FilterQueryPartProcessor;

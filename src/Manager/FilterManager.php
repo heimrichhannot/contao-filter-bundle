@@ -147,7 +147,7 @@ class FilterManager
          */
         $adapter = $this->framework->getAdapter(FilterConfigElementModel::class);
 
-        // get the parent filter config
+        // get the filterConfig filter config
         if (isset($filter['type']) && FilterConfig::FILTER_TYPE_SORT === $filter['type']) {
             $parentFilter = $this->framework->getAdapter(FilterConfigModel::class)->findById($filter['parentFilter'])->row();
 

@@ -6,10 +6,10 @@
  * @license LGPL-3.0-or-later
  */
 
-namespace HeimrichHannot\FilterBundle\FilterType\Type;
+namespace HeimrichHannot\FilterBundle\Type\Concrete;
 
-use HeimrichHannot\FilterBundle\FilterType\AbstractFilterType;
-use HeimrichHannot\FilterBundle\FilterType\FilterTypeContext;
+use HeimrichHannot\FilterBundle\Type\AbstractFilterType;
+use HeimrichHannot\FilterBundle\Type\FilterTypeContext;
 use Symfony\Component\Form\Extension\Core\Type\ButtonType as SymfonyButtonType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType as SymfonySubmitType;
 

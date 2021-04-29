@@ -52,6 +52,7 @@ $lang['locales'] = ['Regionen', 'Wählen Sie hier die gewünschten Regionen aus.
 $lang['customValue'] = ['Wert anpassen', 'Wählen Sie diese Option, um den Wert anzupassen.'];
 $lang['value'] = ['Wert', 'Geben Sie hier den gewünschten Wert ein.'];
 $lang['isInitial'] = ['Initiales Filterelement', 'Wählen Sie diese Option, um das Filterelement als "initial" zu kennzeichnen. Dadurch wird es im Frontend nicht ausgegeben, aber trotzdem angewendet. Normale Filterelemente überschreiben initiale Filterelemente.'];
+$lang['isInitialOverridable'] = ['Überschreiben erlauben', 'Wählen Sie diese Option, damit es möglich ist diesen Initialen Filter zu überschreiben. Normale Filterelemente überschreiben diesen Filter wenn sie auf das gleiche DCA-Feld eingerichtet sind.'];
 $lang['initialValueType'] = ['Typ des initialen Werts', 'Wählen Sie hier den Typ des initialen Werts aus.'];
 $lang['initialValue'] = ['Initialer Wert', 'Legen Sie hier den initialen Wert fest.'];
 $lang['initialValue_value'] = ['Wert', ''];
@@ -128,6 +129,7 @@ $lang['sortOptions_standard'] = ['Standard', 'HINWEIS: Dieser Wert wird NICHT in
 /*
  * Legends
  */
+$lang['initial_legend'] = 'Initiale Einstellungen';
 $lang['general_legend'] = 'Allgemeine Einstellungen';
 $lang['config_legend'] = 'Konfiguration';
 $lang['visualization_legend'] = 'Darstellung';
@@ -173,7 +175,7 @@ $lang['reference'] = [
         \HeimrichHannot\FilterBundle\Filter\Type\ProximitySearchType::TYPE => 'Umkreissuche',
         'language' => 'Sprache',
         'locale' => 'Region ("locale")',
-        'parent' => 'Elternentität',
+        'filterConfig' => 'Elternentität',
         'skip_parents' => 'Elternentitäten ausschließen',
         'visible' => 'Veröffentlicht',
         'button' => 'Button<span> - [deprecated]</span>',
@@ -196,10 +198,10 @@ $lang['reference'] = [
         \HeimrichHannot\FilterBundle\Filter\Type\CurrentMemberType::TYPE => 'aktuelles Mitglied',
         \HeimrichHannot\FilterBundle\Filter\Type\CurrentMemberType::TYPE_ID => 'ID',
         \HeimrichHannot\FilterBundle\Filter\Type\CurrentMemberType::TYPE_USERNAME => 'Benutzername',
-        \HeimrichHannot\FilterBundle\FilterType\Type\TextType::TYPE => 'Text',
-        \HeimrichHannot\FilterBundle\FilterType\Type\ChoiceType::TYPE => 'Choice',
-        \HeimrichHannot\FilterBundle\FilterType\Type\DateTimeType::TYPE => 'Datum & Zeit',
-        \HeimrichHannot\FilterBundle\FilterType\Type\ButtonType::TYPE => 'Button',
+        \HeimrichHannot\FilterBundle\Type\Concrete\TextType::TYPE => 'Text',
+        \HeimrichHannot\FilterBundle\Type\Concrete\ChoiceType::TYPE => 'Choice',
+        \HeimrichHannot\FilterBundle\Type\Concrete\DateTimeType::TYPE => 'Datum & Zeit',
+        \HeimrichHannot\FilterBundle\Type\Concrete\ButtonType::TYPE => 'Button',
     ],
     'roundingMode' => [
         \Symfony\Component\Form\Extension\Core\DataTransformer\IntegerToLocalizedStringTransformer::ROUND_DOWN => 'Abrunden (zu 0 hin)',

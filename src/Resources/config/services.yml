@@ -167,15 +167,15 @@ services:
     tags:
     - { name: twig.extension }
 
-  HeimrichHannot\FilterBundle\FilterType\Type\:
-    resource: '../../FilterType/Type/*'
-    tags: ['huh.filter.filter_type']
-
   HeimrichHannot\FilterBundle\Filter\Filter: ~
 
-  HeimrichHannot\FilterBundle\FilterType\FilterTypeCollection:
+  HeimrichHannot\FilterBundle\Type\Concrete\:
+    resource: '../../Type/Concrete/*'
+    tags: ['huh.filter.type.concrete']
+
+  HeimrichHannot\FilterBundle\Type\FilterTypeCollection:
     arguments:
-      - !tagged huh.filter.filter_type
+      - !tagged huh.filter.type.concrete
 
   HeimrichHannot\FilterBundle\FilterQuery\FilterQueryPartCollection: ~
 
