@@ -17,7 +17,6 @@ use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\Type\FilterTypeCollection;
 use HeimrichHannot\FilterBundle\Type\FilterTypeContext;
 use HeimrichHannot\FilterBundle\Type\FilterTypeInterface;
-use HeimrichHannot\UtilsBundle\Page\PageUtil;
 use Symfony\Component\Console\Exception\InvalidOptionException;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
@@ -72,15 +71,14 @@ class FilterType extends AbstractType
         // always add a hidden field with the page id
         global $objPage;
 
-        if (null === $objPage) {
-            $pageId = $request->get($filter['name'])[self::FILTER_PAGE_ID_NAME];
+        $pageId = $objPage->id;
 
-            if (is_numeric($pageId)) {
-                $objPage = System::getContainer()->get(PageUtil::class)->retrieveGlobalPageFromCurrentPageId((int) $pageId);
-            }
+        // if $objPage is null (i.e. on AjaxRequest), get the page id from Request
+        if (null === $objPage) {
+            $pageId = $request->get($filter['name'])[static::FILTER_PAGE_ID_NAME];
         }
 
-        $builder->add(static::FILTER_PAGE_ID_NAME, HiddenType::class, ['attr' => ['value' => $objPage->id]]);
+        $builder->add(static::FILTER_PAGE_ID_NAME, HiddenType::class, ['attr' => ['value' => $pageId]]);
 
         // always add a hidden field with the referrer url (required by reset for example to redirect back to user action page) -> use request query string when in esi _ fragment sub-request
         if ($request->query->has('request')) {
