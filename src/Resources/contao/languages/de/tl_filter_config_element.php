@@ -153,7 +153,7 @@ $lang['show'] = ['Filterelement Details', 'Filterelement-Details ID %s anzeigen'
  */
 $lang['reference'] = [
     'type' => [
-        'deprecated' => 'Veraltet',
+        'deprecated' => 'Veraltet - NICHT nutzen',
         'miscellaneous' => 'Sonstiges',
         'text' => 'Text',
         'text_concat' => 'Konkatenierter Text',

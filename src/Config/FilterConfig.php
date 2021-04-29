@@ -30,7 +30,6 @@ use HeimrichHannot\FilterBundle\Type\Concrete\ButtonType;
 use HeimrichHannot\FilterBundle\Type\FilterTypeCollection;
 use HeimrichHannot\FilterBundle\Type\FilterTypeContext;
 use HeimrichHannot\FilterBundle\Type\FilterTypeInterface;
-use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 use HeimrichHannot\UtilsBundle\Model\ModelUtil;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -734,11 +733,16 @@ class FilterConfig implements \JsonSerializable
             return;
         }
 
-        if ('' === $config->operator && '' !== $config->customOperator) {
-            $config->operator = $config->customOperator;
-        } elseif ('' === $config->operator && '' === $config->customOperator) {
-            //TODO: get from Class
-            $config->operator = DatabaseUtil::OPERATOR_EQUAL;
+        if ('' === $config->customOperator || ('1' === $config->customOperator && '' === $config->operator)) {
+            $class = $element['class'];
+
+            if (!class_exists($class)) {
+                return;
+            }
+
+            /** @var AbstractType $type */
+            $type = new $class($this);
+            $config->operator = $type->getDefaultOperator($config);
         }
 
         $context = new FilterTypeContext();
