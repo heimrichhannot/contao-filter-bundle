@@ -17,6 +17,7 @@ use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\Type\FilterTypeCollection;
 use HeimrichHannot\FilterBundle\Type\FilterTypeContext;
 use HeimrichHannot\FilterBundle\Type\FilterTypeInterface;
+use HeimrichHannot\UtilsBundle\Page\PageUtil;
 use Symfony\Component\Console\Exception\InvalidOptionException;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
@@ -70,6 +71,15 @@ class FilterType extends AbstractType
 
         // always add a hidden field with the page id
         global $objPage;
+
+        if (null === $objPage) {
+            $pageId = $request->get($filter['name'])[self::FILTER_PAGE_ID_NAME];
+
+            if (is_numeric($pageId)) {
+                $objPage = System::getContainer()->get(PageUtil::class)->retrieveGlobalPageFromCurrentPageId((int) $pageId);
+            }
+        }
+
         $builder->add(static::FILTER_PAGE_ID_NAME, HiddenType::class, ['attr' => ['value' => $objPage->id]]);
 
         // always add a hidden field with the referrer url (required by reset for example to redirect back to user action page) -> use request query string when in esi _ fragment sub-request
@@ -117,10 +127,10 @@ class FilterType extends AbstractType
         }
 
         $wrappers = [];
-        $types = System::getContainer()->get('huh.filter.choice.type')->getCachedChoices();
+        $legacyTypes = System::getContainer()->get('huh.filter.choice.type')->getCachedChoices();
 
-        $newTypes = System::getContainer()->get(FilterTypeCollection::class)->getTypes();
-        $types = array_merge($types, $newTypes);
+        $types = System::getContainer()->get(FilterTypeCollection::class)->getTypes();
+        $types = array_merge($legacyTypes, $types);
 
         if (!\is_array($types) || empty($types)) {
             return;

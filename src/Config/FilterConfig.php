@@ -733,7 +733,7 @@ class FilterConfig implements \JsonSerializable
             return;
         }
 
-        if ('' === $config->customOperator || ('1' === $config->customOperator && '' === $config->operator)) {
+        if ('' === $config->customOperator || (true === (bool) $config->customOperator && false === (bool) $config->operator)) {
             $class = $element['class'];
 
             if (!class_exists($class)) {
