@@ -89,6 +89,19 @@ class FilterConfigElementContainer
             }
         }
 
+        // separate deprecated types
+        $options['deprecated'] = [];
+
+        foreach ($this->bundleConfig['filter']['deprecated_types'] as $deprecated) {
+            foreach ($options as $key => $option) {
+                if (\in_array($deprecated, $option)) {
+                    $helperKey = array_search($deprecated, $option);
+                    unset($options[$key][$helperKey]);
+                    $options['deprecated'][] = $deprecated;
+                }
+            }
+        }
+
         return $options;
     }
 
@@ -115,7 +128,7 @@ class FilterConfigElementContainer
 
     public function onOperatorOptionsCallback(DataContainer $dc)
     {
-        if (!$this->bundleConfig['filter']['disable_legacy_filters']) {
+        if (null === $this->typeCollection->getType($dc->activeRecord->type)) {
             return DatabaseUtil::OPERATORS;
         }
 
@@ -135,7 +148,7 @@ class FilterConfigElementContainer
 
     public function onDateWidgetOptionsCallback(DataContainer $dc): array
     {
-        if ($this->bundleConfig['filter']['disable_legacy_filers']) {
+        if (null === $this->typeCollection->getType($dc->activeRecord->type)) {
             return [
                 \HeimrichHannot\FilterBundle\Filter\Type\DateType::WIDGET_TYPE_CHOICE,
                 \HeimrichHannot\FilterBundle\Filter\Type\DateType::WIDGET_TYPE_TEXT,
