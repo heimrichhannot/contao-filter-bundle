@@ -63,4 +63,13 @@ class ButtonType extends AbstractFilterType
     {
         return $prependPalette.'{config_legend},buttonType;{visualization_legend},customLabel;'.$appendPalette;
     }
+
+    public function getOptions(FilterTypeContext $filterTypeContext): array
+    {
+        $options = parent::getOptions($filterTypeContext);
+
+        $options['attr']['data-name'] = $filterTypeContext->getElementConfig()->getElementName();
+
+        return $options;
+    }
 }

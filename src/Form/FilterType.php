@@ -199,9 +199,29 @@ class FilterType extends AbstractType
         $request = Request::createFromGlobals();
         $context = new FilterTypeContext();
 
-        if (null !== $request->query->get($element->getRelated('pid')->name)[$element->getElementName()]) {
-            $context->setValue($request->query->get($element->getRelated('pid')->name)[$element->getElementName()]);
+        /** @var FilterConfig $filter */
+        $filter = $builder->getOptions()['filter'];
+
+        if ($request->isMethod('GET')) {
+            if (null !== $request->query->get('button_clicked')) {
+                if (\in_array($request->query->get('button_clicked'), $filter->getResetNames())) {
+                    $filter->resetData();
+                }
+            }
         }
+
+        if ($request->isMethod('POST')) {
+            if (null !== $request->request->get('button_clicked')) {
+                if (\in_array($request->request->get('button_clicked'), $filter->getResetNames())) {
+                    $filter->resetData();
+                }
+            }
+        }
+
+        if (null !== $request->query->get($element->getRelated('pid')->name)[$element->getElementName()]) {
+            $context->setValue($filter->getData()[$element->getElementName()]);
+        }
+
         $context->setElementConfig($element);
         $context->setFormBuilder($builder);
         $context->setFilterConfig($element->getRelated('pid'));

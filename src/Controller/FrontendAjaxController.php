@@ -17,6 +17,7 @@ use HeimrichHannot\FilterBundle\Exception\MissingFilterException;
 use HeimrichHannot\FilterBundle\Form\FilterType;
 use HeimrichHannot\UtilsBundle\Page\PageUtil;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\FormBuilder;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -55,26 +56,26 @@ class FrontendAjaxController extends Controller
     {
         $this->get('contao.framework')->initialize();
 
-        if (null === ($filter = $this->get('huh.filter.manager')->findById($id))) {
+        if (null === ($filterConfig = $this->get('huh.filter.manager')->findById($id))) {
             throw new MissingFilterException('A filter with id '.$id.' does not exist.');
         }
 
-        if (null === ($response = $filter->handleForm())) {
+        if (null === ($response = $filterConfig->handleForm())) {
             throw new HandleFormException('Unable to handle form for filter with id '.$id.'.');
         }
 
-        if ($request->get($filter->getFilter()['name']) && isset($request->get($filter->getFilter()['name'])[FilterType::FILTER_REFERRER_NAME])) {
-            if (parse_url($request->get($filter->getFilter()['name'])[FilterType::FILTER_REFERRER_NAME], PHP_URL_HOST) !== parse_url(Environment::get('url'), PHP_URL_HOST)) {
+        if ($request->get($filterConfig->getFilter()['name']) && isset($request->get($filterConfig->getFilter()['name'])[FilterType::FILTER_REFERRER_NAME])) {
+            if (parse_url($request->get($filterConfig->getFilter()['name'])[FilterType::FILTER_REFERRER_NAME], PHP_URL_HOST) !== parse_url(Environment::get('url'), PHP_URL_HOST)) {
                 throw new \Exception('Invalid redirect url');
             }
 
-            Environment::set('request', $request->get($filter->getFilter()['name'])[FilterType::FILTER_REFERRER_NAME]);
+            Environment::set('request', $request->get($filterConfig->getFilter()['name'])[FilterType::FILTER_REFERRER_NAME]);
         }
 
         global $objPage;
 
         if (null === $objPage) {
-            $pageId = $request->get($filter->getFilter()['name'])[FilterType::FILTER_PAGE_ID_NAME];
+            $pageId = $request->get($filterConfig->getFilter()['name'])[FilterType::FILTER_PAGE_ID_NAME];
 
             if (is_numeric($pageId)) {
                 $objPage = $this->pageUtil->retrieveGlobalPageFromCurrentPageId((int) $pageId);
@@ -85,11 +86,31 @@ class FrontendAjaxController extends Controller
 
         $response = new JsonResponse();
 
-        if (null === $filter->getBuilder()) {
-            $filter->buildForm($filter->getData());
+        if (null === $filterConfig->getBuilder()) {
+            $filterConfig->buildForm($filterConfig->getData());
         }
 
-        $builder = $filter->getBuilder();
+        /** @var FormBuilder $builder */
+        $builder = $filterConfig->getBuilder();
+
+        if ($request->isMethod('GET')) {
+            if (null !== $request->query->get('button_clicked')) {
+                if (\in_array($request->query->get('button_clicked'), $filterConfig->getResetNames())) {
+                    $filterConfig->resetData();
+                }
+            }
+        }
+
+        if ($request->isMethod('POST')) {
+            if (null !== $request->request->get('button_clicked')) {
+                if (\in_array($request->request->get('button_clicked'), $filterConfig->getResetNames())) {
+                    $filterConfig->resetData();
+                }
+            }
+        }
+
+        $builder->setData($filterConfig->getData());
+
         $form = $builder->getForm();
 
         /**
@@ -97,11 +118,10 @@ class FrontendAjaxController extends Controller
          */
         $twig = System::getContainer()->get('twig');
 
-        $filterConfig = $filter;
         $filter = $twig->render(
-            $filter->getFilterTemplateByName($filter->getFilter()['template']),
+            $filterConfig->getFilterTemplateByName($filterConfig->getFilter()['template']),
             [
-                'filter' => $filter,
+                'filter' => $filterConfig,
                 'form' => $form->createView(),
             ]
         );

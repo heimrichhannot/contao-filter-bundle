@@ -89,7 +89,6 @@ class FilterBundle {
 
     static initAsyncSubmitOnInput() {
         let timeout;
-
         EventUtil.addDynamicEventListener('input',
             '.mod_filter form[data-async] input[data-submit-on-input], .mod_filter form[data-async] [data-submit-on-input] input',
             function(element, event) {
@@ -117,8 +116,7 @@ class FilterBundle {
     static initAsyncFormSubmit(element) {
         let clickedButton = document.createElement('div');
 
-        clickedButton.setAttribute('name', element.form.name + '[submit]') ;
-
+        clickedButton.setAttribute('name', element.form.name + '[submit]');
         FilterBundle.asyncSubmit(element.form, clickedButton);
     }
 
@@ -130,6 +128,10 @@ class FilterBundle {
 
         if (clickedButton !== null) {
             data.append(clickedButton.getAttribute('name'), '');
+
+            if (clickedButton.hasAttribute('data-name')) {
+                data.append('button_clicked', clickedButton.dataset.name);
+            }
         }
 
         if ('get' === method || 'GET' === method) {

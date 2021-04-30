@@ -115,12 +115,13 @@ class ChoiceType extends AbstractFilterType
         }
 
         $options['multiple'] = $elementConfig->multiple;
-
         $options['data'] = $filterTypeContext->getValue();
 
         // forgiving array handling
-        if ((bool) $elementConfig->multiple && isset($options['data'])) {
-            $options['data'] = !\is_array($options['data']) ? [$options['data']] : $options['data'];
+        if ($elementConfig->addDefaultValue) {
+            if (isset($options['multiple']) && true === (bool) $options['multiple'] && isset($options['data'])) {
+                $options['data'] = !\is_array($options['data']) ? [$options['data']] : $options['data'];
+            }
         }
 
         return $options;
