@@ -12,7 +12,6 @@ use Contao\Controller;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\Environment;
 use Contao\InsertTags;
-use Contao\Model;
 use Doctrine\DBAL\Connection;
 use HeimrichHannot\FilterBundle\Event\ModifyFilterQueryPartsEvent;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
@@ -407,7 +406,7 @@ class FilterConfig implements \JsonSerializable
                     $form->get(FilterType::FILTER_REFERRER_NAME)->getData() ?: null);
             }
 
-            if (parse_url($url, PHP_URL_HOST) !== parse_url(Environment::get('url'), PHP_URL_HOST)) {
+            if (parse_url($url, \PHP_URL_HOST) !== parse_url(Environment::get('url'), \PHP_URL_HOST)) {
                 throw new \Exception('Invalid redirect url');
             }
 

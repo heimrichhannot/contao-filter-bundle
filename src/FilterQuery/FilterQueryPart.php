@@ -87,6 +87,7 @@ class FilterQueryPart
             $this->initialValue = $elementConfig->initialValue ?: $elementConfig->initialValueArray;
             $this->initialValueType = $elementConfig->initialValueType;
             $this->value = $this->initialValue;
+            $this->valueType = $this->initialValueType;
             $this->overridable = $elementConfig->isInitialOverridable;
         } else {
             $this->value = $filterTypeContext->getValue();
