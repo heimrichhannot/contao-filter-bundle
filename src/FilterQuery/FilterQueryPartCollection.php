@@ -50,9 +50,17 @@ class FilterQueryPartCollection
         $this->targetFields[$field][$partName] = ['initial' => $isInitial, 'overridable' => $overridable];
     }
 
-    public function removeTargetField(string $field, string $partName): void
+    public function removeTargetField(string $field = '', string $partName = ''): void
     {
+        if ('' === $field) {
+            return;
+        }
+
         unset($this->targetFields[$field][$partName]);
+
+        if (empty($this->targetFields[$field])) {
+            unset($this->targetFields[$field]);
+        }
     }
 
     public function getTargetFields(): array
@@ -63,5 +71,6 @@ class FilterQueryPartCollection
     public function reset(): void
     {
         $this->parts = [];
+        $this->targetFields = [];
     }
 }
