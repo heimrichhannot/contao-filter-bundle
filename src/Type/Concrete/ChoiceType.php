@@ -63,7 +63,7 @@ class ChoiceType extends AbstractFilterType
 
     public function getPalette(string $prependPalette, string $appendPalette): string
     {
-        return $prependPalette.'{config_legend},field,operator,submitOnChange,expanded,multiple;{visualization_legend},addPlaceholder,customLabel,hideLabel;{expert_legend},cssClass;'.$appendPalette;
+        return $prependPalette.'{config_legend},field,operator,customOptions,reviseOptions,dynamicOptions,sortOptionValues,adjustOptionLabels,submitOnChange,expanded,multiple,addGroupChoiceField,doNotCacheOptions;{visualization_legend},addPlaceholder,customLabel,hideLabel;'.$appendPalette;
     }
 
     public function getOperators(): array

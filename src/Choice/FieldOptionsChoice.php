@@ -118,7 +118,7 @@ class FieldOptionsChoice extends AbstractChoice
 
         $options = StringUtil::deserialize($element->options, true);
 
-        return $options;
+        return $this->adjustOptionLabels($element, $filter, $options);
     }
 
     /**
@@ -255,45 +255,7 @@ class FieldOptionsChoice extends AbstractChoice
             }
         }
 
-        if (!empty($options) && true === (bool) $element->adjustOptionLabels && !empty($element->optionLabelPattern)) {
-            if (null !== ($filterQueryBuilder = System::getContainer()->get('huh.filter.manager')->getQueryBuilder($filter['id'], [$element->id]))) {
-                $filterQueryBuilder->select([$filter['dataContainer'].'.'.$element->field, $filter['dataContainer'].'.*']);
-                $filterQueryBuilder->orderBy($element->field);
-                $rows = $filterQueryBuilder->execute()->fetchAll();
-
-                $data = [];
-
-                foreach ($rows as $row) {
-                    $currentValue = $row[$element->field];
-
-                    if (isset($data[$currentValue])) {
-                        ++$data[$currentValue]['count'];
-
-                        continue;
-                    }
-
-                    $data[$currentValue] = ['data' => $row, 'count' => 1];
-                }
-
-                foreach ($options as $key => &$option) {
-                    if (!isset($option['label']) || !isset($rows[$option['value']])) {
-                        continue;
-                    }
-
-                    $params = $data[$option['value']];
-                    $params['label'] = $option['label'];
-
-                    foreach ($params as $key => $value) {
-                        unset($params[$key]);
-                        $params['%'.$key.'%'] = $value;
-                    }
-
-                    $option['label'] = System::getContainer()->get('translator')->trans($element->optionLabelPattern, $params);
-                }
-            }
-        }
-
-        return $options;
+        return $this->adjustOptionLabels($element, $filter, $options);
     }
 
     /**
@@ -366,5 +328,52 @@ class FieldOptionsChoice extends AbstractChoice
         }
 
         return implode(',', $choices);
+    }
+
+    private function adjustOptionLabels(FilterConfigElementModel $element, array $filter, array $options): array
+    {
+        if (!empty($options) && true === (bool) $element->adjustOptionLabels && !empty($element->optionLabelPattern)) {
+            if (null !== ($filterQueryBuilder = System::getContainer()->get('huh.filter.manager')->getQueryBuilder($filter['id'], [$element->id]))) {
+                $filterQueryBuilder->select([$filter['dataContainer'].'.'.$element->field, $filter['dataContainer'].'.*']);
+                $filterQueryBuilder->orderBy($element->field);
+                $rows = $filterQueryBuilder->execute()->fetchAll();
+
+                $data = [];
+
+                foreach ($rows as $row) {
+                    $currentValue = $row[$element->field];
+
+                    if (isset($data[$currentValue])) {
+                        ++$data[$currentValue]['count'];
+
+                        continue;
+                    }
+
+                    $data[$currentValue] = ['data' => $row, 'count' => 1];
+                }
+
+                foreach ($options as &$option) {
+                    if (!isset($option['label']) || !isset($rows[$option['value']])) {
+                        continue;
+                    }
+
+                    $params = $data[$option['value']];
+                    $params['label'] = $option['label'];
+
+                    foreach ($params as $key => $value) {
+                        unset($params[$key]);
+                        $params['%'.$key.'%'] = $value;
+                    }
+
+                    if (!$params['%count%']) {
+                        $params['%count%'] = 0;
+                    }
+
+                    $option['label'] = System::getContainer()->get('translator')->trans($element->optionLabelPattern, $params);
+                }
+            }
+        }
+
+        return $options;
     }
 }
