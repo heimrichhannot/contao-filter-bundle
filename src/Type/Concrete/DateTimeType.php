@@ -23,6 +23,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class DateTimeType extends AbstractFilterType implements InitialFilterTypeInterface
 {
     const TYPE = 'date_time_type';
+    const GROUP = 'date';
 
     const WIDGET_TYPE_CHOICE = 'choice';
     const WIDGET_TYPE_SINGLE_TEXT = 'single_text';

@@ -23,6 +23,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class ChoiceType extends AbstractFilterType implements InitialFilterTypeInterface
 {
     const TYPE = 'choice_type';
+    const GROUP = 'choice';
 
     /**
      * @var FieldOptionsChoice

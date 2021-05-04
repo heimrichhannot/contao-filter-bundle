@@ -119,6 +119,10 @@ class FilterConfigElementContainer
             }
         }
 
+        foreach ($options as $key => $option) {
+            $options[$key] = array_values($options[$key]);
+        }
+
         return $options;
     }
 
