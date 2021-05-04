@@ -14,12 +14,13 @@ use HeimrichHannot\FilterBundle\FilterQuery\FilterQueryPartCollection;
 use HeimrichHannot\FilterBundle\FilterQuery\FilterQueryPartProcessor;
 use HeimrichHannot\FilterBundle\Type\AbstractFilterType;
 use HeimrichHannot\FilterBundle\Type\FilterTypeContext;
+use HeimrichHannot\FilterBundle\Type\InitialFilterTypeInterface;
 use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 use HeimrichHannot\UtilsBundle\Model\ModelUtil;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType as SymfonyChoiceType;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-class ChoiceType extends AbstractFilterType
+class ChoiceType extends AbstractFilterType implements InitialFilterTypeInterface
 {
     const TYPE = 'choice_type';
 
@@ -140,5 +141,24 @@ class ChoiceType extends AbstractFilterType
             'element' => $filterTypeContext->getElementConfig(),
             'filter' => $filterTypeContext->getFilterConfig()->row(),
         ]);
+    }
+
+    public function getInitialPalette(string $prependPalette, string $appendPalette): string
+    {
+        return $prependPalette.'{config_legend},field,operator,initialValueType;'.$appendPalette;
+    }
+
+    public function getInitialValueChoices(FilterTypeContext $filterTypeContext): array
+    {
+        return $this->collectChoices($filterTypeContext);
+    }
+
+    public function getInitialValueTypes(array $types): array
+    {
+        $remove = [
+            AbstractFilterType::VALUE_TYPE_SCALAR,
+        ];
+
+        return array_values(array_diff($types, $remove));
     }
 }

@@ -8,6 +8,7 @@
 
 namespace HeimrichHannot\FilterBundle\FilterQuery;
 
+use Contao\StringUtil;
 use HeimrichHannot\FilterBundle\Type\FilterTypeContext;
 
 class FilterQueryPart
@@ -84,10 +85,10 @@ class FilterQueryPart
 
         if ($elementConfig->isInitial) {
             $this->initial = $elementConfig->isInitial;
-            $this->initialValue = $elementConfig->initialValue ?: $elementConfig->initialValueArray;
+            $this->initialValue = $elementConfig->initialValue ?: array_column(StringUtil::deserialize($elementConfig->initialValueArray, true), 'value');
             $this->initialValueType = $elementConfig->initialValueType;
-            $this->value = $this->initialValue;
-            $this->valueType = $this->initialValueType;
+            $this->value = $elementConfig->initialValue ?: $this->initialValue;
+            $this->valueType = $elementConfig->initialValueType;
             $this->overridable = $elementConfig->isInitialOverridable;
         } else {
             $this->value = $filterTypeContext->getValue();

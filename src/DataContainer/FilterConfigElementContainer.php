@@ -11,16 +11,19 @@ namespace HeimrichHannot\FilterBundle\DataContainer;
 use Contao\DataContainer;
 use Contao\DC_Table;
 use Contao\System;
+use HeimrichHannot\FilterBundle\Choice\FieldOptionsChoice;
 use HeimrichHannot\FilterBundle\Choice\TypeChoice;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\Type\AbstractFilterType;
 use HeimrichHannot\FilterBundle\Type\Concrete\ButtonType;
 use HeimrichHannot\FilterBundle\Type\FilterTypeCollection;
+use HeimrichHannot\FilterBundle\Type\FilterTypeContext;
 use HeimrichHannot\FilterBundle\Type\InitialFilterTypeInterface;
 use HeimrichHannot\FilterBundle\Type\PlaceholderFilterTypeInterface;
 use HeimrichHannot\UtilsBundle\Choice\MessageChoice;
 use HeimrichHannot\UtilsBundle\Container\ContainerUtil;
 use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
+use HeimrichHannot\UtilsBundle\Model\ModelUtil;
 
 class FilterConfigElementContainer
 {
@@ -40,16 +43,28 @@ class FilterConfigElementContainer
      * @var ContainerUtil
      */
     protected $container;
+
     /**
      * @var MessageChoice
      */
     protected $messageChoice;
 
+    /**
+     * @var ModelUtil
+     */
+    protected $modelUtil;
+    /**
+     * @var FieldOptionsChoice
+     */
+    protected $fieldOptionsChoice;
+
     public function __construct(
         array $bundleConfig,
         TypeChoice $typeChoice,
         FilterTypeCollection $typeCollection,
+        FieldOptionsChoice $fieldOptionsChoice,
         ContainerUtil $container,
+        ModelUtil $modelUtil,
         MessageChoice $messageChoice
     ) {
         $this->bundleConfig = $bundleConfig;
@@ -57,6 +72,8 @@ class FilterConfigElementContainer
         $this->typeCollection = $typeCollection;
         $this->container = $container;
         $this->messageChoice = $messageChoice;
+        $this->modelUtil = $modelUtil;
+        $this->fieldOptionsChoice = $fieldOptionsChoice;
     }
 
     public function onLoadCallback(DataContainer $dc): void
@@ -124,6 +141,31 @@ class FilterConfigElementContainer
         $class = $types[$typeIndex]['class'];
 
         return $class::VALUE_TYPES;
+    }
+
+    public function onInitialValueCallback(DC_Table $dc)
+    {
+        /** @var FilterConfigElementModel $element */
+        if (null === ($element = $this->modelUtil->findModelInstanceByPk($dc->table, $dc->id))) {
+            return null;
+        }
+
+        if ($this->typeCollection->getType($element->type) instanceof InitialFilterTypeInterface) {
+            $context = new FilterTypeContext();
+            $context->setElementConfig($element);
+            $context->setFilterConfig($element->getRelated('pid'));
+
+            if (!method_exists($this->typeCollection->getType($element->type), 'getInitialValueChoices')) {
+                return null;
+            }
+
+            return $this->typeCollection->getType($element->type)->getInitialValueChoices($context);
+        }
+
+        return $this->fieldOptionsChoice->getCachedChoices([
+                'element' => $element,
+                'filter' => $element->getRelated('pid')->row(),
+            ]);
     }
 
     public function onOperatorOptionsCallback(DataContainer $dc)
