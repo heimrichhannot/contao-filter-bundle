@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.10.2] - 2021-06-07
+- fixed FilterConfig service alias
+
 ## [1.10.1] - 2021-03-25
 - fixed error in js code introduced in 1.9.2 (#18)
 
