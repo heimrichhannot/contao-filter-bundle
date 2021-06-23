@@ -112,6 +112,34 @@ abstract class AbstractType
                 break;
         }
 
+        // multilingual initial values
+        if ($element->addMultilingualInitialValues) {
+            foreach (StringUtil::deserialize($element->multilingualInitialValues, true) as $row) {
+                if ($GLOBALS['TL_LANGUAGE'] === $row['language']) {
+                    switch ($row['initialValueType']) {
+                        case static::VALUE_TYPE_ARRAY:
+                            $value = $row['initialValueArray'];
+
+                            break;
+
+                        case static::VALUE_TYPE_CONTEXTUAL:
+                            if (isset($contextualValues[$element->field])) {
+                                $value = $contextualValues[$element->field];
+                            }
+
+                            break;
+
+                        default:
+                            $value = $row['initialValue'];
+
+                            break;
+                    }
+
+                    break;
+                }
+            }
+        }
+
         return $value;
     }
 

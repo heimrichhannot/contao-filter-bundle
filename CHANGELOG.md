@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.11.0] - 2021-06-23
+- added support for multilingual initial filter field values
+
 ## [1.10.2] - 2021-06-07
 - fixed FilterConfig service alias
 

@@ -8,24 +8,26 @@
 
 namespace HeimrichHannot\FilterBundle\EventListener;
 
-use Contao\DC_Table;
+use Contao\DataContainer;
+use Contao\System;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
+use HeimrichHannot\UtilsBundle\Model\ModelUtil;
 
 class FilterConfigElementCallbackListener
 {
     /**
      * @return array
      */
-    public function getValueTypeOptions(DC_Table $dca)
+    public function getValueTypeOptions(DataContainer $dc)
     {
         $choices = AbstractType::VALUE_TYPES;
-        $filter = $dca->activeRecord->fetchAllAssoc()[0];
 
-        if (empty($filter)) {
+        if (null === ($filter = System::getContainer()->get(ModelUtil::class)->findModelInstanceByPk('tl_filter_config', $dc->id))) {
             return $choices;
         }
+
         $types = \Contao\System::getContainer()->getParameter('huh.filter')['filter']['types'];
-        $typeIndex = array_search($filter['type'], array_column($types, 'name'), true);
+        $typeIndex = array_search($filter->type, array_column($types, 'name'), true);
 
         if (!$typeIndex) {
             return $choices;

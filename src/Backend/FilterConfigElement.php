@@ -21,7 +21,7 @@ use HeimrichHannot\FilterBundle\Filter\Type\ExternalEntityType;
 
 class FilterConfigElement
 {
-    const INITIAL_PALETTE = '{general_legend},title,type,isInitial;{config_legend},field,operator,alternativeValueSource,initialValueType;{publish_legend},published;';
+    const INITIAL_PALETTE = '{general_legend},title,type,isInitial;{config_legend},field,operator,alternativeValueSource,initialValueType,addMultilingualInitialValues;{publish_legend},published;';
 
     /**
      * @var ContaoFrameworkInterface
@@ -136,6 +136,10 @@ class FilterConfigElement
         $dca['fields']['initialValue']['options'] = $options;
         $dca['fields']['initialValue']['eval']['chosen'] = true;
 
+        $dca['fields']['multilingualInitialValues']['eval']['multiColumnEditor']['fields']['initialValue']['inputType'] = 'select';
+        $dca['fields']['multilingualInitialValues']['eval']['multiColumnEditor']['fields']['initialValue']['options'] = $options;
+        $dca['fields']['multilingualInitialValues']['eval']['multiColumnEditor']['fields']['initialValue']['eval']['chosen'] = true;
+
         // prepare array fields
         $dca['fields']['defaultValueArray']['eval']['multiColumnEditor']['fields']['value']['inputType'] = 'select';
         $dca['fields']['defaultValueArray']['eval']['multiColumnEditor']['fields']['value']['options'] = $options;
@@ -144,6 +148,10 @@ class FilterConfigElement
         $dca['fields']['initialValueArray']['eval']['multiColumnEditor']['fields']['value']['inputType'] = 'select';
         $dca['fields']['initialValueArray']['eval']['multiColumnEditor']['fields']['value']['options'] = $options;
         $dca['fields']['initialValueArray']['eval']['multiColumnEditor']['fields']['value']['eval']['chosen'] = true;
+
+        $dca['fields']['multilingualInitialValues']['eval']['multiColumnEditor']['fields']['initialValueArray']['inputType'] = 'select';
+        $dca['fields']['multilingualInitialValues']['eval']['multiColumnEditor']['fields']['initialValueArray']['options'] = $options;
+        $dca['fields']['multilingualInitialValues']['eval']['multiColumnEditor']['fields']['initialValueArray']['eval']['chosen'] = true;
     }
 
     public function listElements($arrRow)
