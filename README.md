@@ -18,8 +18,8 @@ This bundle offers a generic filter module to use with arbitrary contao entities
 - Label/Message handling using symfony translations
 - Render form always empty (without user selection)
 - Merge data over multiple filter forms with same form name
-- Default Values (can be overwritten by user)
-- Initial Values (can`t be overwritten by user)
+- Default Values
+- Initial Values
 - Stores filter data in session (no GET parameter URL remnant)
 - Content element "Filter-Preselect" with optional redirect functionality to preselect filter on given page
 - Content element "Filter-Hyperlink" with filter preselect feature

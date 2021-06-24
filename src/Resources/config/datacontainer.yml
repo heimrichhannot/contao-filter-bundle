@@ -1,0 +1,9 @@
+services:
+  _defaults:
+    public: true
+    autowire: true
+    bind:
+      $bundleConfig: '%huh.filter%'
+
+  HeimrichHannot\FilterBundle\DataContainer\:
+    resource: '../../DataContainer/*'

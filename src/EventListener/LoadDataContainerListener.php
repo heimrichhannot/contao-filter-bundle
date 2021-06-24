@@ -9,17 +9,24 @@
 namespace HeimrichHannot\FilterBundle\EventListener;
 
 use Doctrine\DBAL\Connection;
+use HeimrichHannot\FilterBundle\Type\FilterTypeCollection;
+use HeimrichHannot\FilterBundle\Type\InitialFilterTypeInterface;
 
 class LoadDataContainerListener
 {
+    /*
+     * @var FilterTypeCollection
+     */
+    protected $filterTypeCollection;
     /**
      * @var Connection
      */
     private $connection;
 
-    public function __construct(Connection $connection)
+    public function __construct(Connection $connection, FilterTypeCollection $filterTypeCollection)
     {
         $this->connection = $connection;
+        $this->filterTypeCollection = $filterTypeCollection;
     }
 
     /**
@@ -31,6 +38,28 @@ class LoadDataContainerListener
             if ($this->connection->getSchemaManager()->listTableDetails('tl_filter_config')->hasColumn('action')) {
                 $this->connection->executeQuery("ALTER TABLE tl_filter_config CHANGE action filterFormAction VARCHAR(255) DEFAULT '' NOT NULL");
             }
+        }
+
+        if ('tl_filter_config_element' === $table) {
+            $this->prepareFilterConfigElementDca();
+        }
+    }
+
+    private function prepareFilterConfigElementDca()
+    {
+        $dca = &$GLOBALS['TL_DCA']['tl_filter_config_element'];
+        $types = $this->filterTypeCollection->getTypes();
+
+        foreach ($types as $key => $type) {
+            $prependPalette = '{general_legend},title,type;';
+
+            if ($type instanceof InitialFilterTypeInterface) {
+                $prependPalette = '{initial_legend},isInitial;'.$prependPalette;
+            }
+
+            $appendPalette = '{expert_legend},cssClass;{publish_legend},published;';
+
+            $dca['palettes'][$key] = $type->getPalette($prependPalette, $appendPalette);
         }
     }
 }

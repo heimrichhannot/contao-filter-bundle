@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2020 Heimrich & Hannot GmbH
+ * Copyright (c) 2021 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -132,7 +132,7 @@ $lang['reference'] = [
         'country' => 'Country',
         'language' => 'Language',
         'locale' => 'Locale',
-        'parent' => 'Parent entity',
+        'filterConfig' => 'Parent entity',
         'published' => 'Published',
         'button' => 'Button',
         'reset' => 'Reset',

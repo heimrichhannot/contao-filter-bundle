@@ -13,10 +13,16 @@ use Contao\Environment;
 use Contao\System;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
 use HeimrichHannot\FilterBundle\Exception\MissingFilterConfigException;
+use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
+use HeimrichHannot\FilterBundle\Type\FilterTypeCollection;
+use HeimrichHannot\FilterBundle\Type\FilterTypeContext;
+use HeimrichHannot\FilterBundle\Type\FilterTypeInterface;
+use Symfony\Component\Console\Exception\InvalidOptionException;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -64,7 +70,15 @@ class FilterType extends AbstractType
 
         // always add a hidden field with the page id
         global $objPage;
-        $builder->add(static::FILTER_PAGE_ID_NAME, HiddenType::class, ['attr' => ['value' => $objPage->id]]);
+
+        $pageId = $objPage->id;
+
+        // if $objPage is null (i.e. on AjaxRequest), get the page id from Request
+        if (null === $objPage) {
+            $pageId = $request->get($filter['name'])[static::FILTER_PAGE_ID_NAME];
+        }
+
+        $builder->add(static::FILTER_PAGE_ID_NAME, HiddenType::class, ['attr' => ['value' => $pageId]]);
 
         // always add a hidden field with the referrer url (required by reset for example to redirect back to user action page) -> use request query string when in esi _ fragment sub-request
         if ($request->query->has('request')) {
@@ -111,7 +125,10 @@ class FilterType extends AbstractType
         }
 
         $wrappers = [];
-        $types = \System::getContainer()->get('huh.filter.choice.type')->getCachedChoices();
+        $legacyTypes = System::getContainer()->get('huh.filter.choice.type')->getCachedChoices();
+
+        $types = System::getContainer()->get(FilterTypeCollection::class)->getTypes();
+        $types = array_merge($legacyTypes, $types);
 
         if (!\is_array($types) || empty($types)) {
             return;
@@ -126,6 +143,13 @@ class FilterType extends AbstractType
             }
 
             $config = $types[$element->type];
+
+            if (!\is_array($config)) {
+                $this->buildFilterTypeElement($element, $config, $builder);
+
+                continue;
+            }
+
             $class = $config['class'];
 
             if (!class_exists($class)) {
@@ -164,6 +188,49 @@ class FilterType extends AbstractType
         }
 
         $this->buildWrapperElements($wrappers, $builder, $options);
+    }
+
+    protected function buildFilterTypeElement(FilterConfigElementModel $element, FilterTypeInterface $filterType, FormBuilderInterface $builder)
+    {
+        if ($element->isInitial) {
+            return;
+        }
+
+        $request = Request::createFromGlobals();
+        $context = new FilterTypeContext();
+
+        /** @var FilterConfig $filter */
+        $filter = $builder->getOptions()['filter'];
+
+        if ($request->isMethod('GET')) {
+            if (null !== $request->query->get('button_clicked')) {
+                if (\in_array($request->query->get('button_clicked'), $filter->getResetNames())) {
+                    $filter->resetData();
+                }
+            }
+        }
+
+        if ($request->isMethod('POST')) {
+            if (null !== $request->request->get('button_clicked')) {
+                if (\in_array($request->request->get('button_clicked'), $filter->getResetNames())) {
+                    $filter->resetData();
+                }
+            }
+        }
+
+        if (null !== $request->query->get($element->getRelated('pid')->name)[$element->getElementName()]) {
+            $context->setValue($filter->getData()[$element->getElementName()]);
+        }
+
+        $context->setElementConfig($element);
+        $context->setFormBuilder($builder);
+        $context->setFilterConfig($element->getRelated('pid'));
+
+        try {
+            $filterType->buildForm($context);
+        } catch (InvalidOptionException $e) {
+            return;
+        }
     }
 
     /**

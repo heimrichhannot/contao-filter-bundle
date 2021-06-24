@@ -248,7 +248,7 @@ class ParentTypeTest extends ContaoTestCase
             'filter' => [
                 'types' => [
                     [
-                        'name' => 'parent',
+                        'name' => 'filterConfig',
                         'class' => ParentType::class,
                         'type' => 'choice',
                     ],
@@ -262,7 +262,7 @@ class ParentTypeTest extends ContaoTestCase
         $filter = ['name' => 'test', 'dataContainer' => 'tl_test'];
 
         $element = new FilterConfigElementModel();
-        $element->type = 'parent';
+        $element->type = 'filterConfig';
         $element->field = 'test';
 
         $config->init('test', $filter, [$element]);
