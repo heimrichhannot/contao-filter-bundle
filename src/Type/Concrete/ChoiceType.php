@@ -156,9 +156,7 @@ class ChoiceType extends AbstractFilterType implements InitialFilterTypeInterfac
 
     public function getInitialValueTypes(array $types): array
     {
-        $remove = [
-            AbstractFilterType::VALUE_TYPE_SCALAR,
-        ];
+        $remove = [];
 
         return array_values(array_diff($types, $remove));
     }

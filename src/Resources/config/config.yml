@@ -1,6 +1,5 @@
 huh:
   filter:
-    deprecated_types: ['button', 'reset', 'submit', 'text', 'choice', 'date_time']
     types:
       - { name: text, class: HeimrichHannot\FilterBundle\Filter\Type\TextType, type: text }
       - { name: text_concat, class: HeimrichHannot\FilterBundle\Filter\Type\TextConcatType, type: text }

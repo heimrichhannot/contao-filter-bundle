@@ -489,14 +489,14 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'sql' => "int(10) unsigned NOT NULL default '0'",
         ],
         'minDateTime' => [
-            'label' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['minDateTime'],
+            'label' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['min'],
             'exclude' => true,
             'inputType' => 'text',
             'eval' => ['tl_class' => 'w50 clr', 'maxlength' => 32],
             'sql' => "varchar(32) NOT NULL default ''",
         ],
         'maxDateTime' => [
-            'label' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['maxDateTime'],
+            'label' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['max'],
             'exclude' => true,
             'inputType' => 'text',
             'eval' => ['tl_class' => 'w50', 'maxlength' => 32],

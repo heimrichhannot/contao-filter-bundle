@@ -11,6 +11,9 @@ namespace HeimrichHannot\FilterBundle\Filter\Type;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 
+/**
+ * @deprecated since 1.12 and will be removed in version 2.0
+ */
 class RadiusChoiceType extends ChoiceType
 {
     const TYPE = 'radius_choice';

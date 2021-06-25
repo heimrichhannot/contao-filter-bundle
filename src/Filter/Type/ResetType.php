@@ -14,7 +14,7 @@ use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 use Symfony\Component\Form\FormBuilderInterface;
 
 /**
- * @deprecated since 1.11, use HeimrichHannot\FilterBundle\FilterType\Type\ButtonType
+ * @deprecated since 1.12, use HeimrichHannot\FilterBundle\FilterType\Type\ButtonType
  */
 class ResetType extends AbstractType
 {

@@ -109,12 +109,11 @@ class FilterConfigElementContainer
         // separate deprecated types
         $options['deprecated'] = [];
 
-        foreach ($this->bundleConfig['filter']['deprecated_types'] as $deprecated) {
-            foreach ($options as $key => $option) {
-                if (\in_array($deprecated, $option)) {
-                    $helperKey = array_search($deprecated, $option);
-                    unset($options[$key][$helperKey]);
-                    $options['deprecated'][] = $deprecated;
+        foreach ($options as $optionKey => $option) {
+            foreach ($option as $typeKey => $type) {
+                if (!$this->typeCollection->hasType($type)) {
+                    unset($options[$optionKey][$typeKey]);
+                    $options['deprecated'][] = $type;
                 }
             }
         }

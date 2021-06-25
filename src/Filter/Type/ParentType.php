@@ -12,6 +12,9 @@ use Contao\Controller;
 use Contao\System;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 
+/**
+ * @deprecated since 1.12 and will be removed in version 2.0
+ */
 class ParentType extends ChoiceType
 {
     const TYPE = 'filterConfig';

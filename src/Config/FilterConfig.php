@@ -823,7 +823,7 @@ class FilterConfig implements \JsonSerializable
     private function prepareFilterQueryParts(FilterQueryPartCollection $filterQueryPartCollection)
     {
         foreach ($filterQueryPartCollection->getTargetFields() as $targetField) {
-            if (1 >= \count($targetField)) {
+            if (1 >= count($targetField)) {
                 continue;
             }
 
@@ -842,11 +842,11 @@ class FilterConfig implements \JsonSerializable
                 $targetKey = array_search($key, array_keys($targetField), true);
 
                 if (false !== $targetKey) {
-                    $leftover = \array_slice($targetField, $targetKey + 1, null, true);
+                    $targetFieldsSlice = \array_slice($targetField, $targetKey + 1, null, true);
 
-                    if (!empty($leftover)) {
-                        foreach ($leftover as $leftoverElement) {
-                            if (!$leftoverElement['initial'] && null !== ($element = $this->filterQueryPartCollection->getPartByName($key))) {
+                    if (!empty($targetFieldsSlice)) {
+                        foreach ($targetFieldsSlice as $sliceElement) {
+                            if (!$sliceElement['initial'] && null !== ($element = $this->filterQueryPartCollection->getPartByName($key))) {
                                 $element->setDisabled(true);
                             }
                         }
