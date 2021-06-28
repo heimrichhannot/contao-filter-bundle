@@ -63,6 +63,17 @@ class ChoiceType extends AbstractFilterType implements InitialFilterTypeInterfac
         $builder->add($filterTypeContext->getElementConfig()->getElementName(), SymfonyChoiceType::class, $this->getOptions($filterTypeContext));
     }
 
+    public function buildQuery(FilterTypeContext $filterTypeContext)
+    {
+        if ($filterTypeContext->getElementConfig()->isInitial && AbstractFilterType::VALUE_TYPE_ARRAY === $filterTypeContext->getElementConfig()->initialValueType) {
+            $elementConfig = $filterTypeContext->getElementConfig();
+            $elementConfig->initialValue = $filterTypeContext->getElementConfig()->initialValueArray;
+            $filterTypeContext->setElementConfig($elementConfig);
+        }
+
+        $this->filterQueryPartCollection->addPart($this->filterQueryPartProcessor->composeQueryPart($filterTypeContext));
+    }
+
     public function getPalette(string $prependPalette, string $appendPalette): string
     {
         return $prependPalette.'{config_legend},field,operator,customOptions,reviseOptions,dynamicOptions,sortOptionValues,adjustOptionLabels,submitOnChange,expanded,multiple,addGroupChoiceField,doNotCacheOptions;{visualization_legend},addPlaceholder,customLabel,hideLabel;'.$appendPalette;
