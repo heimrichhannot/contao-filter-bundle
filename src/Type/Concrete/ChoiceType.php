@@ -57,7 +57,7 @@ class ChoiceType extends AbstractFilterType implements InitialFilterTypeInterfac
         return static::TYPE;
     }
 
-    public function buildForm($filterTypeContext)
+    public function buildForm(FilterTypeContext $filterTypeContext)
     {
         $builder = $filterTypeContext->getFormBuilder();
         $builder->add($filterTypeContext->getElementConfig()->getElementName(), SymfonyChoiceType::class, $this->getOptions($filterTypeContext));

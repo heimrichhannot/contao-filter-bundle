@@ -56,7 +56,7 @@ class DateTimeType extends AbstractFilterType implements InitialFilterTypeInterf
         $this->filterQueryPartCollection->addPart($this->filterQueryPartProcessor->composeQueryPart($filterTypeContext));
     }
 
-    public function buildForm($filterTypeContext)
+    public function buildForm(FilterTypeContext $filterTypeContext)
     {
         $builder = $filterTypeContext->getFormBuilder();
         $builder->add($filterTypeContext->getElementConfig()->getElementName(), SymfonyDateTimeType::class, $this->getOptions($filterTypeContext));
