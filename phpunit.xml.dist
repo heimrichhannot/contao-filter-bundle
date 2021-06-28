@@ -25,6 +25,15 @@
     <testsuites>
         <testsuite name="Unit Tests">
             <directory>./tests</directory>
+            <exclude>./tests/Backend</exclude>
+            <exclude>./tests/Choice</exclude>
+            <exclude>./tests/Config</exclude>
+            <exclude>./tests/ContaoManager</exclude>
+            <exclude>./tests/DependencyInjection</exclude>
+            <exclude>./tests/Filter/Type</exclude>
+            <exclude>./tests/Model</exclude>
+            <exclude>./tests/Module</exclude>
+            <exclude>./tests/Utils</exclude>
         </testsuite>
     </testsuites>
 
