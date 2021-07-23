@@ -6,6 +6,8 @@
  * @license LGPL-3.0-or-later
  */
 
+use HeimrichHannot\FilterBundle\Type\AbstractFilterType;
+
 $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
     'config' => [
         'dataContainer' => 'Table',
@@ -170,13 +172,13 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
         'customLanguages' => 'languages',
         'customLocales' => 'locales',
         'customValue' => 'value',
-        'initialValueType_'.\HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_SCALAR => 'initialValue',
-        'initialValueType_'.\HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_ARRAY => 'initialValueArray',
-        'initialValueType_'.\HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_LATEST => 'parentField',
+        'initialValueType_'.AbstractFilterType::VALUE_TYPE_SCALAR => 'initialValue',
+        'initialValueType_'.AbstractFilterType::VALUE_TYPE_ARRAY => 'initialValueArray',
+        'initialValueType_'.AbstractFilterType::VALUE_TYPE_LATEST => 'parentField',
         'addDefaultValue' => 'defaultValueType',
-        'defaultValueType_'.\HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_SCALAR => 'defaultValue',
-        'defaultValueType_'.\HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_ARRAY => 'defaultValueArray',
-        'defaultValueType_'.\HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_LATEST => 'parentField',
+        'defaultValueType_'.AbstractFilterType::VALUE_TYPE_SCALAR => 'defaultValue',
+        'defaultValueType_'.AbstractFilterType::VALUE_TYPE_ARRAY => 'defaultValueArray',
+        'defaultValueType_'.AbstractFilterType::VALUE_TYPE_LATEST => 'parentField',
         'addStartAndStop' => 'startField,stopField',
         'coordinatesMode_'.\HeimrichHannot\FilterBundle\Filter\Type\ProximitySearchType::COORDINATES_MODE_COMPOUND => 'coordinatesField',
         'coordinatesMode_'.\HeimrichHannot\FilterBundle\Filter\Type\ProximitySearchType::COORDINATES_MODE_SEPARATED => 'latField,longField',
@@ -895,6 +897,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'exclude' => true,
             'search' => true,
             'inputType' => 'select',
+            'reference' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['reference']['type'],
             'options_callback' => [\HeimrichHannot\FilterBundle\DataContainer\FilterConfigElementContainer::class, 'onButtonTypeOptionsCallback'],
             'eval' => [
                 'tl_class' => 'w50',

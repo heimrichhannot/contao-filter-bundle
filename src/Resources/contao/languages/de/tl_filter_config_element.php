@@ -31,7 +31,7 @@ $lang['operator'] = ['Operator', 'Wählen Sie hier den gewünschten Operator aus
 $lang['addPlaceholder'] = ['Platzhalter hinzufügen', 'Wählen Sie diese Option, um dem Filter einen Platzhaltertext hinzuzufügen.'];
 $lang['placeholder'] = ['Platzhalter', 'Wählen Sie hier einen Platzhalter aus.'];
 $lang['hideLabel'] = ['Label verstecken', 'Wählen Sie diese Option, um das Label des Filters zu verstecken.'];
-$lang['customLabel'] = ['Label anpassen', 'Wählen ie diese Option, um einen benutzerdefinierten Label-Text festzulegen.'];
+$lang['customLabel'] = ['Label anpassen', 'Wählen Sie diese Option, um einen benutzerdefinierten Label-Text festzulegen.'];
 $lang['label'] = ['Label', 'Wählen Sie hier ein Label aus.'];
 $lang['expanded'] = ['Expanded (Radio/Checkboxes)', 'Wählen Sie diese Option, um Optionen als "radio"- oder "checkbox"-Elemente auszugeben.'];
 $lang['multiple'] = ['Multiple', 'Wählen Sie diese Option, wenn der Nutzer mehrere Optionen auswählen können soll.'];
@@ -117,7 +117,7 @@ $lang['threshold'] = ['Schwellwert für Eingabe', 'Tragen Sie hier die Mindestan
 $lang['debounce'] = ['Wartezeit nach Eingabe in ms', 'Tragen Sie hier die Wartezeit ein, die nach der Eingabe vergehen soll bevor das Formular verschickt wird.'];
 $lang['submitOnInput'] = ['Abschicken bei Eingabe', 'Wählen Sie diese Option, wenn das Formular abgeschickt werden soll, sobald Sie zeichen eingeben. Sie können definieren wieviele Zeichen eingegeben werden müssen um das Abschicken zu initiieren.'];
 $lang['doNotCacheOptions'] = ['Cache für Optionswerte deaktivieren', 'Wählen Sie diese Option, wenn die Optionswerte im Produktionsmodus nicht gecachet werden sollen.'];
-$lang['buttonType'] = ['Type des Buttons', 'Wählen Sie den Typ des Buttons.'];
+$lang['buttonType'] = ['Typ des Buttons', 'Wählen Sie den Typ des Buttons.'];
 
 // sort
 $lang['sortOptions'] = ['Sortier-Optionen', 'Fügen Sie hier die gewünschten Sortieroptionen hinzu.'];
@@ -154,7 +154,7 @@ $lang['show'] = ['Filterelement Details', 'Filterelement-Details ID %s anzeigen'
  */
 $lang['reference'] = [
     'type' => [
-        'deprecated' => 'Veraltet - NICHT nutzen',
+        'deprecated' => 'Veraltet',
         'miscellaneous' => 'Sonstiges',
         'text' => 'Text',
         'text_concat' => 'Konkatenierter Text',

@@ -47,9 +47,7 @@ class TextType extends AbstractFilterType implements InitialFilterTypeInterface,
 
     public function getInitialValueTypes(array $types): array
     {
-        $remove = [
-            AbstractFilterType::VALUE_TYPE_ARRAY,
-        ];
+        $remove = [];
 
         return array_values(array_diff($types, $remove));
     }
