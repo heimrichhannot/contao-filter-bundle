@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.11.1] - 2021-07-23
+- added check for existing joinAlias in FilterQueryBuilder
+
 ## [1.11.0] - 2021-06-23
 - added support for multilingual initial filter field values
 
