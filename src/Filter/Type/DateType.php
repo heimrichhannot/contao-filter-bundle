@@ -41,13 +41,17 @@ class DateType extends AbstractType
         }
 
         $field = $filter['dataContainer'].'.'.$element->field;
-        $value = isset($data[$name]) && $data[$name] ? $data[$name] : 0;
 
         if ($element->isInitial) {
             $value = $data[$name] ?? $this->getInitialValue($element, $builder->getContextualValues());
 
             // replace insertTags only for initial values (sql-injection protection)
             $value = System::getContainer()->get('huh.utils.date')->getTimeStamp($value, true);
+        } else {
+            if (!isset($data[$name]) || !$data[$name]) {
+                return;
+            }
+            $value = $data[$name];
         }
 
         /** @var \DateTime|null $startDate */
@@ -66,13 +70,13 @@ class DateType extends AbstractType
         $stop = $stop > $maxDate ? $maxDate : $stop;
 
         $andXA = $builder->expr()->andX();
-        $andXA->add($builder->expr()->lte(':start', $field));
-        $andXA->add($builder->expr()->gte(':stop', $field));
+        $andXA->add($builder->expr()->lte(':start_'.$element->id, $field));
+        $andXA->add($builder->expr()->gte(':stop_'.$element->id, $field));
 
         $builder->andWhere($andXA);
 
-        $builder->setParameter(':start', $start);
-        $builder->setParameter(':stop', $stop);
+        $builder->setParameter(':start_'.$element->id, $start);
+        $builder->setParameter(':stop_'.$element->id, $stop);
     }
 
     /**
