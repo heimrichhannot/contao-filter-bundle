@@ -14,6 +14,7 @@ use Contao\Environment;
 use Contao\InsertTags;
 use Doctrine\DBAL\Connection;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
+use HeimrichHannot\FilterBundle\Filter\Type\PublishedType;
 use HeimrichHannot\FilterBundle\Filter\Type\SqlType;
 use HeimrichHannot\FilterBundle\Form\Extension\FormButtonExtension;
 use HeimrichHannot\FilterBundle\Form\Extension\FormTypeExtension;
@@ -228,7 +229,7 @@ class FilterConfig implements \JsonSerializable
                 return;
             }
 
-            $initial = ((bool) $element->isInitial || SqlType::TYPE === $element->type);
+            $initial = ((bool) $element->isInitial || \in_array($element->type, [SqlType::TYPE, PublishedType::TYPE]));
 
             if (!isset($types[$element->type])
                 || \in_array($element->id, $skipElements)
