@@ -14,6 +14,9 @@ use Contao\Environment;
 use Contao\InsertTags;
 use Doctrine\DBAL\Connection;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
+use HeimrichHannot\FilterBundle\Filter\Type\PublishedType;
+use HeimrichHannot\FilterBundle\Filter\Type\SkipParentsType;
+use HeimrichHannot\FilterBundle\Filter\Type\SqlType;
 use HeimrichHannot\FilterBundle\Form\Extension\FormButtonExtension;
 use HeimrichHannot\FilterBundle\Form\Extension\FormTypeExtension;
 use HeimrichHannot\FilterBundle\Form\FilterType;
@@ -227,9 +230,16 @@ class FilterConfig implements \JsonSerializable
                 return;
             }
 
-            if (!isset($types[$element->type]) || \in_array($element->id, $skipElements) ||
-                $mode === static::QUERY_BUILDER_MODE_INITIAL_ONLY && !$element->isInitial ||
-                $mode === static::QUERY_BUILDER_MODE_SKIP_INITIAL && $element->isInitial) {
+            $initial = ((bool) $element->isInitial || \in_array($element->type, [
+                    PublishedType::TYPE,
+                    SqlType::TYPE,
+                    SkipParentsType::TYPE,
+                ]));
+
+            if (!isset($types[$element->type])
+                || \in_array($element->id, $skipElements)
+                || $mode === static::QUERY_BUILDER_MODE_INITIAL_ONLY && !$initial
+                || $mode === static::QUERY_BUILDER_MODE_SKIP_INITIAL && $initial) {
                 continue;
             }
 
