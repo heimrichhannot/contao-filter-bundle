@@ -1,14 +1,17 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.11.3] - 2021-08-11
+- Fixed: sql, published and skip_parent types are not evaluated as initial types ([#21])
+
 ## [1.11.2] - 2021-07-26
-- Fixed datetype ([#20])
+- Fixed: datetype not working independent from daterange ([#20])
 
 ## [1.11.1] - 2021-07-23
-- added check for existing joinAlias in FilterQueryBuilder
+- Changed: added check for existing joinAlias in FilterQueryBuilder
 
 ## [1.11.0] - 2021-06-23
-- added support for multilingual initial filter field values
+- Added: support for multilingual initial filter field values
 
 ## [1.10.2] - 2021-06-07
 - fixed FilterConfig service alias
@@ -149,6 +152,7 @@ All notable changes to this project will be documented in this file.
 - updated import in filter bundle js
 
 
+[#21]: https://github.com/heimrichhannot/contao-filter-bundle/pull/21
 [#20]: https://github.com/heimrichhannot/contao-filter-bundle/pull/20
 [#18]: https://github.com/heimrichhannot/contao-filter-bundle/pull/18
 [#17]: https://github.com/heimrichhannot/contao-filter-bundle/pull/17
