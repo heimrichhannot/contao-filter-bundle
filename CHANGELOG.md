@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.12.0] - 2021-08-31
+
+- Added: support for php 8
+
 ## [1.11.3] - 2021-08-11
 - Fixed: sql, published and skip_parent types are not evaluated as initial types ([#21])
 
