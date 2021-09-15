@@ -9,6 +9,7 @@
 namespace HeimrichHannot\FilterBundle\Filter\Type;
 
 use Contao\Date;
+use Contao\Input;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
@@ -122,6 +123,12 @@ class PublishedType extends AbstractType
             return false;
         }
 
-        return \defined('BE_USER_LOGGED_IN') && BE_USER_LOGGED_IN === true && \Input::cookie('FE_PREVIEW');
+        if (version_compare(VERSION, '4.9', '<')) {
+            $isPreview = \defined('BE_USER_LOGGED_IN') && BE_USER_LOGGED_IN === true && Input::cookie('FE_PREVIEW');
+        } else {
+            $isPreview = \defined('BE_USER_LOGGED_IN') && BE_USER_LOGGED_IN === true;
+        }
+
+        return $isPreview;
     }
 }

@@ -1,5 +1,10 @@
 # Changelog
+
 All notable changes to this project will be documented in this file.
+
+## [1.12.1] - 2021-09-15
+
+- Fixed: preview mode for contao 4.9
 
 ## [1.12.0] - 2021-08-31
 
