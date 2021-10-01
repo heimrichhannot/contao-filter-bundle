@@ -60,4 +60,9 @@ class ButtonType extends AbstractType
 
         return $label;
     }
+
+    public function getHideLabel(FilterConfigElementModel $element): bool
+    {
+        return false;
+    }
 }
