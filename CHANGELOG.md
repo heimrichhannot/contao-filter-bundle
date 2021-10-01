@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.12.2] - 2021-10-01
+- Fixed: hide label option is used if set in db even if FilterType does not support it
+
 ## [1.12.1] - 2021-09-15
 
 - Fixed: preview mode for contao 4.9
