@@ -220,7 +220,7 @@ abstract class AbstractType
         $options['label'] = $this->getLabel($element, $builder) ?: $element->title;
 
         // sr-only style for non-bootstrap projects is shipped within the filter_form_* templates
-        if (true === (bool) $element->hideLabel) {
+        if ($this->getHideLabel($element)) {
             $options['label_attr'] = ['class' => 'sr-only'];
         }
 
@@ -272,6 +272,11 @@ abstract class AbstractType
         }
 
         return $options;
+    }
+
+    public function getHideLabel(FilterConfigElementModel $element): bool
+    {
+        return (bool) $element->hideLabel;
     }
 
     /**
