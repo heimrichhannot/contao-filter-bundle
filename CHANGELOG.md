@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.12.3] - 2021-10-11
+
+- Fixed: static method types in `FilterConfigElementModel`
+
 ## [1.12.2] - 2021-10-01
 - Fixed: hide label option is used if set in db even if FilterType does not support it
 
