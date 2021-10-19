@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - 2021-10-19
+- Changed: use twig support bundle for template loading and rendering
+
 ## [1.12.3] - 2021-10-11
 
 - Fixed: static method types in `FilterConfigElementModel`

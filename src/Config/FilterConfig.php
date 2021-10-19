@@ -24,6 +24,7 @@ use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\Model\FilterConfigModel;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 use HeimrichHannot\FilterBundle\Session\FilterSession;
+use HeimrichHannot\TwigSupportBundle\Filesystem\TwigTemplateLocator;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -314,7 +315,7 @@ class FilterConfig implements \JsonSerializable
                     $form->get(FilterType::FILTER_REFERRER_NAME)->getData() ?: null);
             }
 
-            if (parse_url($url, PHP_URL_HOST) !== parse_url(Environment::get('url'), PHP_URL_HOST)) {
+            if (parse_url($url, \PHP_URL_HOST) !== parse_url(Environment::get('url'), \PHP_URL_HOST)) {
                 throw new \Exception('Invalid redirect url');
             }
 
@@ -502,7 +503,7 @@ class FilterConfig implements \JsonSerializable
         $config = $this->container->getParameter('huh.filter');
 
         if (!isset($config['filter']['templates'])) {
-            return $this->container->get('huh.utils.template')->getTemplate($name);
+            return $this->container->get(TwigTemplateLocator::class)->getTemplatePath($name);
         }
 
         $templates = $config['filter']['templates'];
@@ -513,7 +514,7 @@ class FilterConfig implements \JsonSerializable
             }
         }
 
-        return $this->container->get('huh.utils.template')->getTemplate($name);
+        return $this->container->get(TwigTemplateLocator::class)->getTemplatePath($name);
     }
 
     /**

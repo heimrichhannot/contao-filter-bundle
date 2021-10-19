@@ -15,6 +15,7 @@ use HeimrichHannot\FilterBundle\Event\ModifyJsonResponseEvent;
 use HeimrichHannot\FilterBundle\Exception\HandleFormException;
 use HeimrichHannot\FilterBundle\Exception\MissingFilterException;
 use HeimrichHannot\FilterBundle\Form\FilterType;
+use HeimrichHannot\TwigSupportBundle\Renderer\TwigTemplateRenderer;
 use HeimrichHannot\UtilsBundle\Page\PageUtil;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -64,7 +65,7 @@ class FrontendAjaxController extends Controller
         }
 
         if ($request->get($filter->getFilter()['name']) && isset($request->get($filter->getFilter()['name'])[FilterType::FILTER_REFERRER_NAME])) {
-            if (parse_url($request->get($filter->getFilter()['name'])[FilterType::FILTER_REFERRER_NAME], PHP_URL_HOST) !== parse_url(Environment::get('url'), PHP_URL_HOST)) {
+            if (parse_url($request->get($filter->getFilter()['name'])[FilterType::FILTER_REFERRER_NAME], \PHP_URL_HOST) !== parse_url(Environment::get('url'), \PHP_URL_HOST)) {
                 throw new \Exception('Invalid redirect url');
             }
 
@@ -92,13 +93,9 @@ class FrontendAjaxController extends Controller
         $builder = $filter->getBuilder();
         $form = $builder->getForm();
 
-        /**
-         * @var \Twig_Environment
-         */
-        $twig = System::getContainer()->get('twig');
-
         $filterConfig = $filter;
-        $filter = $twig->render(
+
+        $filter = System::getContainer()->get(TwigTemplateRenderer::class)->render(
             $filter->getFilterTemplateByName($filter->getFilter()['template']),
             [
                 'filter' => $filter,
