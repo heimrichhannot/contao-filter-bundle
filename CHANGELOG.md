@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.13.1] - 2021-10-29
+- Fixed: custom options for ParentType not working
+
 ## [1.13.0] - 2021-10-19
 - Added: bootstrap 5 form theme
 - Changed: use twig support bundle for template loading and rendering

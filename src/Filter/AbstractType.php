@@ -344,4 +344,22 @@ abstract class AbstractType
 
         return System::getContainer()->get('huh.utils.date')->getTimeStamp($element->{$field});
     }
+
+    /**
+     * Return custom options if custom options config is set. Otherwise return null.
+     *
+     * @return array|null
+     */
+    protected function getCustomOptions(FilterConfigElementModel $element): ?array
+    {
+        if (false === (bool) $element->customOptions) {
+            return null;
+        }
+
+        if (null === $element->options) {
+            return [];
+        }
+
+        return StringUtil::deserialize($element->options, true);
+    }
 }
