@@ -64,7 +64,13 @@ class FilterType extends AbstractType
 
         // always add a hidden field with the page id
         global $objPage;
-        $builder->add(static::FILTER_PAGE_ID_NAME, HiddenType::class, ['attr' => ['value' => $objPage->id]]);
+        $pageId = $objPage->id;
+
+        if (!$objPage->id && isset($this->config->getData()[self::FILTER_PAGE_ID_NAME])) {
+            $pageId = $this->config->getData()[self::FILTER_PAGE_ID_NAME];
+        }
+
+        $builder->add(static::FILTER_PAGE_ID_NAME, HiddenType::class, ['attr' => ['value' => $pageId]]);
 
         // always add a hidden field with the referrer url (required by reset for example to redirect back to user action page) -> use request query string when in esi _ fragment sub-request
         if ($request->query->has('request')) {
@@ -72,7 +78,7 @@ class FilterType extends AbstractType
         } else {
             // Check if referrer is set to set again
             if (Environment::get('isAjaxRequest') && $request->get($filter['name']) && isset($request->get($filter['name'])[static::FILTER_REFERRER_NAME])) {
-                if (parse_url($request->get($filter['name'])[static::FILTER_REFERRER_NAME], PHP_URL_HOST) !== parse_url(Environment::get('url'), PHP_URL_HOST)) {
+                if (parse_url($request->get($filter['name'])[static::FILTER_REFERRER_NAME], \PHP_URL_HOST) !== parse_url(Environment::get('url'), \PHP_URL_HOST)) {
                     throw new \Exception('Invalid redirect url.');
                 }
 

@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.13.2] - 2021-11-12
+
+- Fixed: missing page_id parameter in ajax context
+
 ## [1.13.1] - 2021-10-29
 - Fixed: custom options for ParentType not working
 
