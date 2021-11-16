@@ -121,7 +121,7 @@ class FilterConfigElement
 
         $choices = $choiceType->getChoices($filterConfigElement);
 
-        if (!\is_array($choices)) {
+        if (!\is_array($choices) || empty($choices)) {
             return null;
         }
 

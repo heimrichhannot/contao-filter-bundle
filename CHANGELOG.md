@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.14.0] - 2021-11-16
+
+- Changed: default value array behavior -> if no options are found, backend palette fields stay text fields instead of empty selects
+- Fixed: insert tag replacing for default values
+
 ## [1.13.2] - 2021-11-12
 
 - Fixed: missing page_id parameter in ajax context

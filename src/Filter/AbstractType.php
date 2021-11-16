@@ -73,18 +73,18 @@ abstract class AbstractType
         switch ($element->defaultValueType) {
             case static::VALUE_TYPE_ARRAY:
                 $value = array_map(function ($val) {
-                    return $val['value'];
+                    return System::getContainer()->get(\HeimrichHannot\UtilsBundle\String\StringUtil::class)->replaceInsertTags($val['value']);
                 }, StringUtil::deserialize($element->defaultValueArray, true));
 
                 break;
 
             default:
-                $value = $element->defaultValue;
+                $value = System::getContainer()->get(\HeimrichHannot\UtilsBundle\String\StringUtil::class)->replaceInsertTags($element->defaultValue, false);
 
                 break;
         }
 
-        return System::getContainer()->get(\HeimrichHannot\UtilsBundle\String\StringUtil::class)->replaceInsertTags($value, false);
+        return $value;
     }
 
     public static function getInitialValue(FilterConfigElementModel $element, array $contextualValues = [])
@@ -347,8 +347,6 @@ abstract class AbstractType
 
     /**
      * Return custom options if custom options config is set. Otherwise return null.
-     *
-     * @return array|null
      */
     protected function getCustomOptions(FilterConfigElementModel $element): ?array
     {
