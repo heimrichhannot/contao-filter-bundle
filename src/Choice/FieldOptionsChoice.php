@@ -14,6 +14,7 @@ use Contao\System;
 use Contao\Widget;
 use Doctrine\DBAL\FetchMode;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
+use HeimrichHannot\FilterBundle\Type\FilterTypeCollection;
 use HeimrichHannot\UtilsBundle\Choice\AbstractChoice;
 use HeimrichHannot\UtilsBundle\Model\ModelUtil;
 use Symfony\Component\Translation\Translator;
@@ -129,7 +130,6 @@ class FieldOptionsChoice extends AbstractChoice
     protected function getDcaOptions(FilterConfigElementModel $element, array $filter, array $dca)
     {
         $options = [];
-        $dca = $GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element->field];
 
         if (isset($dca['eval']['isCategoryField']) && $dca['eval']['isCategoryField']) {
             if (isset($dca['options_callback'])) {
@@ -141,10 +141,6 @@ class FieldOptionsChoice extends AbstractChoice
 
             $options = $this->getCategoryWidgetOptions($element, $filter, $dca);
 
-            return $options;
-        }
-
-        if (!isset($dca['inputType'])) {
             return $options;
         }
 
@@ -172,6 +168,13 @@ class FieldOptionsChoice extends AbstractChoice
     protected function getWidgetOptions(FilterConfigElementModel $element, array $filter, array $dca)
     {
         $options = [];
+
+        $filterTypeCollection = System::getContainer()->get(FilterTypeCollection::class);
+
+        // fix for new filter types to show possible choices if inputType dca attribute is not given
+        if ($filterTypeCollection->hasType($element->type)) {
+            $dca['inputType'] = $element->inputType;
+        }
 
         if (!isset($GLOBALS['TL_FFL'][$dca['inputType']]) && (System::getContainer()->get('huh.utils.container')->isBackend() && !isset($GLOBALS['BE_FFL'][$dca['inputType']]))) {
             return $options;

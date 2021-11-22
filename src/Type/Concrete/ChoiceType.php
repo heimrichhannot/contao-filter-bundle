@@ -8,6 +8,7 @@
 
 namespace HeimrichHannot\FilterBundle\Type\Concrete;
 
+use Contao\StringUtil;
 use Doctrine\DBAL\Driver\Connection;
 use HeimrichHannot\FilterBundle\Choice\FieldOptionsChoice;
 use HeimrichHannot\FilterBundle\FilterQuery\FilterQueryPartCollection;
@@ -67,7 +68,9 @@ class ChoiceType extends AbstractFilterType implements InitialFilterTypeInterfac
     {
         if ($filterTypeContext->getElementConfig()->isInitial && AbstractFilterType::VALUE_TYPE_ARRAY === $filterTypeContext->getElementConfig()->initialValueType) {
             $elementConfig = $filterTypeContext->getElementConfig();
-            $elementConfig->initialValue = $filterTypeContext->getElementConfig()->initialValueArray;
+
+            $values = StringUtil::deserialize($filterTypeContext->getElementConfig()->initialValueArray, true);
+            $elementConfig->initialValue = array_column($values, 'value');
             $filterTypeContext->setElementConfig($elementConfig);
         }
 
@@ -162,7 +165,31 @@ class ChoiceType extends AbstractFilterType implements InitialFilterTypeInterfac
 
     public function getInitialValueChoices(FilterTypeContext $filterTypeContext): array
     {
-        return $this->collectChoices($filterTypeContext);
+        if (null === ($element = $filterTypeContext->getElementConfig())) {
+            return [];
+        }
+
+        switch ($element->initialValueType) {
+            case AbstractFilterType::VALUE_TYPE_ARRAY:
+                $element->inputType = 'select';
+
+                break;
+
+            case AbstractFilterType::VALUE_TYPE_SCALAR:
+            case AbstractFilterType::VALUE_TYPE_CONTEXTUAL:
+                $element->inputType = 'text';
+
+                break;
+
+            case AbstractFilterType::VALUE_TYPE_LATEST:
+            default:
+                break;
+        }
+
+        return $this->fieldOptionsChoice->getCachedChoices([
+            'element' => $element,
+            'filter' => $filterTypeContext->getFilterConfig()->row(),
+        ]);
     }
 
     public function getInitialValueTypes(array $types): array

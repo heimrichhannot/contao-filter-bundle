@@ -9,7 +9,6 @@
 namespace HeimrichHannot\FilterBundle\FilterQuery;
 
 use Contao\Controller;
-use Contao\StringUtil;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
 use HeimrichHannot\FilterBundle\Type\AbstractFilterType;
@@ -218,7 +217,7 @@ class FilterQueryPartProcessor
                 break;
 
             case AbstractFilterType::VALUE_TYPE_ARRAY:
-                $filterPart->setValue(array_column(StringUtil::deserialize($filterPart->getInitialValue()), 'value'));
+                $filterPart->setValue($filterPart->getInitialValue());
                 $filterPart->setValueType(Connection::PARAM_STR_ARRAY);
 
                 break;
