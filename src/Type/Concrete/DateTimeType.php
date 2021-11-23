@@ -50,9 +50,18 @@ class DateTimeType extends AbstractFilterType implements InitialFilterTypeInterf
 
     public function buildQuery(FilterTypeContext $filterTypeContext)
     {
-        $filterTypeContext->setValue($this->dateUtil->getTimeStamp($filterTypeContext->getValue()));
-        $filterTypeContext->setValueType(Types::INTEGER);
+        if ($filterTypeContext->getElementConfig()->isInitial) {
+            $filterTypeContext->setValue($this->dateUtil->getTimeStamp($filterTypeContext->getElementConfig()->initialValue));
+            $filterTypeContext->getElementConfig()->initialValueType = Types::INTEGER;
+        } else {
+            $filterTypeContext->setValue($this->dateUtil->getTimeStamp($filterTypeContext->getValue()));
+        }
 
+        if (empty($filterTypeContext->getValue())) {
+            return;
+        }
+
+        $filterTypeContext->setValueType(Types::INTEGER);
         $this->filterQueryPartCollection->addPart($this->filterQueryPartProcessor->composeQueryPart($filterTypeContext));
     }
 
@@ -69,7 +78,12 @@ class DateTimeType extends AbstractFilterType implements InitialFilterTypeInterf
 
     public function getInitialPalette(string $prependPalette, string $appendPalette)
     {
-        return $prependPalette.'{config_legend},field,operator,dateTimeFormat,defaultValue;'.$appendPalette;
+        $dca = &$GLOBALS['TL_DCA']['tl_filter_config_element'];
+        $dca['fields']['initialValue']['eval']['rgxp'] = 'datim';
+        $dca['fields']['initialValue']['eval']['datepicker'] = true;
+        $dca['fields']['initialValue']['eval']['mandatory'] = true;
+
+        return $prependPalette.'{config_legend},field,operator,dateTimeFormat,initialValue;'.$appendPalette;
     }
 
     public function getInitialValueTypes(array $types): array

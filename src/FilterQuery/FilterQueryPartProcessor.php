@@ -11,6 +11,7 @@ namespace HeimrichHannot\FilterBundle\FilterQuery;
 use Contao\Controller;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
+use Doctrine\DBAL\Types\Types;
 use HeimrichHannot\FilterBundle\Type\AbstractFilterType;
 use HeimrichHannot\FilterBundle\Type\FilterTypeContext;
 use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
@@ -221,6 +222,10 @@ class FilterQueryPartProcessor
                 $filterPart->setValueType(Connection::PARAM_STR_ARRAY);
 
                 break;
+
+            case Types::INTEGER:
+                $filterPart->setValue($filterPart->getInitialValue());
+                $filterPart->setValueType(Types::INTEGER);
         }
     }
 }
