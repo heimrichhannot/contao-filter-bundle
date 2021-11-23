@@ -8,6 +8,7 @@
 
 namespace HeimrichHannot\FilterBundle\Type\Concrete;
 
+use Doctrine\DBAL\Types\Types;
 use HeimrichHannot\FilterBundle\Type\AbstractFilterType;
 use HeimrichHannot\FilterBundle\Type\FilterTypeContext;
 use HeimrichHannot\FilterBundle\Type\InitialFilterTypeInterface;
@@ -26,6 +27,18 @@ class TextType extends AbstractFilterType implements InitialFilterTypeInterface,
 
     public function buildQuery(FilterTypeContext $filterTypeContext)
     {
+        if ($filterTypeContext->getElementConfig()->isInitial) {
+            $filterTypeContext->setValue($filterTypeContext->getElementConfig()->initialValue);
+            $filterTypeContext->getElementConfig()->initialValueType = Types::STRING;
+        } else {
+            $filterTypeContext->setValue($filterTypeContext->getElementConfig()->value);
+        }
+
+        if (empty($filterTypeContext->getValue())) {
+            return;
+        }
+
+        $filterTypeContext->setValueType(Types::STRING);
         $this->filterQueryPartCollection->addPart($this->filterQueryPartProcessor->composeQueryPart($filterTypeContext));
     }
 
@@ -58,7 +71,7 @@ class TextType extends AbstractFilterType implements InitialFilterTypeInterface,
 
         $elementConfig = $filterTypeContext->getElementConfig();
 
-        if ((bool) $elementConfig->submitOnInput && (bool)$filterTypeContext->getFilterConfig()->row()['asyncFormSubmit']) {
+        if ((bool) $elementConfig->submitOnInput && (bool) $filterTypeContext->getFilterConfig()->row()['asyncFormSubmit']) {
             $options['attr']['data-submit-on-input'] = '1';
             $options['attr']['data-threshold'] = $elementConfig->threshold ?: '0';
             $options['attr']['data-debounce'] = $elementConfig->debounce ?: '0';
