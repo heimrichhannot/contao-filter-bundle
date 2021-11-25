@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.15.0] - 2021-11-25
+
+- Changed: added name as class to form_row at bootstrap 5 template
+
 ## [1.14.0] - 2021-11-16
 
 - Changed: default value array behavior -> if no options are found, backend palette fields stay text fields instead of empty selects
