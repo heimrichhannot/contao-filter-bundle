@@ -92,7 +92,7 @@ class TextTypeTest extends ContaoTestCase
         $this->assertSame([], $instance->getInitialValueTypes($typesArray));
 
         $typesArray = [AbstractFilterType::VALUE_TYPE_ARRAY];
-        $this->assertSame([], $instance->getInitialValueTypes($typesArray));
+        $this->assertSame($typesArray, $instance->getInitialValueTypes($typesArray));
 
         $typesArray = [AbstractFilterType::VALUE_TYPE_CONTEXTUAL];
         $this->assertSame($typesArray, $instance->getInitialValueTypes($typesArray));
@@ -101,7 +101,7 @@ class TextTypeTest extends ContaoTestCase
             AbstractFilterType::VALUE_TYPE_ARRAY,
             AbstractFilterType::VALUE_TYPE_CONTEXTUAL,
         ];
-        $this->assertSame([AbstractFilterType::VALUE_TYPE_CONTEXTUAL], $instance->getInitialValueTypes($typesArray));
+        $this->assertSame($typesArray, $instance->getInitialValueTypes($typesArray));
     }
 
     public function testGetOptions()
@@ -155,6 +155,15 @@ class TextTypeTest extends ContaoTestCase
         $this->assertEmpty($queryPartCollection->getParts());
 
         $instance->buildQuery($filterContext);
+        $this->assertCount(0, $queryPartCollection->getParts());
+
+        $context = new FilterTypeContext();
+        $context->setValue('text');
+//        $instance
+
+        $elementConfig = $this->createMock(FilterConfigElementModel::class);
+        $context->setElementConfig($elementConfig);
+        $instance->buildQuery($context);
         $this->assertCount(1, $queryPartCollection->getParts());
     }
 
