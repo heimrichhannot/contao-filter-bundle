@@ -17,6 +17,7 @@ use HeimrichHannot\FilterBundle\Filter\AbstractType;
 use HeimrichHannot\FilterBundle\Filter\Type\PublishedType;
 use HeimrichHannot\FilterBundle\Filter\Type\SkipParentsType;
 use HeimrichHannot\FilterBundle\Filter\Type\SqlType;
+use HeimrichHannot\FilterBundle\Filter\Type\YearType;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\UtilsBundle\Choice\AbstractChoice;
 use HeimrichHannot\UtilsBundle\Model\ModelUtil;
@@ -62,7 +63,7 @@ class DateChoice extends AbstractChoice
                 case SkipParentsType::TYPE:
                     $skipParentsType = new SkipParentsType(System::getContainer()->get('huh.filter.config'));
 
-                    list($elementColumns, $elementValues) = $skipParentsType->buildQueryForModels($filter, $entry);
+                    [$elementColumns, $elementValues] = $skipParentsType->buildQueryForModels($filter, $entry);
 
                     $columns = array_merge($columns, $elementColumns);
                     $values = array_merge($values, $elementValues);
@@ -72,7 +73,17 @@ class DateChoice extends AbstractChoice
                 case PublishedType::TYPE:
                     $publishedType = new PublishedType(System::getContainer()->get('huh.filter.config'));
 
-                    list($elementColumns, $elementValues) = $publishedType->buildQueryForModels($filter, $entry);
+                    [$elementColumns, $elementValues] = $publishedType->buildQueryForModels($filter, $entry);
+
+                    $columns = array_merge($columns, $elementColumns);
+                    $values = array_merge($values, $elementValues);
+
+                    break;
+
+                case YearType::TYPE:
+                    $yearType = new YearType(System::getContainer()->get('huh.filter.config'));
+
+                    [$elementColumns, $elementValues] = $yearType->buildQueryForModels($filter, $entry);
 
                     $columns = array_merge($columns, $elementColumns);
                     $values = array_merge($values, $elementValues);

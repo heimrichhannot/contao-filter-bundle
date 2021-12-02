@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.16.0] - 2021-12-02
+- Added: buildQueryForModels() to YearType
+- Fixed: YearType not correctly evaluated in DateChoice type
+- Fixed: exception in FilterConfig when not sessionKey set
+- Fixed: DateChoice type date period always empty
+
 ## [1.15.0] - 2021-11-25
 
 - Changed: added name as class to form_row at bootstrap 5 template

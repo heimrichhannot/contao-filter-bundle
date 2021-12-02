@@ -52,7 +52,6 @@ class YearType extends ChoiceType
 
     public function buildQuery(FilterQueryBuilder $builder, FilterConfigElementModel $element)
     {
-        $data = $this->config->getData();
         $filter = $this->config->getFilter();
         $name = $this->getName($element);
 
@@ -62,16 +61,10 @@ class YearType extends ChoiceType
             return;
         }
 
+        $contextualValues = $builder->getContextualValues();
         $field = $filter['dataContainer'].'.'.$element->field;
-        $value = isset($data[$name]) && $data[$name] ? $data[$name] : 0;
 
-        if ($element->isInitial) {
-            if (static::VALUE_TYPE_LATEST === $element->initialValueType) {
-                $value = $this->getLatestValue($element);
-            } else {
-                $value = $data[$name] ?? $this->getInitialValue($element, $builder->getContextualValues());
-            }
-        }
+        $value = $this->getValue($name, $element, $contextualValues);
 
         if (!$this->validYear($value)) {
             return;
@@ -88,6 +81,24 @@ class YearType extends ChoiceType
 
         $builder->setParameter(':start', $start);
         $builder->setParameter(':stop', $stop);
+    }
+
+    public function buildQueryForModels(array $filter, FilterConfigElementModel $element): array
+    {
+        $columns = [];
+        $values = [];
+
+        $name = $this->getName($element);
+        $field = $filter['dataContainer'].'.'.$element->field;
+        $value = $this->getValue($name, $element, []);
+
+        $start = $this->getYearStart($value);
+        $stop = $this->getYearEnd($value);
+
+        $columns = [$field.'>?', $field.'<?'];
+        $values = [$start, $stop];
+
+        return [$columns, $values];
     }
 
     public function getOptions(FilterConfigElementModel $element, FormBuilderInterface $builder, bool $triggerEvent = true)
@@ -202,6 +213,27 @@ class YearType extends ChoiceType
             $value = Date::parse('Y');
         }
 
+        return $value;
+    }
+
+    /**
+     * @param $name
+     * @param FilterConfigElementModel $element
+     * @param array $contextualValues
+     * @return array|int|mixed|string|string[]|null
+     */
+    private function getValue($name, FilterConfigElementModel $element, array $contextualValues)
+    {
+        $data  = $this->config->getData();
+        $value = isset($data[$name]) && $data[$name] ? $data[$name] : 0;
+
+        if ($element->isInitial) {
+            if (static::VALUE_TYPE_LATEST === $element->initialValueType) {
+                $value = $this->getLatestValue($element);
+            } else {
+                $value = $data[$name] ?? $this->getInitialValue($element, $contextualValues);
+            }
+        }
         return $value;
     }
 }

@@ -420,7 +420,10 @@ class FilterConfig implements \JsonSerializable
      */
     public function getData(): array
     {
-        $data = $this->session->getData($this->getSessionKey());
+        $data = [];
+        if ($this->sessionKey) {
+            $data = $this->session->getData($this->getSessionKey());
+        }
 
         if (!$this->requestStack->getCurrentRequest()) {
             return $data;
