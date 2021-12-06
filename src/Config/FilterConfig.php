@@ -13,8 +13,10 @@ use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\Environment;
 use Contao\InsertTags;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Types\Types;
 use HeimrichHannot\FilterBundle\Event\ModifyFilterQueryPartsEvent;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
+use HeimrichHannot\FilterBundle\FilterQuery\FilterQueryPart;
 use HeimrichHannot\FilterBundle\FilterQuery\FilterQueryPartCollection;
 use HeimrichHannot\FilterBundle\FilterQuery\FilterQueryPartProcessor;
 use HeimrichHannot\FilterBundle\Form\Extension\FormButtonExtension;
@@ -40,7 +42,6 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\PropertyAccess\PropertyAccess;
-use System;
 
 class FilterConfig implements \JsonSerializable
 {
@@ -262,7 +263,7 @@ class FilterConfig implements \JsonSerializable
         }
 
         $types = array_merge($this->container->get('huh.filter.choice.type')->getCachedChoices(),
-            System::getContainer()->get(FilterTypeCollection::class)->getTypes());
+            $this->container->get(FilterTypeCollection::class)->getTypes());
 
         if (!\is_array($types) || empty($types)) {
             return;
@@ -285,7 +286,7 @@ class FilterConfig implements \JsonSerializable
                 continue;
             }
 
-            if (!class_exists($types[$element->type]['class'])) {
+            if (!class_exists($types[$element->type]['class'], false)) {
                 continue;
             }
 
@@ -331,8 +332,8 @@ class FilterConfig implements \JsonSerializable
 
         $this->prepareFilterQueryParts($event->getPartsCollection());
 
-        /*
-         * @var FilterQueryPart
+        /**
+         * @var $part FilterQueryPart
          */
         foreach ($this->filterQueryPartCollection->getParts() as $part) {
             if ($part->isDisabled()) {
@@ -728,7 +729,7 @@ class FilterConfig implements \JsonSerializable
 
     protected function processLegacyFilterType(FilterConfigElementModel $config, array $element)
     {
-        if (!$this->getData()[$config->field]) {
+        if (!$this->getData()[$config->field] && !(bool) $config->isInitial) {
             return;
         }
 
@@ -745,7 +746,23 @@ class FilterConfig implements \JsonSerializable
         }
 
         $context = new FilterTypeContext();
-        $context->setValue($this->getData()[$config->field]);
+
+        switch ($config->initialValueType) {
+            case AbstractType::VALUE_TYPE_ARRAY:
+                $context->setValue($config->initialValueArray);
+                $context->setValueType(Connection::PARAM_STR_ARRAY);
+                $config->initialValueType = Connection::PARAM_STR_ARRAY;
+
+                break;
+
+            default:
+                $context->setValue($config->initialValue);
+                $context->setValueType(Types::STRING);
+                $config->initialValueType = Types::STRING;
+
+                break;
+        }
+
         $context->setElementConfig($config);
         $context->setFilterConfig($config->getRelated('pid'));
 
@@ -823,7 +840,7 @@ class FilterConfig implements \JsonSerializable
     private function prepareFilterQueryParts(FilterQueryPartCollection $filterQueryPartCollection)
     {
         foreach ($filterQueryPartCollection->getTargetFields() as $targetField) {
-            if (1 >= count($targetField)) {
+            if (1 >= \count($targetField)) {
                 continue;
             }
 
