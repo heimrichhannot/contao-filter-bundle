@@ -16,6 +16,9 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Types\Types;
 use HeimrichHannot\FilterBundle\Event\ModifyFilterQueryPartsEvent;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
+use HeimrichHannot\FilterBundle\Filter\Type\PublishedType;
+use HeimrichHannot\FilterBundle\Filter\Type\SkipParentsType;
+use HeimrichHannot\FilterBundle\Filter\Type\SqlType;
 use HeimrichHannot\FilterBundle\FilterQuery\FilterQueryPart;
 use HeimrichHannot\FilterBundle\FilterQuery\FilterQueryPartCollection;
 use HeimrichHannot\FilterBundle\FilterQuery\FilterQueryPartProcessor;
@@ -31,6 +34,7 @@ use HeimrichHannot\FilterBundle\Type\Concrete\ButtonType;
 use HeimrichHannot\FilterBundle\Type\FilterTypeCollection;
 use HeimrichHannot\FilterBundle\Type\FilterTypeContext;
 use HeimrichHannot\FilterBundle\Type\FilterTypeInterface;
+use HeimrichHannot\TwigSupportBundle\Filesystem\TwigTemplateLocator;
 use HeimrichHannot\UtilsBundle\Model\ModelUtil;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -274,9 +278,16 @@ class FilterConfig implements \JsonSerializable
                 return;
             }
 
-            if (!isset($types[$element->type]) || \in_array($element->id, $skipElements) ||
-                $mode === static::QUERY_BUILDER_MODE_INITIAL_ONLY && !$element->isInitial ||
-                $mode === static::QUERY_BUILDER_MODE_SKIP_INITIAL && $element->isInitial) {
+            $initial = ((bool) $element->isInitial || \in_array($element->type, [
+                    PublishedType::TYPE,
+                    SqlType::TYPE,
+                    SkipParentsType::TYPE,
+                ]));
+
+            if (!isset($types[$element->type])
+                || \in_array($element->id, $skipElements)
+                || $mode === static::QUERY_BUILDER_MODE_INITIAL_ONLY && !$initial
+                || $mode === static::QUERY_BUILDER_MODE_SKIP_INITIAL && $initial) {
                 continue;
             }
 
@@ -512,7 +523,11 @@ class FilterConfig implements \JsonSerializable
      */
     public function getData(): array
     {
-        $data = $this->session->getData($this->getSessionKey());
+        $data = [];
+
+        if ($this->sessionKey) {
+            $data = $this->session->getData($this->getSessionKey());
+        }
 
         if (!$this->requestStack->getCurrentRequest()) {
             return $data;
@@ -595,7 +610,7 @@ class FilterConfig implements \JsonSerializable
         $config = $this->container->getParameter('huh.filter');
 
         if (!isset($config['filter']['templates'])) {
-            return $this->container->get('huh.utils.template')->getTemplate($name);
+            return $this->container->get(TwigTemplateLocator::class)->getTemplatePath($name);
         }
 
         $templates = $config['filter']['templates'];
@@ -606,7 +621,7 @@ class FilterConfig implements \JsonSerializable
             }
         }
 
-        return $this->container->get('huh.utils.template')->getTemplate($name);
+        return $this->container->get(TwigTemplateLocator::class)->getTemplatePath($name);
     }
 
     /**

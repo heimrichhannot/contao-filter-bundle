@@ -22,6 +22,16 @@ class ParentType extends ChoiceType
     /** {@inheritdoc} */
     public function getChoices(FilterConfigElementModel $element)
     {
+        if (null !== ($customChoices = $this->getCustomOptions($element))) {
+            $options = [];
+
+            foreach ($customChoices as $option) {
+                $options[$option['value']] = $option['label'];
+            }
+
+            return $options;
+        }
+
         $choices = [];
         $context = [];
         $filter = $this->config->getFilter();

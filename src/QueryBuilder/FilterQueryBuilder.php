@@ -286,6 +286,7 @@ class FilterQueryBuilder extends QueryBuilder
     {
         $filter = $config->getFilter();
         $data = $config->getData();
+        $addJoin = true;
 
         if ($element->isInitial && $element->alternativeValueSource) {
             $value = $this->getValueFromAlternativeSource($data[$name], $data, $element, $name, $config, $dca);
@@ -301,11 +302,23 @@ class FilterQueryBuilder extends QueryBuilder
 
         $alias = 'tl_category_association_'.$element->field;
 
-        $this->join($filter['dataContainer'], 'tl_category_association', $alias, "
-        $alias.categoryField='$element->field' AND 
-        $alias.parentTable='".$filter['dataContainer']."' AND
-        $alias.entity=".$filter['dataContainer'].'.id
-        ');
+        // check if table is already joined with the same alias
+        if (\is_array($this->getQueryParts()['join'][$filter['dataContainer']])) {
+            foreach ($this->getQueryParts()['join'][$filter['dataContainer']] as $join) {
+                if ($join['joinAlias'] === $alias) {
+                    $addJoin = false;
+                }
+            }
+        }
+
+        // join only if joinAlias do not already exist
+        if ($addJoin) {
+            $this->join($filter['dataContainer'], 'tl_category_association', $alias, "
+            $alias.categoryField='$element->field' AND
+            $alias.parentTable='".$filter['dataContainer']."' AND
+            $alias.entity=".$filter['dataContainer'].'.id
+            ');
+        }
 
         $operator = $this->getOperator($element, $defaultOperator, $dca, false);
 

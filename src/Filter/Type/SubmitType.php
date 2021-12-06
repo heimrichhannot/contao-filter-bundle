@@ -49,4 +49,9 @@ class SubmitType extends AbstractType
     public function getDefaultOperator(FilterConfigElementModel $element)
     {
     }
+
+    public function getHideLabel(FilterConfigElementModel $element): bool
+    {
+        return false;
+    }
 }

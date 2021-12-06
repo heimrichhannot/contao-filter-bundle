@@ -13,6 +13,7 @@ use Contao\Module;
 use Contao\System;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
 use HeimrichHannot\FilterBundle\Manager\FilterManager;
+use HeimrichHannot\TwigSupportBundle\Renderer\TwigTemplateRenderer;
 use Patchwork\Utf8;
 
 class ModuleFilter extends Module
@@ -70,18 +71,11 @@ class ModuleFilter extends Module
             $this->config->buildForm($this->config->getData());
         }
 
-
-
         $form = $this->config->getBuilder()->getForm();
-
-        /**
-         * @var \Twig_Environment
-         */
-        $twig = System::getContainer()->get('twig');
 
         $this->Template->filter = $this->config;
 
-        $this->Template->form = $twig->render(
+        $this->Template->form = System::getContainer()->get(TwigTemplateRenderer::class)->render(
             $this->config->getFilterTemplateByName($filter['template']),
             [
                 'filter' => $this->config,

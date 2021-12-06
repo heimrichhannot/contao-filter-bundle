@@ -70,12 +70,10 @@ class FilterType extends AbstractType
 
         // always add a hidden field with the page id
         global $objPage;
-
         $pageId = $objPage->id;
 
-        // if $objPage is null (i.e. on AjaxRequest), get the page id from Request
-        if (null === $objPage) {
-            $pageId = $request->get($filter['name'])[static::FILTER_PAGE_ID_NAME];
+        if (!$objPage->id && isset($this->config->getData()[self::FILTER_PAGE_ID_NAME])) {
+            $pageId = $this->config->getData()[self::FILTER_PAGE_ID_NAME];
         }
 
         $builder->add(static::FILTER_PAGE_ID_NAME, HiddenType::class, ['attr' => ['value' => $pageId]]);
@@ -86,7 +84,7 @@ class FilterType extends AbstractType
         } else {
             // Check if referrer is set to set again
             if (Environment::get('isAjaxRequest') && $request->get($filter['name']) && isset($request->get($filter['name'])[static::FILTER_REFERRER_NAME])) {
-                if (parse_url($request->get($filter['name'])[static::FILTER_REFERRER_NAME], PHP_URL_HOST) !== parse_url(Environment::get('url'), PHP_URL_HOST)) {
+                if (parse_url($request->get($filter['name'])[static::FILTER_REFERRER_NAME], \PHP_URL_HOST) !== parse_url(Environment::get('url'), \PHP_URL_HOST)) {
                     throw new \Exception('Invalid redirect url.');
                 }
 

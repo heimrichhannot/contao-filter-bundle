@@ -75,18 +75,18 @@ abstract class AbstractType
         switch ($element->defaultValueType) {
             case static::VALUE_TYPE_ARRAY:
                 $value = array_map(function ($val) {
-                    return $val['value'];
+                    return System::getContainer()->get(\HeimrichHannot\UtilsBundle\String\StringUtil::class)->replaceInsertTags($val['value']);
                 }, StringUtil::deserialize($element->defaultValueArray, true));
 
                 break;
 
             default:
-                $value = $element->defaultValue;
+                $value = System::getContainer()->get(\HeimrichHannot\UtilsBundle\String\StringUtil::class)->replaceInsertTags($element->defaultValue, false);
 
                 break;
         }
 
-        return System::getContainer()->get(\HeimrichHannot\UtilsBundle\String\StringUtil::class)->replaceInsertTags($value, false);
+        return $value;
     }
 
     public static function getInitialValue(FilterConfigElementModel $element, array $contextualValues = [])
@@ -112,6 +112,34 @@ abstract class AbstractType
                 $value = $element->initialValue;
 
                 break;
+        }
+
+        // multilingual initial values
+        if ($element->addMultilingualInitialValues) {
+            foreach (StringUtil::deserialize($element->multilingualInitialValues, true) as $row) {
+                if ($GLOBALS['TL_LANGUAGE'] === $row['language']) {
+                    switch ($row['initialValueType']) {
+                        case static::VALUE_TYPE_ARRAY:
+                            $value = $row['initialValueArray'];
+
+                            break;
+
+                        case static::VALUE_TYPE_CONTEXTUAL:
+                            if (isset($contextualValues[$element->field])) {
+                                $value = $contextualValues[$element->field];
+                            }
+
+                            break;
+
+                        default:
+                            $value = $row['initialValue'];
+
+                            break;
+                    }
+
+                    break;
+                }
+            }
         }
 
         return $value;
@@ -194,7 +222,7 @@ abstract class AbstractType
         $options['label'] = $this->getLabel($element, $builder) ?: $element->title;
 
         // sr-only style for non-bootstrap projects is shipped within the filter_form_* templates
-        if (true === (bool) $element->hideLabel) {
+        if ($this->getHideLabel($element)) {
             $options['label_attr'] = ['class' => 'sr-only'];
         }
 
@@ -246,6 +274,11 @@ abstract class AbstractType
         }
 
         return $options;
+    }
+
+    public function getHideLabel(FilterConfigElementModel $element): bool
+    {
+        return (bool) $element->hideLabel;
     }
 
     /**
@@ -312,5 +345,21 @@ abstract class AbstractType
         }
 
         return System::getContainer()->get('huh.utils.date')->getTimeStamp($element->{$field});
+    }
+
+    /**
+     * Return custom options if custom options config is set. Otherwise return null.
+     */
+    protected function getCustomOptions(FilterConfigElementModel $element): ?array
+    {
+        if (false === (bool) $element->customOptions) {
+            return null;
+        }
+
+        if (null === $element->options) {
+            return [];
+        }
+
+        return StringUtil::deserialize($element->options, true);
     }
 }

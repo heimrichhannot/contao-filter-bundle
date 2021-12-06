@@ -155,7 +155,7 @@ class FilterConfigElementModel extends Model implements \JsonSerializable
      *
      * @return \Contao\Model\Collection|FilterConfigElementModel[]|FilterConfigElementModel|null A collection of models or null if there are no filter elements
      */
-    public function findPublishedByPid($intId, $intLimit = 0, array $arrOptions = [])
+    public static function findPublishedByPid($intId, $intLimit = 0, array $arrOptions = [])
     {
         $t = static::$strTable;
         $arrColumns = ["$t.pid=?"];
@@ -193,7 +193,7 @@ class FilterConfigElementModel extends Model implements \JsonSerializable
      *
      * @return \Contao\Model\Collection|FilterConfigElementModel[]|FilterConfigElementModel|null A collection of models or null if there are no filter elements
      */
-    public function findPublishedByPidAndTypes($intId, array $types = [], $intLimit = 0, array $arrOptions = [])
+    public static function findPublishedByPidAndTypes($intId, array $types = [], $intLimit = 0, array $arrOptions = [])
     {
         $t = static::$strTable;
         $arrColumns = ["$t.pid=?"];

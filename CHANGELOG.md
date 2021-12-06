@@ -1,11 +1,68 @@
 # Changelog
+
 All notable changes to this project will be documented in this file.
 
+## [1.16.0] - 2021-12-02
+- Added: buildQueryForModels() to YearType
+- Fixed: YearType not correctly evaluated in DateChoice type
+- Fixed: exception in FilterConfig when not sessionKey set
+- Fixed: DateChoice type date period always empty
+
+## [1.15.0] - 2021-11-25
+
+- Changed: added name as class to form_row at bootstrap 5 template
+
+## [1.14.0] - 2021-11-16
+
+- Changed: default value array behavior -> if no options are found, backend palette fields stay text fields instead of empty selects
+- Fixed: insert tag replacing for default values
+
+## [1.13.2] - 2021-11-12
+
+- Fixed: missing page_id parameter in ajax context
+
+## [1.13.1] - 2021-10-29
+- Fixed: custom options for ParentType not working
+
+## [1.13.0] - 2021-10-19
+- Added: bootstrap 5 form theme
+- Changed: use twig support bundle for template loading and rendering
+
+## [1.12.3] - 2021-10-11
+
+- Fixed: static method types in `FilterConfigElementModel`
+
+## [1.12.2] - 2021-10-01
+- Fixed: hide label option is used if set in db even if FilterType does not support it
+
+## [1.12.1] - 2021-09-15
+
+- Fixed: preview mode for contao 4.9
+
+## [1.12.0] - 2021-08-31
+
+- Added: support for php 8
+
+## [1.11.3] - 2021-08-11
+- Fixed: sql, published and skip_parent types are not evaluated as initial types ([#21])
+
+## [1.11.2] - 2021-07-26
+- Fixed: datetype not working independent from daterange ([#20])
+
+## [1.11.1] - 2021-07-23
+- Changed: added check for existing joinAlias in FilterQueryBuilder
+
+## [1.11.0] - 2021-06-23
+- Added: support for multilingual initial filter field values
+
+## [1.10.2] - 2021-06-07
+- fixed FilterConfig service alias
+
 ## [1.10.1] - 2021-03-25
-- fixed error in js code introduced in 1.9.2 (#18)
+- fixed error in js code introduced in 1.9.2 ([#18])
 
 ## [1.10.0] - 2021-03-23
-- added wildcardSuffix options to whereWidget (#17)
+- added wildcardSuffix options to whereWidget ([#17])
 
 ## [1.9.3] - 2021-03-22
 - adjust service definition for `FieldOptionsChoice`
@@ -134,52 +191,11 @@ All notable changes to this project will be documented in this file.
 
 ## [1.0.0] - 2020-04-14
 - added async form submit support to select fields
-- updated import in filter bundle js 
+- updated import in filter bundle js
 
-## [1.0.0-beta130.2] - 2020-04-09
-- fixed error if page id is not set in ajax controller 
 
-## [1.0.0-beta130.1] - 2020-04-08
-- added retrieve global objPage from current page when not initialized in ajax request
-
-## [1.0.0-beta130.0] - 2020-04-07
-- renamed tl_filter_config.action to tl_filter_config.filterFormAction to fix problems with contao 4.9 (field is automatically renamend by the bundle)
-
-## [1.0.0-beta129.1] - 2020-04-06
-- fixed an autowiring issue
-- removed a dev leftover from composer.json
-- removed unnecessary submitOnChange's in tl_filter_config
-
-## [1.0.0-beta129.0] - 2020-04-06
-- allow install within contao 4.9 and symfony 4
-
-## [1.0.0-beta128.7] - 2020-03-04
-- fixed yarn deps
-
-## [1.0.0-beta128.6] - 2020-03-04
-- fixed detect if form is resetted in async mode
-
-## [1.0.0-beta128.5] - 2020-02-26
-- fixed reset of form for async submit
-
-## [1.0.0-beta128.4] - 2020-02-25
-- fixed replacement of filter for async submit
-
-## [1.0.0-beta128.3] - 2020-02-19
-- fixed where query for cfg tag field when value is empty
-
-## [1.0.0-beta128.2] - 2020-01-07
-- fixed invalid redirect url exception when filter action is set as insert tag
-
-## [1.0.0-beta128.1] - 2019-12-20
-- fixed incorrect exception in FilterType
-
-## [1.0.0-beta128] - 2019-12-10
-- fixed redirect issue
-
-## [1.0.0-beta127] - 2019-12-04
-- added missing messages
-
-## [1.0.0-beta126] - 2019-11-18
-- added option to reset filter on page load/reload
-
+[#21]: https://github.com/heimrichhannot/contao-filter-bundle/pull/21
+[#20]: https://github.com/heimrichhannot/contao-filter-bundle/pull/20
+[#18]: https://github.com/heimrichhannot/contao-filter-bundle/pull/18
+[#17]: https://github.com/heimrichhannot/contao-filter-bundle/pull/17
+[#16]: https://github.com/heimrichhannot/contao-filter-bundle/pull/16

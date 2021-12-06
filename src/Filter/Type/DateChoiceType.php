@@ -157,9 +157,17 @@ class DateChoiceType extends ChoiceType
      */
     public function getDates(string $dateFormat, string $min = null, string $max = null)
     {
-        $min = empty($min) ? '946684800' : $min;
-        $max = empty($max) ? time() : $max;
-        $dates = range(date($dateFormat, $min), date($dateFormat, $max));
+        $period = new \DatePeriod(
+            (new \DateTime())->setTimestamp($min ?? 946684800),
+            new \DateInterval('P1D'),
+            (new \DateTime())->setTimestamp($max ?? time())
+        );
+
+        $dates = [];
+
+        foreach ($period as $key => $value) {
+            $dates[] = $value->format($dateFormat);
+        }
 
         return array_combine($dates, $dates);
     }

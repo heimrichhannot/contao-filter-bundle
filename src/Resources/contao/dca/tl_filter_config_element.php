@@ -117,6 +117,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'coordinatesMode',
             'allowHtmlGeoLocation',
             'submitOnInput',
+            'addMultilingualInitialValues',
         ],
         'default' => '{general_legend},title,type,isInitial;{publish_legend},published;',
         'text' => '{general_legend},title,type,isInitial;{config_legend},field,customName,customOperator,addDefaultValue,submitOnInput;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
@@ -190,6 +191,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
         'allowHtmlGeoLocation' => 'useCurrentLocationElement,currentLocationHiddenElement',
         'published' => 'start,stop',
         'submitOnInput' => 'threshold,debounce',
+        'addMultilingualInitialValues' => 'multilingualInitialValues',
     ],
     'fields' => [
         'id' => [
@@ -1310,6 +1312,71 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             },
             'eval' => ['chosen' => true, 'tl_class' => 'w50 clr', 'includeBlankOption' => true, 'mandatory' => true],
             'sql' => "int(10) unsigned NOT NULL default '0'",
+        ],
+        'addMultilingualInitialValues' => [
+            'label' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['addMultilingualInitialValues'],
+            'exclude' => true,
+            'inputType' => 'checkbox',
+            'eval' => ['tl_class' => 'w50', 'submitOnChange' => true],
+            'sql' => "char(1) NOT NULL default ''",
+        ],
+        'multilingualInitialValues' => [
+            'label' => &$GLOBALS['TL_LANG']['tl_list_config']['multilingualInitialValues'],
+            'inputType' => 'multiColumnEditor',
+            'eval' => [
+                'tl_class' => 'long clr',
+                'multiColumnEditor' => [
+                    'palettes' => [
+                        '__selector__' => [
+                            'initialValueType',
+                        ],
+                        'default' => 'language,initialValueType',
+                    ],
+                    'subpalettes' => [
+                        'initialValueType_'.\HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_SCALAR => 'initialValue',
+                        'initialValueType_'.\HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_ARRAY => 'initialValueArray',
+                        'initialValueType_'.\HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_LATEST => 'parentField',
+                    ],
+                    'fields' => [
+                        'language' => [
+                            'label' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['language'],
+                            'inputType' => 'select',
+                            'options' => \Contao\System::getLanguages(),
+                            'eval' => ['tl_class' => 'w50', 'mandatory' => true, 'includeBlankOption' => true, 'chosen' => true, 'groupStyle' => 'width: 400px;'],
+                        ],
+                        'initialValueType' => [
+                            'label' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['initialValueType'],
+                            'exclude' => true,
+                            'filter' => true,
+                            'inputType' => 'select',
+                            'options_callback' => ['huh.filter.listener.dca.callback.filterconfigelement', 'getValueTypeOptions'],
+                            'reference' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['reference'],
+                            'eval' => [
+                                'tl_class' => 'w50 clr',
+                                'mandatory' => true,
+                                'includeBlankOption' => true,
+                                'submitOnChange' => true,
+                                'groupStyle' => 'width: 200px;',
+                            ],
+                        ],
+                        'initialValue' => [
+                            'label' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['initialValue'],
+                            'exclude' => true,
+                            'search' => true,
+                            'inputType' => 'text',
+                            'eval' => ['maxlength' => 128, 'tl_class' => 'w50', 'groupStyle' => 'width: 400px;'],
+                        ],
+                        'initialValueArray' => [
+                            'label' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['initialValue_value'],
+                            'exclude' => true,
+                            'search' => true,
+                            'inputType' => 'text',
+                            'eval' => ['tl_class' => 'w50', 'mandatory' => true, 'multiple' => true, 'groupStyle' => 'width: 400px'],
+                        ],
+                    ],
+                ],
+            ],
+            'sql' => 'blob NULL',
         ],
     ],
 ];

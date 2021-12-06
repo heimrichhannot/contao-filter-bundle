@@ -1,0 +1,94 @@
+{% use "bootstrap_4_layout.html.twig" %}
+
+{# Rows #}
+
+{%- block form_row -%}
+    {%- if compound is defined and compound -%}
+        {%- set element = 'fieldset' -%}
+    {%- endif -%}
+    {%- set widget_attr = {} -%}
+    {%- if help is not empty -%}
+        {%- set widget_attr = {attr: {'aria-describedby': id ~"_help"}} -%}
+    {%- endif -%}
+    {%- set row_class = row_class|default(row_attr.class|default('mb-3')|trim) -%}
+    <{{ element|default('div') }}{% with {attr: row_attr|merge({class: (row_class ~ ' ' ~ name)|trim})} %}{{ block('attributes') }}{% endwith %}>
+    {%- if 'form-floating' in row_class -%}
+        {{- form_widget(form, widget_attr) -}}
+        {{- form_label(form) -}}
+    {%- else -%}
+        {{- form_label(form) -}}
+        {{ block('input_prepend') }}
+        {{- form_widget(form, widget_attr) -}}
+        {{ block('input_append') }}
+    {%- endif -%}
+    {{- form_help(form) -}}
+    {{- form_errors(form) -}}
+    </{{ element|default('div') }}>
+{%- endblock form_row %}
+
+{% block input_prepend %}
+{% if (input_prepend|default()) or (input_append|default()) %}
+    <div class="input-group">
+    {% if input_prepend is not empty %}
+        {% if 'btn' in input_prepend %}
+            {{ input_prepend|raw }}
+        {% else %}
+            <span class="input-group-text">{{ input_prepend|raw }}</span>
+        {% endif %}
+    {% endif %}
+    {% endif %}
+{% endblock input_prepend %}
+
+{% block input_append %}
+{% if (input_prepend|default()) or (input_append|default()) %}
+    {% if input_append is not empty %}
+        {% if 'btn' in input_append %}
+            {{ input_append|raw }}
+        {% else %}
+            <span class="input-group-text">{{ input_append|raw }}</span>
+        {% endif %}
+    {% endif %}
+    </div>
+{% endif %}
+{% endblock input_append %}
+
+{% block form_widget_simple -%}
+    {%- if type is not defined or type != 'hidden' %}
+        {%- set widget_class = ' form-control' %}
+        {%- if type|default('') == 'color' -%}
+            {%- set widget_class = widget_class ~ ' form-control-color' -%}
+        {%- elseif type|default('') == 'range' -%}
+            {%- set widget_class = ' form-range' -%}
+        {%- endif -%}
+        {%- set attr = attr|merge({class: (attr.class|default('') ~ widget_class)|trim}) -%}
+    {% endif -%}
+    {%- if type is defined and type in ['range', 'color'] %}
+        {# Attribute "required" is not supported #}
+        {% set required = false %}
+    {% endif -%}
+    {%- set type = type|default('text') -%}
+    {%- if type == 'range' or type == 'color' -%}
+        {# Attribute "required" is not supported #}
+        {%- set required = false -%}
+    {%- endif -%}
+    <input type="{{ type }}" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}" {% endif %}/>
+{%- endblock form_widget_simple %}
+
+{%- block form_label -%}
+    {% if label is not same as(false) -%}
+        {%- set parent_label_class = parent_label_class|default(label_attr.class|default('')) -%}
+        {%- if compound is defined and compound -%}
+            {%- set element = 'legend' -%}
+            {%- if 'col-form-label' not in parent_label_class -%}
+                {%- set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' col-form-label' )|trim}) -%}
+            {%- endif -%}
+        {%- else -%}
+            {%- set row_class = row_class|default(row_attr.class|default('')) -%}
+            {%- set label_attr = label_attr|merge({for: id}) -%}
+            {%- if 'col-form-label' not in parent_label_class -%}
+                {%- set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ('input-group' in row_class ? ' input-group-text' : ' form-label') )|trim}) -%}
+            {%- endif -%}
+        {%- endif -%}
+    {%- endif -%}
+    {{- parent() -}}
+{%- endblock form_label %}
