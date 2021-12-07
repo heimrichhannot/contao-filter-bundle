@@ -17,7 +17,8 @@
     "twig/extensions": "^1.5",
     "heimrichhannot/truncate-html": "^1.0",
     "symfony/form": "~3.4|~4.0",
-    "ext-pdo": "*"
+    "ext-pdo": "*",
+    "psr/container": "^1.0 || ^2.0"
   },
   "require-dev": {
     "contao/core-bundle": "4.4.*",
