@@ -151,7 +151,7 @@ class DateChoice extends AbstractChoice
             $dates[$translatedDate] = $translatedDate;
         }
 
-        krsort($dates, SORT_NUMERIC);
+        krsort($dates, \SORT_NUMERIC);
 
         return $dates;
     }

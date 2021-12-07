@@ -13,19 +13,31 @@ use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\Environment;
 use Contao\InsertTags;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Types\Types;
+use HeimrichHannot\FilterBundle\Event\ModifyFilterQueryPartsEvent;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
 use HeimrichHannot\FilterBundle\Filter\Type\PublishedType;
 use HeimrichHannot\FilterBundle\Filter\Type\SkipParentsType;
 use HeimrichHannot\FilterBundle\Filter\Type\SqlType;
+use HeimrichHannot\FilterBundle\FilterQuery\FilterQueryPart;
+use HeimrichHannot\FilterBundle\FilterQuery\FilterQueryPartCollection;
+use HeimrichHannot\FilterBundle\FilterQuery\FilterQueryPartProcessor;
 use HeimrichHannot\FilterBundle\Form\Extension\FormButtonExtension;
 use HeimrichHannot\FilterBundle\Form\Extension\FormTypeExtension;
 use HeimrichHannot\FilterBundle\Form\FilterType;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\Model\FilterConfigModel;
+use HeimrichHannot\FilterBundle\Processor\FilterContext;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 use HeimrichHannot\FilterBundle\Session\FilterSession;
+use HeimrichHannot\FilterBundle\Type\Concrete\ButtonType;
+use HeimrichHannot\FilterBundle\Type\FilterTypeCollection;
+use HeimrichHannot\FilterBundle\Type\FilterTypeContext;
+use HeimrichHannot\FilterBundle\Type\FilterTypeInterface;
 use HeimrichHannot\TwigSupportBundle\Filesystem\TwigTemplateLocator;
+use HeimrichHannot\UtilsBundle\Model\ModelUtil;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
@@ -93,6 +105,26 @@ class FilterConfig implements \JsonSerializable
      * @var bool
      */
     protected $formSubmitted = false;
+
+    /**
+     * @var FilterQueryPartCollection
+     */
+    protected $filterQueryPartCollection;
+
+    /**
+     * @var EventDispatcherInterface
+     */
+    protected $eventDispatcher;
+
+    /**
+     * @var FilterQueryPartProcessor
+     */
+    protected $filterQueryPartProcessor;
+    /**
+     * @var ModelUtil
+     */
+    protected $modelUtil;
+
     /**
      * @var ContainerInterface
      */
@@ -111,13 +143,21 @@ class FilterConfig implements \JsonSerializable
         ContaoFrameworkInterface $framework,
         FilterSession $session,
         Connection $connection,
-        RequestStack $requestStack
+        RequestStack $requestStack,
+        FilterQueryPartCollection $filterQueryPartCollection,
+        EventDispatcherInterface $eventDispatcher,
+        FilterQueryPartProcessor $filterQueryPartProcessor,
+        ModelUtil $modelUtil
     ) {
         $this->framework = $framework;
         $this->session = $session;
         $this->container = $container;
         $this->queryBuilder = new FilterQueryBuilder($this->container, $this->framework, $connection);
         $this->requestStack = $requestStack;
+        $this->filterQueryPartCollection = $filterQueryPartCollection;
+        $this->eventDispatcher = $eventDispatcher;
+        $this->filterQueryPartProcessor = $filterQueryPartProcessor;
+        $this->modelUtil = $modelUtil;
     }
 
     /**
@@ -139,6 +179,12 @@ class FilterConfig implements \JsonSerializable
     {
         if (null === $this->filter) {
             return;
+        }
+
+        foreach ($this->elements as $element) {
+            if (ButtonType::TYPE === $element->type && ButtonType::BUTTON_TYPE_RESET === $element->buttonType) {
+                $this->addResetName($element->getElementName());
+            }
         }
 
         $factory = Forms::createFormFactoryBuilder()->addTypeExtensions([
@@ -220,7 +266,8 @@ class FilterConfig implements \JsonSerializable
             return;
         }
 
-        $types = $this->container->get('huh.filter.choice.type')->getCachedChoices();
+        $types = array_merge($this->container->get('huh.filter.choice.type')->getCachedChoices(),
+            $this->container->get(FilterTypeCollection::class)->getTypes());
 
         if (!\is_array($types) || empty($types)) {
             return;
@@ -244,6 +291,24 @@ class FilterConfig implements \JsonSerializable
                 continue;
             }
 
+            if (!\is_array($types[$element->type]) && $types[$element->type] instanceof FilterTypeInterface) {
+                $this->processFilterType($element, $types[$element->type]);
+
+                continue;
+            }
+
+            if (!class_exists($types[$element->type]['class'], false)) {
+                continue;
+            }
+
+            $filterClass = new $types[$element->type]['class']($this);
+
+            if (\is_array($types[$element->type]) && $filterClass instanceof AbstractType) {
+                $this->processLegacyFilterType($element, $types[$element->type]);
+
+                continue;
+            }
+
             $config = $types[$element->type];
             $class = $config['class'];
             $skip = $queryBuilder->getSkip();
@@ -260,6 +325,43 @@ class FilterConfig implements \JsonSerializable
             }
 
             $type->buildQuery($queryBuilder, $element);
+        }
+
+        if (null === ($filterConfigModel = $this->modelUtil->findModelInstanceByPk('tl_filter_config', $this->getFilter()['id']))) {
+            return;
+        }
+
+        $filterContext = new FilterContext($filterConfigModel, $this->getData());
+
+        //apply parts from FilterQueryPartCollection
+        /** @noinspection PhpMethodParametersCountMismatchInspection */
+        /** @noinspection PhpParamsInspection */
+        $event = $this->eventDispatcher->dispatch(
+            ModifyFilterQueryPartsEvent::NAME,
+            new ModifyFilterQueryPartsEvent($this->filterQueryPartCollection, $filterContext)
+        );
+
+        $this->prepareFilterQueryParts($event->getPartsCollection());
+
+        /**
+         * @var $part FilterQueryPart
+         */
+        foreach ($this->filterQueryPartCollection->getParts() as $part) {
+            if ($part->isDisabled()) {
+                $this->filterQueryPartCollection->removePartByName($part->getName());
+
+                continue;
+            }
+
+            $this->queryBuilder->andWhere($this->filterQueryPartProcessor->composeWhereForQueryBuilder($part, $this->queryBuilder));
+
+            $this->queryBuilder->setParameter(
+                $part->getWildcard(),
+                $part->getValue(),
+                $part->getValueType()
+            );
+
+            $this->filterQueryPartCollection->removePartByName($part->getName());
         }
     }
 
@@ -301,6 +403,7 @@ class FilterConfig implements \JsonSerializable
             }
 
             $data = $form->getData();
+
             $data['f_submitted'] = true;
             $url = $this->container->get('huh.utils.url')->removeQueryString([$form->getName()], $url ?: null);
 
@@ -421,6 +524,7 @@ class FilterConfig implements \JsonSerializable
     public function getData(): array
     {
         $data = [];
+
         if ($this->sessionKey) {
             $data = $this->session->getData($this->getSessionKey());
         }
@@ -624,6 +728,62 @@ class FilterConfig implements \JsonSerializable
         return get_object_vars($this);
     }
 
+    protected function processFilterType(FilterConfigElementModel $config, FilterTypeInterface $filterType)
+    {
+        if (!$this->getData()[$config->getElementName()] && !(bool) $config->isInitial) {
+            return;
+        }
+
+        $context = new FilterTypeContext();
+        $context->setValue($this->getData()[$config->getElementName()]);
+        $context->setElementConfig($config);
+        $context->setFilterConfig($config->getRelated('pid'));
+
+        $filterType->buildQuery($context);
+    }
+
+    protected function processLegacyFilterType(FilterConfigElementModel $config, array $element)
+    {
+        if (!$this->getData()[$config->field] && !(bool) $config->isInitial) {
+            return;
+        }
+
+        if ('' === $config->customOperator || (true === (bool) $config->customOperator && false === (bool) $config->operator)) {
+            $class = $element['class'];
+
+            if (!class_exists($class)) {
+                return;
+            }
+
+            /** @var AbstractType $type */
+            $type = new $class($this);
+            $config->operator = $type->getDefaultOperator($config);
+        }
+
+        $context = new FilterTypeContext();
+
+        switch ($config->initialValueType) {
+            case AbstractType::VALUE_TYPE_ARRAY:
+                $context->setValue($config->initialValueArray);
+                $context->setValueType(Connection::PARAM_STR_ARRAY);
+                $config->initialValueType = Connection::PARAM_STR_ARRAY;
+
+                break;
+
+            default:
+                $context->setValue($config->initialValue);
+                $context->setValueType(Types::STRING);
+                $config->initialValueType = Types::STRING;
+
+                break;
+        }
+
+        $context->setElementConfig($config);
+        $context->setFilterConfig($config->getRelated('pid'));
+
+        $this->filterQueryPartCollection->addPart($this->filterQueryPartProcessor->composeQueryPart($context));
+    }
+
     protected function isResetButtonClicked(FormInterface $form): bool
     {
         if (!(null !== $form->getClickedButton() && \in_array($form->getClickedButton()->getName(),
@@ -672,20 +832,61 @@ class FilterConfig implements \JsonSerializable
             if (null !== $propertyPath && $config->getMapped() && $form->isSynchronized() && !$form->isDisabled()) {
                 // If the field is of type DateTime and the data is the same skip the update to
                 // keep the original object hash
-                if ($form->getData() instanceof \DateTime && $form->getData() === $propertyAccessor->getValue($data,
+                if ($form->getData() instanceof \DateTimeInterface && $form->getData() === $propertyAccessor->getValue($data,
                         $propertyPath)) {
                     continue;
                 }
 
                 // If the data is identical to the value in $data, we are
                 // dealing with a reference
-                if (!\is_object($data) || !$config->getByReference() || $form->getData() !== $propertyAccessor->getValue($data,
-                        $propertyPath)) {
+                if (!\is_object($data) || !$config->getByReference() || $form->getData() !== $propertyAccessor->getValue($data, $propertyPath)) {
                     $propertyAccessor->setValue($data, $propertyPath, $form->getData());
                 }
             }
         }
 
         $this->builder->setData($data);
+    }
+
+    /* prepare FilterQueryParts to behave like in the original implementation
+    * (initial filters are overwritten by other filters for the same field, if they are after the initial filter)
+    * TODO: this needs to be refactored after removing legacy filters
+    */
+    private function prepareFilterQueryParts(FilterQueryPartCollection $filterQueryPartCollection)
+    {
+        foreach ($filterQueryPartCollection->getTargetFields() as $targetField) {
+            if (1 >= \count($targetField)) {
+                continue;
+            }
+
+            $initialFilters = array_combine(array_keys($targetField), array_column($targetField, 'initial'));
+
+            foreach ($initialFilters as $key => $filterElement) {
+                if (!$targetField[$key]['initial']) {
+                    continue;
+                }
+                //check if this filter is overridable
+                if (!$targetField[$key]['overridable']) {
+                    continue;
+                }
+
+                //check if there are other not initial filters for this field
+                $targetKey = array_search($key, array_keys($targetField), true);
+
+                if (false !== $targetKey) {
+                    $targetFieldsSlice = \array_slice($targetField, $targetKey + 1, null, true);
+
+                    if (!empty($targetFieldsSlice)) {
+                        foreach ($targetFieldsSlice as $sliceElement) {
+                            if (!$sliceElement['initial'] && null !== ($element = $this->filterQueryPartCollection->getPartByName($key))) {
+                                $element->setDisabled(true);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        $this->filterQueryPartCollection = $filterQueryPartCollection;
     }
 }

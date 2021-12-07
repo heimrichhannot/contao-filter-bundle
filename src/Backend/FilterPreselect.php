@@ -14,6 +14,7 @@ use Contao\StringUtil;
 use Contao\System;
 use HeimrichHannot\FilterBundle\Filter\Type\ChoiceType;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
+use HeimrichHannot\FilterBundle\Type\AbstractFilterType;
 
 class FilterPreselect
 {
@@ -48,12 +49,12 @@ class FilterPreselect
         $choices = $this->prepareElementChoices((int) $row['id']);
 
         switch ($row['initialValueType']) {
-            case \HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_SCALAR:
+            case AbstractFilterType::VALUE_TYPE_SCALAR:
                 $label = $choices[$row['initialValue']] ?? $row['initialValue'];
 
                 break;
 
-            case \HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_ARRAY:
+            case AbstractFilterType::VALUE_TYPE_ARRAY:
                 $values = array_map(
                     function ($item) {
                         return $item['value'] ?? null;
@@ -65,8 +66,8 @@ class FilterPreselect
 
                 break;
 
-            case \HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_CONTEXTUAL:
-                $label = \HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_CONTEXTUAL;
+            case AbstractFilterType::VALUE_TYPE_CONTEXTUAL:
+                $label = AbstractFilterType::VALUE_TYPE_CONTEXTUAL;
         }
 
         return sprintf('%s -> %s [ID: %s]', $filterConfigElement->title, $label, $filterConfigElement->id);

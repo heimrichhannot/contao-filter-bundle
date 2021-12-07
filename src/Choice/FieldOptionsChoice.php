@@ -14,6 +14,7 @@ use Contao\System;
 use Contao\Widget;
 use Doctrine\DBAL\FetchMode;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
+use HeimrichHannot\FilterBundle\Type\FilterTypeCollection;
 use HeimrichHannot\UtilsBundle\Choice\AbstractChoice;
 use HeimrichHannot\UtilsBundle\Model\ModelUtil;
 use Symfony\Component\Translation\Translator;
@@ -118,7 +119,7 @@ class FieldOptionsChoice extends AbstractChoice
 
         $options = StringUtil::deserialize($element->options, true);
 
-        return $options;
+        return $this->adjustOptionLabels($element, $filter, $options);
     }
 
     /**
@@ -129,7 +130,6 @@ class FieldOptionsChoice extends AbstractChoice
     protected function getDcaOptions(FilterConfigElementModel $element, array $filter, array $dca)
     {
         $options = [];
-        $dca = $GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element->field];
 
         if (isset($dca['eval']['isCategoryField']) && $dca['eval']['isCategoryField']) {
             if (isset($dca['options_callback'])) {
@@ -141,10 +141,6 @@ class FieldOptionsChoice extends AbstractChoice
 
             $options = $this->getCategoryWidgetOptions($element, $filter, $dca);
 
-            return $options;
-        }
-
-        if (!isset($dca['inputType'])) {
             return $options;
         }
 
@@ -172,6 +168,13 @@ class FieldOptionsChoice extends AbstractChoice
     protected function getWidgetOptions(FilterConfigElementModel $element, array $filter, array $dca)
     {
         $options = [];
+
+        $filterTypeCollection = System::getContainer()->get(FilterTypeCollection::class);
+
+        // fix for new filter types to show possible choices if inputType dca attribute is not given
+        if ($filterTypeCollection->hasType($element->type)) {
+            $dca['inputType'] = $element->inputType;
+        }
 
         if (!isset($GLOBALS['TL_FFL'][$dca['inputType']]) && (System::getContainer()->get('huh.utils.container')->isBackend() && !isset($GLOBALS['BE_FFL'][$dca['inputType']]))) {
             return $options;
@@ -255,45 +258,7 @@ class FieldOptionsChoice extends AbstractChoice
             }
         }
 
-        if (!empty($options) && true === (bool) $element->adjustOptionLabels && !empty($element->optionLabelPattern)) {
-            if (null !== ($filterQueryBuilder = System::getContainer()->get('huh.filter.manager')->getQueryBuilder($filter['id'], [$element->id]))) {
-                $filterQueryBuilder->select([$filter['dataContainer'].'.'.$element->field, $filter['dataContainer'].'.*']);
-                $filterQueryBuilder->orderBy($element->field);
-                $rows = $filterQueryBuilder->execute()->fetchAll();
-
-                $data = [];
-
-                foreach ($rows as $row) {
-                    $currentValue = $row[$element->field];
-
-                    if (isset($data[$currentValue])) {
-                        ++$data[$currentValue]['count'];
-
-                        continue;
-                    }
-
-                    $data[$currentValue] = ['data' => $row, 'count' => 1];
-                }
-
-                foreach ($options as $key => &$option) {
-                    if (!isset($option['label']) || !isset($rows[$option['value']])) {
-                        continue;
-                    }
-
-                    $params = $data[$option['value']];
-                    $params['label'] = $option['label'];
-
-                    foreach ($params as $key => $value) {
-                        unset($params[$key]);
-                        $params['%'.$key.'%'] = $value;
-                    }
-
-                    $option['label'] = System::getContainer()->get('translator')->trans($element->optionLabelPattern, $params);
-                }
-            }
-        }
-
-        return $options;
+        return $this->adjustOptionLabels($element, $filter, $options);
     }
 
     /**
@@ -366,5 +331,52 @@ class FieldOptionsChoice extends AbstractChoice
         }
 
         return implode(',', $choices);
+    }
+
+    private function adjustOptionLabels(FilterConfigElementModel $element, array $filter, array $options): array
+    {
+        if (!empty($options) && true === (bool) $element->adjustOptionLabels && !empty($element->optionLabelPattern)) {
+            if (null !== ($filterQueryBuilder = System::getContainer()->get('huh.filter.manager')->getQueryBuilder($filter['id'], [$element->id]))) {
+                $filterQueryBuilder->select([$filter['dataContainer'].'.'.$element->field, $filter['dataContainer'].'.*']);
+                $filterQueryBuilder->orderBy($element->field);
+                $rows = $filterQueryBuilder->execute()->fetchAll();
+
+                $data = [];
+
+                foreach ($rows as $row) {
+                    $currentValue = $row[$element->field];
+
+                    if (isset($data[$currentValue])) {
+                        ++$data[$currentValue]['count'];
+
+                        continue;
+                    }
+
+                    $data[$currentValue] = ['data' => $row, 'count' => 1];
+                }
+
+                foreach ($options as &$option) {
+                    if (!isset($option['label']) || !isset($rows[$option['value']])) {
+                        continue;
+                    }
+
+                    $params = $data[$option['value']];
+                    $params['label'] = $option['label'];
+
+                    foreach ($params as $key => $value) {
+                        unset($params[$key]);
+                        $params['%'.$key.'%'] = $value;
+                    }
+
+                    if (!$params['%count%']) {
+                        $params['%count%'] = 0;
+                    }
+
+                    $option['label'] = System::getContainer()->get('translator')->trans($element->optionLabelPattern, $params);
+                }
+            }
+        }
+
+        return $options;
     }
 }

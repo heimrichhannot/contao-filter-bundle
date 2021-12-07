@@ -19,6 +19,9 @@ use HeimrichHannot\UtilsBundle\Date\DateUtil;
 use HeimrichHannot\UtilsBundle\Model\ModelUtil;
 use Symfony\Component\Form\FormBuilderInterface;
 
+/**
+ * @deprecated since 1.12 and will be removed in version 2.0
+ */
 class YearType extends ChoiceType
 {
     const TYPE = 'year';
@@ -218,13 +221,12 @@ class YearType extends ChoiceType
 
     /**
      * @param $name
-     * @param FilterConfigElementModel $element
-     * @param array $contextualValues
+     *
      * @return array|int|mixed|string|string[]|null
      */
     private function getValue($name, FilterConfigElementModel $element, array $contextualValues)
     {
-        $data  = $this->config->getData();
+        $data = $this->config->getData();
         $value = isset($data[$name]) && $data[$name] ? $data[$name] : 0;
 
         if ($element->isInitial) {
@@ -234,6 +236,7 @@ class YearType extends ChoiceType
                 $value = $data[$name] ?? $this->getInitialValue($element, $contextualValues);
             }
         }
+
         return $value;
     }
 }

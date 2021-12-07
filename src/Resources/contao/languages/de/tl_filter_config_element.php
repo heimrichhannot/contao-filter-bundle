@@ -31,7 +31,7 @@ $lang['operator'] = ['Operator', 'Wählen Sie hier den gewünschten Operator aus
 $lang['addPlaceholder'] = ['Platzhalter hinzufügen', 'Wählen Sie diese Option, um dem Filter einen Platzhaltertext hinzuzufügen.'];
 $lang['placeholder'] = ['Platzhalter', 'Wählen Sie hier einen Platzhalter aus.'];
 $lang['hideLabel'] = ['Label verstecken', 'Wählen Sie diese Option, um das Label des Filters zu verstecken.'];
-$lang['customLabel'] = ['Label anpassen', 'Wählen ie diese Option, um einen benutzerdefinierten Label-Text festzulegen.'];
+$lang['customLabel'] = ['Label anpassen', 'Wählen Sie diese Option, um einen benutzerdefinierten Label-Text festzulegen.'];
 $lang['label'] = ['Label', 'Wählen Sie hier ein Label aus.'];
 $lang['expanded'] = ['Expanded (Radio/Checkboxes)', 'Wählen Sie diese Option, um Optionen als "radio"- oder "checkbox"-Elemente auszugeben.'];
 $lang['multiple'] = ['Multiple', 'Wählen Sie diese Option, wenn der Nutzer mehrere Optionen auswählen können soll.'];
@@ -52,6 +52,7 @@ $lang['locales'] = ['Regionen', 'Wählen Sie hier die gewünschten Regionen aus.
 $lang['customValue'] = ['Wert anpassen', 'Wählen Sie diese Option, um den Wert anzupassen.'];
 $lang['value'] = ['Wert', 'Geben Sie hier den gewünschten Wert ein.'];
 $lang['isInitial'] = ['Initiales Filterelement', 'Wählen Sie diese Option, um das Filterelement als "initial" zu kennzeichnen. Dadurch wird es im Frontend nicht ausgegeben, aber trotzdem angewendet. Normale Filterelemente überschreiben initiale Filterelemente.'];
+$lang['isInitialOverridable'] = ['Überschreiben erlauben', 'Wählen Sie diese Option, damit es möglich ist diesen Initialen Filter zu überschreiben. Normale Filterelemente überschreiben diesen Filter wenn sie auf das gleiche DCA-Feld eingerichtet sind.'];
 $lang['initialValueType'] = ['Typ des initialen Werts', 'Wählen Sie hier den Typ des initialen Werts aus.'];
 $lang['initialValue'] = ['Initialer Wert', 'Legen Sie hier den initialen Wert fest.'];
 $lang['initialValue_value'] = ['Wert', ''];
@@ -119,6 +120,7 @@ $lang['doNotCacheOptions'] = ['Cache für Optionswerte deaktivieren', 'Wählen S
 $lang['addMultilingualInitialValues'] = ['Sprachenabhängige initiale Werte festlegen', 'Wählen Sie Sie diese Option, um abhängig von der vorliegenden Sprache initiale Werte zu setzen.'];
 $lang['multilingualInitialValues'] = ['Sprachenabhängige initiale Werte', 'Setzen Sie die initialen Werte.'];
 $lang['language'] = ['Sprache', 'Wählen Sie hier eine Sprache aus.'];
+$lang['buttonType'] = ['Typ des Buttons', 'Wählen Sie den Typ des Buttons.'];
 
 // sort
 $lang['sortOptions'] = ['Sortier-Optionen', 'Fügen Sie hier die gewünschten Sortieroptionen hinzu.'];
@@ -131,6 +133,7 @@ $lang['sortOptions_standard'] = ['Standard', 'HINWEIS: Dieser Wert wird NICHT in
 /*
  * Legends
  */
+$lang['initial_legend'] = 'Initiale Einstellungen';
 $lang['general_legend'] = 'Allgemeine Einstellungen';
 $lang['config_legend'] = 'Konfiguration';
 $lang['visualization_legend'] = 'Darstellung';
@@ -154,6 +157,8 @@ $lang['show'] = ['Filterelement Details', 'Filterelement-Details ID %s anzeigen'
  */
 $lang['reference'] = [
     'type' => [
+        'deprecated' => 'Veraltet',
+        'miscellaneous' => 'Sonstiges',
         'text' => 'Text',
         'text_concat' => 'Konkatenierter Text',
         'textarea' => 'Textarea',
@@ -198,6 +203,10 @@ $lang['reference'] = [
         \HeimrichHannot\FilterBundle\Filter\Type\CurrentMemberType::TYPE => 'aktuelles Mitglied',
         \HeimrichHannot\FilterBundle\Filter\Type\CurrentMemberType::TYPE_ID => 'ID',
         \HeimrichHannot\FilterBundle\Filter\Type\CurrentMemberType::TYPE_USERNAME => 'Benutzername',
+        \HeimrichHannot\FilterBundle\Type\Concrete\TextType::TYPE => 'Text',
+        \HeimrichHannot\FilterBundle\Type\Concrete\ChoiceType::TYPE => 'Choice',
+        \HeimrichHannot\FilterBundle\Type\Concrete\DateTimeType::TYPE => 'Datum & Zeit',
+        \HeimrichHannot\FilterBundle\Type\Concrete\ButtonType::TYPE => 'Button',
     ],
     'roundingMode' => [
         \Symfony\Component\Form\Extension\Core\DataTransformer\IntegerToLocalizedStringTransformer::ROUND_DOWN => 'Abrunden (zu 0 hin)',

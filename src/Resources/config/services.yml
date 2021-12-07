@@ -72,11 +72,8 @@ services:
     arguments:
     - "@contao.framework"
 
-  huh.filter.choice.type:
-    class: HeimrichHannot\FilterBundle\Choice\TypeChoice
-    public: true
-    arguments:
-    - "@contao.framework"
+  HeimrichHannot\FilterBundle\Choice\TypeChoice: ~
+  huh.filter.choice.type: '@HeimrichHannot\FilterBundle\Choice\TypeChoice'
 
   HeimrichHannot\FilterBundle\Choice\FieldOptionsChoice: ~
   huh.filter.choice.field_options: '@HeimrichHannot\FilterBundle\Choice\FieldOptionsChoice'
@@ -171,3 +168,17 @@ services:
     tags:
     - { name: twig.extension }
 
+  HeimrichHannot\FilterBundle\Filter\Filter: ~
+
+  HeimrichHannot\FilterBundle\Type\Concrete\:
+    resource: '../../Type/Concrete/*'
+    autoconfigure: true
+    tags: ['huh.filter.type.concrete']
+
+  HeimrichHannot\FilterBundle\Type\FilterTypeCollection:
+    arguments:
+      - !tagged huh.filter.type.concrete
+
+  HeimrichHannot\FilterBundle\FilterQuery\FilterQueryPartCollection: ~
+
+  HeimrichHannot\FilterBundle\FilterQuery\FilterQueryPartProcessor: ~

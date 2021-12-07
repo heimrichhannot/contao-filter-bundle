@@ -101,6 +101,11 @@ use HeimrichHannot\FilterBundle\Filter\AbstractType;
  * @property string $start
  * @property string $stop
  * @property bool   $useRangeSlider
+ * @property string $buttonType
+ * @property string $threshold
+ * @property string $debounce
+ * @property bool   $submitOnInput
+ * @property bool   $isInitialOverridable
  *
  * @method FilterConfigElementModel|null                                                     findById($id, array $opt = [])
  * @method FilterConfigElementModel|null                                                     findByPk($id, array $opt = [])
@@ -142,7 +147,7 @@ class FilterConfigElementModel extends Model implements \JsonSerializable
     protected $formName;
 
     /**
-     * Find published filte elements items by their parent ID.
+     * Find published filte elements items by their filterConfig ID.
      *
      * @param int   $intId      The filter ID
      * @param int   $intLimit   An optional limit
@@ -179,7 +184,7 @@ class FilterConfigElementModel extends Model implements \JsonSerializable
     }
 
     /**
-     * Find published filter elements items by their parent ID and optional types.
+     * Find published filter elements items by their filterConfig ID and optional types.
      *
      * @param int   $intId      The filter ID
      * @param array $types      The list of element types
@@ -269,5 +274,13 @@ class FilterConfigElementModel extends Model implements \JsonSerializable
     public function jsonSerialize()
     {
         return get_object_vars($this);
+    }
+
+    public function getElementName(): string
+    {
+        if (true === (bool) $this->customName && '' !== $this->name) {
+            return $this->name;
+        }
+        return $this->type.'_'.$this->id;
     }
 }

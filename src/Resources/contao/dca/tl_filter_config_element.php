@@ -6,6 +6,8 @@
  * @license LGPL-3.0-or-later
  */
 
+use HeimrichHannot\FilterBundle\Type\AbstractFilterType;
+
 $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
     'config' => [
         'dataContainer' => 'Table',
@@ -16,6 +18,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             ['huh.filter.backend.filter_config_element', 'checkPermission'],
             ['huh.filter.backend.filter_config_element', 'modifyPalette'],
             ['huh.filter.backend.filter_config_element', 'prepareChoiceTypes'],
+            [\HeimrichHannot\FilterBundle\DataContainer\FilterConfigElementContainer::class, 'onLoadCallback'],
         ],
         'onsubmit_callback' => [
             ['huh.utils.dca', 'setDateAdded'],
@@ -170,13 +173,13 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
         'customLanguages' => 'languages',
         'customLocales' => 'locales',
         'customValue' => 'value',
-        'initialValueType_'.\HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_SCALAR => 'initialValue',
-        'initialValueType_'.\HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_ARRAY => 'initialValueArray',
-        'initialValueType_'.\HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_LATEST => 'parentField',
+        'initialValueType_'.AbstractFilterType::VALUE_TYPE_SCALAR => 'initialValue',
+        'initialValueType_'.AbstractFilterType::VALUE_TYPE_ARRAY => 'initialValueArray',
+        'initialValueType_'.AbstractFilterType::VALUE_TYPE_LATEST => 'parentField',
         'addDefaultValue' => 'defaultValueType',
-        'defaultValueType_'.\HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_SCALAR => 'defaultValue',
-        'defaultValueType_'.\HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_ARRAY => 'defaultValueArray',
-        'defaultValueType_'.\HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_LATEST => 'parentField',
+        'defaultValueType_'.AbstractFilterType::VALUE_TYPE_SCALAR => 'defaultValue',
+        'defaultValueType_'.AbstractFilterType::VALUE_TYPE_ARRAY => 'defaultValueArray',
+        'defaultValueType_'.AbstractFilterType::VALUE_TYPE_LATEST => 'parentField',
         'addStartAndStop' => 'startField,stopField',
         'coordinatesMode_'.\HeimrichHannot\FilterBundle\Filter\Type\ProximitySearchType::COORDINATES_MODE_COMPOUND => 'coordinatesField',
         'coordinatesMode_'.\HeimrichHannot\FilterBundle\Filter\Type\ProximitySearchType::COORDINATES_MODE_SEPARATED => 'latField,longField',
@@ -218,9 +221,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'exclude' => true,
             'filter' => true,
             'inputType' => 'select',
-            'options_callback' => function (\DataContainer $dc) {
-                return \Contao\System::getContainer()->get('huh.filter.choice.type')->getCachedChoices($dc);
-            },
+            'options_callback' => [\HeimrichHannot\FilterBundle\DataContainer\FilterConfigElementContainer::class, 'onTypeOptionsCallback'],
             'reference' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['reference']['type'],
             'eval' => [
                 'chosen' => true,
@@ -238,6 +239,13 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'eval' => ['tl_class' => 'w50', 'submitOnChange' => true],
             'sql' => "char(1) NOT NULL default ''",
         ],
+        'isInitialOverridable' => [
+            'label' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['isInitialOverridable'],
+            'exclude' => true,
+            'inputType' => 'checkbox',
+            'eval' => ['tl_class' => 'w50'],
+            'sql' => "char(1) NOT NULL default ''",
+        ],
         'title' => [
             'label' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['title'],
             'exclude' => true,
@@ -253,7 +261,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'exclude' => true,
             'filter' => true,
             'inputType' => 'select',
-            'options_callback' => function (\Contao\DataContainer $dc) {
+            'options_callback' => function (Contao\DataContainer $dc) {
                 return \Contao\System::getContainer()->get('huh.filter.util.filter_config_element')->getFields($dc);
             },
             'eval' => ['chosen' => true, 'includeBlankOption' => true, 'tl_class' => 'w50', 'submitOnChange' => true],
@@ -264,7 +272,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'exclude' => true,
             'filter' => true,
             'inputType' => 'checkboxWizard',
-            'options_callback' => function (\Contao\DataContainer $dc) {
+            'options_callback' => function (Contao\DataContainer $dc) {
                 return \Contao\System::getContainer()->get('huh.filter.util.filter_config_element')->getFields($dc);
             },
             'eval' => ['chosen' => true, 'includeBlankOption' => true, 'multiple' => true, 'mandatory' => true],
@@ -275,7 +283,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'exclude' => true,
             'filter' => true,
             'inputType' => 'select',
-            'options_callback' => function (\Contao\DataContainer $dc) {
+            'options_callback' => function (Contao\DataContainer $dc) {
                 return \Contao\System::getContainer()->get('huh.filter.util.filter_config_element')->getFields($dc);
             },
             'eval' => ['chosen' => true, 'includeBlankOption' => true],
@@ -306,7 +314,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'label' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['optionLabelPattern'],
             'exclude' => true,
             'inputType' => 'select',
-            'options_callback' => function (\DataContainer $dc) {
+            'options_callback' => function (DataContainer $dc) {
                 return \Contao\System::getContainer()->get('huh.utils.choice.message')->getCachedChoices('huh.filter.option_label');
             },
             'eval' => ['chosen' => true, 'mandatory' => true, 'maxlength' => 128, 'includeBlankOption' => true, 'tl_class' => 'w50'],
@@ -360,7 +368,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
         'operator' => [
             'label' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['operator'],
             'inputType' => 'select',
-            'options' => \HeimrichHannot\UtilsBundle\Database\DatabaseUtil::OPERATORS,
+            'options_callback' => [\HeimrichHannot\FilterBundle\DataContainer\FilterConfigElementContainer::class, 'onOperatorOptionsCallback'],
             'reference' => &$GLOBALS['TL_LANG']['MSC']['databaseOperators'],
             'eval' => ['tl_class' => 'w50', 'mandatory' => true, 'includeBlankOption' => true],
             'sql' => "varchar(16) NOT NULL default ''",
@@ -376,7 +384,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'label' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['placeholder'],
             'exclude' => true,
             'inputType' => 'select',
-            'options_callback' => function (\DataContainer $dc) {
+            'options_callback' => function (DataContainer $dc) {
                 return \Contao\System::getContainer()->get('huh.utils.choice.message')->getCachedChoices('huh.filter.placeholder');
             },
             'eval' => ['chosen' => true, 'mandatory' => true, 'maxlength' => 128, 'includeBlankOption' => true, 'tl_class' => 'w50'],
@@ -400,7 +408,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'label' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['label'],
             'exclude' => true,
             'inputType' => 'select',
-            'options_callback' => function (\DataContainer $dc) {
+            'options_callback' => function (DataContainer $dc) {
                 return \Contao\System::getContainer()->get('huh.utils.choice.message')->getCachedChoices('huh.filter.label');
             },
             'eval' => ['chosen' => true, 'mandatory' => true, 'maxlength' => 128, 'includeBlankOption' => true, 'tl_class' => 'w50'],
@@ -435,7 +443,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'exclude' => true,
             'filter' => true,
             'inputType' => 'select',
-            'options_callback' => function (\Contao\DataContainer $dc) {
+            'options_callback' => function (Contao\DataContainer $dc) {
                 if (null === ($model = \Contao\System::getContainer()->get('huh.utils.model')->findModelInstanceByPk($dc->table, $dc->id))) {
                     return [];
                 }
@@ -466,7 +474,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'exclude' => true,
             'filter' => true,
             'inputType' => 'select',
-            'options_callback' => function (\Contao\DataContainer $dc) {
+            'options_callback' => function (Contao\DataContainer $dc) {
                 if (null === ($model = \Contao\System::getContainer()->get('huh.utils.model')->findModelInstanceByPk($dc->table, $dc->id))) {
                     return [];
                 }
@@ -485,14 +493,14 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'sql' => "int(10) unsigned NOT NULL default '0'",
         ],
         'minDateTime' => [
-            'label' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['minDateTime'],
+            'label' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['min'],
             'exclude' => true,
             'inputType' => 'text',
             'eval' => ['tl_class' => 'w50 clr', 'maxlength' => 32],
             'sql' => "varchar(32) NOT NULL default ''",
         ],
         'maxDateTime' => [
-            'label' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['maxDateTime'],
+            'label' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['max'],
             'exclude' => true,
             'inputType' => 'text',
             'eval' => ['tl_class' => 'w50', 'maxlength' => 32],
@@ -531,11 +539,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'exclude' => true,
             'inputType' => 'select',
             'default' => \HeimrichHannot\FilterBundle\Filter\Type\DateType::WIDGET_TYPE_SINGLE_TEXT,
-            'options' => [
-                \HeimrichHannot\FilterBundle\Filter\Type\DateType::WIDGET_TYPE_CHOICE,
-                \HeimrichHannot\FilterBundle\Filter\Type\DateType::WIDGET_TYPE_TEXT,
-                \HeimrichHannot\FilterBundle\Filter\Type\DateType::WIDGET_TYPE_SINGLE_TEXT,
-            ],
+            'options_callback' => [\HeimrichHannot\FilterBundle\DataContainer\FilterConfigElementContainer::class, 'onDateWidgetOptionsCallback'],
             'eval' => ['tl_class' => 'w50', 'chosen' => true, 'submitOnChange' => true],
             'sql' => "varchar(16) NOT NULL default ''",
         ],
@@ -571,9 +575,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'label' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['inputGroupPrepend'],
             'exclude' => true,
             'inputType' => 'select',
-            'options_callback' => function (\DataContainer $dc) {
-                return \Contao\System::getContainer()->get('huh.utils.choice.message')->getCachedChoices('huh.filter.input_group_text');
-            },
+            'options_callback' => [\HeimrichHannot\FilterBundle\DataContainer\FilterConfigElementContainer::class, 'onInputGroupPrependOptionsCallback'],
             'eval' => ['chosen' => true, 'maxlength' => 128, 'includeBlankOption' => true, 'tl_class' => 'w50'],
             'sql' => "varchar(128) NOT NULL default ''",
         ],
@@ -581,9 +583,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'label' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['inputGroupAppend'],
             'exclude' => true,
             'inputType' => 'select',
-            'options_callback' => function (\DataContainer $dc) {
-                return \Contao\System::getContainer()->get('huh.utils.choice.message')->getCachedChoices('huh.filter.input_group_text');
-            },
+            'options_callback' => [\HeimrichHannot\FilterBundle\DataContainer\FilterConfigElementContainer::class, 'onInputGroupAppendOptionsCallback'],
             'eval' => ['chosen' => true, 'maxlength' => 128, 'includeBlankOption' => true, 'tl_class' => 'w50'],
             'sql' => "varchar(128) NOT NULL default ''",
         ],
@@ -640,7 +640,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'exclude' => true,
             'inputType' => 'select',
             'default' => 'EUR',
-            'options_callback' => function (\Contao\DataContainer $dc) {
+            'options_callback' => function (Contao\DataContainer $dc) {
                 return Symfony\Component\Intl\Intl::getCurrencyBundle()->getCurrencyNames();
             },
             'eval' => ['tl_class' => 'clr w50 wizard', 'chosen' => 'true', 'maxlength' => 3],
@@ -713,7 +713,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'exclude' => true,
             'inputType' => 'select',
             'default' => 'EUR',
-            'options_callback' => function (\Contao\DataContainer $dc) {
+            'options_callback' => function (Contao\DataContainer $dc) {
                 return Symfony\Component\Intl\Intl::getRegionBundle()->getCountryNames();
             },
             'eval' => ['tl_class' => 'clr w50 wizard', 'chosen' => 'true', 'multiple' => true, 'mandatory' => true],
@@ -731,7 +731,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'exclude' => true,
             'inputType' => 'select',
             'default' => 'EUR',
-            'options_callback' => function (\Contao\DataContainer $dc) {
+            'options_callback' => function (Contao\DataContainer $dc) {
                 return Symfony\Component\Intl\Intl::getLanguageBundle()->getLanguageNames();
             },
             'eval' => ['tl_class' => 'clr w50 wizard', 'chosen' => 'true', 'multiple' => true, 'mandatory' => true],
@@ -749,7 +749,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'exclude' => true,
             'inputType' => 'select',
             'default' => 'EUR',
-            'options_callback' => function (\Contao\DataContainer $dc) {
+            'options_callback' => function (Contao\DataContainer $dc) {
                 return Symfony\Component\Intl\Intl::getLocaleBundle()->getLocaleNames();
             },
             'eval' => ['tl_class' => 'clr w50 wizard', 'chosen' => 'true', 'multiple' => true, 'mandatory' => true],
@@ -774,7 +774,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'exclude' => true,
             'filter' => true,
             'inputType' => 'select',
-            'options_callback' => ['huh.filter.listener.dca.callback.filterconfigelement', 'getValueTypeOptions'],
+            'options_callback' => [\HeimrichHannot\FilterBundle\DataContainer\FilterConfigElementContainer::class, 'onInitialValueTypeCallback'],
             'reference' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['reference'],
             'eval' => ['tl_class' => 'w50 clr', 'mandatory' => true, 'includeBlankOption' => true, 'submitOnChange' => true],
             'sql' => "varchar(16) NOT NULL default ''",
@@ -798,8 +798,9 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
                             'label' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['initialValue_value'],
                             'exclude' => true,
                             'search' => true,
-                            'inputType' => 'text',
-                            'eval' => ['tl_class' => 'w50', 'mandatory' => true, 'groupStyle' => 'width: 200px'],
+                            'inputType' => 'select',
+                            'options_callback' => [\HeimrichHannot\FilterBundle\DataContainer\FilterConfigElementContainer::class, 'onInitialValueCallback'],
+                            'eval' => ['tl_class' => 'w50', 'mandatory' => true, 'groupStyle' => 'width: 49%'],
                         ],
                     ],
                 ],
@@ -876,7 +877,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'exclude' => true,
             'filter' => true,
             'inputType' => 'select',
-            'options_callback' => function (\Contao\DataContainer $dc) {
+            'options_callback' => function (Contao\DataContainer $dc) {
                 return \Contao\System::getContainer()->get('huh.filter.util.filter_config_element')->getFields($dc);
             },
             'eval' => ['chosen' => true, 'includeBlankOption' => true, 'tl_class' => 'w50', 'mandatory' => true],
@@ -887,11 +888,25 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'exclude' => true,
             'filter' => true,
             'inputType' => 'select',
-            'options_callback' => function (\Contao\DataContainer $dc) {
+            'options_callback' => function (Contao\DataContainer $dc) {
                 return \Contao\System::getContainer()->get('huh.filter.util.filter_config_element')->getFields($dc);
             },
             'eval' => ['chosen' => true, 'includeBlankOption' => true, 'tl_class' => 'w50', 'mandatory' => true],
             'sql' => "varchar(64) NOT NULL default ''",
+        ],
+        'buttonType' => [
+            'label' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['buttonType'],
+            'exclude' => true,
+            'search' => true,
+            'inputType' => 'select',
+            'reference' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['reference']['type'],
+            'options_callback' => [\HeimrichHannot\FilterBundle\DataContainer\FilterConfigElementContainer::class, 'onButtonTypeOptionsCallback'],
+            'eval' => [
+                'tl_class' => 'w50',
+                'mandatory' => true,
+                'includeBlankOption' => true,
+            ],
+            'sql' => "varchar(16) NOT NULL default ''",
         ],
         'cssClass' => [
             'label' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['cssClass'],
@@ -942,7 +957,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
                             'exclude' => true,
                             'search' => true,
                             'inputType' => 'select',
-                            'options_callback' => function (\Contao\DataContainer $dc) {
+                            'options_callback' => function (Contao\DataContainer $dc) {
                                 return \Contao\System::getContainer()->get('huh.filter.util.filter_config_element')->getSortClasses($dc);
                             },
                             'eval' => [
@@ -958,7 +973,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
                             'exclude' => true,
                             'filter' => true,
                             'inputType' => 'select',
-                            'options_callback' => function (\Contao\DataContainer $dc) {
+                            'options_callback' => function (Contao\DataContainer $dc) {
                                 return \Contao\System::getContainer()->get('huh.filter.util.filter_config_element')->getFields($dc);
                             },
                             'eval' => [
@@ -974,7 +989,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
                             'exclude' => true,
                             'filter' => true,
                             'inputType' => 'select',
-                            'options_callback' => function (\Contao\DataContainer $dc) {
+                            'options_callback' => function (Contao\DataContainer $dc) {
                                 return \Contao\System::getContainer()->get('huh.filter.util.filter_config_element')->getSortDirections($dc);
                             },
                             'eval' => [
@@ -990,7 +1005,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
                             'exclude' => true,
                             'filter' => true,
                             'inputType' => 'select',
-                            'options_callback' => function (\Contao\DataContainer $dc) {
+                            'options_callback' => function (Contao\DataContainer $dc) {
                                 return \Contao\System::getContainer()->get('huh.utils.choice.message')->getCachedChoices('huh.sort.text');
                             },
                             'eval' => [
@@ -1108,7 +1123,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'exclude' => true,
             'inputType' => 'select',
             'default' => 'huh.filter.option_count.default',
-            'options_callback' => function (\Contao\DataContainer $dc) {
+            'options_callback' => function (Contao\DataContainer $dc) {
                 return \Contao\System::getContainer()->get('huh.utils.choice.message')->getCachedChoices('huh.filter.option_count');
             },
             'eval' => ['chosen' => true, 'mandatory' => true, 'maxlength' => 128, 'includeBlankOption' => true, 'tl_class' => 'w50'],
@@ -1173,7 +1188,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'exclude' => true,
             'filter' => true,
             'inputType' => 'select',
-            'options_callback' => function (\Contao\DataContainer $dc) {
+            'options_callback' => function (Contao\DataContainer $dc) {
                 return \Contao\System::getContainer()->get('huh.filter.util.filter_config_element')->getFields($dc);
             },
             'eval' => ['tl_class' => 'w50', 'includeBlankOption' => true, 'chosen' => true, 'mandatory' => true],
@@ -1184,7 +1199,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'exclude' => true,
             'filter' => true,
             'inputType' => 'select',
-            'options_callback' => function (\Contao\DataContainer $dc) {
+            'options_callback' => function (Contao\DataContainer $dc) {
                 return \Contao\System::getContainer()->get('huh.filter.util.filter_config_element')->getFields($dc);
             },
             'eval' => ['tl_class' => 'w50', 'includeBlankOption' => true, 'chosen' => true, 'mandatory' => true],
@@ -1195,7 +1210,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'exclude' => true,
             'filter' => true,
             'inputType' => 'select',
-            'options_callback' => function (\Contao\DataContainer $dc) {
+            'options_callback' => function (Contao\DataContainer $dc) {
                 return \Contao\System::getContainer()->get('huh.filter.util.filter_config_element')->getFields($dc);
             },
             'eval' => ['tl_class' => 'w50', 'includeBlankOption' => true, 'chosen' => true, 'mandatory' => true],
@@ -1214,7 +1229,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'exclude' => true,
             'filter' => true,
             'inputType' => 'select',
-            'options_callback' => function (\Contao\DataContainer $dc) {
+            'options_callback' => function (Contao\DataContainer $dc) {
                 return \Contao\System::getContainer()->get('huh.filter.util.filter_config_element')->getElements($dc);
             },
             'eval' => ['chosen' => true, 'tl_class' => 'w50 clr', 'includeBlankOption' => true],
@@ -1225,7 +1240,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'exclude' => true,
             'filter' => true,
             'inputType' => 'select',
-            'options_callback' => function (\Contao\DataContainer $dc) {
+            'options_callback' => function (Contao\DataContainer $dc) {
                 return \Contao\System::getContainer()->get('huh.filter.util.filter_config_element')->getElements($dc);
             },
             'eval' => ['chosen' => true, 'tl_class' => 'w50', 'includeBlankOption' => true],
@@ -1236,7 +1251,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'exclude' => true,
             'filter' => true,
             'inputType' => 'select',
-            'options_callback' => function (\Contao\DataContainer $dc) {
+            'options_callback' => function (Contao\DataContainer $dc) {
                 return \Contao\System::getContainer()->get('huh.filter.util.filter_config_element')->getElements($dc);
             },
             'eval' => ['chosen' => true, 'tl_class' => 'w50', 'includeBlankOption' => true],
@@ -1247,7 +1262,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'exclude' => true,
             'filter' => true,
             'inputType' => 'select',
-            'options_callback' => function (\Contao\DataContainer $dc) {
+            'options_callback' => function (Contao\DataContainer $dc) {
                 return \Contao\System::getContainer()->get('huh.filter.util.filter_config_element')->getElements($dc);
             },
             'eval' => ['chosen' => true, 'tl_class' => 'w50', 'includeBlankOption' => true],
@@ -1258,7 +1273,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'exclude' => true,
             'filter' => true,
             'inputType' => 'select',
-            'options_callback' => function (\Contao\DataContainer $dc) {
+            'options_callback' => function (Contao\DataContainer $dc) {
                 return \Contao\System::getContainer()->get('huh.filter.util.filter_config_element')->getElements($dc, [
                     'types' => [
                         'checkbox',
@@ -1273,7 +1288,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'exclude' => true,
             'filter' => true,
             'inputType' => 'select',
-            'options_callback' => function (\Contao\DataContainer $dc) {
+            'options_callback' => function (Contao\DataContainer $dc) {
                 return \Contao\System::getContainer()->get('huh.filter.util.filter_config_element')->getElements($dc, [
                     'types' => [
                         'hidden',
@@ -1288,7 +1303,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'exclude' => true,
             'filter' => true,
             'inputType' => 'select',
-            'options_callback' => function (\Contao\DataContainer $dc) {
+            'options_callback' => function (Contao\DataContainer $dc) {
                 return \Contao\System::getContainer()->get('huh.filter.util.filter_config_element')->getElements($dc, [
                     'types' => [
                         'radius_choice',

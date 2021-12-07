@@ -51,6 +51,10 @@ class ModuleFilter extends Module
             return '';
         }
 
+        if (null === $this->config->getElements()) {
+            return '';
+        }
+
         $this->config->handleRequest();
 
         return parent::generate();

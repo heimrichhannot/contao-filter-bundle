@@ -16,6 +16,9 @@ use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 use Symfony\Component\Form\FormBuilderInterface;
 
+/**
+ * @deprecated since 1.12, use HeimrichHannot\FilterBundle\FilterType\Type\ChoiceType
+ */
 class ChoiceType extends AbstractType
 {
     const TYPE = 'choice';

@@ -19,6 +19,9 @@ use HeimrichHannot\UtilsBundle\Date\DateUtil;
 use HeimrichHannot\UtilsBundle\Model\ModelUtil;
 use Symfony\Component\Form\FormBuilderInterface;
 
+/**
+ * @deprecated since 1.12 and will be removed in version 2.0
+ */
 class DateChoiceType extends ChoiceType
 {
     const TYPE = 'date_choice';
@@ -161,6 +164,7 @@ class DateChoiceType extends ChoiceType
         );
 
         $dates = [];
+
         foreach ($period as $key => $value) {
             $dates[] = $value->format($dateFormat);
         }

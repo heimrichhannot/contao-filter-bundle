@@ -12,6 +12,9 @@ use Contao\Controller;
 use Contao\System;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 
+/**
+ * @deprecated since 1.12 and will be removed in version 2.0
+ */
 class ParentType extends ChoiceType
 {
     const TYPE = 'parent';
@@ -21,9 +24,11 @@ class ParentType extends ChoiceType
     {
         if (null !== ($customChoices = $this->getCustomOptions($element))) {
             $options = [];
+
             foreach ($customChoices as $option) {
                 $options[$option['value']] = $option['label'];
             }
+
             return $options;
         }
 

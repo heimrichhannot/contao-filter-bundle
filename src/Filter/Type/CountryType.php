@@ -12,6 +12,9 @@ use Contao\System;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use Symfony\Component\Form\FormBuilderInterface;
 
+/**
+ * @deprecated since 1.12 and will be removed in version 2.0
+ */
 class CountryType extends ChoiceType
 {
     const TYPE = 'country';

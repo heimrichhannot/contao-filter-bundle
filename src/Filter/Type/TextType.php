@@ -14,6 +14,9 @@ use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 use Symfony\Component\Form\FormBuilderInterface;
 
+/**
+ * @deprecated since 1.12, use HeimrichHannot\FilterBundle\FilterType\Type\TextType
+ */
 class TextType extends AbstractType
 {
     const TYPE = 'text';

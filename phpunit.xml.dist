@@ -19,11 +19,21 @@
         <ini name="display_startup_errors" value="1"/>
         <ini name="intl.default_locale" value="en"/>
         <ini name="intl.error_level" value="0"/>
+        <env name="SYMFONY_DEPRECATIONS_HELPER" value="weak"/>
     </php>
 
     <testsuites>
         <testsuite name="Unit Tests">
             <directory>./tests</directory>
+            <exclude>./tests/Backend</exclude>
+            <exclude>./tests/Choice</exclude>
+            <exclude>./tests/Config</exclude>
+            <exclude>./tests/ContaoManager</exclude>
+            <exclude>./tests/DependencyInjection</exclude>
+            <exclude>./tests/Filter/Type</exclude>
+            <exclude>./tests/Model</exclude>
+            <exclude>./tests/Module</exclude>
+            <exclude>./tests/Utils</exclude>
         </testsuite>
     </testsuites>
 

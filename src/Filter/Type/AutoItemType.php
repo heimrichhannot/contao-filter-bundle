@@ -15,6 +15,9 @@ use HeimrichHannot\Request\Request;
 use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 use Symfony\Component\Form\FormBuilderInterface;
 
+/**
+ * @deprecated since 1.12 and will be removed in version 2.0
+ */
 class AutoItemType extends AbstractType
 {
     const TYPE = 'auto_item';

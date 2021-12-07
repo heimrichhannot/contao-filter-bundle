@@ -13,6 +13,9 @@ use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 use Symfony\Component\Form\FormBuilderInterface;
 
+/**
+ * @deprecated since 1.12, use HeimrichHannot\FilterBundle\FilterType\Type\ButtonType
+ */
 class ButtonType extends AbstractType
 {
     const TYPE = 'button';

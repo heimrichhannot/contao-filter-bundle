@@ -3,7 +3,8 @@ services:
     public: true
     autowire: true
 
-  HeimrichHannot\FilterBundle\EventListener\LoadDataContainerListener: ~
+  HeimrichHannot\FilterBundle\EventListener\LoadDataContainerListener:
+    autoconfigure: true
 
   huh.filter.listener.dca.callback.filterconfigelement:
     class: HeimrichHannot\FilterBundle\EventListener\FilterConfigElementCallbackListener

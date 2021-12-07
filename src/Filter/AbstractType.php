@@ -15,10 +15,12 @@ use HeimrichHannot\FilterBundle\Config\FilterConfig;
 use HeimrichHannot\FilterBundle\Event\AdjustFilterOptionsEvent;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
-use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Filter\Filter;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
+/**
+ * @deprecated since 1.12 and will be removed in version 2.0,  use HeimrichHannot\FilterBundle\Type\AbstractFilterType
+ */
 abstract class AbstractType
 {
     const VALUE_TYPE_SCALAR = 'scalar';

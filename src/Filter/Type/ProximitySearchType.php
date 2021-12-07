@@ -16,6 +16,9 @@ use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 use Symfony\Component\Form\FormBuilderInterface;
 
+/**
+ * @deprecated since 1.12 and will be removed in version 2.0
+ */
 class ProximitySearchType extends AbstractType
 {
     const TYPE = 'proximity_search';

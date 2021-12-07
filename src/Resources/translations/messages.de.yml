@@ -1,5 +1,5 @@
 # placeholders
-huh.filter.placeholder.default: -
+huh.filter.placeholder.default: '-'
 huh.filter.placeholder.input_label_name: '%label%'
 huh.filter.placeholder.input_label: '%label% eingeben'
 huh.filter.placeholder.input_label_choose: '%label% auswählen'
