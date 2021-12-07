@@ -17,6 +17,8 @@ use HeimrichHannot\FilterBundle\Model\FilterConfigModel;
 use HeimrichHannot\FilterBundle\Type\AbstractFilterType;
 use HeimrichHannot\FilterBundle\Type\Concrete\TextType;
 use HeimrichHannot\FilterBundle\Type\FilterTypeContext;
+use Psr\Container\ContainerInterface;
+use Symfony\Component\DependencyInjection\ServiceLocator;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormBuilder;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -41,13 +43,22 @@ class TextTypeTest extends ContaoTestCase
         $processor = $parameters['processor'] ?? $this->createMock(FilterQueryPartProcessor::class);
         $collection = $parameters['collection'] ?? $this->createMock(FilterQueryPartCollection::class);
 
+        $container = $this->createMock(ContainerInterface::class);
+        $container->method('get')->willReturnCallback(function ($argument) use ($translator) {
+           switch ($argument) {
+               case 'translator':
+                   return $translator;
+           };
+           return null;
+        });
+
         if ($mockBuilder) {
             $instance = $this->getMockBuilder(TextType::class)
-                ->setConstructorArgs([$processor, $collection, $translator])
+                ->setConstructorArgs([$container, $processor, $collection])
                 ->setMethods(['getOptions', 'buildForm'])
                 ->getMock();
         } else {
-            $instance = new TextType($processor, $collection, $translator);
+            $instance = new TextType($container, $processor, $collection);
         }
 
         return $instance;
