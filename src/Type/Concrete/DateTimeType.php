@@ -38,7 +38,7 @@ class DateTimeType extends AbstractFilterType implements InitialFilterTypeInterf
         return static::TYPE;
     }
 
-    public function buildQuery(FilterTypeContext $filterTypeContext)
+    public function buildQuery(FilterTypeContext $filterTypeContext): void
     {
         if ($filterTypeContext->getElementConfig()->isInitial) {
             $filterTypeContext->setValue($this->container->get('dateUtil')->getTimeStamp($filterTypeContext->getElementConfig()->initialValue));
@@ -66,7 +66,7 @@ class DateTimeType extends AbstractFilterType implements InitialFilterTypeInterf
         return $prependPalette.'{config_legend},field,operator,dateTimeFormat,minDateTime,maxDateTime;{visualization_legend},html5,dateWidget,customLabel,hideLabel,addPlaceholder;'.$appendPalette;
     }
 
-    public function getInitialPalette(string $prependPalette, string $appendPalette)
+    public function getInitialPalette(string $prependPalette, string $appendPalette): string
     {
         $dca = &$GLOBALS['TL_DCA']['tl_filter_config_element'];
         $dca['fields']['initialValue']['eval']['rgxp'] = 'datim';

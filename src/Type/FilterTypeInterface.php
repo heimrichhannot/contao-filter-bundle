@@ -10,7 +10,9 @@ namespace HeimrichHannot\FilterBundle\Type;
 
 interface FilterTypeInterface
 {
-    public function buildQuery(FilterTypeContext $filterTypeContext);
+    public static function getType(): string;
+
+    public function buildQuery(FilterTypeContext $filterTypeContext): void;
 
     public function buildForm(FilterTypeContext $filterTypeContext);
 

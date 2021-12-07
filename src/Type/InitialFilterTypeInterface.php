@@ -10,7 +10,7 @@ namespace HeimrichHannot\FilterBundle\Type;
 
 interface InitialFilterTypeInterface
 {
-    public function getInitialPalette(string $prependPalette, string $appendPalette);
+    public function getInitialPalette(string $prependPalette, string $appendPalette): string;
 
     public function getInitialValueTypes(array $types): array;
 }

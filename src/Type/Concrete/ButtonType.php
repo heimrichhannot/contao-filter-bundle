@@ -33,9 +33,9 @@ class ButtonType extends AbstractFilterType
         return static::TYPE;
     }
 
-    public function buildQuery(FilterTypeContext $filterTypeContext): string
+    public function buildQuery(FilterTypeContext $filterTypeContext): void
     {
-        return '';
+        // no not add something to the query
     }
 
     public function buildForm(FilterTypeContext $filterTypeContext)

@@ -25,7 +25,7 @@ class TextType extends AbstractFilterType implements InitialFilterTypeInterface,
         return static::TYPE;
     }
 
-    public function buildQuery(FilterTypeContext $filterTypeContext)
+    public function buildQuery(FilterTypeContext $filterTypeContext): void
     {
         if ($filterTypeContext->getElementConfig()->isInitial) {
             $filterTypeContext->setValue($filterTypeContext->getElementConfig()->initialValue);

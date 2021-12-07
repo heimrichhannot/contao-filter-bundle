@@ -100,7 +100,7 @@ abstract class AbstractFilterType extends AbstractServiceSubscriber implements F
         ];
     }
 
-    public function buildQuery(FilterTypeContext $filterTypeContext)
+    public function buildQuery(FilterTypeContext $filterTypeContext): void
     {
         $this->filterQueryPartCollection->addPart($this->filterQueryPartProcessor->composeQueryPart($filterTypeContext));
     }

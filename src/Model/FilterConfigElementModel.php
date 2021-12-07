@@ -278,6 +278,9 @@ class FilterConfigElementModel extends Model implements \JsonSerializable
 
     public function getElementName(): string
     {
+        if (true === (bool) $this->customName && '' !== $this->name) {
+            return $this->name;
+        }
         return $this->type.'_'.$this->id;
     }
 }
