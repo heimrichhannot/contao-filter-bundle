@@ -11,47 +11,17 @@ namespace HeimrichHannot\FilterBundle\Type\Concrete;
 use Contao\StringUtil;
 use Doctrine\DBAL\Driver\Connection;
 use HeimrichHannot\FilterBundle\Choice\FieldOptionsChoice;
-use HeimrichHannot\FilterBundle\FilterQuery\FilterQueryPartCollection;
-use HeimrichHannot\FilterBundle\FilterQuery\FilterQueryPartProcessor;
 use HeimrichHannot\FilterBundle\Type\AbstractFilterType;
 use HeimrichHannot\FilterBundle\Type\FilterTypeContext;
 use HeimrichHannot\FilterBundle\Type\InitialFilterTypeInterface;
 use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 use HeimrichHannot\UtilsBundle\Model\ModelUtil;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType as SymfonyChoiceType;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
-class ChoiceType extends AbstractFilterType implements InitialFilterTypeInterface
+class  ChoiceType extends AbstractFilterType implements InitialFilterTypeInterface
 {
     const TYPE = 'choice_type';
     const GROUP = 'choice';
-
-    /**
-     * @var FieldOptionsChoice
-     */
-    protected $fieldOptionsChoice;
-    /**
-     * @var ModelUtil
-     */
-    protected $modelUtil;
-    /**
-     * @var Connection
-     */
-    protected $connection;
-
-    public function __construct(
-        FilterQueryPartProcessor $filterQueryPartProcessor,
-        FilterQueryPartCollection $filterQueryPartCollection,
-        TranslatorInterface $translator,
-        FieldOptionsChoice $fieldOptionsChoice,
-        ModelUtil $modelUtil,
-        Connection $connection
-    ) {
-        parent::__construct($filterQueryPartProcessor, $filterQueryPartCollection, $translator);
-        $this->fieldOptionsChoice = $fieldOptionsChoice;
-        $this->modelUtil = $modelUtil;
-        $this->connection = $connection;
-    }
 
     public static function getType(): string
     {
@@ -152,7 +122,7 @@ class ChoiceType extends AbstractFilterType implements InitialFilterTypeInterfac
             return [];
         }
 
-        return $this->fieldOptionsChoice->getCachedChoices([
+        return $this->container->get('fieldOptionsChoice')->getCachedChoices([
             'element' => $filterTypeContext->getElementConfig(),
             'filter' => $filterTypeContext->getFilterConfig()->row(),
         ]);
@@ -186,7 +156,7 @@ class ChoiceType extends AbstractFilterType implements InitialFilterTypeInterfac
                 break;
         }
 
-        return $this->fieldOptionsChoice->getCachedChoices([
+        return $this->container->get('fieldOptionsChoice')->getCachedChoices([
             'element' => $element,
             'filter' => $filterTypeContext->getFilterConfig()->row(),
         ]);
@@ -198,4 +168,15 @@ class ChoiceType extends AbstractFilterType implements InitialFilterTypeInterfac
 
         return array_values(array_diff($types, $remove));
     }
+
+    public static function getSubscribedServices()
+    {
+        return array_merge(parent::getSubscribedServices(), [
+            'fieldOptionsChoice' => FieldOptionsChoice::class,
+            'modalUtil' => ModelUtil::class,
+            'connection' => Connection::class,
+        ]);
+    }
+
+
 }

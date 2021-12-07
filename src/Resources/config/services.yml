@@ -172,6 +172,7 @@ services:
 
   HeimrichHannot\FilterBundle\Type\Concrete\:
     resource: '../../Type/Concrete/*'
+    autoconfigure: true
     tags: ['huh.filter.type.concrete']
 
   HeimrichHannot\FilterBundle\Type\FilterTypeCollection:

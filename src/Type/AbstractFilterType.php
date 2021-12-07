@@ -11,9 +11,11 @@ namespace HeimrichHannot\FilterBundle\Type;
 use HeimrichHannot\FilterBundle\FilterQuery\FilterQueryPartCollection;
 use HeimrichHannot\FilterBundle\FilterQuery\FilterQueryPartProcessor;
 use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use HeimrichHannot\UtilsBundle\Util\AbstractServiceSubscriber;
+use Psr\Container\ContainerInterface;
+use Symfony\Component\Translation\TranslatorInterface;
 
-abstract class AbstractFilterType implements FilterTypeInterface
+abstract class AbstractFilterType extends AbstractServiceSubscriber implements FilterTypeInterface
 {
     const GROUP_DEFAULT = 'miscellaneous';
 
@@ -48,15 +50,19 @@ abstract class AbstractFilterType implements FilterTypeInterface
      */
     private $group = '';
 
+    /** @var ContainerInterface */
+    protected $container;
+
     public function __construct(
+        ContainerInterface $container,
         FilterQueryPartProcessor $filterQueryPartProcessor,
-        FilterQueryPartCollection $filterQueryPartCollection,
-        TranslatorInterface $translator
+        FilterQueryPartCollection $filterQueryPartCollection
     ) {
         $this->initialize();
         $this->filterQueryPartProcessor = $filterQueryPartProcessor;
         $this->filterQueryPartCollection = $filterQueryPartCollection;
-        $this->translator = $translator;
+        $this->container = $container;
+        $this->translator = $this->container->get('translator');
     }
 
     public function getPalette(string $prependPalette, string $appendPalette): string
@@ -157,4 +163,13 @@ abstract class AbstractFilterType implements FilterTypeInterface
             $this->setGroup(static::GROUP);
         }
     }
+
+    public static function getSubscribedServices()
+    {
+        return [
+            'translator' => 'translator',
+        ];
+    }
+
+
 }

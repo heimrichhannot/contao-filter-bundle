@@ -33,16 +33,6 @@ class DateTimeType extends AbstractFilterType implements InitialFilterTypeInterf
      */
     protected $dateUtil;
 
-    public function __construct(
-        FilterQueryPartProcessor $filterQueryPartProcessor,
-        FilterQueryPartCollection $filterQueryPartCollection,
-        TranslatorInterface $translator,
-        DateUtil $dateUtil
-    ) {
-        parent::__construct($filterQueryPartProcessor, $filterQueryPartCollection, $translator);
-        $this->dateUtil = $dateUtil;
-    }
-
     public static function getType(): string
     {
         return static::TYPE;
@@ -51,10 +41,10 @@ class DateTimeType extends AbstractFilterType implements InitialFilterTypeInterf
     public function buildQuery(FilterTypeContext $filterTypeContext)
     {
         if ($filterTypeContext->getElementConfig()->isInitial) {
-            $filterTypeContext->setValue($this->dateUtil->getTimeStamp($filterTypeContext->getElementConfig()->initialValue));
+            $filterTypeContext->setValue($this->container->get('dateUtil')->getTimeStamp($filterTypeContext->getElementConfig()->initialValue));
             $filterTypeContext->getElementConfig()->initialValueType = Types::INTEGER;
         } else {
-            $filterTypeContext->setValue($this->dateUtil->getTimeStamp($filterTypeContext->getValue()));
+            $filterTypeContext->setValue($this->container->get('dateUtil')->getTimeStamp($filterTypeContext->getValue()));
         }
 
         if (empty($filterTypeContext->getValue())) {
@@ -122,30 +112,30 @@ class DateTimeType extends AbstractFilterType implements InitialFilterTypeInterf
             case static::WIDGET_TYPE_SINGLE_TEXT:
                 if ($elementConfig->html5) {
                     $options['html5'] = $elementConfig->html5;
-                    $options['date_format'] = $this->dateUtil->transformPhpDateFormatToRFC3339($format);
+                    $options['date_format'] = $this->container->get('dateUtil')->transformPhpDateFormatToRFC3339($format);
 
                     if ('' !== $elementConfig->minDateTime) {
-                        $options['attr']['min'] = Date::parse('Y-m-d\TH:i', $this->dateUtil->getTimeStamp($elementConfig->minDateTime)); // valid rfc 3339 date `YYYY-MM-DD` format must be used
+                        $options['attr']['min'] = Date::parse('Y-m-d\TH:i', $this->container->get('dateUtil')->getTimeStamp($elementConfig->minDateTime)); // valid rfc 3339 date `YYYY-MM-DD` format must be used
                     }
 
                     if ('' !== $elementConfig->maxDateTime) {
-                        $options['attr']['max'] = Date::parse('Y-m-d\TH:i', $this->dateUtil->getTimeStamp($elementConfig->maxDateTime)); // valid rfc 3339 date `YYYY-MM-DD` format must be used
+                        $options['attr']['max'] = Date::parse('Y-m-d\TH:i', $this->container->get('dateUtil')->getTimeStamp($elementConfig->maxDateTime)); // valid rfc 3339 date `YYYY-MM-DD` format must be used
                     }
                 } else {
-                    $options['format'] = $this->dateUtil->transformPhpDateFormatToRFC3339($format);
+                    $options['format'] = $this->container->get('dateUtil')->transformPhpDateFormatToRFC3339($format);
                 }
 
                 $options['group_attr']['class'] = isset($options['group_attr']['class']) ? $options['group_attr']['class'].' datepicker timepicker' : 'datepicker timepicker';
-                $options['attr']['data-iso8601-format'] = $this->dateUtil->transformPhpDateFormatToISO8601($format);
+                $options['attr']['data-iso8601-format'] = $this->container->get('dateUtil')->transformPhpDateFormatToISO8601($format);
                 $options['attr']['data-enable-time'] = 'true';
                 $options['attr']['data-date-format'] = $format;
 
                 if ('' !== $elementConfig->minDateTime) {
-                    $options['attr']['data-min-date'] = Date::parse($format, $this->dateUtil->getTimeStamp($elementConfig->minDateTime));
+                    $options['attr']['data-min-date'] = Date::parse($format, $this->container->get('dateUtil')->getTimeStamp($elementConfig->minDateTime));
                 }
 
                 if ('' !== $elementConfig->maxDateTime) {
-                    $options['attr']['data-max-date'] = Date::parse($format, $this->dateUtil->getTimeStamp($elementConfig->maxDateTime));
+                    $options['attr']['data-max-date'] = Date::parse($format, $this->container->get('dateUtil')->getTimeStamp($elementConfig->maxDateTime));
                 }
 
                 break;
@@ -159,11 +149,11 @@ class DateTimeType extends AbstractFilterType implements InitialFilterTypeInterf
                 $maxYear = Date::parse('Y', strtotime('+5 year', $time));
 
                 if ('' !== $elementConfig->minDateTime) {
-                    $minYear = Date::parse('Y', $this->dateUtil->getTimeStamp($elementConfig->minDateTime));
+                    $minYear = Date::parse('Y', $this->container->get('dateUtil')->getTimeStamp($elementConfig->minDateTime));
                 }
 
                 if ('' !== $elementConfig->maxDateTime) {
-                    $maxYear = Date::parse('Y', $this->dateUtil->getTimeStamp($elementConfig->maxDateTime));
+                    $maxYear = Date::parse('Y', $this->container->get('dateUtil')->getTimeStamp($elementConfig->maxDateTime));
                 }
 
                 $options['years'] = range($minYear, $maxYear, 1);
@@ -178,5 +168,12 @@ class DateTimeType extends AbstractFilterType implements InitialFilterTypeInterf
         }
 
         return $options;
+    }
+
+    public static function getSubscribedServices()
+    {
+        return array_merge(parent::getSubscribedServices(), [
+            'dateUtil' => DateUtil::class,
+        ]);
     }
 }
