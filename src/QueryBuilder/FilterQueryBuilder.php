@@ -10,11 +10,13 @@ namespace HeimrichHannot\FilterBundle\QueryBuilder;
 
 use Contao\Controller;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
+use Contao\System;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Haste\Model\Relations;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
 use HeimrichHannot\FilterBundle\Event\AdjustFilterValueEvent;
+use HeimrichHannot\FilterBundle\Event\FilterQueryBuilderComposeEvent;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
 use HeimrichHannot\FilterBundle\Filter\Type\ChoiceType;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
@@ -144,16 +146,27 @@ class FilterQueryBuilder extends QueryBuilder
             return $this;
         }
 
-        $this->andWhere(
-            $this->container->get('huh.utils.database')->composeWhereForQueryBuilder(
-                $this,
-                $config->getFilter()['dataContainer'].'.'.$element->field,
-                $operator,
-                $dca,
-                $value,
-                ['wildcardSuffix' => '_'.$element->id]
-            )
+
+
+        $event = System::getContainer()->get('event_dispatcher')->dispatch(
+            FilterQueryBuilderComposeEvent::class,
+            new FilterQueryBuilderComposeEvent($this, $name, $operator, $value, $element)
         );
+
+        if (true === $event->getContinue()) {
+            $this->andWhere(
+                $this->container->get('huh.utils.database')->composeWhereForQueryBuilder(
+                    $this,
+                    $config->getFilter()['dataContainer'].'.'.$element->field,
+                    $event->getOperator(),
+                    $dca,
+                    $event->getValue(),
+                    ['wildcardSuffix' => '_'.$element->id]
+                )
+            );
+        }
+
+
 
         return $this;
     }
