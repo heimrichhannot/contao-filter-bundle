@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased] - 2021-12-07
 - Added: FilterQueryBuilderComposeEvent 
 - Changed: added multiple support to to dynamic options option
+- Fixed: checkbox type submitOnChange on ajax forms
 
 ## [1.16.0] - 2021-12-02
 - Added: buildQueryForModels() to YearType

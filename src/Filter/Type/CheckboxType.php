@@ -61,7 +61,9 @@ class CheckboxType extends AbstractType
             $options['value'] = $element->value;
         }
 
-        if ($element->submitOnChange) {
+        if ($this->config->getFilter()['asyncFormSubmit']) {
+            $options['attr']['data-submit-on-change'] = 1;
+        } else {
             $options['attr']['onchange'] = 'this.form.submit()';
         }
 
