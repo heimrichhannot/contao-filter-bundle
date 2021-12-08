@@ -203,7 +203,15 @@ class FieldOptionsChoice extends AbstractChoice
                 $items = $queryBuilder->select([$filter['dataContainer'].'.'.$element->field])->execute()->fetchAll(FetchMode::COLUMN, 0);
 
                 // make the values unique
-                $items = array_unique($items);
+                $items = array_filter(array_unique($items));
+
+                if (($dca['eval']['multiple'] ?? false) === true) {
+                    $multipleItems = [];
+                    foreach ($items as $item) {
+                        $multipleItems = array_merge($multipleItems, StringUtil::deserialize($item));
+                    }
+                    $items = array_unique($multipleItems);
+                }
 
                 if (isset($dca['foreignKey'])) {
                     [$foreignTable, $foreignField] = explode('.', $dca['foreignKey']);

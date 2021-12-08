@@ -150,7 +150,7 @@ class FilterQueryBuilder extends QueryBuilder
 
         $event = System::getContainer()->get('event_dispatcher')->dispatch(
             FilterQueryBuilderComposeEvent::class,
-            new FilterQueryBuilderComposeEvent($this, $name, $operator, $value, $element)
+            new FilterQueryBuilderComposeEvent($this, $name, $operator, $value, $element, $config)
         );
 
         if (true === $event->getContinue()) {

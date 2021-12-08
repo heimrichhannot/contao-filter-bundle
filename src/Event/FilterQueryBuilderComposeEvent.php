@@ -3,6 +3,7 @@
 namespace HeimrichHannot\FilterBundle\Event;
 
 use Doctrine\DBAL\Query\QueryBuilder;
+use HeimrichHannot\FilterBundle\Config\FilterConfig;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use Symfony\Component\EventDispatcher\Event;
 
@@ -26,14 +27,19 @@ class FilterQueryBuilderComposeEvent extends Event
      * @var string
      */
     private $name;
+    /**
+     * @var FilterConfig
+     */
+    private $filterConfig;
 
-    public function __construct(QueryBuilder $queryBuilder, string $name, string $operator, $value, FilterConfigElementModel $element)
+    public function __construct(QueryBuilder $queryBuilder, string $name, string $operator, $value, FilterConfigElementModel $element, FilterConfig $filterConfig)
     {
         $this->queryBuilder = $queryBuilder;
         $this->operator = $operator;
         $this->value = $value;
         $this->element = $element;
         $this->name = $name;
+        $this->filterConfig = $filterConfig;
     }
 
     /**
@@ -106,5 +112,13 @@ class FilterQueryBuilderComposeEvent extends Event
     public function getName(): string
     {
         return $this->name;
+    }
+
+    /**
+     * @return FilterConfig
+     */
+    public function getFilterConfig(): FilterConfig
+    {
+        return $this->filterConfig;
     }
 }
