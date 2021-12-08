@@ -306,6 +306,7 @@ class FilterConfig implements \JsonSerializable
 
             // do not save filter id in session
             $this->setData($this->filter['mergeData'] ? array_merge($this->getData(), $data) : $data);
+            $this->getBuilder()->setData($this->getData());
 
             // allow reset, support different form configuration with same form name
             if ($this->isResetButtonClicked($form)) {
