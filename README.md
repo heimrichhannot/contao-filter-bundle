@@ -124,6 +124,34 @@ Event | Event ID
 ----- | ---------
 Adjust filter options | `huh.filter.event.adjust_filter_options_event`
 Adjust filter value | `huh.filter.event.adjust_filter_value_event`
+FilterQueryBuilderComposeEvent | FilterQueryBuilderComposeEvent::class
+ModifyJsonResponseEvent | `huh.filter.event.modify_json_response_event` 
+
+#### FilterQueryBuilderComposeEvent
+
+In this event you can modify the data before the query for the current element is 
+created and added to the QueryBuilder. It is also possible to add a query within in the 
+event and skip the subsequent query creating.
+
+```php
+function __invoke(FilterQueryBuilderComposeEvent $event): void
+{
+    // modify values before creating the query
+    if ($event->getName() === 'my_field') {
+         if ("special_value" === $event->getValue()) {
+             $event->setOperator(DatabaseUtil::OPERATOR_NOT_IN);
+             $event->setValue([3,5]);
+             return;
+         }
+     }
+     // create a custom query and skip the default query creation pars.
+     if ($event->getName() === 'totally_custom_field') {
+        // do some magic
+        $event->getQueryBuilder()->andWhere('custom_table_field REGEXP '.$magicValue);
+        $event->setContinue(false);
+     }
+}
+```
 
 ## Bootstrap 4 form snippets
 

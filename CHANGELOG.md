@@ -2,9 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased] - 2021-12-07
+## [1.17.0] - 2021-12-09
 - Added: FilterQueryBuilderComposeEvent 
-- Changed: added multiple support to to dynamic options option
+- Changed: added multiple support to dynamic options option
 - Fixed: checkbox type submitOnChange on ajax forms
 - Fixed: outdated values when form value mapping fails on ajax requests
 
