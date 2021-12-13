@@ -12,7 +12,10 @@ use Contao\Controller;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\Environment;
 use Contao\InsertTags;
+use Contao\System;
 use Doctrine\DBAL\Connection;
+use HeimrichHannot\FilterBundle\Event\FilterFormAdjustOptionsEvent;
+use HeimrichHannot\FilterBundle\Event\FilterConfigInitEvent;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
 use HeimrichHannot\FilterBundle\Filter\Type\PublishedType;
 use HeimrichHannot\FilterBundle\Filter\Type\SkipParentsType;
@@ -127,9 +130,14 @@ class FilterConfig implements \JsonSerializable
      */
     public function init(string $sessionKey, array $filter, $elements = null)
     {
-        $this->filter = $filter;
-        $this->sessionKey = $sessionKey;
-        $this->elements = $elements;
+        $event = System::getContainer()->get('event_dispatcher')->dispatch(
+            FilterConfigInitEvent::class,
+            new FilterConfigInitEvent($filter, $sessionKey, $elements)
+        );
+
+        $this->filter = $event->getFilter();
+        $this->sessionKey = $event->getSessionKey();
+        $this->elements = $event->getElements();
     }
 
     /**
@@ -147,6 +155,8 @@ class FilterConfig implements \JsonSerializable
         ])->getFormFactory();
 
         $options = ['filter' => $this];
+
+
 
         $cssClass = [];
 
@@ -179,7 +189,12 @@ class FilterConfig implements \JsonSerializable
             $data = [];
         }
 
-        $this->builder = $factory->createNamedBuilder($this->filter['name'], FilterType::class, $data, $options);
+        $event = System::getContainer()->get('event_dispatcher')->dispatch(
+            FilterFormAdjustOptionsEvent::class,
+            new FilterFormAdjustOptionsEvent($options, $this->filter, $this)
+        );
+
+        $this->builder = $factory->createNamedBuilder($this->filter['name'], FilterType::class, $data, $event->getOptions());
 
         $this->mapFormsToData();
     }

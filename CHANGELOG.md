@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.18.0] - 2021-12-13
+- Added: FilterConfigInitEvent
+- Added: FilterFormAdjustOptionsEvent
+
 ## [1.17.0] - 2021-12-09
 - Added: FilterQueryBuilderComposeEvent 
 - Changed: added multiple support to dynamic options option
