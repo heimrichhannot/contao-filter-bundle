@@ -326,6 +326,7 @@ class FilterConfig implements \JsonSerializable
             // allow reset, support different form configuration with same form name
             if ($this->isResetButtonClicked($form)) {
                 $this->resetData();
+                $this->getBuilder()->setData($this->getData());
                 // redirect to referrer page without filter parameters
                 $url = $this->container->get('huh.utils.url')->removeQueryString([$form->getName()],
                     $form->get(FilterType::FILTER_REFERRER_NAME)->getData() ?: null);

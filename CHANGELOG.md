@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.18.1] - 2021-12-16
+- Fixed: async form reset not working correctly after change from 1.17
+
 ## [1.18.0] - 2021-12-13
 - Added: FilterConfigInitEvent
 - Added: FilterFormAdjustOptionsEvent
