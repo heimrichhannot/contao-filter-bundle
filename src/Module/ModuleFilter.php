@@ -9,6 +9,7 @@
 namespace HeimrichHannot\FilterBundle\Module;
 
 use Contao\BackendTemplate;
+use Contao\Config;
 use Contao\Module;
 use Contao\System;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
@@ -38,6 +39,12 @@ class ModuleFilter extends Module
             $objTemplate->href = 'contao?do=themes&amp;table=tl_module&amp;act=edit&amp;id='.$this->id;
 
             return $objTemplate->parse();
+        }
+
+        // Hide list and show reader on detail pages if configured
+        if ($this->filter_hideOnAutoItem === '1' && (Config::get('useAutoItem') && isset($_GET['auto_item'])))
+        {
+            return '';
         }
 
         if (!System::getContainer()->has('huh.filter.manager') || !$this->objModel->filter) {

@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.19.0] - 2022-01-06
+- Added: option to hide filter if auto_item is set
+- Fixed: missing english placeholder translation
+
 ## [1.18.1] - 2021-12-16
 - Fixed: async form reset not working correctly after change from 1.17
 
