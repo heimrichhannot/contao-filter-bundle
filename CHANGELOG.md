@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.19.1] - 2022-01-07
+- Fixed: missing translations for hide filter on auto_item checkbox
+
 ## [1.19.0] - 2022-01-06
 - Added: option to hide filter if auto_item is set
 - Fixed: missing english placeholder translation

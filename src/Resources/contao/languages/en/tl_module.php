@@ -12,3 +12,4 @@ $lang = &$GLOBALS['TL_LANG']['tl_module'];
  * Fields
  */
 $lang['filter'] = ['Filter', 'Choose a filter config here.'];
+$lang['filter_hideOnAutoItem'] = ['Hide filter on detail pages', 'Choose this option to hide the filter on detail pages (auto_item)'];
