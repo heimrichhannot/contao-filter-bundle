@@ -3,6 +3,7 @@
 All notable changes to this project will be documented in this file.
 
 ## [1.20.0] - 2022-01-07
+- Added: FilterBeforeRenderFilterFormEvent
 - Changed: minimum contao version is not 4.9
 - Changed: minimum php version is now 7.3
 
