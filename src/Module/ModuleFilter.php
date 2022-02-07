@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2021 Heimrich & Hannot GmbH
+ * Copyright (c) 2022 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -13,6 +13,7 @@ use Contao\Config;
 use Contao\Module;
 use Contao\System;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
+use HeimrichHannot\FilterBundle\Event\FilterBeforeRenderFilterFormEvent;
 use HeimrichHannot\FilterBundle\Manager\FilterManager;
 use HeimrichHannot\TwigSupportBundle\Renderer\TwigTemplateRenderer;
 use Patchwork\Utf8;
@@ -42,8 +43,7 @@ class ModuleFilter extends Module
         }
 
         // Hide list and show reader on detail pages if configured
-        if ($this->filter_hideOnAutoItem === '1' && (Config::get('useAutoItem') && isset($_GET['auto_item'])))
-        {
+        if ('1' === $this->filter_hideOnAutoItem && (Config::get('useAutoItem') && isset($_GET['auto_item']))) {
             return '';
         }
 
@@ -78,12 +78,22 @@ class ModuleFilter extends Module
 
         $this->Template->filter = $this->config;
 
+        $context = [
+            'filter' => $this->config,
+            'form' => $form->createView(),
+        ];
+
+        /** @var FilterBeforeRenderFilterFormEvent $event */
+        $event = System::getContainer()->get('event_dispatcher')->dispatch(
+            new FilterBeforeRenderFilterFormEvent(
+                $this->config->getFilterTemplateByName($filter['template']),
+                $context,
+            )
+        );
+
         $this->Template->form = System::getContainer()->get(TwigTemplateRenderer::class)->render(
-            $this->config->getFilterTemplateByName($filter['template']),
-            [
-                'filter' => $this->config,
-                'form' => $form->createView(),
-            ]
+            $event->getTemplate(),
+            $event->getContext()
         );
     }
 }

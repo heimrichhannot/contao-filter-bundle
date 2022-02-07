@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2021 Heimrich & Hannot GmbH
+ * Copyright (c) 2022 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -14,8 +14,8 @@ use Contao\Environment;
 use Contao\InsertTags;
 use Contao\System;
 use Doctrine\DBAL\Connection;
-use HeimrichHannot\FilterBundle\Event\FilterFormAdjustOptionsEvent;
 use HeimrichHannot\FilterBundle\Event\FilterConfigInitEvent;
+use HeimrichHannot\FilterBundle\Event\FilterFormAdjustOptionsEvent;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
 use HeimrichHannot\FilterBundle\Filter\Type\PublishedType;
 use HeimrichHannot\FilterBundle\Filter\Type\SkipParentsType;
@@ -131,8 +131,8 @@ class FilterConfig implements \JsonSerializable
     public function init(string $sessionKey, array $filter, $elements = null)
     {
         $event = System::getContainer()->get('event_dispatcher')->dispatch(
-            FilterConfigInitEvent::class,
-            new FilterConfigInitEvent($filter, $sessionKey, $elements)
+            new FilterConfigInitEvent($filter, $sessionKey, $elements),
+            FilterConfigInitEvent::class
         );
 
         $this->filter = $event->getFilter();
@@ -155,8 +155,6 @@ class FilterConfig implements \JsonSerializable
         ])->getFormFactory();
 
         $options = ['filter' => $this];
-
-
 
         $cssClass = [];
 
@@ -190,8 +188,8 @@ class FilterConfig implements \JsonSerializable
         }
 
         $event = System::getContainer()->get('event_dispatcher')->dispatch(
-            FilterFormAdjustOptionsEvent::class,
-            new FilterFormAdjustOptionsEvent($options, $this->filter, $this)
+            new FilterFormAdjustOptionsEvent($options, $this->filter, $this),
+            FilterFormAdjustOptionsEvent::class
         );
 
         $this->builder = $factory->createNamedBuilder($this->filter['name'], FilterType::class, $data, $event->getOptions());
@@ -438,6 +436,7 @@ class FilterConfig implements \JsonSerializable
     public function getData(): array
     {
         $data = [];
+
         if ($this->sessionKey) {
             $data = $this->session->getData($this->getSessionKey());
         }

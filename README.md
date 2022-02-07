@@ -120,14 +120,15 @@ huh:
 
 ### Events
 
-| Event                          | Event ID                                       | Description                                     |
-|--------------------------------|------------------------------------------------|-------------------------------------------------|
-| Adjust filter options          | `huh.filter.event.adjust_filter_options_event` |                                                 |
-| Adjust filter value            | `huh.filter.event.adjust_filter_value_event`   |                                                 |
-| FilterConfigInitEvent          | FilterConfigInitEvent::class                   | Modify config on FilterConfig initialization.   |
-| FilterFormAdjustOptionsEvent   | FilterFormAdjustOptionsEvent::class            | Modify form options before building the form.   |
-| FilterQueryBuilderComposeEvent | FilterQueryBuilderComposeEvent::class          | Description provided below.                     |
-| ModifyJsonResponseEvent        | `huh.filter.event.modify_json_response_event`  | Modify the JSON response of async form submits. |
+| Event                             | Event ID                                       | Description                                              |
+|-----------------------------------|------------------------------------------------|----------------------------------------------------------|
+| Adjust filter options             | `huh.filter.event.adjust_filter_options_event` |                                                          |
+| Adjust filter value               | `huh.filter.event.adjust_filter_value_event`   |                                                          |
+| FilterConfigInitEvent             | FilterConfigInitEvent::class                   | Modify config on FilterConfig initialization.            |
+| FilterBeforeRenderFilterFormEvent | FilterBeforeRenderFilterFormEvent:class        | Modify the filter form template context before rendering |
+| FilterFormAdjustOptionsEvent      | FilterFormAdjustOptionsEvent::class            | Modify form options before building the form.            |
+| FilterQueryBuilderComposeEvent    | FilterQueryBuilderComposeEvent::class          | Description provided below.                              |
+| ModifyJsonResponseEvent           | `huh.filter.event.modify_json_response_event`  | Modify the JSON response of async form submits.          |
 
 #### FilterQueryBuilderComposeEvent
 

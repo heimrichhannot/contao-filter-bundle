@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2021 Heimrich & Hannot GmbH
+ * Copyright (c) 2022 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -105,8 +105,10 @@ class FrontendAjaxController extends Controller
 
         $response->setData(['filter' => $filter, 'filterName' => $request->get('filterName')]);
 
-        $event = $this->container->get('event_dispatcher')->dispatch(ModifyJsonResponseEvent::NAME,
-            new ModifyJsonResponseEvent($response, $filterConfig));
+        $event = $this->container->get('event_dispatcher')->dispatch(
+            new ModifyJsonResponseEvent($response, $filterConfig),
+            ModifyJsonResponseEvent::NAME
+        );
 
         return $event->getResponse();
     }

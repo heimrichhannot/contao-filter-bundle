@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2021 Heimrich & Hannot GmbH
+ * Copyright (c) 2022 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -264,9 +264,10 @@ abstract class AbstractType
         $options['block_name'] = $this->getName($element);
 
         if ($triggerEvent) {
-            $event = System::getContainer()->get('event_dispatcher')->dispatch(AdjustFilterOptionsEvent::NAME, new AdjustFilterOptionsEvent(
-                $name, $options, $element, $builder, $this->config
-            ));
+            $event = System::getContainer()->get('event_dispatcher')->dispatch(
+                new AdjustFilterOptionsEvent($name, $options, $element, $builder, $this->config),
+                AdjustFilterOptionsEvent::NAME
+            );
 
             return $event->getOptions();
         }
