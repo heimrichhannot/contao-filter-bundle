@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2021 Heimrich & Hannot GmbH
+ * Copyright (c) 2022 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -146,11 +146,9 @@ class FilterQueryBuilder extends QueryBuilder
             return $this;
         }
 
-
-
         $event = System::getContainer()->get('event_dispatcher')->dispatch(
-            FilterQueryBuilderComposeEvent::class,
-            new FilterQueryBuilderComposeEvent($this, $name, $operator, $value, $element, $config)
+            new FilterQueryBuilderComposeEvent($this, $name, $operator, $value, $element, $config),
+            FilterQueryBuilderComposeEvent::class
         );
 
         if (true === $event->getContinue()) {
@@ -165,8 +163,6 @@ class FilterQueryBuilder extends QueryBuilder
                 )
             );
         }
-
-
 
         return $this;
     }
@@ -359,9 +355,10 @@ class FilterQueryBuilder extends QueryBuilder
         FilterConfig $config,
         array $dca
     ) {
-        $event = $this->container->get('event_dispatcher')->dispatch(AdjustFilterValueEvent::NAME, new AdjustFilterValueEvent(
-            $value ?? null, \is_array($data) ? $data : [], $element, $name, $config, $dca
-        ));
+        $event = $this->container->get('event_dispatcher')->dispatch(
+            new AdjustFilterValueEvent($value ?? null, \is_array($data) ? $data : [], $element, $name, $config, $dca),
+            AdjustFilterValueEvent::NAME
+        );
 
         return $event->getValue();
     }

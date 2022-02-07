@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.20.0] - 2022-01-07
+- Changed: minimum contao version is not 4.9
+- Changed: minimum php version is now 7.3
+
 ## [1.19.1] - 2022-01-07
 - Fixed: missing translations for hide filter on auto_item checkbox
 

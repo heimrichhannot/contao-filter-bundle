@@ -1,13 +1,18 @@
 <?php
 
+/*
+ * Copyright (c) 2022 Heimrich & Hannot GmbH
+ *
+ * @license LGPL-3.0-or-later
+ */
+
 namespace HeimrichHannot\FilterBundle\Event;
 
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 class FilterFormAdjustOptionsEvent extends Event
 {
-
     /**
      * @var array
      */
@@ -23,39 +28,26 @@ class FilterFormAdjustOptionsEvent extends Event
 
     public function __construct(array $options, array $filter, FilterConfig $filterConfig)
     {
-
         $this->options = $options;
         $this->filter = $filter;
         $this->filterConfig = $filterConfig;
     }
 
-    /**
-     * @return array
-     */
     public function getOptions(): array
     {
         return $this->options;
     }
 
-    /**
-     * @param array $options
-     */
     public function setOptions(array $options): void
     {
         $this->options = $options;
     }
 
-    /**
-     * @return array
-     */
     public function getFilter(): array
     {
         return $this->filter;
     }
 
-    /**
-     * @return FilterConfig
-     */
     public function getFilterConfig(): FilterConfig
     {
         return $this->filterConfig;

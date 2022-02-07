@@ -1,9 +1,15 @@
 <?php
 
+/*
+ * Copyright (c) 2022 Heimrich & Hannot GmbH
+ *
+ * @license LGPL-3.0-or-later
+ */
+
 namespace HeimrichHannot\FilterBundle\Event;
 
 use Contao\Model\Collection;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 class FilterConfigInitEvent extends Event
 {
@@ -27,53 +33,33 @@ class FilterConfigInitEvent extends Event
         $this->elements = $elements;
     }
 
-    /**
-     * @return array
-     */
     public function getFilter(): array
     {
         return $this->filter;
     }
 
-    /**
-     * @param array $filter
-     */
     public function setFilter(array $filter): void
     {
         $this->filter = $filter;
     }
 
-    /**
-     * @return string
-     */
     public function getSessionKey(): string
     {
         return $this->sessionKey;
     }
 
-    /**
-     * @param string $sessionKey
-     */
     public function setSessionKey(string $sessionKey): void
     {
         $this->sessionKey = $sessionKey;
     }
 
-    /**
-     * @return Collection|null
-     */
     public function getElements(): ?Collection
     {
         return $this->elements;
     }
 
-    /**
-     * @param Collection|null $elements
-     */
     public function setElements(?Collection $elements): void
     {
         $this->elements = $elements;
     }
-
-
 }

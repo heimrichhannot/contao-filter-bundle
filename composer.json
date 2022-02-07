@@ -4,8 +4,8 @@
   "description": "A generic contao filter.",
   "license": "LGPL-3.0-or-later",
   "require": {
-    "php": "^7.1|^8.0",
-    "contao/core-bundle": "^4.4",
+    "php": "^7.3|^8.0",
+    "contao/core-bundle": "^4.9",
     "symfony/framework-bundle": "~3.4.26|^4.0",
     "heimrichhannot/contao-be_explanation-bundle": "^2.3",
     "heimrichhannot/contao-utils-bundle": "^2.0",
