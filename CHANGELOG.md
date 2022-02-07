@@ -3,9 +3,9 @@
 All notable changes to this project will be documented in this file.
 
 ## [1.20.0] - 2022-01-07
-- Added: FilterBeforeRenderFilterFormEvent
-- Changed: minimum contao version is not 4.9
-- Changed: minimum php version is now 7.3
+- Added: FilterBeforeRenderFilterFormEvent ([#24])
+- Changed: minimum contao version is not 4.9 ([#24])
+- Changed: minimum php version is now 7.3 ([#24])
 
 ## [1.19.3] - 2022-02-07
 
@@ -227,6 +227,7 @@ All notable changes to this project will be documented in this file.
 - updated import in filter bundle js
 
 
+[#24]: https://github.com/heimrichhannot/contao-filter-bundle/pull/24
 [#21]: https://github.com/heimrichhannot/contao-filter-bundle/pull/21
 [#20]: https://github.com/heimrichhannot/contao-filter-bundle/pull/20
 [#18]: https://github.com/heimrichhannot/contao-filter-bundle/pull/18
