@@ -1,16 +1,18 @@
 <?php
 
 /*
- * Copyright (c) 2021 Heimrich & Hannot GmbH
+ * Copyright (c) 2022 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
 
 namespace HeimrichHannot\FilterBundle\Controller;
 
+use Contao\CoreBundle\Framework\ContaoFramework;
 use HeimrichHannot\FilterBundle\Exception\HandleFormException;
 use HeimrichHannot\FilterBundle\Exception\MissingFilterException;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use HeimrichHannot\FilterBundle\Manager\FilterManager;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,8 +23,23 @@ use Symfony\Component\Routing\Annotation\Route;
  *
  * @Route(defaults={"_scope" = "frontend", "_token_check" = true})
  */
-class FrontendController extends Controller
+class FrontendController extends AbstractController
 {
+    /**
+     * @var ContaoFramework
+     */
+    protected $framework;
+    /**
+     * @var FilterManager
+     */
+    protected $filterManager;
+
+    public function __construct(ContaoFramework $framework, FilterManager $filterManager)
+    {
+        $this->framework = $framework;
+        $this->filterManager = $filterManager;
+    }
+
     /**
      * @Route("/_filter/preselect/{id}", name="filter_frontend_preselect")
      *
@@ -34,9 +51,9 @@ class FrontendController extends Controller
      */
     public function preselectAction(Request $request, int $id): RedirectResponse
     {
-        $this->get('contao.framework')->initialize();
+        $this->framework->initialize();
 
-        if (null === ($filter = $this->get('huh.filter.manager')->findById($id))) {
+        if (null === ($filter = $this->filterManager->findById($id))) {
             throw new MissingFilterException('A filter with id '.$id.' does not exist.');
         }
 
@@ -60,9 +77,9 @@ class FrontendController extends Controller
      */
     public function submitAction(Request $request, int $id): Response
     {
-        $this->get('contao.framework')->initialize();
+        $this->framework->initialize();
 
-        if (null === ($filter = $this->get('huh.filter.manager')->findById($id))) {
+        if (null === ($filter = $this->filterManager->findById($id))) {
             throw new MissingFilterException('A filter with id '.$id.' does not exist.');
         }
 

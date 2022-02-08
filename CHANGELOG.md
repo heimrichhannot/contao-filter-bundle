@@ -2,7 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
-## [1.20.0] - 2022-01-07
+## [1.20.1] - 2022-02-08
+
+- Fixed: controllers to symfony 4+
+- Fixed: symfony dependencies
+
+## [1.20.0] - 2022-02-07
 - Added: FilterBeforeRenderFilterFormEvent ([#24])
 - Changed: minimum contao version is not 4.9 ([#24])
 - Changed: minimum php version is now 7.3 ([#24])

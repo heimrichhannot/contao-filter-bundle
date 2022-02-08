@@ -8,6 +8,7 @@
 
 namespace HeimrichHannot\FilterBundle\Controller;
 
+use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Environment;
 use Contao\FrontendIndex;
 use Contao\System;
@@ -15,21 +16,35 @@ use HeimrichHannot\FilterBundle\Event\ModifyJsonResponseEvent;
 use HeimrichHannot\FilterBundle\Exception\HandleFormException;
 use HeimrichHannot\FilterBundle\Exception\MissingFilterException;
 use HeimrichHannot\FilterBundle\Form\FilterType;
+use HeimrichHannot\FilterBundle\Manager\FilterManager;
 use HeimrichHannot\TwigSupportBundle\Renderer\TwigTemplateRenderer;
 use HeimrichHannot\UtilsBundle\Page\PageUtil;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Handles the filter frontend ajax routes.
  *
  * @Route(defaults={"_scope" = "frontend", "_token_check" = true})
  */
-class FrontendAjaxController extends Controller
+class FrontendAjaxController extends AbstractController
 {
+    /**
+     * @var ContaoFramework
+     */
+    protected $framework;
+    /**
+     * @var FilterManager
+     */
+    protected $filterManager;
+    /**
+     * @var EventDispatcherInterface
+     */
+    protected $eventDispatcher;
     /**
      * @var PageUtil
      */
@@ -38,9 +53,16 @@ class FrontendAjaxController extends Controller
     /**
      * FrontendAjaxController constructor.
      */
-    public function __construct(PageUtil $pageUtil)
-    {
+    public function __construct(
+        PageUtil $pageUtil,
+        ContaoFramework $framework,
+        FilterManager $filterManager,
+        EventDispatcherInterface $eventDispatcher
+    ) {
         $this->pageUtil = $pageUtil;
+        $this->framework = $framework;
+        $this->filterManager = $filterManager;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
@@ -54,9 +76,9 @@ class FrontendAjaxController extends Controller
      */
     public function ajaxSubmitAction(Request $request, int $id): Response
     {
-        $this->get('contao.framework')->initialize();
+        $this->framework->initialize();
 
-        if (null === ($filter = $this->get('huh.filter.manager')->findById($id))) {
+        if (null === ($filter = $this->filterManager->findById($id))) {
             throw new MissingFilterException('A filter with id '.$id.' does not exist.');
         }
 
