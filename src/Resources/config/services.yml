@@ -115,28 +115,6 @@ services:
     public: true
     arguments: ['@service_container', '@huh.utils.model']
 
-  twig.extension.text:
-    class: Twig_Extensions_Extension_Text
-    tags:
-    - { name: twig.extension }
-
-  twig.extension.intl:
-    class: Twig_Extensions_Extension_Intl
-    tags:
-    - { name: twig.extension }
-
-  twig.extension.array:
-    class: Twig_Extensions_Extension_Array
-    tags:
-    - { name: twig.extension }
-
-  twig.extension.date:
-    class: Twig_Extensions_Extension_Date
-    arguments:
-    - "@translator"
-    tags:
-    - { name: twig.extension }
-
   huh.filter.choice.sort:
     class: HeimrichHannot\FilterBundle\Choice\SortChoice
     public: true

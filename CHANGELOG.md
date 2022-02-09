@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.20.2] - 2022-02-09
+
+- Fixed: config for symfony 5+
+- Removed: twig extension services from yml config
+
 ## [1.20.1] - 2022-02-08
 
 - Fixed: controllers to symfony 4+

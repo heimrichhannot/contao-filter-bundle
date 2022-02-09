@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2021 Heimrich & Hannot GmbH
+ * Copyright (c) 2022 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -16,14 +16,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class FormTypeExtension extends AbstractTypeExtension
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getExtendedType()
-    {
-        return FormType::class;
-    }
-
     /**
      * Add the extra row_attr option.
      */
@@ -46,5 +38,10 @@ class FormTypeExtension extends AbstractTypeExtension
         $view->vars['group_attr'] = isset($options['group_attr']) && \is_array($options['group_attr']) ? $options['group_attr'] : [];
         $view->vars['input_prepend'] = $options['input_group_prepend'];
         $view->vars['input_append'] = $options['input_group_append'];
+    }
+
+    public static function getExtendedTypes(): iterable
+    {
+        return [FormType::class];
     }
 }
