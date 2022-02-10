@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.20.4] - 2022-02-10
+
+- Fixed: added concrete twig extension bundles for BC reasons
+
 ## [1.20.3] - 2022-02-10
 
 - Fixed: `spaceless` usages in twig templates
