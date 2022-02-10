@@ -16,7 +16,6 @@ use HeimrichHannot\FilterBundle\Config\FilterConfig;
 use HeimrichHannot\FilterBundle\Event\FilterBeforeRenderFilterFormEvent;
 use HeimrichHannot\FilterBundle\Manager\FilterManager;
 use HeimrichHannot\TwigSupportBundle\Renderer\TwigTemplateRenderer;
-use Patchwork\Utf8;
 
 class ModuleFilter extends Module
 {
@@ -33,7 +32,7 @@ class ModuleFilter extends Module
     {
         if (TL_MODE === 'BE') {
             $objTemplate = new BackendTemplate('be_wildcard');
-            $objTemplate->wildcard = '### '.Utf8::strtoupper($GLOBALS['TL_LANG']['FMD'][$this->type][0]).' ###';
+            $objTemplate->wildcard = '### '.$GLOBALS['TL_LANG']['FMD'][$this->type][0].' ###';
             $objTemplate->title = $this->headline;
             $objTemplate->id = $this->id;
             $objTemplate->link = $this->name;

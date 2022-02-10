@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.20.3] - 2022-02-10
+
+- Fixed: `spaceless` usages in twig templates
+- Fixed: querybuilder parameter colons for symfony 5+
+
 ## [1.20.2] - 2022-02-09
 
 - Fixed: config for symfony 5+

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2021 Heimrich & Hannot GmbH
+ * Copyright (c) 2022 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -46,7 +46,7 @@ class PublishedType extends AbstractType
                 );
 
                 $and->add($orStart);
-                $builder->setParameter(':startField_time', $time);
+                $builder->setParameter('startField_time', $time);
             }
 
             if ($element->stopField) {
@@ -55,7 +55,7 @@ class PublishedType extends AbstractType
                     $builder->expr()->gt($filter['dataContainer'].'.'.$element->stopField, ':stopField_time')
                 );
                 $and->add($orStop);
-                $builder->setParameter(':stopField_time', $time + 60);
+                $builder->setParameter('stopField_time', $time + 60);
             }
         }
 

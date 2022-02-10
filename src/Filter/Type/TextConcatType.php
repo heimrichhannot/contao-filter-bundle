@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2021 Heimrich & Hannot GmbH
+ * Copyright (c) 2022 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -40,6 +40,7 @@ class TextConcatType extends AbstractType
         }
 
         $wildcard = ':'.$name;
+        $wildcardParameterName = $name;
         $fields = StringUtil::deserialize($element->fields, true);
 
         if (empty($fields)) {
@@ -88,7 +89,7 @@ class TextConcatType extends AbstractType
             return;
         }
 
-        $builder->setParameter($wildcard, '%'.strtolower($data[$name]).'%');
+        $builder->setParameter($wildcardParameterName, '%'.strtolower($data[$name]).'%');
 
         // combine everything in a disjunction
         $or = $builder->expr()->orX();

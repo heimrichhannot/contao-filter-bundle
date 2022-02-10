@@ -24,17 +24,17 @@
         {{ block('input_group_attributes') }}
     {% else %}
         {% set group_attr = group_attr|merge({'class': ('form-group' ~ (group_attr.class is defined ? ' ' ~ group_attr.class : '') ~ ' ' ~ id ~ ' ' ~ name)|trim} ) %}
-        {% spaceless %}
+        {% apply spaceless %}
             {% for attrname, attrvalue in group_attr %}{{ attrname }}="{{ attrvalue }}" {% endfor %}
-        {% endspaceless %}
+        {% endapply %}
     {% endif %}
 {%- endblock form_group_attributes %}
 
 {% block input_group_attributes -%}
     {% set group_attr = group_attr|merge({'class': ('input-group' ~ (group_attr.class is defined ? ' ' ~ group_attr.class : '') ~ ' ' ~ id ~ ' ' ~ name)|trim} ) %}
-    {% spaceless %}
+    {% apply spaceless %}
         {% for attrname, attrvalue in group_attr %}{{ attrname }}="{{ attrvalue }}" {% endfor %}
-    {% endspaceless %}
+    {% endapply %}
 {%- endblock input_group_attributes %}
 
 {% block form_widget_simple -%}

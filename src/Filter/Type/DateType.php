@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2021 Heimrich & Hannot GmbH
+ * Copyright (c) 2022 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -75,8 +75,8 @@ class DateType extends AbstractType
 
         $builder->andWhere($andXA);
 
-        $builder->setParameter(':start_'.$element->id, $start);
-        $builder->setParameter(':stop_'.$element->id, $stop);
+        $builder->setParameter('start_'.$element->id, $start);
+        $builder->setParameter('stop_'.$element->id, $stop);
     }
 
     /**
