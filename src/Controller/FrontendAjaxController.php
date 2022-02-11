@@ -127,7 +127,7 @@ class FrontendAjaxController extends AbstractController
 
         $response->setData(['filter' => $filter, 'filterName' => $request->get('filterName')]);
 
-        $event = $this->container->get('event_dispatcher')->dispatch(
+        $event = System::getContainer()->get('event_dispatcher')->dispatch(
             new ModifyJsonResponseEvent($response, $filterConfig),
             ModifyJsonResponseEvent::NAME
         );

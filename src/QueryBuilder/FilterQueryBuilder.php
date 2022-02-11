@@ -355,7 +355,7 @@ class FilterQueryBuilder extends QueryBuilder
         FilterConfig $config,
         array $dca
     ) {
-        $event = $this->container->get('event_dispatcher')->dispatch(
+        $event = System::getContainer()->get('event_dispatcher')->dispatch(
             new AdjustFilterValueEvent($value ?? null, \is_array($data) ? $data : [], $element, $name, $config, $dca),
             AdjustFilterValueEvent::NAME
         );
