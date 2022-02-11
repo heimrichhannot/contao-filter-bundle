@@ -149,3 +149,20 @@ services:
     tags:
     - { name: twig.extension }
 
+  twig.extension.string:
+    class: Twig\Extra\String\StringExtension
+    autowire: true
+    tags:
+      - { name: twig.extension }
+
+  twig.extension.html:
+    class: Twig\Extra\Html\HtmlExtension
+    autowire: true
+    tags:
+      - { name: twig.extension }
+
+  twig.extension.intl:
+    class: Twig\Extra\Intl\IntlExtension
+    autowire: true
+    tags:
+      - { name: twig.extension }

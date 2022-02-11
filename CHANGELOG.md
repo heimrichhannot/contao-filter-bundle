@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.20.5] - 2022-02-10
+
+- Added: twig extension service definitions (the ones delivered by extra-bundle aren't working in symfony 4 out of the box)
+
 ## [1.20.4] - 2022-02-10
 
 - Fixed: added concrete twig extension bundles for BC reasons
