@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.20.7] - 2022-02-14
+
+- Fixed: array index issues in php 8+
+
 ## [1.20.6] - 2022-02-11
 
 - Fixed: event_dispatcher call in ajax

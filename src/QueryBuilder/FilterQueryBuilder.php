@@ -72,13 +72,13 @@ class FilterQueryBuilder extends QueryBuilder
 
         $dca = $GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element->field];
 
-        if ($dca['eval']['isCategoryField']) {
+        if ($dca['eval']['isCategoryField'] ?? false) {
             $this->whereCategoryWidget($element, $name, $config, $dca, DatabaseUtil::OPERATOR_IN);
 
             return $this;
         }
 
-        switch ($dca['inputType']) {
+        switch ($dca['inputType'] ?? null) {
             case 'cfgTags':
                 if (!isset($dca['eval']['tagsManager'])) {
                     break;
@@ -207,7 +207,7 @@ class FilterQueryBuilder extends QueryBuilder
 
     protected function getOperator(FilterConfigElementModel $element, string $operator, array $dca, bool $supportSerializedBlob = true): string
     {
-        if ((isset($dca['eval']['multiple']) && $dca['eval']['multiple'] || 'tagsinput' === $dca['eval']['inputType']) && $supportSerializedBlob) {
+        if ((isset($dca['eval']['multiple']) && $dca['eval']['multiple'] || 'tagsinput' === ($dca['eval']['inputType'] ?? null)) && $supportSerializedBlob) {
             if (\in_array($operator, DatabaseUtil::NEGATIVE_OPERATORS)) {
                 // db value is a serialized blob
                 if (false !== strpos($dca['sql'], 'blob')) {
