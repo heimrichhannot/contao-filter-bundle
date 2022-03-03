@@ -45,7 +45,58 @@ We recommend to use this bundle toghether with [List Bundle](https://github.com/
 
 ### Wrapper elements (DateRange, ProximitySearch, ...)
 
-The Wrapper element has to be places **before** the fields associated with them. For example the date_range wrapper element needs to be placed before the two associated date fields.
+The Wrapper element has to be places **before** the fields associated with them. 
+For example the date_range wrapper element needs to be placed before the two associated date fields.
+
+### Preselect
+
+Filter Bundle Forms are not typical GET-Forms, so it is not possible to simple 
+copy the filter urls to share or bookmark
+a filtered list. To overcome this limitation, preselect urls can be generated.
+Preselect urls for the current filter can be found within template variabled, 
+you can create a preselect content element or get the url programmatically from 
+the FilterConfig.
+
+#### Template variables
+If a filter is set, the variable `preselectUrl` contains the preselection url for
+the current filter. It's available in the filter templates and the frontend module
+template.
+
+You can for example create a copy preselect url button:
+
+```twig
+{% if preselectUrl is defined and preselectUrl is not empty %}
+   <div class="col-xd-12 col-md-3">
+   <a class="btn btn-primary" onclick="navigator.clipboard.writeText('{{ preselectUrl }}');alert('Copied preselect link!');return false;">Filtervorauswahllink kopieren</a>
+   </div>
+{% endif %}
+```
+
+#### Content element
+You can use one of the following content elements:
+
+- "Filter-Preselect" with optional redirect functionality to preselect filter on given page
+- "Filter-Hyperlink" with filter preselect feature
+
+#### FilterConfig
+
+You can generate the preselect link from the FilterConfig instance
+
+```php
+<?php 
+use HeimrichHannot\FilterBundle\Manager\FilterManager;
+
+class CustomController {
+   private FilterManager $filterManager;
+   
+   public function invoke(): string
+   {
+       $filterConfig = $this->filterManager->findById($this->objModel->filter);
+       return !empty($filterConfig->getData()) ? $filterConfig->getPreselectAction($filterConfig->getData(), true) : ''
+   }
+}
+```
+
 
 ## Inserttags
 

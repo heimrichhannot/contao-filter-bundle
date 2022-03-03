@@ -122,7 +122,7 @@ class FrontendAjaxController extends AbstractController
             [
                 'filter' => $filter,
                 'form' => $form->createView(),
-                'preselectUrl' => $filter->getPreselectAction($filter->getData(), true),
+                'preselectUrl' => !empty($filter->getData()) ? $filter->getPreselectAction($filter->getData(), true) : '',
             ]
         );
 

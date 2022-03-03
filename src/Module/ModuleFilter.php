@@ -80,7 +80,7 @@ class ModuleFilter extends Module
         $context = [
             'filter' => $this->config,
             'form' => $form->createView(),
-            'preselectUrl' => $this->config->getPreselectAction($this->config->getData(), true),
+            'preselectUrl' => !empty($this->config->getData()) ? $this->config->getPreselectAction($this->config->getData(), true) : '',
         ];
 
         /** @var FilterBeforeRenderFilterFormEvent $event */
@@ -92,7 +92,7 @@ class ModuleFilter extends Module
             )
         );
 
-        $this->Template->preselectUrl = $this->config->getPreselectAction($this->config->getData(), true);
+        $this->Template->preselectUrl = !empty($this->config->getData()) ? $this->config->getPreselectAction($this->config->getData(), true) : '';
         $this->Template->form = System::getContainer()->get(TwigTemplateRenderer::class)->render(
             $event->getTemplate(),
             $event->getContext()
