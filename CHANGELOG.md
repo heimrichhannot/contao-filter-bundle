@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased] - 2022-03-03
+## [1.21.0] - 2022-03-03
 - Added: absoluteUrl option to FilterConfig::getPreselectAction()
 - Added: filter config property to FilterBeforeRenderFilterFormEvent
 - Added: preselectUrl variable to filter and frontend module templates
