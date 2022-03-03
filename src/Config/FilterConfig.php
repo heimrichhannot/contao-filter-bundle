@@ -37,6 +37,8 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\PropertyAccess\PropertyAccess;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\RouterInterface;
 
 class FilterConfig implements \JsonSerializable
 {
@@ -603,8 +605,9 @@ class FilterConfig implements \JsonSerializable
      *
      * @return string|null
      */
-    public function getPreselectAction(array $data = [])
+    public function getPreselectAction(array $data = [], bool $absoluteUrl = false)
     {
+        /** @var RouterInterface $router */
         $router = $this->container->get('router');
 
         $filter = $this->getFilter();
@@ -613,7 +616,11 @@ class FilterConfig implements \JsonSerializable
             return null;
         }
 
-        return $router->generate('filter_frontend_preselect', ['id' => $filter['id'], 'data' => $data]);
+        return $router->generate(
+            'filter_frontend_preselect',
+            ['id' => $filter['id'], 'data' => $data],
+            $absoluteUrl ? UrlGeneratorInterface::ABSOLUTE_URL : UrlGeneratorInterface::ABSOLUTE_PATH
+        );
     }
 
     /**

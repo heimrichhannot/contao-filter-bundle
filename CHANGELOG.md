@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - 2022-03-03
+- Added: absoluteUrl option to FilterConfig::getPreselectAction()
+- Added: filter config property to FilterBeforeRenderFilterFormEvent
+- Fixed: preselect values for checkbox types reset filter 
+
 ## [1.20.7] - 2022-02-14
 
 - Fixed: array index issues in php 8+

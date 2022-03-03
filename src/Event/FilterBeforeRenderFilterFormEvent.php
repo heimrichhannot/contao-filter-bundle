@@ -8,6 +8,7 @@
 
 namespace HeimrichHannot\FilterBundle\Event;
 
+use HeimrichHannot\FilterBundle\Config\FilterConfig;
 use Symfony\Contracts\EventDispatcher\Event;
 
 class FilterBeforeRenderFilterFormEvent extends Event
@@ -17,11 +18,16 @@ class FilterBeforeRenderFilterFormEvent extends Event
 
     /** @var array */
     private $context;
+    /**
+     * @var FilterConfig
+     */
+    private $filterConfig;
 
-    public function __construct(string $template, array $context)
+    public function __construct(string $template, array $context, FilterConfig $filterConfig)
     {
         $this->template = $template;
         $this->context = $context;
+        $this->filterConfig = $filterConfig;
     }
 
     public function getTemplate(): string
@@ -42,5 +48,10 @@ class FilterBeforeRenderFilterFormEvent extends Event
     public function setContext(array $context): void
     {
         $this->context = $context;
+    }
+
+    public function getFilterConfig(): FilterConfig
+    {
+        return $this->filterConfig;
     }
 }

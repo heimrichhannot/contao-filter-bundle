@@ -87,6 +87,7 @@ class ModuleFilter extends Module
             new FilterBeforeRenderFilterFormEvent(
                 $this->config->getFilterTemplateByName($filter['template']),
                 $context,
+                $this->config
             )
         );
 
