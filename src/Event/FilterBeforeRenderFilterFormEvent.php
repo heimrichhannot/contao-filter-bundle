@@ -12,8 +12,11 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class FilterBeforeRenderFilterFormEvent extends Event
 {
-    private string $template;
-    private array $context;
+    /** @var string */
+    private $template;
+
+    /** @var array */
+    private $context;
 
     public function __construct(string $template, array $context)
     {
