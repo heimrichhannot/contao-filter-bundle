@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.21.1] - 2022-03-04
+- Fixed: preselect link not working of no action is set in filter config. Now referrer parameter is also evaluated
+
 ## [1.21.0] - 2022-03-03
 - Added: absoluteUrl option to FilterConfig::getPreselectAction()
 - Added: filter config property to FilterBeforeRenderFilterFormEvent
