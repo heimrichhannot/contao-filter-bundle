@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.21.2] - 2022-05-10
+- Fixed: symfony 5 compatiblity
+
 ## [1.21.1] - 2022-03-04
 - Fixed: preselect link not working of no action is set in filter config. Now referrer parameter is also evaluated
 
