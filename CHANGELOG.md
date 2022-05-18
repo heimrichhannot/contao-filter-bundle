@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.21.3] - 2022-05-18
+
+- Fixed: symfony 5 compatibility
+
 ## [1.21.2] - 2022-05-10
 - Fixed: symfony 5 compatiblity
 

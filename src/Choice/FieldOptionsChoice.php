@@ -200,7 +200,7 @@ class FieldOptionsChoice extends AbstractChoice
             $options = [];
 
             if (null !== ($queryBuilder = System::getContainer()->get('huh.filter.manager')->getInitialQueryBuilder($filter['id'], [$element->id], true))) {
-                $items = $queryBuilder->select([$filter['dataContainer'].'.'.$element->field])->execute()->fetchAll(FetchMode::COLUMN, 0);
+                $items = $queryBuilder->select([$filter['dataContainer'].'.'.$element->field])->execute()->fetchAll(FetchMode::COLUMN);
 
                 // make the values unique
                 $items = array_filter(array_unique($items));
@@ -249,7 +249,7 @@ class FieldOptionsChoice extends AbstractChoice
                 if (null !== ($filterQueryBuilder = System::getContainer()->get('huh.filter.manager')->getInitialQueryBuilder($filter['id'], [$element->id], true))) {
                     $filterQueryBuilder->select([$filter['dataContainer'].'.'.$element->field]);
 
-                    $values = $filterQueryBuilder->execute()->fetchAll(FetchMode::COLUMN, 0);
+                    $values = $filterQueryBuilder->execute()->fetchAll(FetchMode::COLUMN);
 
                     // make the values unique
                     $values = array_unique($values);
