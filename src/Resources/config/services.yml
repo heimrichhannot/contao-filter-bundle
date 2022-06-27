@@ -74,8 +74,7 @@ services:
   huh.filter.backend.filter_preselect:
     public: true
     class: HeimrichHannot\FilterBundle\Backend\FilterPreselect
-    arguments:
-    - "@contao.framework"
+    autowire: true
 
   # choices
   huh.filter.choice.template:

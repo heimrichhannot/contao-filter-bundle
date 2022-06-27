@@ -47,9 +47,9 @@ class FilterPreselectContainer
         $this->prepareElementChoices((int) $dc->id);
     }
 
-    protected function prepareElementChoices(int $id): array
+    public function prepareElementChoices(int $preselectItemId): array
     {
-        if (null === ($filterPreselect = $this->utils->model()->findModelInstanceByPk('tl_filter_preselect', $id))) {
+        if (null === ($filterPreselect = $this->utils->model()->findModelInstanceByPk('tl_filter_preselect', $preselectItemId))) {
             return [];
         }
 
