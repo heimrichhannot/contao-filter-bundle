@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.22.0] - 2022-06-27
+- Added: FilterCollection class for single access to filter types ([#25])
+- Changed: FilterPreselect options should now have same options as FilterConfigElement in the frontend ([#25])
+- Changed: minimum php version is now 7.4 ([#25])
+- Changed: minimum utils bundle version is now 2.217 ([#25])
+- Changed: made FilterConfig::buildForm() configurable ([#25])
+- Changed: refactored some code to modern coding standards ([#25])
+- Fixed: some deprecations ([#25])
+
 ## [1.21.3] - 2022-05-18
 
 - Fixed: symfony 5 compatibility
@@ -275,6 +284,7 @@ All notable changes to this project will be documented in this file.
 - updated import in filter bundle js
 
 
+[#25]: https://github.com/heimrichhannot/contao-filter-bundle/pull/25
 [#24]: https://github.com/heimrichhannot/contao-filter-bundle/pull/24
 [#21]: https://github.com/heimrichhannot/contao-filter-bundle/pull/21
 [#20]: https://github.com/heimrichhannot/contao-filter-bundle/pull/20
