@@ -2,6 +2,18 @@ services:
   _defaults:
     public: true
     autowire: true
+    bind:
+      $bundleConfig: '%huh.filter%'
+
+  HeimrichHannot\FilterBundle\:
+    resource: '../../{Controller,DataContainer}/*'
+    autoconfigure: true
+    autowire: true
+    public: false
+
+  HeimrichHannot\FilterBundle\Filter\FilterCollection:
+    autowire: true
+    public: true
 
   huh.form_type_extension:
     class: HeimrichHannot\FilterBundle\Form\Extension\FormTypeExtension

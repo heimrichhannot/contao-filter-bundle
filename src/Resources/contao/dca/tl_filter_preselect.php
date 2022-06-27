@@ -6,17 +6,13 @@
  * @license LGPL-3.0-or-later
  */
 
-\Controller::loadLanguageFile('tl_fieldpalette');
-\Controller::loadDataContainer('tl_fieldpalette');
+$GLOBALS['TL_DCA']['tl_filter_preselect'] = [];
+
+Controller::loadLanguageFile('tl_fieldpalette');
+Controller::loadDataContainer('tl_fieldpalette');
 
 $GLOBALS['TL_DCA']['tl_filter_preselect'] = $GLOBALS['TL_DCA']['tl_fieldpalette'];
 $dc = &$GLOBALS['TL_DCA']['tl_filter_preselect'];
-
-/*
- * Config
- */
-
-$dc['config']['onload_callback'][] = ['huh.filter.backend.filter_preselect', 'prepareChoiceTypes'];
 
 /*
  * List

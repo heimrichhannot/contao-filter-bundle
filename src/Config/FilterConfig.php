@@ -145,9 +145,18 @@ class FilterConfig implements \JsonSerializable
     /**
      * Build the form.
      */
-    public function buildForm(array $data = [])
+    public function buildForm(array $data = [], array $configuration = [])
     {
-        if (null === $this->filter) {
+        $configuration = array_merge([
+            'overrideFilter' => null,
+            'skipSession' => false,
+        ], $configuration);
+
+        if ($configuration['overrideFilter']) {
+            $filter = $configuration['overrideFilter'];
+        } elseif ($this->filter) {
+            $filter = $this->filter;
+        } else {
             return;
         }
 
@@ -160,23 +169,25 @@ class FilterConfig implements \JsonSerializable
 
         $cssClass = [];
 
-        if (isset($this->filter['cssClass']) && '' !== $this->filter['cssClass']) {
-            $cssClass[] = $this->filter['cssClass'];
+        if (isset($filter['cssClass']) && '' !== $filter['cssClass']) {
+            $cssClass[] = $filter['cssClass'];
         }
 
-        if ($this->hasData()) {
-            $cssClass[] = 'has-data';
+        if (!$configuration['skipSession']) {
+            if ($this->hasData()) {
+                $cssClass[] = 'has-data';
+            }
         }
 
         if (!empty($cssClass)) {
             $options['attr']['class'] = implode(' ', $cssClass);
         }
 
-        if ($this->getFilter()['asyncFormSubmit']) {
+        if ($filter['asyncFormSubmit']) {
             $options['attr']['data-async'] = 1;
 
-            if ($this->getFilter()['ajaxList']) {
-                $options['attr']['data-list'] = '#huh-list-'.$this->getFilter()['ajaxList'];
+            if ($filter['ajaxList']) {
+                $options['attr']['data-list'] = '#huh-list-'.$filter['ajaxList'];
             }
         }
 
@@ -185,16 +196,16 @@ class FilterConfig implements \JsonSerializable
             $data = $this->getData();
         }
 
-        if (isset($this->filter['renderEmpty']) && true === (bool) $this->filter['renderEmpty']) {
+        if (isset($filter['renderEmpty']) && true === (bool) $filter['renderEmpty']) {
             $data = [];
         }
 
         $event = System::getContainer()->get('event_dispatcher')->dispatch(
-            new FilterFormAdjustOptionsEvent($options, $this->filter, $this),
+            new FilterFormAdjustOptionsEvent($options, $filter, $this),
             FilterFormAdjustOptionsEvent::class
         );
 
-        $this->builder = $factory->createNamedBuilder($this->filter['name'], FilterType::class, $data, $event->getOptions());
+        $this->builder = $factory->createNamedBuilder($filter['name'], FilterType::class, $data, $event->getOptions());
 
         $this->mapFormsToData();
     }

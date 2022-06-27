@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2021 Heimrich & Hannot GmbH
+ * Copyright (c) 2022 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -9,7 +9,6 @@
 namespace HeimrichHannot\FilterBundle\Backend;
 
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
-use Contao\DataContainer;
 use Contao\StringUtil;
 use Contao\System;
 use HeimrichHannot\FilterBundle\Filter\Type\ChoiceType;
@@ -70,18 +69,6 @@ class FilterPreselect
         }
 
         return sprintf('%s -> %s [ID: %s]', $filterConfigElement->title, $label, $filterConfigElement->id);
-    }
-
-    /**
-     * Prepare initial choices.
-     */
-    public function prepareChoiceTypes(DataContainer $dc)
-    {
-        if ($dc->id < 1) {
-            return;
-        }
-
-        $this->prepareElementChoices($dc->id);
     }
 
     /**
