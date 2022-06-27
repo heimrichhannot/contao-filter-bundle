@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2021 Heimrich & Hannot GmbH
+ * Copyright (c) 2022 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -9,60 +9,53 @@
 namespace HeimrichHannot\FilterBundle\Backend;
 
 use Contao\Controller;
-use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
+use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\DataContainer;
 use Contao\Image;
 use Contao\StringUtil;
 use Contao\System;
+use HeimrichHannot\FilterBundle\Filter\FilterCollection;
 use HeimrichHannot\FilterBundle\Filter\Type\ChoiceType;
 use HeimrichHannot\FilterBundle\Filter\Type\DateTimeType;
 use HeimrichHannot\FilterBundle\Filter\Type\DateType;
 use HeimrichHannot\FilterBundle\Filter\Type\ExternalEntityType;
+use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
+use HeimrichHannot\UtilsBundle\Util\Utils;
 
 class FilterConfigElement
 {
     const INITIAL_PALETTE = '{general_legend},title,type,isInitial;{config_legend},field,operator,alternativeValueSource,initialValueType,addMultilingualInitialValues;{publish_legend},published;';
 
-    /**
-     * @var ContaoFrameworkInterface
-     */
-    protected $framework;
+    protected ContaoFramework $contaoFramework;
+    private FilterCollection  $filterCollection;
+    private Utils             $utils;
 
-    public function __construct(ContaoFrameworkInterface $framework)
+    public function __construct(ContaoFramework $framework, FilterCollection $filterCollection, Utils $utils)
     {
-        $this->framework = $framework;
+        $this->contaoFramework = $framework;
+        $this->filterCollection = $filterCollection;
+        $this->utils = $utils;
     }
 
     public function modifyPalette(DataContainer $dc)
     {
-        if (null === ($filterConfigElement = System::getContainer()->get('huh.utils.model')->findModelInstanceByPk(
+        /** @var FilterConfigElementModel|null $filterConfigElement */
+        if (null === ($filterConfigElement = $this->utils->model()->findModelInstanceByPk(
                 'tl_filter_config_element',
                 $dc->id
             ))) {
             return null;
         }
 
+        $type = $this->filterCollection->getClassByType($filterConfigElement->type);
+
+        if (!$type) {
+            return null;
+        }
+
         $dca = &$GLOBALS['TL_DCA']['tl_filter_config_element'];
-        $config = System::getContainer()->getParameter('huh.filter');
-        $foundType = null;
 
-        if (!isset($config['filter']['types']) || !\is_array($config['filter']['types'])) {
-            return null;
-        }
-
-        foreach ($config['filter']['types'] as $type) {
-            if (isset($type['name']) && $type['name'] === $filterConfigElement->type) {
-                $foundType = $type['name'];
-
-                break;
-            }
-        }
-
-        if (null === $foundType) {
-            return null;
-        }
-
-        if ($filterConfigElement->isInitial && isset($dca['palettes'][$foundType]) && false !== strpos($dca['palettes'][$foundType], 'isInitial')) {
+        if ($filterConfigElement->isInitial && isset($dca['palettes'][$filterConfigElement->type]) && false !== strpos($dca['palettes'][$filterConfigElement->type], 'isInitial')) {
             $dca['palettes'][$filterConfigElement->type] = static::INITIAL_PALETTE;
 
             if ($filterConfigElement->alternativeValueSource) {
@@ -81,7 +74,7 @@ class FilterConfigElement
 
     public function prepareChoiceTypes(DataContainer $dc)
     {
-        if (null === ($filterConfigElement = System::getContainer()->get('huh.utils.model')->findModelInstanceByPk(
+        if (null === ($filterConfigElement = $this->utils->model()->findModelInstanceByPk(
                 'tl_filter_config_element',
                 $dc->id
             ))) {
@@ -89,31 +82,8 @@ class FilterConfigElement
         }
 
         $dca = &$GLOBALS['TL_DCA']['tl_filter_config_element'];
-        $config = System::getContainer()->getParameter('huh.filter');
-        $class = null;
 
-        if (!isset($config['filter']['types']) || !\is_array($config['filter']['types'])) {
-            return null;
-        }
-
-        foreach ($config['filter']['types'] as $type) {
-            if (isset($type['name']) && $type['name'] === $filterConfigElement->type && isset($type['class'])) {
-                $class = $type['class'];
-
-                break;
-            }
-        }
-
-        // only choice types are supported
-        if (null === $class) {
-            return null;
-        }
-
-        if (null === ($filter = System::getContainer()->get('huh.filter.manager')->findById($filterConfigElement->pid))) {
-            return null;
-        }
-
-        $choiceType = new $class($filter);
+        $choiceType = $this->filterCollection->getClassByType($filterConfigElement);
 
         if (!($choiceType instanceof ChoiceType)) {
             return null;

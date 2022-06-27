@@ -43,19 +43,7 @@ class FilterCollection
             return null;
         }
 
-        $class = null;
-
-        if (!isset($this->bundleConfig['filter']['types']) || !\is_array($this->bundleConfig['filter']['types'])) {
-            return null;
-        }
-
-        foreach ($this->bundleConfig['filter']['types'] as $type) {
-            if (isset($type['name']) && $type['name'] === $filterConfigElement->type && isset($type['class'])) {
-                $class = $type['class'];
-
-                break;
-            }
-        }
+        $class = $this->getClassByType($filterConfigElement->type);
 
         if (null === $class) {
             return null;
@@ -66,5 +54,24 @@ class FilterCollection
         }
 
         return new $class($filter);
+    }
+
+    public function getClassByType(string $type): ?string
+    {
+        $class = null;
+
+        if (!isset($this->bundleConfig['filter']['types']) || !\is_array($this->bundleConfig['filter']['types'])) {
+            return $class;
+        }
+
+        foreach ($this->bundleConfig['filter']['types'] as $filterType) {
+            if (isset($filterType['name']) && $filterType['name'] === $type && isset($filterType['class'])) {
+                $class = $filterType['class'];
+
+                break;
+            }
+        }
+
+        return $class;
     }
 }

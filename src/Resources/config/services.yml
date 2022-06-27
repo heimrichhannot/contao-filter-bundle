@@ -62,8 +62,7 @@ services:
   huh.filter.backend.filter_config_element:
     public: true
     class: HeimrichHannot\FilterBundle\Backend\FilterConfigElement
-    arguments:
-    - "@contao.framework"
+    autowire: true
 
   huh.filter.backend.content:
     public: true
