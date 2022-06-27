@@ -74,6 +74,7 @@ class FilterPreselectContainer
         $this->filterConfig->buildForm([], [
             'overrideFilter' => $filter->row(),
             'skipSession' => true,
+            'skipAjax' => true,
         ]);
         $builder = $this->filterConfig->getBuilder();
 

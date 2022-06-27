@@ -150,6 +150,7 @@ class FilterConfig implements \JsonSerializable
         $configuration = array_merge([
             'overrideFilter' => null,
             'skipSession' => false,
+            'skipAjax' => false,
         ], $configuration);
 
         if ($configuration['overrideFilter']) {
@@ -191,7 +192,7 @@ class FilterConfig implements \JsonSerializable
             }
         }
 
-        if ($this->container->get('huh.request')->isXmlHttpRequest()) {
+        if (!$configuration['skipAjax'] && $this->container->get('huh.request')->isXmlHttpRequest()) {
             $this->container->get('huh.filter.util.filter_ajax')->updateData($this);
             $data = $this->getData();
         }
