@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.22.1] - 2022-06-27
+- Fixed: merge issues
+
 ## [1.22.0] - 2022-06-27
 - Added: FilterCollection class for single access to filter types ([#25])
 - Changed: FilterPreselect options should now have same options as FilterConfigElement in the frontend ([#25])
