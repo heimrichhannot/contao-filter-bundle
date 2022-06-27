@@ -4,7 +4,7 @@
   "description": "A generic contao filter.",
   "license": "LGPL-3.0-or-later",
   "require": {
-    "php": "^7.3||^8.0",
+    "php": "^7.4 || ^8.0",
     "codefog/contao-haste": "^4.18",
     "contao/core-bundle": "^4.9",
     "heimrichhannot/contao-be_explanation-bundle": "^2.3",

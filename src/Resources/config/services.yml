@@ -2,6 +2,18 @@ services:
   _defaults:
     public: true
     autowire: true
+    bind:
+      $bundleConfig: '%huh.filter%'
+
+  HeimrichHannot\FilterBundle\:
+    resource: '../../{Controller,DataContainer}/*'
+    autoconfigure: true
+    autowire: true
+    public: false
+
+  HeimrichHannot\FilterBundle\Filter\FilterCollection:
+    autowire: true
+    public: true
 
   huh.form_type_extension:
     class: HeimrichHannot\FilterBundle\Form\Extension\FormTypeExtension
@@ -50,8 +62,7 @@ services:
   huh.filter.backend.filter_config_element:
     public: true
     class: HeimrichHannot\FilterBundle\Backend\FilterConfigElement
-    arguments:
-    - "@contao.framework"
+    autowire: true
 
   huh.filter.backend.content:
     public: true
@@ -62,8 +73,7 @@ services:
   huh.filter.backend.filter_preselect:
     public: true
     class: HeimrichHannot\FilterBundle\Backend\FilterPreselect
-    arguments:
-    - "@contao.framework"
+    autowire: true
 
   # choices
   huh.filter.choice.template:

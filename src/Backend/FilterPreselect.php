@@ -1,30 +1,28 @@
 <?php
 
 /*
- * Copyright (c) 2021 Heimrich & Hannot GmbH
+ * Copyright (c) 2022 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
 
 namespace HeimrichHannot\FilterBundle\Backend;
 
-use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
-use Contao\DataContainer;
+use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\StringUtil;
 use Contao\System;
-use HeimrichHannot\FilterBundle\Filter\Type\ChoiceType;
+use HeimrichHannot\FilterBundle\DataContainer\FilterPreselectContainer;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 
 class FilterPreselect
 {
-    /**
-     * @var ContaoFrameworkInterface
-     */
-    protected $framework;
+    protected ContaoFramework        $framework;
+    private FilterPreselectContainer $filterPreselectContainer;
 
-    public function __construct(ContaoFrameworkInterface $framework)
+    public function __construct(ContaoFramework $framework, FilterPreselectContainer $filterPreselectContainer)
     {
         $this->framework = $framework;
+        $this->filterPreselectContainer = $filterPreselectContainer;
     }
 
     /**
@@ -45,7 +43,7 @@ class FilterPreselect
             return $label;
         }
 
-        $choices = $this->prepareElementChoices((int) $row['id']);
+        $choices = $this->filterPreselectContainer->prepareElementChoices((int) $row['id']);
 
         switch ($row['initialValueType']) {
             case \HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_SCALAR:
@@ -70,83 +68,5 @@ class FilterPreselect
         }
 
         return sprintf('%s -> %s [ID: %s]', $filterConfigElement->title, $label, $filterConfigElement->id);
-    }
-
-    /**
-     * Prepare initial choices.
-     */
-    public function prepareChoiceTypes(DataContainer $dc)
-    {
-        if ($dc->id < 1) {
-            return;
-        }
-
-        $this->prepareElementChoices($dc->id);
-    }
-
-    /**
-     * Prepare choices for given element id and return options.
-     */
-    protected function prepareElementChoices(int $id): array
-    {
-        if (null === ($filterPreselect = System::getContainer()->get('huh.utils.model')->findModelInstanceByPk('tl_filter_preselect', $id))) {
-            return [];
-        }
-
-        if (null === ($filterConfigElement = System::getContainer()->get('huh.utils.model')->findModelInstanceByPk(
-                'tl_filter_config_element',
-                $filterPreselect->element
-            ))) {
-            return [];
-        }
-
-        $dca = &$GLOBALS['TL_DCA']['tl_filter_preselect'];
-        $config = System::getContainer()->getParameter('huh.filter');
-        $class = null;
-
-        if (!isset($config['filter']['types']) || !\is_array($config['filter']['types'])) {
-            return [];
-        }
-
-        foreach ($config['filter']['types'] as $type) {
-            if (isset($type['name']) && $type['name'] === $filterConfigElement->type && isset($type['class'])) {
-                $class = $type['class'];
-
-                break;
-            }
-        }
-
-        // only choice types are supported
-        if (null === $class) {
-            return [];
-        }
-
-        if (null === ($filter = System::getContainer()->get('huh.filter.manager')->findById($filterConfigElement->pid))) {
-            return [];
-        }
-
-        $choiceType = new $class($filter);
-
-        if (!($choiceType instanceof ChoiceType)) {
-            return [];
-        }
-
-        $choices = $choiceType->getChoices($filterConfigElement);
-
-        if (!\is_array($choices)) {
-            return [];
-        }
-
-        $options = $choices;
-
-        $dca['fields']['initialValue']['inputType'] = 'select';
-        $dca['fields']['initialValue']['options'] = $options;
-        $dca['fields']['initialValue']['eval']['chosen'] = true;
-
-        $dca['fields']['initialValueArray']['eval']['multiColumnEditor']['fields']['value']['inputType'] = 'select';
-        $dca['fields']['initialValueArray']['eval']['multiColumnEditor']['fields']['value']['options'] = $options;
-        $dca['fields']['initialValueArray']['eval']['multiColumnEditor']['fields']['value']['eval']['chosen'] = true;
-
-        return $options;
     }
 }
