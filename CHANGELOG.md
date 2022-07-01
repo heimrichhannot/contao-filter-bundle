@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.22.2] - 2022-07-01
+- Fixed: exception in filter backend
+
 ## [1.22.1] - 2022-06-27
 - Fixed: merge issues
 

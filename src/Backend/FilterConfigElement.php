@@ -74,6 +74,7 @@ class FilterConfigElement
 
     public function prepareChoiceTypes(DataContainer $dc)
     {
+        /** @var FilterConfigElementModel $filterConfigElement */
         if (null === ($filterConfigElement = $this->utils->model()->findModelInstanceByPk(
                 'tl_filter_config_element',
                 $dc->id
@@ -83,7 +84,7 @@ class FilterConfigElement
 
         $dca = &$GLOBALS['TL_DCA']['tl_filter_config_element'];
 
-        $choiceType = $this->filterCollection->getClassByType($filterConfigElement);
+        $choiceType = $this->filterCollection->getClassByType($filterConfigElement->type);
 
         if (!($choiceType instanceof ChoiceType)) {
             return null;
