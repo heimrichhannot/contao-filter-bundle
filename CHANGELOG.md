@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.22.4] - 2022-09-08
+- Fixed: FilterQueryBuilderComposeEvent not dispatcher if value is empty
+
 ## [1.22.3] - 2022-09-08
 - Fixed: FilterQueryBuilderComposeEvent not dispatched for tag filter types
 

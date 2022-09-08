@@ -135,10 +135,6 @@ class FilterQueryBuilder extends QueryBuilder
         } else {
             $value = $data[$name] ?? ($element->customValue ? $element->value : null);
 
-            if (empty($value) || !$element->field) {
-                return $this;
-            }
-
             $operator = $this->getOperator($element, $defaultOperator, $dca);
         }
 
@@ -146,12 +142,13 @@ class FilterQueryBuilder extends QueryBuilder
             return $this;
         }
 
+        /** @var FilterQueryBuilderComposeEvent $event */
         $event = System::getContainer()->get('event_dispatcher')->dispatch(
             new FilterQueryBuilderComposeEvent($this, $name, $operator, $value, $element, $config),
             FilterQueryBuilderComposeEvent::class
         );
 
-        if (true === $event->getContinue()) {
+        if (true === $event->getContinue() && !empty($event->getValue())) {
             $this->andWhere(
                 $this->container->get('huh.utils.database')->composeWhereForQueryBuilder(
                     $this,
@@ -250,14 +247,10 @@ class FilterQueryBuilder extends QueryBuilder
             $value = array_filter(!\is_array($value) ? explode(',', $value) : $value);
         }
 
-        if (empty($value)) {
-            return $this;
-        }
-
         $filter = $config->getFilter();
         $relation = Relations::getRelation($filter['dataContainer'], $element->field);
 
-        if (false === $relation || null === $value) {
+        if (false === $relation) {
             return $this;
         }
 
@@ -273,7 +266,7 @@ class FilterQueryBuilder extends QueryBuilder
             FilterQueryBuilderComposeEvent::class
         );
 
-        if (true === $event->getContinue()) {
+        if (true === $event->getContinue() && !empty($event->getValue())) {
             $alias = $relation['table'].'_'.$name;
 
             $this->join($relation['reference_table'], $relation['table'], $alias,
