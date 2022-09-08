@@ -261,24 +261,32 @@ class FilterQueryBuilder extends QueryBuilder
             return $this;
         }
 
-        $alias = $relation['table'].'_'.$name;
-
         $operator = $this->getOperator($element, $defaultOperator, $dca, false);
 
         if (!$operator) {
             return $this;
         }
 
-        $this->join($relation['reference_table'], $relation['table'], $alias,
-            $alias.'.'.$relation['reference_field'].'='.$relation['reference_table'].'.'.$relation['reference']);
-
-        $this->andWhere(
-            $this->container->get('huh.utils.database')->composeWhereForQueryBuilder(
-                $this, $alias.'.'.$relation['related_field'], $operator, $dca, $value
-            )
+        /** @var FilterQueryBuilderComposeEvent $event */
+        $event = System::getContainer()->get('event_dispatcher')->dispatch(
+            new FilterQueryBuilderComposeEvent($this, $name, $operator, $value, $element, $config),
+            FilterQueryBuilderComposeEvent::class
         );
 
-        $this->groupBy($filter['dataContainer'].'.id');
+        if (true === $event->getContinue()) {
+            $alias = $relation['table'].'_'.$name;
+
+            $this->join($relation['reference_table'], $relation['table'], $alias,
+                $alias.'.'.$relation['reference_field'].'='.$relation['reference_table'].'.'.$relation['reference']);
+
+            $this->andWhere(
+                $this->container->get('huh.utils.database')->composeWhereForQueryBuilder(
+                    $this, $alias.'.'.$relation['related_field'], $event->getOperator(), $dca, $event->getValue()
+                )
+            );
+
+            $this->groupBy($filter['dataContainer'].'.id');
+        }
 
         return $this;
     }
@@ -322,10 +330,11 @@ class FilterQueryBuilder extends QueryBuilder
 
         // join only if joinAlias do not already exist
         if ($addJoin) {
-            $this->join($filter['dataContainer'], 'tl_category_association', $alias, "
-            $alias.categoryField='$element->field' AND
-            $alias.parentTable='".$filter['dataContainer']."' AND
-            $alias.entity=".$filter['dataContainer'].'.id
+            $this->join(
+                $filter['dataContainer'],
+                'tl_category_association',
+                $alias,
+                "$alias.categoryField='$element->field' AND $alias.parentTable='".$filter['dataContainer']."' AND $alias.entity=".$filter['dataContainer'].'.id
             ');
         }
 

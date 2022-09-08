@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.22.3] - 2022-09-08
+- Fixed: FilterQueryBuilderComposeEvent not dispatched for tag filter types
+
 ## [1.22.2] - 2022-07-01
 - Fixed: exception in filter backend
 
