@@ -1,37 +1,25 @@
 <?php
 
 /*
- * Copyright (c) 2021 Heimrich & Hannot GmbH
+ * Copyright (c) 2022 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
 
 namespace HeimrichHannot\FilterBundle\Session;
 
-use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use HeimrichHannot\FilterBundle\Form\FilterType;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class FilterSession
 {
-    /**
-     * @var ContaoFrameworkInterface
-     */
-    protected $framework;
-
-    /**
-     * Symfony session object.
-     *
-     * @var SessionInterface
-     */
-    protected $session;
+    protected SessionInterface $session;
 
     /**
      * Constructor.
      */
-    public function __construct(ContaoFrameworkInterface $framework, SessionInterface $session)
+    public function __construct(SessionInterface $session)
     {
-        $this->framework = $framework;
         $this->session = $session;
     }
 
@@ -50,7 +38,7 @@ class FilterSession
     {
         $data = [];
 
-        if ($this->session->has($key)) {
+        if ($this->session->isStarted() && $this->session->has($key)) {
             $data = $this->session->get($key);
         }
 

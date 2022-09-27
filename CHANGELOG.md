@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.22.5] - 2022-09-27
+- Fixed: session started on every page with filter
+
 ## [1.22.4] - 2022-09-08
 - Fixed: FilterQueryBuilderComposeEvent not dispatcher if value is empty
 

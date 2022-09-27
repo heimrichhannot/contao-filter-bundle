@@ -39,9 +39,7 @@ services:
   huh.filter.session:
     class: HeimrichHannot\FilterBundle\Session\FilterSession
     public: true
-    arguments:
-    - "@contao.framework"
-    - "@session"
+    autowire: true
 
   HeimrichHannot\FilterBundle\Session\FilterSession:
     alias: 'huh.filter.session'
