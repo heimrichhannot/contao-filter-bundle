@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.22.6] - 2022-10-07
+- Fixed: notice in php 8.1
+
 ## [1.22.5] - 2022-09-27
 - Fixed: session started on every page with filter
 
