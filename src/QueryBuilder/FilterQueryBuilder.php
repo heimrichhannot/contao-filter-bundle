@@ -8,6 +8,7 @@
 
 namespace HeimrichHannot\FilterBundle\QueryBuilder;
 
+use Codefog\HasteBundle\DcaRelationsManager;
 use Contao\Controller;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\System;
@@ -248,9 +249,16 @@ class FilterQueryBuilder extends QueryBuilder
         }
 
         $filter = $config->getFilter();
-        $relation = Relations::getRelation($filter['dataContainer'], $element->field);
 
-        if (false === $relation) {
+        if (class_exists(DcaRelationsManager::class) && $this->container->has(DcaRelationsManager::class)) {
+            $relation = $this->container->get(DcaRelationsManager::class)->getRelation($filter['dataContainer'], $element->field);
+        } elseif (class_exists(Relations::class)) {
+            $relation = Relations::getRelation($filter['dataContainer'], $element->field);
+        } else {
+            $relation = false;
+        }
+
+        if (false === $relation || null === $relation) {
             return $this;
         }
 

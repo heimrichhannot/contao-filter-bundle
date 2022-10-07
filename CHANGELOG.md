@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.23.0] - 2022-10-07
+- Changed: support haste 5
+- Fixed: hard dependency on blocks module
+
 ## [1.22.6] - 2022-10-07
 - Fixed: notice in php 8.1
 
