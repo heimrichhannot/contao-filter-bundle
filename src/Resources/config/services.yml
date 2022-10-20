@@ -174,3 +174,6 @@ services:
     autowire: true
     tags:
       - { name: twig.extension }
+
+  HeimrichHannot\FilterBundle\Asset\EncoreExtension:
+    autoconfigure: true
