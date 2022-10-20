@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2021 Heimrich & Hannot GmbH
+ * Copyright (c) 2022 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -12,16 +12,13 @@ use Contao\CoreBundle\ContaoCoreBundle;
 use Contao\ManagerPlugin\Bundle\BundlePluginInterface;
 use Contao\ManagerPlugin\Bundle\Config\BundleConfig;
 use Contao\ManagerPlugin\Bundle\Parser\ParserInterface;
-use Contao\ManagerPlugin\Config\ContainerBuilder;
-use Contao\ManagerPlugin\Config\ExtensionPluginInterface;
 use Contao\ManagerPlugin\Routing\RoutingPluginInterface;
 use HeimrichHannot\FilterBundle\HeimrichHannotContaoFilterBundle;
-use HeimrichHannot\UtilsBundle\Container\ContainerUtil;
 use Symfony\Component\Config\Loader\LoaderResolverInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\RouteCollection;
 
-class Plugin implements BundlePluginInterface, ExtensionPluginInterface, RoutingPluginInterface
+class Plugin implements BundlePluginInterface, RoutingPluginInterface
 {
     /**
      * {@inheritdoc}
@@ -31,41 +28,6 @@ class Plugin implements BundlePluginInterface, ExtensionPluginInterface, Routing
         return [
             BundleConfig::create(HeimrichHannotContaoFilterBundle::class)->setLoadAfter([ContaoCoreBundle::class, 'blocks']),
         ];
-    }
-
-    /**
-     * Allows a plugin to override extension configuration.
-     *
-     * @param string $extensionName
-     *
-     * @return
-     */
-    public function getExtensionConfig($extensionName, array $extensionConfigs, ContainerBuilder $container)
-    {
-        if ('framework' === $extensionName) {
-            foreach ($extensionConfigs as &$extensionConfig) {
-                // enable form plugin
-                if (!isset($extensionConfig['form'])) {
-                    $extensionConfig['form']['enabled'] = true;
-
-                    break;
-                }
-            }
-        }
-
-        $extensionConfigs = ContainerUtil::mergeConfigFile(
-            'huh_encore',
-            $extensionName,
-            $extensionConfigs,
-            __DIR__.'/../Resources/config/config_encore.yml'
-        );
-
-        return ContainerUtil::mergeConfigFile(
-            'huh_filter',
-            $extensionName,
-            $extensionConfigs,
-            __DIR__.'/../Resources/config/config.yml'
-        );
     }
 
     /**
