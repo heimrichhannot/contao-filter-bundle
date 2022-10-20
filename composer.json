@@ -8,6 +8,7 @@
     "codefog/contao-haste": "^4.18 || ^5.0",
     "contao/core-bundle": "^4.9",
     "heimrichhannot/contao-be_explanation-bundle": "^2.3",
+    "heimrichhannot/contao-encore-contracts": "^1.0",
     "heimrichhannot/contao-entity-filter-bundle": "^1.5",
     "heimrichhannot/contao-fieldpalette-bundle": ">=0.2 <2.0-dev",
     "heimrichhannot/contao-multi-column-editor-bundle": "^2.0",
