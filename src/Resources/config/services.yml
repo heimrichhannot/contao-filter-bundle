@@ -6,7 +6,7 @@ services:
       $bundleConfig: '%huh.filter%'
 
   HeimrichHannot\FilterBundle\:
-    resource: '../../{Controller,DataContainer}/*'
+    resource: '../../{Asset,Controller,DataContainer}/*'
     autoconfigure: true
     autowire: true
     public: false
