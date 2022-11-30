@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.23.1] - 2022-11-30
+- Changed: raised fieldpalette dependency
+- Fixed: exception in filter preselect element if filter has no action set
+- Fixed: issues with fieldpalette fields of other fieldpalette tables (use DcaGenerator of fieldpalette)
+
 ## [1.23.0] - 2022-10-07
 - Changed: support haste 5
 - Fixed: hard dependency on blocks module

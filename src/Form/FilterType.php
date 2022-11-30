@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2021 Heimrich & Hannot GmbH
+ * Copyright (c) 2022 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -51,7 +51,7 @@ class FilterType extends AbstractType
 
         $filter = $this->config->getFilter();
 
-        $builder->setAction($this->config->getAction());
+        $builder->setAction($this->config->getAction() ?? '');
 
         if (isset($filter['method'])) {
             $builder->setMethod($filter['method']);

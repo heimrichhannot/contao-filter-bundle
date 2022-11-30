@@ -6,12 +6,11 @@
  * @license LGPL-3.0-or-later
  */
 
-$GLOBALS['TL_DCA']['tl_filter_preselect'] = [];
+use HeimrichHannot\FieldpaletteBundle\Dca\DcaGenerator;
+use HeimrichHannot\FilterBundle\Filter\AbstractType;
 
-Controller::loadLanguageFile('tl_fieldpalette');
-Controller::loadDataContainer('tl_fieldpalette');
+$GLOBALS['TL_DCA']['tl_filter_preselect'] = DcaGenerator::generateFieldpaletteBaseDca();
 
-$GLOBALS['TL_DCA']['tl_filter_preselect'] = $GLOBALS['TL_DCA']['tl_fieldpalette'];
 $dc = &$GLOBALS['TL_DCA']['tl_filter_preselect'];
 
 /*
@@ -27,9 +26,9 @@ $dc['palettes']['__selector__'][] = 'initialValueType';
 /*
  * Subpalettes
  */
-$dc['subpalettes']['initialValueType_'.\HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_SCALAR] = 'initialValue';
-$dc['subpalettes']['initialValueType_'.\HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_ARRAY] = 'initialValueArray';
-$dc['subpalettes']['initialValueType_'.\HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_LATEST] = 'parentField';
+$dc['subpalettes']['initialValueType_'.AbstractType::VALUE_TYPE_SCALAR] = 'initialValue';
+$dc['subpalettes']['initialValueType_'.AbstractType::VALUE_TYPE_ARRAY] = 'initialValueArray';
+$dc['subpalettes']['initialValueType_'.AbstractType::VALUE_TYPE_LATEST] = 'parentField';
 
 /**
  * Fields.
