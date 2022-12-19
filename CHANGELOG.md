@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.23.2] - 2022-12-19
+- Fixed: locale not kept on ajax filter submit
+
 ## [1.23.1] - 2022-11-30
 - Changed: raised fieldpalette dependency
 - Fixed: exception in filter preselect element if filter has no action set
