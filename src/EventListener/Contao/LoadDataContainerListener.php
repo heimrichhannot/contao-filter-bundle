@@ -6,10 +6,14 @@
  * @license LGPL-3.0-or-later
  */
 
-namespace HeimrichHannot\FilterBundle\EventListener;
+namespace HeimrichHannot\FilterBundle\EventListener\Contao;
 
+use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Doctrine\DBAL\Connection;
 
+/**
+ * @Hook("loadDataContainer")
+ */
 class LoadDataContainerListener
 {
     /**
@@ -22,10 +26,7 @@ class LoadDataContainerListener
         $this->connection = $connection;
     }
 
-    /**
-     * @Hook("loadDataContainer")
-     */
-    public function onLoadDataContainer(string $table): void
+    public function __invoke(string $table): void
     {
         if ('tl_filter_config' === $table) {
             if ($this->connection->getSchemaManager()->listTableDetails('tl_filter_config')->hasColumn('action')) {
