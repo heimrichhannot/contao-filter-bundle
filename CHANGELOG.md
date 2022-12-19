@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.23.3] - 2022-12-19
+- Fixed: translator got wrong language if ajax filer submit
+
 ## [1.23.2] - 2022-12-19
 - Fixed: locale not kept on ajax filter submit
 

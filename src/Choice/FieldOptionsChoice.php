@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2021 Heimrich & Hannot GmbH
+ * Copyright (c) 2022 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -17,6 +17,7 @@ use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\UtilsBundle\Choice\AbstractChoice;
 use HeimrichHannot\UtilsBundle\Model\ModelUtil;
 use Symfony\Component\Translation\Translator;
+use Symfony\Component\Translation\TranslatorBagInterface;
 
 class FieldOptionsChoice extends AbstractChoice
 {
@@ -85,7 +86,11 @@ class FieldOptionsChoice extends AbstractChoice
                 continue;
             }
 
-            if ($translator->getCatalogue()->has($option['label'])) {
+            if ($translator instanceof TranslatorBagInterface) {
+                if ($translator->getCatalogue()->has($option['label'])) {
+                    $option['label'] = $translator->trans($option['label']);
+                }
+            } else {
                 $option['label'] = $translator->trans($option['label']);
             }
 
@@ -207,6 +212,7 @@ class FieldOptionsChoice extends AbstractChoice
 
                 if (($dca['eval']['multiple'] ?? false) === true) {
                     $multipleItems = [];
+
                     foreach ($items as $item) {
                         $multipleItems = array_merge($multipleItems, StringUtil::deserialize($item));
                     }
