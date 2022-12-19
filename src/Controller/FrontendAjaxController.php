@@ -33,6 +33,8 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
  */
 class FrontendAjaxController extends AbstractController
 {
+    const ROUTE_NAME_AJAX = 'filter_frontend_ajax_submit';
+
     /**
      * @var ContaoFramework
      */
@@ -66,7 +68,7 @@ class FrontendAjaxController extends AbstractController
     }
 
     /**
-     * @Route("/_filter/ajax_submit/{id}", name="filter_frontend_ajax_submit")
+     * @Route("/_filter/ajax_submit/{id}", name=FrontendAjaxController::ROUTE_NAME_AJAX)
      *
      * @param Request $request Current request
      * @param int     $id      Filter id

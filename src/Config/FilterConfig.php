@@ -604,7 +604,10 @@ class FilterConfig implements \JsonSerializable
         }
 
         if ($filter['asyncFormSubmit']) {
-            return $router->generate('filter_frontend_ajax_submit', ['id' => $filter['id']]);
+            return $router->generate('filter_frontend_ajax_submit', [
+                'id' => $filter['id'],
+                '_locale' => $this->requestStack->getCurrentRequest()->getLocale(),
+            ]);
         }
 
         return $router->generate('filter_frontend_submit', ['id' => $filter['id']]);

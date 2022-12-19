@@ -6,7 +6,8 @@ services:
       $bundleConfig: '%huh.filter%'
 
   HeimrichHannot\FilterBundle\:
-    resource: '../../{Controller,DataContainer}/*'
+    resource: '../../{Controller,DataContainer,EventListener}/*'
+    exclude: '../../EventListener/{FilterConfigElementCallbackListener.php,HookListener.php,InsertTagsListener.php}'
     autoconfigure: true
     autowire: true
     public: false
