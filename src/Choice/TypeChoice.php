@@ -31,7 +31,7 @@ class TypeChoice extends AbstractChoice
             return $choices;
         }
 
-        if (null !== $this->getContext() && null !== $this->getContext()->id && null !== ($filterConfigElement = $this->framework->getAdapter(FilterConfigElementModel::class)->findById($this->getContext()->id)) && $filterConfigElement->pid > 0) {
+        if (null !== $this->getContext() && is_object($this->getContext()) && null !== $this->getContext()->id && null !== ($filterConfigElement = $this->framework->getAdapter(FilterConfigElementModel::class)->findById($this->getContext()->id)) && $filterConfigElement->pid > 0) {
             if (null !== ($filterConfig = $this->framework->getAdapter(FilterConfigModel::class)->findById($filterConfigElement->pid)) && $filterConfig->type) {
                 $filterType = $filterConfig->type;
             }

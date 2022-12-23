@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.23.4] - 2022-12-23
+- Fixed: context issue in TypeChoice
+
 ## [1.23.3] - 2022-12-19
 - Fixed: translator got wrong language if ajax filer submit
 

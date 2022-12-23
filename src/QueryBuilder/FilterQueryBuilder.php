@@ -106,7 +106,7 @@ class FilterQueryBuilder extends QueryBuilder
     {
         $data = $config->getData();
 
-        if (ChoiceType::TYPE == $element->type && \is_array($data[$name])) {
+        if (ChoiceType::TYPE == $element->type && isset($data[$name]) && \is_array($data[$name])) {
             $data[$name] = $this->getGroupChoiceValues($element, $data[$name]);
         }
 
