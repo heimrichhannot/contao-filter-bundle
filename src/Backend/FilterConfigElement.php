@@ -291,7 +291,8 @@ class FilterConfigElement
         $objVersions->initialize();
 
         // Trigger the save_callback
-        if (\is_array($GLOBALS['TL_DCA']['tl_filter_config_element']['fields']['published']['save_callback'])) {
+        if (($GLOBALS['TL_DCA']['tl_filter_config_element']['fields']['published']['save_callback'] ?? null) &&
+            \is_array($GLOBALS['TL_DCA']['tl_filter_config_element']['fields']['published']['save_callback'])) {
             foreach ($GLOBALS['TL_DCA']['tl_filter_config_element']['fields']['published']['save_callback'] as $callback) {
                 if (\is_array($callback)) {
                     $callbackObj = System::importStatic($callback[0]);
@@ -315,7 +316,8 @@ class FilterConfigElement
         }
 
         // Trigger the onsubmit_callback
-        if (\is_array($GLOBALS['TL_DCA']['tl_filter_config_element']['config']['onsubmit_callback'])) {
+        if (($GLOBALS['TL_DCA']['tl_filter_config_element']['config']['onsubmit_callback'] ?? null) &&
+            \is_array($GLOBALS['TL_DCA']['tl_filter_config_element']['config']['onsubmit_callback'])) {
             foreach ($GLOBALS['TL_DCA']['tl_filter_config_element']['config']['onsubmit_callback'] as $callback) {
                 if (\is_array($callback)) {
                     $callbackObj = System::importStatic($callback[0]);

@@ -64,9 +64,13 @@ class FilterType extends AbstractType
 
         // always add a hidden field with the page id
         global $objPage;
-        $pageId = $objPage->id;
+        $pageId = 0;
 
-        if (!$objPage->id && isset($this->config->getData()[self::FILTER_PAGE_ID_NAME])) {
+        if ($objPage) {
+            $pageId = $objPage->id;
+        }
+
+        if ((!$objPage || !$objPage->id) && isset($this->config->getData()[self::FILTER_PAGE_ID_NAME])) {
             $pageId = $this->config->getData()[self::FILTER_PAGE_ID_NAME];
         }
 

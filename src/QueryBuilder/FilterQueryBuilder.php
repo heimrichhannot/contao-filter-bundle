@@ -321,7 +321,9 @@ class FilterQueryBuilder extends QueryBuilder
         $alias = 'tl_category_association_'.$element->field;
 
         // check if table is already joined with the same alias
-        if (\is_array($this->getQueryParts()['join'][$filter['dataContainer']])) {
+        $queryParts = $this->getQueryParts();
+
+        if (isset($queryParts['join'][$filter['dataContainer']]) && \is_array($queryParts['join'][$filter['dataContainer']])) {
             foreach ($this->getQueryParts()['join'][$filter['dataContainer']] as $join) {
                 if ($join['joinAlias'] === $alias) {
                     $addJoin = false;

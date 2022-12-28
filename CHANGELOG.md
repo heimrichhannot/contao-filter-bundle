@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.23.5] - 2022-12-28
+- Fixed: php8 and objPage issues
+
 ## [1.23.4] - 2022-12-23
 - Fixed: context issue in TypeChoice
 
