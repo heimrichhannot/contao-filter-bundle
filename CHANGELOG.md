@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.23.6] - 2023-01-10
+- Fixed: allow '0' as valid value
+
 ## [1.23.5] - 2022-12-28
 - Fixed: php8 and objPage issues
 

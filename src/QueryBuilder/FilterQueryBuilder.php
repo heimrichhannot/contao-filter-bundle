@@ -149,7 +149,7 @@ class FilterQueryBuilder extends QueryBuilder
             FilterQueryBuilderComposeEvent::class
         );
 
-        if (true === $event->getContinue() && !empty($event->getValue())) {
+        if (true === $event->getContinue() && (!empty($event->getValue()) || $event->getValue() === '0')) {
             $this->andWhere(
                 $this->container->get('huh.utils.database')->composeWhereForQueryBuilder(
                     $this,
