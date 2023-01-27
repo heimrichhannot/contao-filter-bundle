@@ -633,7 +633,7 @@ class FilterConfig implements \JsonSerializable
 
         return $router->generate(
             'filter_frontend_preselect',
-            ['id' => $filter['id'], 'data' => $data],
+            ['id' => $filter['id'], 'data' => array_filter($data)],
             $absoluteUrl ? UrlGeneratorInterface::ABSOLUTE_URL : UrlGeneratorInterface::ABSOLUTE_PATH
         );
     }

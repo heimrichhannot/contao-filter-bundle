@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.23.7] - 2023-01-27
+- Fixed: not filtered data should not be included in preselect link 
+
 ## [1.23.6] - 2023-01-10
 - Fixed: allow '0' as valid value
 
