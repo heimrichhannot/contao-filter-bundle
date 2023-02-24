@@ -11,7 +11,7 @@
     "heimrichhannot/contao-entity-filter-bundle": "^1.5",
     "heimrichhannot/contao-fieldpalette-bundle": ">=0.6.12 <2.0-dev",
     "heimrichhannot/contao-multi-column-editor-bundle": "^2.0",
-    "heimrichhannot/contao-utils-bundle": "^2.217.0.",
+    "heimrichhannot/contao-utils-bundle": "^2.226.0.",
     "heimrichhannot/contao-twig-support-bundle": "^0.2.16||^1.0",
     "heimrichhannot/truncate-html": "^2.0",
     "symfony/config": "^4.4||^5.4",
