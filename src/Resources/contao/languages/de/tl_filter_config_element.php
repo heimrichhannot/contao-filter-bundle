@@ -1,10 +1,15 @@
 <?php
 
 /*
- * Copyright (c) 2021 Heimrich & Hannot GmbH
+ * Copyright (c) 2023 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
+
+use HeimrichHannot\FilterBundle\Filter\Type\DateTimeType;
+use HeimrichHannot\FilterBundle\Filter\Type\DateType;
+use HeimrichHannot\FilterBundle\Filter\Type\NewsCategoriesType;
+use HeimrichHannot\FilterBundle\Filter\Type\ProximitySearchType;
 
 $lang = &$GLOBALS['TL_LANG']['tl_filter_config_element'];
 
@@ -119,6 +124,8 @@ $lang['doNotCacheOptions'] = ['Cache für Optionswerte deaktivieren', 'Wählen S
 $lang['addMultilingualInitialValues'] = ['Sprachenabhängige initiale Werte festlegen', 'Wählen Sie Sie diese Option, um abhängig von der vorliegenden Sprache initiale Werte zu setzen.'];
 $lang['multilingualInitialValues'] = ['Sprachenabhängige initiale Werte', 'Setzen Sie die initialen Werte.'];
 $lang['language'] = ['Sprache', 'Wählen Sie hier eine Sprache aus.'];
+$lang['cf_newsCategories'] = ['Kategorien', 'Wählen Sie hier die Kategorien aus, welche gefiltert werden sollen.'];
+$lang['cf_newsCategoriesChilds'] = ['Kind-Kategorien anzeigen', 'Wählen Sie diese Option, wenn anstelle der ausgewählten Kategorien deren Kind-Kategorien ausgegeben werden sollen. Enthält eine Kategorie keine Kind-Kategorien, dann wird diese weiterhin ausgegeben.'];
 
 // sort
 $lang['sortOptions'] = ['Sortier-Optionen', 'Fügen Sie hier die gewünschten Sortieroptionen hinzu.'];
@@ -172,7 +179,7 @@ $lang['reference'] = [
         'choice' => 'Choice',
         \HeimrichHannot\FilterBundle\Filter\Type\RadiusChoiceType::TYPE => 'Radius-Choice',
         'country' => 'Land',
-        \HeimrichHannot\FilterBundle\Filter\Type\ProximitySearchType::TYPE => 'Umkreissuche',
+        ProximitySearchType::TYPE => 'Umkreissuche',
         'language' => 'Sprache',
         'locale' => 'Region ("locale")',
         'parent' => 'Elternentität',
@@ -186,8 +193,8 @@ $lang['reference'] = [
         'radio' => 'Radio',
         'other' => 'Sonstiges',
         'initial' => 'Initial',
-        \HeimrichHannot\FilterBundle\Filter\Type\DateTimeType::TYPE => 'Datum & Zeit',
-        \HeimrichHannot\FilterBundle\Filter\Type\DateType::TYPE => 'Datum',
+        DateTimeType::TYPE => 'Datum & Zeit',
+        DateType::TYPE => 'Datum',
         'time' => 'Zeit',
         \HeimrichHannot\FilterBundle\Filter\Type\DateRangeType::TYPE => 'Datumsspanne (date range)',
         \HeimrichHannot\FilterBundle\Filter\Type\SqlType::TYPE => 'SQL',
@@ -198,6 +205,7 @@ $lang['reference'] = [
         \HeimrichHannot\FilterBundle\Filter\Type\CurrentMemberType::TYPE => 'aktuelles Mitglied',
         \HeimrichHannot\FilterBundle\Filter\Type\CurrentMemberType::TYPE_ID => 'ID',
         \HeimrichHannot\FilterBundle\Filter\Type\CurrentMemberType::TYPE_USERNAME => 'Benutzername',
+        NewsCategoriesType::TYPE => 'Nachrichtenkategorien (Codefog News Categories)',
     ],
     'roundingMode' => [
         \Symfony\Component\Form\Extension\Core\DataTransformer\IntegerToLocalizedStringTransformer::ROUND_DOWN => 'Abrunden (zu 0 hin)',
@@ -215,6 +223,6 @@ $lang['reference'] = [
     \HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_SCALAR => 'Skalar',
     \HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_ARRAY => 'Array',
     \HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_LATEST => 'Neueste',
-    \HeimrichHannot\FilterBundle\Filter\Type\ProximitySearchType::COORDINATES_MODE_COMPOUND => 'Zusammengesetzt (&lt;lat&gt;,&lt;long&gt;)',
-    \HeimrichHannot\FilterBundle\Filter\Type\ProximitySearchType::COORDINATES_MODE_SEPARATED => 'Separiert in Latitude- und Longitude-Feld',
+    ProximitySearchType::COORDINATES_MODE_COMPOUND => 'Zusammengesetzt (&lt;lat&gt;,&lt;long&gt;)',
+    ProximitySearchType::COORDINATES_MODE_SEPARATED => 'Separiert in Latitude- und Longitude-Feld',
 ];

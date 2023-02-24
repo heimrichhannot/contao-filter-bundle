@@ -44,7 +44,22 @@ class NewsCategoriesType extends ChoiceType
     public function getChoices(FilterConfigElementModel $element): array
     {
         $categories = StringUtil::deserialize($element->cf_newsCategories);
-        $categories = NewsCategoryModel::getAllSubcategoriesIds($categories);
+
+        if ($element->cf_newsCategoriesChilds) {
+            $update = [];
+
+            foreach ($categories as $parentCategory) {
+                $childCategories = NewsCategoryModel::getAllSubcategoriesIds($categories);
+
+                if (\count($childCategories) > 1) {
+                    unset($childCategories[array_search($parentCategory, $childCategories)]);
+                    $update = array_merge($update, $childCategories);
+                } else {
+                    $update[] = $parentCategory;
+                }
+            }
+            $categories = $update;
+        }
 
         $options = [];
 
@@ -54,6 +69,10 @@ class NewsCategoriesType extends ChoiceType
             if ($model) {
                 $options[$model->id] = $model->getTitle();
             }
+        }
+
+        if ($element->sortOptionValues) {
+            $options = asort($options);
         }
 
         return $options;

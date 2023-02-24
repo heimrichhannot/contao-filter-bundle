@@ -51,7 +51,6 @@ class LoadDataContainerListener
         }
 
         $GLOBALS['TL_DCA'][FilterConfigElementModel::getTable()]['fields']['cf_newsCategories'] = [
-            'label' => &$GLOBALS['TL_LANG']['tl_news']['categories'],
             'exclude' => true,
             'filter' => true,
             'inputType' => 'newsCategoriesPicker',
@@ -67,6 +66,13 @@ class LoadDataContainerListener
                 'relationTable' => 'tl_news_categories',
             ],
             'sql' => 'blob NULL',
+        ];
+
+        $GLOBALS['TL_DCA'][FilterConfigElementModel::getTable()]['fields']['cf_newsCategoriesChilds'] = [
+            'exclude' => true,
+            'inputType' => 'checkbox',
+            'eval' => ['tl_class' => 'w50'],
+            'sql' => "char(1) NOT NULL default ''",
         ];
     }
 }
