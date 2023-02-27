@@ -1,10 +1,17 @@
 <?php
 
 /*
- * Copyright (c) 2022 Heimrich & Hannot GmbH
+ * Copyright (c) 2023 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
+
+use HeimrichHannot\FilterBundle\Filter\AbstractType;
+use HeimrichHannot\FilterBundle\Filter\Type\ChoiceType;
+use HeimrichHannot\FilterBundle\Filter\Type\ColorType;
+use HeimrichHannot\FilterBundle\Filter\Type\CountryType;
+use HeimrichHannot\FilterBundle\Filter\Type\NewsCategoriesType;
+use HeimrichHannot\FilterBundle\Filter\Type\ProximitySearchType;
 
 $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
     'config' => [
@@ -40,7 +47,6 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'fields' => ['sorting'],
             'headerFields' => ['title', 'published', 'start', 'stop'],
             'panelLayout' => 'filter;sort,search,limit',
-            'child_record_callback' => ['huh.filter.backend.filter_config_element', 'listElements'],
         ],
         'global_operations' => [
             'all' => [
@@ -130,10 +136,10 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
         'url' => '{general_legend},title,type,isInitial;{config_legend},field,customName,customOperator,addDefaultValue,defaultProtocol;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
         'range' => '{general_legend},title,type,isInitial;{config_legend},field,customName,customOperator,addDefaultValue,min,max,step;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
         'tel' => '{general_legend},title,type,isInitial;{config_legend},field,customName,customOperator,addDefaultValue;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
-        \HeimrichHannot\FilterBundle\Filter\Type\ColorType::TYPE => '{general_legend},title,type,isInitial;{config_legend},field,customName,customOperator,addDefaultValue;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
-        \HeimrichHannot\FilterBundle\Filter\Type\ChoiceType::TYPE => '{general_legend},title,type,isInitial;{config_legend},field,customOptions,adjustOptionLabels,reviseOptions,dynamicOptions,sortOptionValues,customName,customOperator,addDefaultValue,expanded,multiple,submitOnChange,addGroupChoiceField,doNotCacheOptions;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
-        \HeimrichHannot\FilterBundle\Filter\Type\CountryType::TYPE => '{general_legend},title,type,isInitial;{config_legend},field,customCountries,customOptions,adjustOptionLabels,reviseOptions,sortOptionValues,customName,customOperator,addDefaultValue,expanded,multiple;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
-        \HeimrichHannot\FilterBundle\Filter\Type\ProximitySearchType::TYPE => '{general_legend},title,type;{config_legend},name,proximitySearchExplanation,radiusElement,coordinatesMode,allowHtmlGeoLocation,cityElement,postalElement,stateElement,countryElement;{expert_legend},cssClass;{publish_legend},published;',
+        ColorType::TYPE => '{general_legend},title,type,isInitial;{config_legend},field,customName,customOperator,addDefaultValue;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
+        ChoiceType::TYPE => '{general_legend},title,type,isInitial;{config_legend},field,customOptions,adjustOptionLabels,reviseOptions,dynamicOptions,sortOptionValues,customName,customOperator,addDefaultValue,expanded,multiple,submitOnChange,addGroupChoiceField,doNotCacheOptions;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
+        CountryType::TYPE => '{general_legend},title,type,isInitial;{config_legend},field,customCountries,customOptions,adjustOptionLabels,reviseOptions,sortOptionValues,customName,customOperator,addDefaultValue,expanded,multiple;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
+        ProximitySearchType::TYPE => '{general_legend},title,type;{config_legend},name,proximitySearchExplanation,radiusElement,coordinatesMode,allowHtmlGeoLocation,cityElement,postalElement,stateElement,countryElement;{expert_legend},cssClass;{publish_legend},published;',
         \HeimrichHannot\FilterBundle\Filter\Type\LanguageType::TYPE => '{general_legend},title,type,isInitial;{config_legend},field,customLanguages,customOptions,adjustOptionLabels,reviseOptions,sortOptionValues,customName,customOperator,addDefaultValue,expanded,multiple;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
         \HeimrichHannot\FilterBundle\Filter\Type\LocaleType::TYPE => '{general_legend},title,type,isInitial;{config_legend},field,customLocales,customOptions,adjustOptionLabels,reviseOptions,sortOptionValues,customName,customOperator,addDefaultValue,expanded,multiple;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
         \HeimrichHannot\FilterBundle\Filter\Type\ParentType::TYPE => '{general_legend},title,type,isInitial;{config_legend},field,customOptions,adjustOptionLabels,reviseOptions,sortOptionValues,customName,customOperator,addDefaultValue,expanded,multiple;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
@@ -158,6 +164,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
         \HeimrichHannot\FilterBundle\Filter\Type\SortType::TYPE => '{general_legend},title,type;{config_legend},sortOptions,expanded,submitOnChange;{visualization_legend},addPlaceholder,customLabel,hideLabel;{publish_legend},published',
         \HeimrichHannot\FilterBundle\Filter\Type\ExternalEntityType::TYPE => '{general_legend},title,type;{source_legend},sourceTable,sourceField,sourceEntityResolve,sourceEntityOverridesOrder;{config_legend},field,customOperator;{publish_legend},published;',
         \HeimrichHannot\FilterBundle\Filter\Type\CurrentMemberType::TYPE => '{general_legend},title,type;{config_legend},field,customOperator,currentUserAssign;{publish_legend},published',
+        NewsCategoriesType::TYPE => NewsCategoriesType::PALETTE,
     ],
     'subpalettes' => [
         'customOptions' => 'options',
@@ -170,16 +177,16 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
         'customLanguages' => 'languages',
         'customLocales' => 'locales',
         'customValue' => 'value',
-        'initialValueType_'.\HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_SCALAR => 'initialValue',
-        'initialValueType_'.\HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_ARRAY => 'initialValueArray',
-        'initialValueType_'.\HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_LATEST => 'parentField',
+        'initialValueType_'.AbstractType::VALUE_TYPE_SCALAR => 'initialValue',
+        'initialValueType_'.AbstractType::VALUE_TYPE_ARRAY => 'initialValueArray',
+        'initialValueType_'.AbstractType::VALUE_TYPE_LATEST => 'parentField',
         'addDefaultValue' => 'defaultValueType',
-        'defaultValueType_'.\HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_SCALAR => 'defaultValue',
-        'defaultValueType_'.\HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_ARRAY => 'defaultValueArray',
-        'defaultValueType_'.\HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_LATEST => 'parentField',
+        'defaultValueType_'.AbstractType::VALUE_TYPE_SCALAR => 'defaultValue',
+        'defaultValueType_'.AbstractType::VALUE_TYPE_ARRAY => 'defaultValueArray',
+        'defaultValueType_'.AbstractType::VALUE_TYPE_LATEST => 'parentField',
         'addStartAndStop' => 'startField,stopField',
-        'coordinatesMode_'.\HeimrichHannot\FilterBundle\Filter\Type\ProximitySearchType::COORDINATES_MODE_COMPOUND => 'coordinatesField',
-        'coordinatesMode_'.\HeimrichHannot\FilterBundle\Filter\Type\ProximitySearchType::COORDINATES_MODE_SEPARATED => 'latField,longField',
+        'coordinatesMode_'.ProximitySearchType::COORDINATES_MODE_COMPOUND => 'coordinatesField',
+        'coordinatesMode_'.ProximitySearchType::COORDINATES_MODE_SEPARATED => 'latField,longField',
         'addParentSelector' => 'parentField',
         'inputGroup' => 'inputGroupPrepend,inputGroupAppend',
         'addGroupChoiceField' => 'modifyGroupChoices',
@@ -218,9 +225,6 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'exclude' => true,
             'filter' => true,
             'inputType' => 'select',
-            'options_callback' => function (DataContainer $dc) {
-                return \Contao\System::getContainer()->get('huh.filter.choice.type')->getCachedChoices($dc);
-            },
             'reference' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['reference']['type'],
             'eval' => [
                 'chosen' => true,
@@ -249,13 +253,9 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'sql' => "varchar(255) NOT NULL default ''",
         ],
         'field' => [
-            'label' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['field'],
             'exclude' => true,
             'filter' => true,
             'inputType' => 'select',
-            'options_callback' => function (Contao\DataContainer $dc) {
-                return \Contao\System::getContainer()->get('huh.filter.util.filter_config_element')->getFields($dc);
-            },
             'eval' => ['chosen' => true, 'includeBlankOption' => true, 'tl_class' => 'w50', 'submitOnChange' => true],
             'sql' => "varchar(64) NOT NULL default ''",
         ],
@@ -264,9 +264,9 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'exclude' => true,
             'filter' => true,
             'inputType' => 'checkboxWizard',
-            'options_callback' => function (Contao\DataContainer $dc) {
-                return \Contao\System::getContainer()->get('huh.filter.util.filter_config_element')->getFields($dc);
-            },
+//            'options_callback' => function (Contao\DataContainer $dc) {
+//                return \Contao\System::getContainer()->get('huh.filter.util.filter_config_element')->getFields($dc);
+//            },
             'eval' => ['chosen' => true, 'includeBlankOption' => true, 'multiple' => true, 'mandatory' => true],
             'sql' => 'blob NULL',
         ],
@@ -1163,7 +1163,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'exclude' => true,
             'filter' => true,
             'inputType' => 'select',
-            'options' => \HeimrichHannot\FilterBundle\Filter\Type\ProximitySearchType::COORDINATES_MODES,
+            'options' => ProximitySearchType::COORDINATES_MODES,
             'reference' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['reference'],
             'eval' => ['tl_class' => 'w50', 'includeBlankOption' => true, 'submitOnChange' => true, 'mandatory' => true],
             'sql' => "varchar(64) NOT NULL default ''",
@@ -1318,9 +1318,9 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
                         'default' => 'language,initialValueType',
                     ],
                     'subpalettes' => [
-                        'initialValueType_'.\HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_SCALAR => 'initialValue',
-                        'initialValueType_'.\HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_ARRAY => 'initialValueArray',
-                        'initialValueType_'.\HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_LATEST => 'parentField',
+                        'initialValueType_'.AbstractType::VALUE_TYPE_SCALAR => 'initialValue',
+                        'initialValueType_'.AbstractType::VALUE_TYPE_ARRAY => 'initialValueArray',
+                        'initialValueType_'.AbstractType::VALUE_TYPE_LATEST => 'parentField',
                     ],
                     'fields' => [
                         'language' => [

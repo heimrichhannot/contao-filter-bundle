@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2022 Heimrich & Hannot GmbH
+ * Copyright (c) 2023 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -9,11 +9,14 @@
 namespace HeimrichHannot\FilterBundle\Backend;
 
 use Contao\Controller;
+use Contao\CoreBundle\DataContainer\PaletteManipulator;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\DataContainer;
 use Contao\Image;
 use Contao\StringUtil;
 use Contao\System;
+use HeimrichHannot\FilterBundle\DataContainer\FilterConfigElementContainer;
+use HeimrichHannot\FilterBundle\Filter\AbstractType;
 use HeimrichHannot\FilterBundle\Filter\FilterCollection;
 use HeimrichHannot\FilterBundle\Filter\Type\ChoiceType;
 use HeimrichHannot\FilterBundle\Filter\Type\DateTimeType;
@@ -24,7 +27,7 @@ use HeimrichHannot\UtilsBundle\Util\Utils;
 
 class FilterConfigElement
 {
-    const INITIAL_PALETTE = '{general_legend},title,type,isInitial;{config_legend},field,operator,alternativeValueSource,initialValueType,addMultilingualInitialValues;{publish_legend},published;';
+    const INITIAL_PALETTE = FilterConfigElementContainer::PALETTE_PREFIX.'{config_legend},field,operator,alternativeValueSource,initialValueType,addMultilingualInitialValues;'.FilterConfigElementContainer::PALETTE_SUFFIX;
 
     protected ContaoFramework $contaoFramework;
     private FilterCollection  $filterCollection;
@@ -47,6 +50,7 @@ class FilterConfigElement
             return null;
         }
 
+        /** @var class-string<AbstractType> $type */
         $type = $this->filterCollection->getClassByType($filterConfigElement->type);
 
         if (!$type) {
@@ -56,14 +60,23 @@ class FilterConfigElement
         $dca = &$GLOBALS['TL_DCA']['tl_filter_config_element'];
 
         if ($filterConfigElement->isInitial && isset($dca['palettes'][$filterConfigElement->type]) && false !== strpos($dca['palettes'][$filterConfigElement->type], 'isInitial')) {
-            $dca['palettes'][$filterConfigElement->type] = static::INITIAL_PALETTE;
+            if (null !== ($palette = $type::getInitialPalette(
+                    FilterConfigElementContainer::PALETTE_PREFIX,
+                    FilterConfigElementContainer::PALETTE_SUFFIX
+                ))) {
+                $dca['palettes'][$filterConfigElement->type] = $palette;
+            } else {
+                $dca['palettes'][$filterConfigElement->type] = static::INITIAL_PALETTE;
+            }
 
             if ($filterConfigElement->alternativeValueSource) {
                 $dca['palettes'][$filterConfigElement->type] = str_replace('initialValueType', '', $dca['palettes'][$filterConfigElement->type]);
             }
 
             if (\in_array($filterConfigElement->type, [DateTimeType::TYPE, DateType::TYPE, 'time'])) {
-                $dca['palettes'][$filterConfigElement->type] = str_replace('operator,', '', $dca['palettes'][$filterConfigElement->type]);
+                PaletteManipulator::create()
+                    ->removeField('operator')
+                    ->applyToPalette($filterConfigElement->type, FilterConfigElementModel::getTable());
             }
         }
 
@@ -123,11 +136,6 @@ class FilterConfigElement
         $dca['fields']['multilingualInitialValues']['eval']['multiColumnEditor']['fields']['initialValueArray']['inputType'] = 'select';
         $dca['fields']['multilingualInitialValues']['eval']['multiColumnEditor']['fields']['initialValueArray']['options'] = $options;
         $dca['fields']['multilingualInitialValues']['eval']['multiColumnEditor']['fields']['initialValueArray']['eval']['chosen'] = true;
-    }
-
-    public function listElements($arrRow)
-    {
-        return '<div class="tl_content_left">'.($arrRow['title'] ?: $arrRow['id']).' <span style="color:#b3b3b3; padding-left:3px">['.($GLOBALS['TL_LANG']['tl_filter_config_element']['reference']['type'][$arrRow['type']] ?: $arrRow['type']).($arrRow['isInitial'] ? ' – Initial' : '').']</span></div>';
     }
 
     public function checkPermission()

@@ -55,3 +55,7 @@ huh.filter.option_label.label_count: '%label% (%count%)'
 # Labels for options with count
 huh.filter.option_count:
   default: '{0} %value% (Keine Einträge)|{1} %value% (Ein Eintrag)|[2,Inf[ %value% (%count% Einträge)'
+
+huh.filter:
+  warning:
+    not_supported_in_current_context: "Das Element wird im aktuellen Kontext nicht unterstützt!"

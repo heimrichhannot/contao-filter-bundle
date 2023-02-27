@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2022 Heimrich & Hannot GmbH
+ * Copyright (c) 2023 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -277,6 +277,23 @@ abstract class AbstractType
     public function getHideLabel(FilterConfigElementModel $element): bool
     {
         return (bool) $element->hideLabel;
+    }
+
+    public static function getInitialPalette(string $prepend, string $append): ?string
+    {
+        return null;
+    }
+
+    /**
+     * Check if element is enabled in current context.
+     *
+     * Following options may be passed:
+     * - table (string)
+     * - filterConfigElementModel (FilterConfigElementModel)
+     */
+    public static function isEnabledForCurrentContext(array $context = []): bool
+    {
+        return true;
     }
 
     /**

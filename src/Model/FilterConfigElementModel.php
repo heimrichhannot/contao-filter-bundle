@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2021 Heimrich & Hannot GmbH
+ * Copyright (c) 2023 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -30,6 +30,7 @@ use HeimrichHannot\FilterBundle\Filter\AbstractType;
  * @property bool   $adjustOptionLabels
  * @property bool   $optionLabelPattern
  * @property array  $options
+ * @property bool   $sortOptionValues
  * @property bool   $customName
  * @property string $name
  * @property bool   $addPlaceholder

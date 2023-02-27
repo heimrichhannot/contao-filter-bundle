@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2022 Heimrich & Hannot GmbH
+ * Copyright (c) 2023 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -283,6 +283,13 @@ class FilterConfig implements \JsonSerializable
             $type = new $class($this);
 
             if (!is_subclass_of($type, AbstractType::class)) {
+                continue;
+            }
+
+            if (!$type::isEnabledForCurrentContext([
+                'filterConfigElementModel' => $element,
+                'table' => $this->getFilter()['dataContainer'],
+            ])) {
                 continue;
             }
 

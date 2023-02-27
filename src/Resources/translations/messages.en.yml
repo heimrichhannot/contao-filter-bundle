@@ -39,3 +39,7 @@ huh.filter.input_group_text.submit.fa_search: '<button class="btn btn-outline-se
 # Labels for options with count
 huh.filter.option_count:
   default: '%value% (%count% entries)'
+
+huh.filter:
+  warning:
+    not_supported_in_current_context: "The element is not supported for current context!"
