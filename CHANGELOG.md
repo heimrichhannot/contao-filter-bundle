@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - 2023-02-27
+- Added: codefog/contao-news_categories filter type ([#27])
+- Added: `AbstractType::getInitialPalette()` and `AbstractType::isEnabledForCurrentContext()` methods to override
+
 ## [1.23.7] - 2023-01-27
 - Fixed: not filtered data should not be included in preselect link 
 
