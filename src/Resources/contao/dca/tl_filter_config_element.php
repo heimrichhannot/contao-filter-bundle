@@ -47,7 +47,6 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'fields' => ['sorting'],
             'headerFields' => ['title', 'published', 'start', 'stop'],
             'panelLayout' => 'filter;sort,search,limit',
-            'child_record_callback' => ['huh.filter.backend.filter_config_element', 'listElements'],
         ],
         'global_operations' => [
             'all' => [
@@ -165,7 +164,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
         \HeimrichHannot\FilterBundle\Filter\Type\SortType::TYPE => '{general_legend},title,type;{config_legend},sortOptions,expanded,submitOnChange;{visualization_legend},addPlaceholder,customLabel,hideLabel;{publish_legend},published',
         \HeimrichHannot\FilterBundle\Filter\Type\ExternalEntityType::TYPE => '{general_legend},title,type;{source_legend},sourceTable,sourceField,sourceEntityResolve,sourceEntityOverridesOrder;{config_legend},field,customOperator;{publish_legend},published;',
         \HeimrichHannot\FilterBundle\Filter\Type\CurrentMemberType::TYPE => '{general_legend},title,type;{config_legend},field,customOperator,currentUserAssign;{publish_legend},published',
-        NewsCategoriesType::TYPE => '{general_legend},title,type,isInitial;{config_legend},cf_newsCategories,cf_newsCategoriesChilds,sortOptionValues,customName,expanded,multiple,submitOnChange;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
+        NewsCategoriesType::TYPE => NewsCategoriesType::PALETTE,
     ],
     'subpalettes' => [
         'customOptions' => 'options',
@@ -226,9 +225,6 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'exclude' => true,
             'filter' => true,
             'inputType' => 'select',
-            'options_callback' => function (DataContainer $dc) {
-                return \Contao\System::getContainer()->get('huh.filter.choice.type')->getCachedChoices($dc);
-            },
             'reference' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['reference']['type'],
             'eval' => [
                 'chosen' => true,
@@ -257,13 +253,9 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'sql' => "varchar(255) NOT NULL default ''",
         ],
         'field' => [
-            'label' => &$GLOBALS['TL_LANG']['tl_filter_config_element']['field'],
             'exclude' => true,
             'filter' => true,
             'inputType' => 'select',
-            'options_callback' => function (Contao\DataContainer $dc) {
-                return \Contao\System::getContainer()->get('huh.filter.util.filter_config_element')->getFields($dc);
-            },
             'eval' => ['chosen' => true, 'includeBlankOption' => true, 'tl_class' => 'w50', 'submitOnChange' => true],
             'sql' => "varchar(64) NOT NULL default ''",
         ],
