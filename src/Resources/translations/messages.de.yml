@@ -58,4 +58,4 @@ huh.filter.option_count:
 
 huh.filter:
   warning:
-    not_supported_in_current_content: "Das Element wird im aktuellen Kontext nicht unterstützt!"
+    not_supported_in_current_context: "Das Element wird im aktuellen Kontext nicht unterstützt!"
