@@ -2,9 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased] - 2023-02-27
+## [1.24.0] - 2023-02-27
 - Added: codefog/contao-news_categories filter type ([#27])
-- Added: `AbstractType::getInitialPalette()` and `AbstractType::isEnabledForCurrentContext()` methods to override
+- Added: `AbstractType::getInitialPalette()` and `AbstractType::isEnabledForCurrentContext()` methods to  ([#27])
+- Added: encore contracts support ([#28])
 
 ## [1.23.7] - 2023-01-27
 - Fixed: not filtered data should not be included in preselect link 
@@ -333,6 +334,8 @@ All notable changes to this project will be documented in this file.
 - updated import in filter bundle js
 
 
+[#28]: https://github.com/heimrichhannot/contao-filter-bundle/pull/28
+[#27]: https://github.com/heimrichhannot/contao-filter-bundle/pull/27
 [#25]: https://github.com/heimrichhannot/contao-filter-bundle/pull/25
 [#24]: https://github.com/heimrichhannot/contao-filter-bundle/pull/24
 [#21]: https://github.com/heimrichhannot/contao-filter-bundle/pull/21
