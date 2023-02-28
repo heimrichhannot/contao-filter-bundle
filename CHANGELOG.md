@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.25.0] - 2023-02-28
+- Added: `AbstractType::normalizeValue()`
+- Fixed: issues with checkbox type and 0 values
+
 ## [1.24.0] - 2023-02-27
 - Added: codefog/contao-news_categories filter type ([#27])
 - Added: `AbstractType::getInitialPalette()` and `AbstractType::isEnabledForCurrentContext()` methods to  ([#27])

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2022 Heimrich & Hannot GmbH
+ * Copyright (c) 2023 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -19,6 +19,7 @@ use HeimrichHannot\FilterBundle\Config\FilterConfig;
 use HeimrichHannot\FilterBundle\Event\AdjustFilterValueEvent;
 use HeimrichHannot\FilterBundle\Event\FilterQueryBuilderComposeEvent;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
+use HeimrichHannot\FilterBundle\Filter\FilterCollection;
 use HeimrichHannot\FilterBundle\Filter\Type\ChoiceType;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
@@ -143,13 +144,20 @@ class FilterQueryBuilder extends QueryBuilder
             return $this;
         }
 
+        /** @var class-string<AbstractType> $typeClass */
+        $typeClass = $this->container->get(FilterCollection::class)->getClassByType($element->type);
+
+        if ($typeClass) {
+            $value = $typeClass::normalizeValue($value);
+        }
+
         /** @var FilterQueryBuilderComposeEvent $event */
         $event = System::getContainer()->get('event_dispatcher')->dispatch(
             new FilterQueryBuilderComposeEvent($this, $name, $operator, $value, $element, $config),
             FilterQueryBuilderComposeEvent::class
         );
 
-        if (true === $event->getContinue() && (!empty($event->getValue()) || $event->getValue() === '0')) {
+        if (true === $event->getContinue() && (!empty($event->getValue()) || '0' === $event->getValue() || 0 === $event->getValue())) {
             $this->andWhere(
                 $this->container->get('huh.utils.database')->composeWhereForQueryBuilder(
                     $this,

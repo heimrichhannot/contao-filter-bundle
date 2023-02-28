@@ -47,6 +47,7 @@ function __invoke(FilterQueryBuilderComposeEvent $event): void
 3. Optional: override following methods:
    - `getInitialPalette()`
    - `isEnabledForCurrentContext()`
+   - `normalizeValue()`
 2. Add `TYPE` constant (e.g. `public const TYPE = 'choices';`)
 3. Register your type within `huh.filter.types`
     

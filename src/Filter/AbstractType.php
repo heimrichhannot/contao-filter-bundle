@@ -297,6 +297,20 @@ abstract class AbstractType
     }
 
     /**
+     * Add logic to normalize data.
+     *
+     * @example CheckboxType Example implementation
+     *
+     * @param $value
+     *
+     * @return mixed
+     */
+    public static function normalizeValue($value)
+    {
+        return $value;
+    }
+
+    /**
      * Get min date for given element and type.
      *
      * @return int The min date as timestamp
