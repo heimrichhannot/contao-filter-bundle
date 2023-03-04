@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.25.1] - 2023-04-03
+- Fixed: wrong fields being retrieved for tl_filter_config_element.field
+
 ## [1.25.0] - 2023-02-28
 - Added: `AbstractType::normalizeValue()`
 - Fixed: issues with checkbox type and 0 values

@@ -14,6 +14,7 @@ use Contao\Image;
 use Contao\Message;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
 use HeimrichHannot\FilterBundle\Filter\FilterCollection;
+use HeimrichHannot\FilterBundle\Manager\FilterManager;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\Model\FilterConfigModel;
 use HeimrichHannot\UtilsBundle\Util\Utils;
@@ -29,13 +30,15 @@ class FilterConfigElementContainer
     private FilterCollection    $filterCollection;
     private TranslatorInterface $translator;
     private RequestStack        $requestStack;
+    private FilterManager       $filterManager;
 
-    public function __construct(Utils $utils, FilterCollection $filterCollection, TranslatorInterface $translator, RequestStack $requestStack)
+    public function __construct(Utils $utils, FilterCollection $filterCollection, TranslatorInterface $translator, RequestStack $requestStack, FilterManager $filterManager)
     {
         $this->utils = $utils;
         $this->filterCollection = $filterCollection;
         $this->translator = $translator;
         $this->requestStack = $requestStack;
+        $this->filterManager = $filterManager;
     }
 
     /**
@@ -113,7 +116,15 @@ class FilterConfigElementContainer
      */
     public function onFieldOptionsCallback(DataContainer $dc = null): array
     {
-        $fields = $this->utils->dca()->getDcaFields($dc->table, [
+        if (null === ($model = $this->utils->model()->findModelInstanceByPk($dc->table, $dc->id))) {
+            return [];
+        }
+
+        if (null === ($filterConfig = $this->filterManager->findById($model->pid))) {
+            return [];
+        }
+
+        $fields = $this->utils->dca()->getDcaFields($filterConfig->getFilter()['dataContainer'], [
             'onlyDatabaseFields' => true,
             'localizeLabels' => true,
         ]);
