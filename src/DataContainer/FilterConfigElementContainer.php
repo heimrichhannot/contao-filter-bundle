@@ -98,16 +98,16 @@ class FilterConfigElementContainer
         $element = null;
 
         if ($dc) {
-            $filterConfigElementModel = FilterConfigElementModel::findByPk($dc->id);
+            $element = FilterConfigElementModel::findByPk($dc->id);
         }
 
         if ($element) {
-            $element = FilterConfigModel::findByPk($filterConfigElementModel->pid);
+            $filterConfigModel = FilterConfigModel::findByPk($element->pid);
         }
 
-        return $this->filterCollection->getFilterElementTypes($element->type ?? 'filter', true, [
-            'table' => $dc->table ?? 'null',
-            'filterConfigElementModel',
+        return $this->filterCollection->getFilterElementTypes($filterConfigModel->type ?? 'filter', true, [
+            'table' => $filterConfigModel->dataContainer ?? 'null',
+            'filterConfigElementModel' => $element,
         ]);
     }
 

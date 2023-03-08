@@ -2,7 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
-## [1.25.1] - 2023-04-03
+## [1.25.2] - 2023-03-08
+- Fixed: issues in filter config element type selection
+
+## [1.25.1] - 2023-03-03
 - Fixed: wrong fields being retrieved for tl_filter_config_element.field
 
 ## [1.25.0] - 2023-02-28
