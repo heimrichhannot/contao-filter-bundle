@@ -10,6 +10,7 @@ namespace HeimrichHannot\FilterBundle\Filter\Type;
 
 use Codefog\NewsCategoriesBundle\CodefogNewsCategoriesBundle;
 use Codefog\NewsCategoriesBundle\Criteria\NewsCriteria;
+use Codefog\NewsCategoriesBundle\Exception\NoNewsException;
 use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
 use Contao\StringUtil;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
@@ -39,7 +40,14 @@ class NewsCategoriesType extends ChoiceType
         }
 
         $criteria = new NewsCriteria($this->config->getFramework());
-        $criteria->setCategories($value);
+
+        try {
+            $criteria->setCategories($value);
+        } catch (NoNewsException $e) {
+            $builder->andWhere('1=0');
+
+            return;
+        }
 
         foreach ($criteria->getColumns() as $column) {
             $builder->andWhere($column);

@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.25.4] - 2023-03-13
+- Fixed: uncatched exception in NewsCategories filter
+
 ## [1.25.3] - 2023-03-13
 - Fixed: page id got lost in ajax context
 
