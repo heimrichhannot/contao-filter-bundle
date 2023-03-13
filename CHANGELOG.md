@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.25.3] - 2023-03-13
+- Fixed: page id got lost in ajax context
+
 ## [1.25.2] - 2023-03-08
 - Fixed: issues in filter config element type selection
 

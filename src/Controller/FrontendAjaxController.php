@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2022 Heimrich & Hannot GmbH
+ * Copyright (c) 2023 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -84,6 +84,16 @@ class FrontendAjaxController extends AbstractController
             throw new MissingFilterException('A filter with id '.$id.' does not exist.');
         }
 
+        global $objPage;
+
+        if (null === $objPage) {
+            $pageId = $request->get($filter->getFilter()['name'])[FilterType::FILTER_PAGE_ID_NAME];
+
+            if (is_numeric($pageId)) {
+                $objPage = $this->pageUtil->retrieveGlobalPageFromCurrentPageId((int) $pageId);
+            }
+        }
+
         if (null === ($response = $filter->handleForm())) {
             throw new HandleFormException('Unable to handle form for filter with id '.$id.'.');
         }
@@ -94,16 +104,6 @@ class FrontendAjaxController extends AbstractController
             }
 
             Environment::set('request', $request->get($filter->getFilter()['name'])[FilterType::FILTER_REFERRER_NAME]);
-        }
-
-        global $objPage;
-
-        if (null === $objPage) {
-            $pageId = $request->get($filter->getFilter()['name'])[FilterType::FILTER_PAGE_ID_NAME];
-
-            if (is_numeric($pageId)) {
-                $objPage = $this->pageUtil->retrieveGlobalPageFromCurrentPageId((int) $pageId);
-            }
         }
 
         $index = new FrontendIndex(); // initialize BE_USER_LOGGED_IN or FE_USER_LOGGED_IN
