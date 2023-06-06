@@ -250,7 +250,7 @@ class FilterQueryBuilder extends QueryBuilder
         $data = $config->getData();
 
         if ($element->isInitial && $element->alternativeValueSource) {
-            $value = $this->getValueFromAlternativeSource($data[$name], $data, $element, $name, $config, $dca);
+            $value = $this->getValueFromAlternativeSource($data[$name] ?? null, $data, $element, $name, $config, $dca);
         } else {
             $value = $data[$name] ?? AbstractType::getInitialValue($element, $this->contextualValues);
             $value = array_filter(!\is_array($value) ? explode(',', $value) : $value);
