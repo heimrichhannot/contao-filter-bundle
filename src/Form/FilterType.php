@@ -81,7 +81,7 @@ class FilterType extends AbstractType
             $referrerUrl = $request->getSchemeAndHttpHost().'/'.$request->query->get('request');
         } else {
             // Check if referrer is set to set again
-            if (Environment::get('isAjaxRequest') && $request->get($filter['name']) && isset($request->get($filter['name'])[static::FILTER_REFERRER_NAME])) {
+            if (Environment::get('isAjaxRequest') && $request->get($filter['name'] ?? '') && isset($request->get($filter['name'] ?? '')[static::FILTER_REFERRER_NAME])) {
                 if (parse_url($request->get($filter['name'])[static::FILTER_REFERRER_NAME], \PHP_URL_HOST) !== parse_url(Environment::get('url'), \PHP_URL_HOST)) {
                     throw new \Exception('Invalid redirect url.');
                 }

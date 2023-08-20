@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.25.6] - 2023-08-20
+- Fixed: warning
+
 ## [1.25.5] - 2023-06-06
 - Fixed: warning
 
