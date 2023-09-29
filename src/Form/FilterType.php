@@ -78,7 +78,7 @@ class FilterType extends AbstractType
 
         // always add a hidden field with the referrer url (required by reset for example to redirect back to user action page) -> use request query string when in esi _ fragment sub-request
         if ($request->query->has('request')) {
-            $referrerUrl = $request->getSchemeAndHttpHost().'/'.$request->query->get('request');
+            $referrerUrl = $request->getSchemeAndHttpHost() . '/' . $request->query->get('request');
         } else {
             // Check if referrer is set to set again
             if (Environment::get('isAjaxRequest') && $request->get($filter['name'] ?? '') && isset($request->get($filter['name'] ?? '')[static::FILTER_REFERRER_NAME])) {
@@ -91,6 +91,9 @@ class FilterType extends AbstractType
                 $referrerUrl = $request->getUri();
             }
         }
+
+        // Remove page_s param so pagination can be reset when applying filter
+        $referrerUrl = $this->removeParam($referrerUrl, 'page_s');
 
         $builder->add(static::FILTER_REFERRER_NAME, HiddenType::class, [
             'attr' => [
@@ -224,6 +227,40 @@ class FilterType extends AbstractType
             } catch (InvalidOptionsException $e) {
                 continue;
             }
+        }
+    }
+
+    protected function removeParam(string $url, string $param = ''): string
+    {
+        if (empty($param)) {
+            return $url;
+        }
+
+        $urlParts = parse_url($url);
+
+        if ($urlParts !== false && isset($urlParts['query'])) {
+            // Parse the query string into an associative array
+            parse_str($urlParts['query'], $queryParameters);
+
+            // Remove the 'page_s*ID*' parameter if it exists
+            foreach ($queryParameters as $key => $value) {
+                if (str_starts_with($key, $param)) {
+                    unset($queryParameters[$key]);
+                }
+            }
+
+            // Rebuild the query string without the removed parameter
+            $newQueryString = http_build_query($queryParameters);
+
+            // Reconstruct the URL
+            $outputUrl = $urlParts['scheme'] . '://' . $urlParts['host'] . $urlParts['path'];
+            if (!empty($newQueryString)) {
+                $outputUrl .= '?' . $newQueryString;
+            }
+
+            return $outputUrl;
+        } else {
+            return $url;
         }
     }
 }
