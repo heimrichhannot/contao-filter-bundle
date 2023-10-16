@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.25.8] - 2023-10-16
+- Fixed: added bootstrap 5 layout to config.yml
+
 ## [1.25.7] - 2023-09-29
 - Fixed: reset pagination when applying filter
 
