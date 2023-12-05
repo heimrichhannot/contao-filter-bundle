@@ -17,6 +17,9 @@ use HeimrichHannot\FilterBundle\Event\FilterBeforeRenderFilterFormEvent;
 use HeimrichHannot\FilterBundle\Manager\FilterManager;
 use HeimrichHannot\TwigSupportBundle\Renderer\TwigTemplateRenderer;
 
+/**
+ * @deprecated This class is deprecated and will be removed in the next major version. Use FilterModuleController instead.
+ */
 class ModuleFilter extends Module
 {
     const TYPE = 'filter';

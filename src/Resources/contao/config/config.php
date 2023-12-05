@@ -25,17 +25,6 @@ $GLOBALS['TL_PERMISSIONS'][] = 'filters';
 $GLOBALS['TL_PERMISSIONS'][] = 'filterp';
 
 /*
- * Front end modules
- */
-array_insert(
-    $GLOBALS['FE_MOD']['filter'],
-    2,
-    [
-        HeimrichHannot\FilterBundle\Module\ModuleFilter::TYPE => HeimrichHannot\FilterBundle\Module\ModuleFilter::class,
-    ]
-);
-
-/*
  * Content elements
  */
 $GLOBALS['TL_CTE']['filter']['filter_preselect'] = \HeimrichHannot\FilterBundle\ContentElement\ContentFilterPreselect::class;

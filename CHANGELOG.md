@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.26.0] - 2023-12-05
+- Changed: refactored frontend module to module controller
+- Changed: frontend module now adds assets by itself
+- Deprecated: ModuleFilter
+
 ## [1.25.8] - 2023-10-16
 - Fixed: added bootstrap 5 layout to config.yml
 
