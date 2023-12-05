@@ -8,6 +8,8 @@
 
 namespace HeimrichHannot\FilterBundle\Filter;
 
+use Ausi\SlugGenerator\SlugGenerator;
+use Ausi\SlugGenerator\SlugOptions;
 use Contao\Controller;
 use Contao\StringUtil;
 use Contao\System;
@@ -61,7 +63,7 @@ abstract class AbstractType
         }
 
         if ('' === $name) {
-            $name = StringUtil::standardize($element->title);
+            $name = (new SlugGenerator((new SlugOptions)->setValidChars('a-z0-9_')->setDelimiter('_')))->generate($element->title);
         }
 
         return $name;

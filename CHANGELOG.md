@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.26.1] - 2023-12-05
+- Fixed: form field name generation for url generation
+
 ## [1.26.0] - 2023-12-05
 - Changed: refactored frontend module to module controller
 - Changed: frontend module now adds assets by itself
