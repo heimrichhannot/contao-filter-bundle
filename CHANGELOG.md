@@ -2,7 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
-## [1.26.1] - 2023-12-05
+## [1.27.0] - 2023-12-06
+- Changed: refactored Preselect element to module controller
+- Changed: small code enhancements and refactoring
+- Fixed: skalar value shown for choices types with multiple option
 - Fixed: form field name generation for url generation
 
 ## [1.26.0] - 2023-12-05
