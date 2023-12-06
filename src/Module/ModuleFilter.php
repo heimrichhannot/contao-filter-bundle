@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2021 Heimrich & Hannot GmbH
+ * Copyright (c) 2022 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -13,10 +13,13 @@ use Contao\Config;
 use Contao\Module;
 use Contao\System;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
+use HeimrichHannot\FilterBundle\Event\FilterBeforeRenderFilterFormEvent;
 use HeimrichHannot\FilterBundle\Manager\FilterManager;
 use HeimrichHannot\TwigSupportBundle\Renderer\TwigTemplateRenderer;
-use Patchwork\Utf8;
 
+/**
+ * @deprecated This class is deprecated and will be removed in the next major version. Use FilterModuleController instead.
+ */
 class ModuleFilter extends Module
 {
     const TYPE = 'filter';
@@ -32,7 +35,7 @@ class ModuleFilter extends Module
     {
         if (TL_MODE === 'BE') {
             $objTemplate = new BackendTemplate('be_wildcard');
-            $objTemplate->wildcard = '### '.Utf8::strtoupper($GLOBALS['TL_LANG']['FMD'][$this->type][0]).' ###';
+            $objTemplate->wildcard = '### '.$GLOBALS['TL_LANG']['FMD'][$this->type][0].' ###';
             $objTemplate->title = $this->headline;
             $objTemplate->id = $this->id;
             $objTemplate->link = $this->name;
@@ -42,8 +45,7 @@ class ModuleFilter extends Module
         }
 
         // Hide list and show reader on detail pages if configured
-        if ($this->filter_hideOnAutoItem === '1' && (Config::get('useAutoItem') && isset($_GET['auto_item'])))
-        {
+        if ('1' === $this->filter_hideOnAutoItem && (Config::get('useAutoItem') && isset($_GET['auto_item']))) {
             return '';
         }
 
@@ -78,12 +80,25 @@ class ModuleFilter extends Module
 
         $this->Template->filter = $this->config;
 
+        $context = [
+            'filter' => $this->config,
+            'form' => $form->createView(),
+            'preselectUrl' => !empty($this->config->getData()) ? $this->config->getPreselectAction($this->config->getData(), true) : '',
+        ];
+
+        /** @var FilterBeforeRenderFilterFormEvent $event */
+        $event = System::getContainer()->get('event_dispatcher')->dispatch(
+            new FilterBeforeRenderFilterFormEvent(
+                $this->config->getFilterTemplateByName($filter['template']),
+                $context,
+                $this->config
+            )
+        );
+
+        $this->Template->preselectUrl = !empty($this->config->getData()) ? $this->config->getPreselectAction($this->config->getData(), true) : '';
         $this->Template->form = System::getContainer()->get(TwigTemplateRenderer::class)->render(
-            $this->config->getFilterTemplateByName($filter['template']),
-            [
-                'filter' => $this->config,
-                'form' => $form->createView(),
-            ]
+            $event->getTemplate(),
+            $event->getContext()
         );
     }
 }

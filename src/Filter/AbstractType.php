@@ -1,13 +1,15 @@
 <?php
 
 /*
- * Copyright (c) 2021 Heimrich & Hannot GmbH
+ * Copyright (c) 2023 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
 
 namespace HeimrichHannot\FilterBundle\Filter;
 
+use Ausi\SlugGenerator\SlugGenerator;
+use Ausi\SlugGenerator\SlugOptions;
 use Contao\Controller;
 use Contao\StringUtil;
 use Contao\System;
@@ -15,9 +17,8 @@ use HeimrichHannot\FilterBundle\Config\FilterConfig;
 use HeimrichHannot\FilterBundle\Event\AdjustFilterOptionsEvent;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
-use Nelmio\SecurityBundle\ContentSecurityPolicy\Violation\Filter\Filter;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 abstract class AbstractType
 {
@@ -62,7 +63,7 @@ abstract class AbstractType
         }
 
         if ('' === $name) {
-            $name = StringUtil::standardize($element->title);
+            $name = (new SlugGenerator((new SlugOptions)->setValidChars('a-z0-9_')->setDelimiter('_')))->generate($element->title);
         }
 
         return $name;
@@ -264,9 +265,10 @@ abstract class AbstractType
         $options['block_name'] = $this->getName($element);
 
         if ($triggerEvent) {
-            $event = System::getContainer()->get('event_dispatcher')->dispatch(AdjustFilterOptionsEvent::NAME, new AdjustFilterOptionsEvent(
-                $name, $options, $element, $builder, $this->config
-            ));
+            $event = System::getContainer()->get('event_dispatcher')->dispatch(
+                new AdjustFilterOptionsEvent($name, $options, $element, $builder, $this->config),
+                AdjustFilterOptionsEvent::NAME
+            );
 
             return $event->getOptions();
         }
@@ -277,6 +279,37 @@ abstract class AbstractType
     public function getHideLabel(FilterConfigElementModel $element): bool
     {
         return (bool) $element->hideLabel;
+    }
+
+    public static function getInitialPalette(string $prepend, string $append): ?string
+    {
+        return null;
+    }
+
+    /**
+     * Check if element is enabled in current context.
+     *
+     * Following options may be passed:
+     * - table (string)
+     * - filterConfigElementModel (FilterConfigElementModel)
+     */
+    public static function isEnabledForCurrentContext(array $context = []): bool
+    {
+        return true;
+    }
+
+    /**
+     * Add logic to normalize data.
+     *
+     * @example CheckboxType Example implementation
+     *
+     * @param $value
+     *
+     * @return mixed
+     */
+    public static function normalizeValue($value)
+    {
+        return $value;
     }
 
     /**

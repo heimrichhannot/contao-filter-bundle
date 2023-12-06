@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2021 Heimrich & Hannot GmbH
+ * Copyright (c) 2023 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -9,68 +9,74 @@
 namespace HeimrichHannot\FilterBundle\Backend;
 
 use Contao\Controller;
-use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
+use Contao\CoreBundle\DataContainer\PaletteManipulator;
+use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\DataContainer;
 use Contao\Image;
 use Contao\StringUtil;
 use Contao\System;
+use HeimrichHannot\FilterBundle\DataContainer\FilterConfigElementContainer;
+use HeimrichHannot\FilterBundle\Filter\AbstractType;
+use HeimrichHannot\FilterBundle\Filter\FilterCollection;
 use HeimrichHannot\FilterBundle\Filter\Type\ChoiceType;
 use HeimrichHannot\FilterBundle\Filter\Type\DateTimeType;
 use HeimrichHannot\FilterBundle\Filter\Type\DateType;
 use HeimrichHannot\FilterBundle\Filter\Type\ExternalEntityType;
+use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
+use HeimrichHannot\UtilsBundle\Util\Utils;
 
 class FilterConfigElement
 {
-    const INITIAL_PALETTE = '{general_legend},title,type,isInitial;{config_legend},field,operator,alternativeValueSource,initialValueType,addMultilingualInitialValues;{publish_legend},published;';
+    const INITIAL_PALETTE = FilterConfigElementContainer::PALETTE_PREFIX.'{config_legend},field,operator,alternativeValueSource,initialValueType,addMultilingualInitialValues;'.FilterConfigElementContainer::PALETTE_SUFFIX;
 
-    /**
-     * @var ContaoFrameworkInterface
-     */
-    protected $framework;
+    protected ContaoFramework $contaoFramework;
+    private FilterCollection  $filterCollection;
+    private Utils             $utils;
 
-    public function __construct(ContaoFrameworkInterface $framework)
+    public function __construct(ContaoFramework $framework, FilterCollection $filterCollection, Utils $utils)
     {
-        $this->framework = $framework;
+        $this->contaoFramework = $framework;
+        $this->filterCollection = $filterCollection;
+        $this->utils = $utils;
     }
 
     public function modifyPalette(DataContainer $dc)
     {
-        if (null === ($filterConfigElement = System::getContainer()->get('huh.utils.model')->findModelInstanceByPk(
+        /** @var FilterConfigElementModel|null $filterConfigElement */
+        if (null === ($filterConfigElement = $this->utils->model()->findModelInstanceByPk(
                 'tl_filter_config_element',
                 $dc->id
             ))) {
             return null;
         }
 
+        /** @var class-string<AbstractType> $type */
+        $type = $this->filterCollection->getClassByType($filterConfigElement->type);
+
+        if (!$type) {
+            return null;
+        }
+
         $dca = &$GLOBALS['TL_DCA']['tl_filter_config_element'];
-        $config = System::getContainer()->getParameter('huh.filter');
-        $foundType = null;
 
-        if (!isset($config['filter']['types']) || !\is_array($config['filter']['types'])) {
-            return null;
-        }
-
-        foreach ($config['filter']['types'] as $type) {
-            if (isset($type['name']) && $type['name'] === $filterConfigElement->type) {
-                $foundType = $type['name'];
-
-                break;
+        if ($filterConfigElement->isInitial && isset($dca['palettes'][$filterConfigElement->type]) && false !== strpos($dca['palettes'][$filterConfigElement->type], 'isInitial')) {
+            if (null !== ($palette = $type::getInitialPalette(
+                    FilterConfigElementContainer::PALETTE_PREFIX,
+                    FilterConfigElementContainer::PALETTE_SUFFIX
+                ))) {
+                $dca['palettes'][$filterConfigElement->type] = $palette;
+            } else {
+                $dca['palettes'][$filterConfigElement->type] = static::INITIAL_PALETTE;
             }
-        }
-
-        if (null === $foundType) {
-            return null;
-        }
-
-        if ($filterConfigElement->isInitial && isset($dca['palettes'][$foundType]) && false !== strpos($dca['palettes'][$foundType], 'isInitial')) {
-            $dca['palettes'][$filterConfigElement->type] = static::INITIAL_PALETTE;
 
             if ($filterConfigElement->alternativeValueSource) {
                 $dca['palettes'][$filterConfigElement->type] = str_replace('initialValueType', '', $dca['palettes'][$filterConfigElement->type]);
             }
 
             if (\in_array($filterConfigElement->type, [DateTimeType::TYPE, DateType::TYPE, 'time'])) {
-                $dca['palettes'][$filterConfigElement->type] = str_replace('operator,', '', $dca['palettes'][$filterConfigElement->type]);
+                PaletteManipulator::create()
+                    ->removeField('operator')
+                    ->applyToPalette($filterConfigElement->type, FilterConfigElementModel::getTable());
             }
         }
 
@@ -81,7 +87,8 @@ class FilterConfigElement
 
     public function prepareChoiceTypes(DataContainer $dc)
     {
-        if (null === ($filterConfigElement = System::getContainer()->get('huh.utils.model')->findModelInstanceByPk(
+        /** @var FilterConfigElementModel $filterConfigElement */
+        if (null === ($filterConfigElement = $this->utils->model()->findModelInstanceByPk(
                 'tl_filter_config_element',
                 $dc->id
             ))) {
@@ -89,31 +96,8 @@ class FilterConfigElement
         }
 
         $dca = &$GLOBALS['TL_DCA']['tl_filter_config_element'];
-        $config = System::getContainer()->getParameter('huh.filter');
-        $class = null;
 
-        if (!isset($config['filter']['types']) || !\is_array($config['filter']['types'])) {
-            return null;
-        }
-
-        foreach ($config['filter']['types'] as $type) {
-            if (isset($type['name']) && $type['name'] === $filterConfigElement->type && isset($type['class'])) {
-                $class = $type['class'];
-
-                break;
-            }
-        }
-
-        // only choice types are supported
-        if (null === $class) {
-            return null;
-        }
-
-        if (null === ($filter = System::getContainer()->get('huh.filter.manager')->findById($filterConfigElement->pid))) {
-            return null;
-        }
-
-        $choiceType = new $class($filter);
+        $choiceType = $this->filterCollection->getClassByType($filterConfigElement->type);
 
         if (!($choiceType instanceof ChoiceType)) {
             return null;
@@ -152,11 +136,6 @@ class FilterConfigElement
         $dca['fields']['multilingualInitialValues']['eval']['multiColumnEditor']['fields']['initialValueArray']['inputType'] = 'select';
         $dca['fields']['multilingualInitialValues']['eval']['multiColumnEditor']['fields']['initialValueArray']['options'] = $options;
         $dca['fields']['multilingualInitialValues']['eval']['multiColumnEditor']['fields']['initialValueArray']['eval']['chosen'] = true;
-    }
-
-    public function listElements($arrRow)
-    {
-        return '<div class="tl_content_left">'.($arrRow['title'] ?: $arrRow['id']).' <span style="color:#b3b3b3; padding-left:3px">['.($GLOBALS['TL_LANG']['tl_filter_config_element']['reference']['type'][$arrRow['type']] ?: $arrRow['type']).($arrRow['isInitial'] ? ' – Initial' : '').']</span></div>';
     }
 
     public function checkPermission()
@@ -320,7 +299,8 @@ class FilterConfigElement
         $objVersions->initialize();
 
         // Trigger the save_callback
-        if (\is_array($GLOBALS['TL_DCA']['tl_filter_config_element']['fields']['published']['save_callback'])) {
+        if (($GLOBALS['TL_DCA']['tl_filter_config_element']['fields']['published']['save_callback'] ?? null) &&
+            \is_array($GLOBALS['TL_DCA']['tl_filter_config_element']['fields']['published']['save_callback'])) {
             foreach ($GLOBALS['TL_DCA']['tl_filter_config_element']['fields']['published']['save_callback'] as $callback) {
                 if (\is_array($callback)) {
                     $callbackObj = System::importStatic($callback[0]);
@@ -344,7 +324,8 @@ class FilterConfigElement
         }
 
         // Trigger the onsubmit_callback
-        if (\is_array($GLOBALS['TL_DCA']['tl_filter_config_element']['config']['onsubmit_callback'])) {
+        if (($GLOBALS['TL_DCA']['tl_filter_config_element']['config']['onsubmit_callback'] ?? null) &&
+            \is_array($GLOBALS['TL_DCA']['tl_filter_config_element']['config']['onsubmit_callback'])) {
             foreach ($GLOBALS['TL_DCA']['tl_filter_config_element']['config']['onsubmit_callback'] as $callback) {
                 if (\is_array($callback)) {
                     $callbackObj = System::importStatic($callback[0]);

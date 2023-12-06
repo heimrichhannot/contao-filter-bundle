@@ -1,5 +1,7 @@
 <?php
 
+use HeimrichHannot\FilterBundle\Controller\FrontendModule\FilterModuleController;
+
 $lang = &$GLOBALS['TL_LANG'];
 
 /**
@@ -11,4 +13,4 @@ $lang['MOD']['filter'] = ['Filter & sort configurations', 'Manage filter & sort 
 /**
  * Front end modules
  */
-$lang['FMD'][HeimrichHannot\FilterBundle\Module\ModuleFilter::TYPE] = ['Filter', 'Display a filter form'];
+$lang['FMD'][FilterModuleController::TYPE] = ['Filter', 'Display a filter form'];

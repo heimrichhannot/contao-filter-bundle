@@ -2,6 +2,162 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.26.1] - 2023-12-05
+- Fixed: form field name generation for url generation
+
+## [1.26.0] - 2023-12-05
+- Changed: refactored frontend module to module controller
+- Changed: frontend module now adds assets by itself
+- Deprecated: ModuleFilter
+
+## [1.25.8] - 2023-10-16
+- Fixed: added bootstrap 5 layout to config.yml
+
+## [1.25.7] - 2023-09-29
+- Fixed: reset pagination when applying filter
+
+## [1.25.6] - 2023-08-20
+- Fixed: warning
+
+## [1.25.5] - 2023-06-06
+- Fixed: warning
+
+## [1.25.4] - 2023-03-13
+- Fixed: uncatched exception in NewsCategories filter
+
+## [1.25.3] - 2023-03-13
+- Fixed: page id got lost in ajax context
+
+## [1.25.2] - 2023-03-08
+- Fixed: issues in filter config element type selection
+
+## [1.25.1] - 2023-03-03
+- Fixed: wrong fields being retrieved for tl_filter_config_element.field
+
+## [1.25.0] - 2023-02-28
+- Added: `AbstractType::normalizeValue()`
+- Fixed: issues with checkbox type and 0 values
+
+## [1.24.0] - 2023-02-27
+- Added: codefog/contao-news_categories filter type ([#27])
+- Added: `AbstractType::getInitialPalette()` and `AbstractType::isEnabledForCurrentContext()` methods to  ([#27])
+- Added: encore contracts support ([#28])
+
+## [1.23.7] - 2023-01-27
+- Fixed: not filtered data should not be included in preselect link 
+
+## [1.23.6] - 2023-01-10
+- Fixed: allow '0' as valid value
+
+## [1.23.5] - 2022-12-28
+- Fixed: php8 and objPage issues
+
+## [1.23.4] - 2022-12-23
+- Fixed: context issue in TypeChoice
+
+## [1.23.3] - 2022-12-19
+- Fixed: translator got wrong language if ajax filer submit
+
+## [1.23.2] - 2022-12-19
+- Fixed: locale not kept on ajax filter submit
+
+## [1.23.1] - 2022-11-30
+- Changed: raised fieldpalette dependency
+- Fixed: exception in filter preselect element if filter has no action set
+- Fixed: issues with fieldpalette fields of other fieldpalette tables (use DcaGenerator of fieldpalette)
+
+## [1.23.0] - 2022-10-07
+- Changed: support haste 5
+- Fixed: hard dependency on blocks module
+
+## [1.22.6] - 2022-10-07
+- Fixed: notice in php 8.1
+
+## [1.22.5] - 2022-09-27
+- Fixed: session started on every page with filter
+
+## [1.22.4] - 2022-09-08
+- Fixed: FilterQueryBuilderComposeEvent not dispatcher if value is empty
+
+## [1.22.3] - 2022-09-08
+- Fixed: FilterQueryBuilderComposeEvent not dispatched for tag filter types
+
+## [1.22.2] - 2022-07-01
+- Fixed: exception in filter backend
+
+## [1.22.1] - 2022-06-27
+- Fixed: merge issues
+
+## [1.22.0] - 2022-06-27
+- Added: FilterCollection class for single access to filter types ([#25])
+- Changed: FilterPreselect options should now have same options as FilterConfigElement in the frontend ([#25])
+- Changed: minimum php version is now 7.4 ([#25])
+- Changed: minimum utils bundle version is now 2.217 ([#25])
+- Changed: made FilterConfig::buildForm() configurable ([#25])
+- Changed: refactored some code to modern coding standards ([#25])
+- Fixed: some deprecations ([#25])
+
+## [1.21.3] - 2022-05-18
+
+- Fixed: symfony 5 compatibility
+
+## [1.21.2] - 2022-05-10
+- Fixed: symfony 5 compatiblity
+
+## [1.21.1] - 2022-03-04
+- Fixed: preselect link not working of no action is set in filter config. Now referrer parameter is also evaluated
+
+## [1.21.0] - 2022-03-03
+- Added: absoluteUrl option to FilterConfig::getPreselectAction()
+- Added: filter config property to FilterBeforeRenderFilterFormEvent
+- Added: preselectUrl variable to filter and frontend module templates
+- Fixed: preselect values for checkbox types reset filter 
+
+
+## [1.20.7] - 2022-02-14
+
+- Fixed: array index issues in php 8+
+
+## [1.20.6] - 2022-02-11
+
+- Fixed: event_dispatcher call in ajax
+
+## [1.20.5] - 2022-02-10
+
+- Added: twig extension service definitions (the ones delivered by extra-bundle aren't working in symfony 4 out of the box)
+
+## [1.20.4] - 2022-02-10
+
+- Fixed: added concrete twig extension bundles for BC reasons
+
+## [1.20.3] - 2022-02-10
+
+- Fixed: `spaceless` usages in twig templates
+- Fixed: querybuilder parameter colons for symfony 5+
+
+## [1.20.2] - 2022-02-09
+
+- Fixed: config for symfony 5+
+- Removed: twig extension services from yml config
+
+## [1.20.1] - 2022-02-08
+
+- Fixed: controllers to symfony 4+
+- Fixed: symfony dependencies
+
+## [1.20.0] - 2022-02-07
+- Added: FilterBeforeRenderFilterFormEvent ([#24])
+- Changed: minimum contao version is not 4.9 ([#24])
+- Changed: minimum php version is now 7.3 ([#24])
+
+## [1.19.3] - 2022-02-07
+
+- Fixed: exchanged abandoned `twig/extensions` by `twig/extra-bundle`
+
+## [1.19.2] - 2022-02-07
+
+- Fixed: dependencies for contao 4.13
+
 ## [1.19.1] - 2022-01-07
 - Fixed: missing translations for hide filter on auto_item checkbox
 
@@ -214,6 +370,10 @@ All notable changes to this project will be documented in this file.
 - updated import in filter bundle js
 
 
+[#28]: https://github.com/heimrichhannot/contao-filter-bundle/pull/28
+[#27]: https://github.com/heimrichhannot/contao-filter-bundle/pull/27
+[#25]: https://github.com/heimrichhannot/contao-filter-bundle/pull/25
+[#24]: https://github.com/heimrichhannot/contao-filter-bundle/pull/24
 [#21]: https://github.com/heimrichhannot/contao-filter-bundle/pull/21
 [#20]: https://github.com/heimrichhannot/contao-filter-bundle/pull/20
 [#18]: https://github.com/heimrichhannot/contao-filter-bundle/pull/18

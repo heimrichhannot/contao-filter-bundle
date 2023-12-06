@@ -1,8 +1,0 @@
-services:
-  _defaults:
-    autoconfigure: true
-    autowire: true
-
-
-  HeimrichHannot\FilterBundle\Controller\:
-    resource: ../../Controller/*

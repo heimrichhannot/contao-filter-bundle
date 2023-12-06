@@ -49,6 +49,7 @@ huh:
       - { name: bootstrap_3_horizontal_layout, template: '@HeimrichHannotContaoFilter/filter/filter_form_bootstrap_3_horizontal_layout.html.twig' }
       - { name: bootstrap_4_layout, template: '@HeimrichHannotContaoFilter/filter/filter_form_bootstrap_4_layout.html.twig' }
       - { name: bootstrap_4_horizontal_layout, template: '@HeimrichHannotContaoFilter/filter/filter_form_bootstrap_4_horizontal_layout.html.twig' }
+      - { name: bootstrap_5_layout, template: '@HeimrichHannotContaoFilter/filter/filter_form_bootstrap_5_layout.html.twig' }
       - { name: foundation_5_layout, template: '@HeimrichHannotContaoFilter/filter/filter_form_foundation_5_layout.html.twig' }
     template_prefixes:
       - filter_

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2021 Heimrich & Hannot GmbH
+ * Copyright (c) 2023 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -12,6 +12,7 @@ use HeimrichHannot\FilterBundle\Filter\AbstractType;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
+use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\Form\FormBuilderInterface;
 
 class CheckboxType extends AbstractType
@@ -32,6 +33,17 @@ class CheckboxType extends AbstractType
     public function buildForm(FilterConfigElementModel $element, FormBuilderInterface $builder)
     {
         $builder->add($this->getName($element), \Symfony\Component\Form\Extension\Core\Type\CheckboxType::class, $this->getOptions($element, $builder));
+        $builder->get($this->getName($element))->addModelTransformer(new class() implements DataTransformerInterface {
+            public function transform($value)
+            {
+                return (bool) $value;
+            }
+
+            public function reverseTransform($value)
+            {
+                return (int) $value;
+            }
+        });
     }
 
     /**
@@ -68,5 +80,10 @@ class CheckboxType extends AbstractType
         }
 
         return $options;
+    }
+
+    public static function normalizeValue($value)
+    {
+        return (bool) $value ? '1' : '';
     }
 }

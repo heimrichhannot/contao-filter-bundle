@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2021 Heimrich & Hannot GmbH
+ * Copyright (c) 2022 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -149,16 +149,17 @@ class YearChoice extends AbstractChoice
                 if (!$element->optionCountLabel) {
                     $years[$value] = $label.' ('.$entryCount[$value].')';
                 } else {
-                    $years[$value] = $this->container->get('translator')->transChoice($element->optionCountLabel, $entryCount[$value], [
+                    $years[$value] = $this->container->get('translator')->trans($element->optionCountLabel, [
                         '%value%' => $value,
                         '%count%' => $entryCount[$value],
                     ]);
                 }
             }
+
             $years = $years;
         }
 
-        krsort($years, SORT_NUMERIC);
+        krsort($years, \SORT_NUMERIC);
 
         return $years;
     }

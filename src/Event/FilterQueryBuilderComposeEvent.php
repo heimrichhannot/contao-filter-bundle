@@ -1,11 +1,17 @@
 <?php
 
+/*
+ * Copyright (c) 2022 Heimrich & Hannot GmbH
+ *
+ * @license LGPL-3.0-or-later
+ */
+
 namespace HeimrichHannot\FilterBundle\Event;
 
 use Doctrine\DBAL\Query\QueryBuilder;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 class FilterQueryBuilderComposeEvent extends Event
 {
@@ -42,41 +48,26 @@ class FilterQueryBuilderComposeEvent extends Event
         $this->filterConfig = $filterConfig;
     }
 
-    /**
-     * @return bool
-     */
     public function getContinue(): bool
     {
         return $this->continue;
     }
 
-    /**
-     * @param bool $continue
-     */
     public function setContinue(bool $continue): void
     {
         $this->continue = $continue;
     }
 
-    /**
-     * @return QueryBuilder
-     */
     public function getQueryBuilder(): QueryBuilder
     {
         return $this->queryBuilder;
     }
 
-    /**
-     * @return string
-     */
     public function getOperator(): string
     {
         return $this->operator;
     }
 
-    /**
-     * @param string $operator
-     */
     public function setOperator(string $operator): void
     {
         $this->operator = $operator;
@@ -98,25 +89,16 @@ class FilterQueryBuilderComposeEvent extends Event
         $this->value = $value;
     }
 
-    /**
-     * @return FilterConfigElementModel
-     */
     public function getElement(): FilterConfigElementModel
     {
         return $this->element;
     }
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * @return FilterConfig
-     */
     public function getFilterConfig(): FilterConfig
     {
         return $this->filterConfig;

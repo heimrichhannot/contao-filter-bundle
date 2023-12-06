@@ -1,13 +1,15 @@
 <?php
 
 /*
- * Copyright (c) 2021 Heimrich & Hannot GmbH
+ * Copyright (c) 2023 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
 
 namespace HeimrichHannot\FilterBundle\DependencyInjection;
 
+use Codefog\NewsCategoriesBundle\CodefogNewsCategoriesBundle;
+use HeimrichHannot\FilterBundle\Filter\Type\NewsCategoriesType;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
@@ -31,6 +33,15 @@ class HeimrichHannotContaoFilterExtension extends Extension
         $configuration = new Configuration($container->getParameter('kernel.debug'));
         $processedConfig = $this->processConfiguration($configuration, $configs);
 
+        if (class_exists(CodefogNewsCategoriesBundle::class)) {
+            $processedConfig['filter']['types'][] = [
+                'name' => NewsCategoriesType::TYPE,
+                'class' => NewsCategoriesType::class,
+                'type' => 'choice',
+                'wrapper' => false,
+            ];
+        }
+
         $container->setParameter('huh.filter', $processedConfig);
         $container->setParameter('huh.sort', $processedConfig);
 
@@ -38,6 +49,5 @@ class HeimrichHannotContaoFilterExtension extends Extension
 
         $loader->load('listener.yml');
         $loader->load('services.yml');
-        $loader->load('controller.yml');
     }
 }

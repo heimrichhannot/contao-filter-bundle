@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2021 Heimrich & Hannot GmbH
+ * Copyright (c) 2022 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -79,8 +79,8 @@ class YearType extends ChoiceType
 
         $builder->andWhere($andXA);
 
-        $builder->setParameter(':start', $start);
-        $builder->setParameter(':stop', $stop);
+        $builder->setParameter('start', $start);
+        $builder->setParameter('stop', $stop);
     }
 
     public function buildQueryForModels(array $filter, FilterConfigElementModel $element): array
@@ -218,13 +218,12 @@ class YearType extends ChoiceType
 
     /**
      * @param $name
-     * @param FilterConfigElementModel $element
-     * @param array $contextualValues
+     *
      * @return array|int|mixed|string|string[]|null
      */
     private function getValue($name, FilterConfigElementModel $element, array $contextualValues)
     {
-        $data  = $this->config->getData();
+        $data = $this->config->getData();
         $value = isset($data[$name]) && $data[$name] ? $data[$name] : 0;
 
         if ($element->isInitial) {
@@ -234,6 +233,7 @@ class YearType extends ChoiceType
                 $value = $data[$name] ?? $this->getInitialValue($element, $contextualValues);
             }
         }
+
         return $value;
     }
 }

@@ -1,13 +1,14 @@
 <?php
 
 /*
- * Copyright (c) 2021 Heimrich & Hannot GmbH
+ * Copyright (c) 2023 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
 
 namespace HeimrichHannot\FilterBundle\QueryBuilder;
 
+use Codefog\HasteBundle\DcaRelationsManager;
 use Contao\Controller;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\System;
@@ -18,6 +19,7 @@ use HeimrichHannot\FilterBundle\Config\FilterConfig;
 use HeimrichHannot\FilterBundle\Event\AdjustFilterValueEvent;
 use HeimrichHannot\FilterBundle\Event\FilterQueryBuilderComposeEvent;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
+use HeimrichHannot\FilterBundle\Filter\FilterCollection;
 use HeimrichHannot\FilterBundle\Filter\Type\ChoiceType;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
@@ -72,13 +74,13 @@ class FilterQueryBuilder extends QueryBuilder
 
         $dca = $GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element->field];
 
-        if ($dca['eval']['isCategoryField']) {
+        if ($dca['eval']['isCategoryField'] ?? false) {
             $this->whereCategoryWidget($element, $name, $config, $dca, DatabaseUtil::OPERATOR_IN);
 
             return $this;
         }
 
-        switch ($dca['inputType']) {
+        switch ($dca['inputType'] ?? null) {
             case 'cfgTags':
                 if (!isset($dca['eval']['tagsManager'])) {
                     break;
@@ -105,7 +107,7 @@ class FilterQueryBuilder extends QueryBuilder
     {
         $data = $config->getData();
 
-        if (ChoiceType::TYPE == $element->type && \is_array($data[$name])) {
+        if (ChoiceType::TYPE == $element->type && isset($data[$name]) && \is_array($data[$name])) {
             $data[$name] = $this->getGroupChoiceValues($element, $data[$name]);
         }
 
@@ -135,10 +137,6 @@ class FilterQueryBuilder extends QueryBuilder
         } else {
             $value = $data[$name] ?? ($element->customValue ? $element->value : null);
 
-            if (empty($value) || !$element->field) {
-                return $this;
-            }
-
             $operator = $this->getOperator($element, $defaultOperator, $dca);
         }
 
@@ -146,14 +144,20 @@ class FilterQueryBuilder extends QueryBuilder
             return $this;
         }
 
+        /** @var class-string<AbstractType> $typeClass */
+        $typeClass = $this->container->get(FilterCollection::class)->getClassByType($element->type);
 
+        if ($typeClass) {
+            $value = $typeClass::normalizeValue($value);
+        }
 
+        /** @var FilterQueryBuilderComposeEvent $event */
         $event = System::getContainer()->get('event_dispatcher')->dispatch(
-            FilterQueryBuilderComposeEvent::class,
-            new FilterQueryBuilderComposeEvent($this, $name, $operator, $value, $element, $config)
+            new FilterQueryBuilderComposeEvent($this, $name, $operator, $value, $element, $config),
+            FilterQueryBuilderComposeEvent::class
         );
 
-        if (true === $event->getContinue()) {
+        if (true === $event->getContinue() && (!empty($event->getValue()) || '0' === $event->getValue() || 0 === $event->getValue())) {
             $this->andWhere(
                 $this->container->get('huh.utils.database')->composeWhereForQueryBuilder(
                     $this,
@@ -165,8 +169,6 @@ class FilterQueryBuilder extends QueryBuilder
                 )
             );
         }
-
-
 
         return $this;
     }
@@ -211,7 +213,7 @@ class FilterQueryBuilder extends QueryBuilder
 
     protected function getOperator(FilterConfigElementModel $element, string $operator, array $dca, bool $supportSerializedBlob = true): string
     {
-        if ((isset($dca['eval']['multiple']) && $dca['eval']['multiple'] || 'tagsinput' === $dca['eval']['inputType']) && $supportSerializedBlob) {
+        if ((isset($dca['eval']['multiple']) && $dca['eval']['multiple'] || 'tagsinput' === ($dca['eval']['inputType'] ?? null)) && $supportSerializedBlob) {
             if (\in_array($operator, DatabaseUtil::NEGATIVE_OPERATORS)) {
                 // db value is a serialized blob
                 if (false !== strpos($dca['sql'], 'blob')) {
@@ -248,24 +250,25 @@ class FilterQueryBuilder extends QueryBuilder
         $data = $config->getData();
 
         if ($element->isInitial && $element->alternativeValueSource) {
-            $value = $this->getValueFromAlternativeSource($data[$name], $data, $element, $name, $config, $dca);
+            $value = $this->getValueFromAlternativeSource($data[$name] ?? null, $data, $element, $name, $config, $dca);
         } else {
             $value = $data[$name] ?? AbstractType::getInitialValue($element, $this->contextualValues);
             $value = array_filter(!\is_array($value) ? explode(',', $value) : $value);
         }
 
-        if (empty($value)) {
-            return $this;
-        }
-
         $filter = $config->getFilter();
-        $relation = Relations::getRelation($filter['dataContainer'], $element->field);
 
-        if (false === $relation || null === $value) {
-            return $this;
+        if (class_exists(DcaRelationsManager::class) && $this->container->has(DcaRelationsManager::class)) {
+            $relation = $this->container->get(DcaRelationsManager::class)->getRelation($filter['dataContainer'], $element->field);
+        } elseif (class_exists(Relations::class)) {
+            $relation = Relations::getRelation($filter['dataContainer'], $element->field);
+        } else {
+            $relation = false;
         }
 
-        $alias = $relation['table'].'_'.$name;
+        if (false === $relation || null === $relation) {
+            return $this;
+        }
 
         $operator = $this->getOperator($element, $defaultOperator, $dca, false);
 
@@ -273,16 +276,26 @@ class FilterQueryBuilder extends QueryBuilder
             return $this;
         }
 
-        $this->join($relation['reference_table'], $relation['table'], $alias,
-            $alias.'.'.$relation['reference_field'].'='.$relation['reference_table'].'.'.$relation['reference']);
-
-        $this->andWhere(
-            $this->container->get('huh.utils.database')->composeWhereForQueryBuilder(
-                $this, $alias.'.'.$relation['related_field'], $operator, $dca, $value
-            )
+        /** @var FilterQueryBuilderComposeEvent $event */
+        $event = System::getContainer()->get('event_dispatcher')->dispatch(
+            new FilterQueryBuilderComposeEvent($this, $name, $operator, $value, $element, $config),
+            FilterQueryBuilderComposeEvent::class
         );
 
-        $this->groupBy($filter['dataContainer'].'.id');
+        if (true === $event->getContinue() && !empty($event->getValue())) {
+            $alias = $relation['table'].'_'.$name;
+
+            $this->join($relation['reference_table'], $relation['table'], $alias,
+                $alias.'.'.$relation['reference_field'].'='.$relation['reference_table'].'.'.$relation['reference']);
+
+            $this->andWhere(
+                $this->container->get('huh.utils.database')->composeWhereForQueryBuilder(
+                    $this, $alias.'.'.$relation['related_field'], $event->getOperator(), $dca, $event->getValue()
+                )
+            );
+
+            $this->groupBy($filter['dataContainer'].'.id');
+        }
 
         return $this;
     }
@@ -316,7 +329,9 @@ class FilterQueryBuilder extends QueryBuilder
         $alias = 'tl_category_association_'.$element->field;
 
         // check if table is already joined with the same alias
-        if (\is_array($this->getQueryParts()['join'][$filter['dataContainer']])) {
+        $queryParts = $this->getQueryParts();
+
+        if (isset($queryParts['join'][$filter['dataContainer']]) && \is_array($queryParts['join'][$filter['dataContainer']])) {
             foreach ($this->getQueryParts()['join'][$filter['dataContainer']] as $join) {
                 if ($join['joinAlias'] === $alias) {
                     $addJoin = false;
@@ -326,10 +341,11 @@ class FilterQueryBuilder extends QueryBuilder
 
         // join only if joinAlias do not already exist
         if ($addJoin) {
-            $this->join($filter['dataContainer'], 'tl_category_association', $alias, "
-            $alias.categoryField='$element->field' AND
-            $alias.parentTable='".$filter['dataContainer']."' AND
-            $alias.entity=".$filter['dataContainer'].'.id
+            $this->join(
+                $filter['dataContainer'],
+                'tl_category_association',
+                $alias,
+                "$alias.categoryField='$element->field' AND $alias.parentTable='".$filter['dataContainer']."' AND $alias.entity=".$filter['dataContainer'].'.id
             ');
         }
 
@@ -359,9 +375,10 @@ class FilterQueryBuilder extends QueryBuilder
         FilterConfig $config,
         array $dca
     ) {
-        $event = $this->container->get('event_dispatcher')->dispatch(AdjustFilterValueEvent::NAME, new AdjustFilterValueEvent(
-            $value ?? null, \is_array($data) ? $data : [], $element, $name, $config, $dca
-        ));
+        $event = System::getContainer()->get('event_dispatcher')->dispatch(
+            new AdjustFilterValueEvent($value ?? null, \is_array($data) ? $data : [], $element, $name, $config, $dca),
+            AdjustFilterValueEvent::NAME
+        );
 
         return $event->getValue();
     }

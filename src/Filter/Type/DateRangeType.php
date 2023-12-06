@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2021 Heimrich & Hannot GmbH
+ * Copyright (c) 2022 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -114,8 +114,8 @@ class DateRangeType extends AbstractType
             $andXD->add($builder->expr()->gte(':stop_'.$element->id, $startField));
             $andXD->add($builder->expr()->isNull($stopField));
 
-            $builder->setParameter(':start_'.$element->id, $start);
-            $builder->setParameter(':stop_'.$element->id, $stop);
+            $builder->setParameter('start_'.$element->id, $start);
+            $builder->setParameter('stop_'.$element->id, $stop);
 
             $or->add($andXA);
             $or->add($andXB);
@@ -130,8 +130,8 @@ class DateRangeType extends AbstractType
 
             $builder->andWhere($andXA);
 
-            $builder->setParameter(':start_'.$element->id, $start);
-            $builder->setParameter(':stop_'.$element->id, $stop);
+            $builder->setParameter('start_'.$element->id, $start);
+            $builder->setParameter('stop_'.$element->id, $stop);
         }
     }
 

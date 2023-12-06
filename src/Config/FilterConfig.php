@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2021 Heimrich & Hannot GmbH
+ * Copyright (c) 2023 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -14,8 +14,8 @@ use Contao\Environment;
 use Contao\InsertTags;
 use Contao\System;
 use Doctrine\DBAL\Connection;
-use HeimrichHannot\FilterBundle\Event\FilterFormAdjustOptionsEvent;
 use HeimrichHannot\FilterBundle\Event\FilterConfigInitEvent;
+use HeimrichHannot\FilterBundle\Event\FilterFormAdjustOptionsEvent;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
 use HeimrichHannot\FilterBundle\Filter\Type\PublishedType;
 use HeimrichHannot\FilterBundle\Filter\Type\SkipParentsType;
@@ -37,6 +37,8 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\PropertyAccess\PropertyAccess;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\RouterInterface;
 
 class FilterConfig implements \JsonSerializable
 {
@@ -131,8 +133,8 @@ class FilterConfig implements \JsonSerializable
     public function init(string $sessionKey, array $filter, $elements = null)
     {
         $event = System::getContainer()->get('event_dispatcher')->dispatch(
-            FilterConfigInitEvent::class,
-            new FilterConfigInitEvent($filter, $sessionKey, $elements)
+            new FilterConfigInitEvent($filter, $sessionKey, $elements),
+            FilterConfigInitEvent::class
         );
 
         $this->filter = $event->getFilter();
@@ -143,9 +145,19 @@ class FilterConfig implements \JsonSerializable
     /**
      * Build the form.
      */
-    public function buildForm(array $data = [])
+    public function buildForm(array $data = [], array $configuration = [])
     {
-        if (null === $this->filter) {
+        $configuration = array_merge([
+            'overrideFilter' => null,
+            'skipSession' => false,
+            'skipAjax' => false,
+        ], $configuration);
+
+        if ($configuration['overrideFilter']) {
+            $filter = $configuration['overrideFilter'];
+        } elseif ($this->filter) {
+            $filter = $this->filter;
+        } else {
             return;
         }
 
@@ -156,45 +168,45 @@ class FilterConfig implements \JsonSerializable
 
         $options = ['filter' => $this];
 
-
-
         $cssClass = [];
 
-        if (isset($this->filter['cssClass']) && '' !== $this->filter['cssClass']) {
-            $cssClass[] = $this->filter['cssClass'];
+        if (isset($filter['cssClass']) && '' !== $filter['cssClass']) {
+            $cssClass[] = $filter['cssClass'];
         }
 
-        if ($this->hasData()) {
-            $cssClass[] = 'has-data';
+        if (!$configuration['skipSession']) {
+            if ($this->hasData()) {
+                $cssClass[] = 'has-data';
+            }
         }
 
         if (!empty($cssClass)) {
             $options['attr']['class'] = implode(' ', $cssClass);
         }
 
-        if ($this->getFilter()['asyncFormSubmit']) {
+        if ($filter['asyncFormSubmit']) {
             $options['attr']['data-async'] = 1;
 
-            if ($this->getFilter()['ajaxList']) {
-                $options['attr']['data-list'] = '#huh-list-'.$this->getFilter()['ajaxList'];
+            if ($filter['ajaxList']) {
+                $options['attr']['data-list'] = '#huh-list-'.$filter['ajaxList'];
             }
         }
 
-        if ($this->container->get('huh.request')->isXmlHttpRequest()) {
+        if (!$configuration['skipAjax'] && $this->container->get('huh.request')->isXmlHttpRequest()) {
             $this->container->get('huh.filter.util.filter_ajax')->updateData($this);
             $data = $this->getData();
         }
 
-        if (isset($this->filter['renderEmpty']) && true === (bool) $this->filter['renderEmpty']) {
+        if (isset($filter['renderEmpty']) && true === (bool) $filter['renderEmpty']) {
             $data = [];
         }
 
         $event = System::getContainer()->get('event_dispatcher')->dispatch(
-            FilterFormAdjustOptionsEvent::class,
-            new FilterFormAdjustOptionsEvent($options, $this->filter, $this)
+            new FilterFormAdjustOptionsEvent($options, $filter, $this),
+            FilterFormAdjustOptionsEvent::class
         );
 
-        $this->builder = $factory->createNamedBuilder($this->filter['name'], FilterType::class, $data, $event->getOptions());
+        $this->builder = $factory->createNamedBuilder($filter['name'], FilterType::class, $data, $event->getOptions());
 
         $this->mapFormsToData();
     }
@@ -271,6 +283,13 @@ class FilterConfig implements \JsonSerializable
             $type = new $class($this);
 
             if (!is_subclass_of($type, AbstractType::class)) {
+                continue;
+            }
+
+            if (!$type::isEnabledForCurrentContext([
+                'filterConfigElementModel' => $element,
+                'table' => $this->getFilter()['dataContainer'],
+            ])) {
                 continue;
             }
 
@@ -438,6 +457,7 @@ class FilterConfig implements \JsonSerializable
     public function getData(): array
     {
         $data = [];
+
         if ($this->sessionKey) {
             $data = $this->session->getData($this->getSessionKey());
         }
@@ -591,7 +611,10 @@ class FilterConfig implements \JsonSerializable
         }
 
         if ($filter['asyncFormSubmit']) {
-            return $router->generate('filter_frontend_ajax_submit', ['id' => $filter['id']]);
+            return $router->generate('filter_frontend_ajax_submit', [
+                'id' => $filter['id'],
+                '_locale' => $this->requestStack->getCurrentRequest()->getLocale(),
+            ]);
         }
 
         return $router->generate('filter_frontend_submit', ['id' => $filter['id']]);
@@ -604,8 +627,9 @@ class FilterConfig implements \JsonSerializable
      *
      * @return string|null
      */
-    public function getPreselectAction(array $data = [])
+    public function getPreselectAction(array $data = [], bool $absoluteUrl = false)
     {
+        /** @var RouterInterface $router */
         $router = $this->container->get('router');
 
         $filter = $this->getFilter();
@@ -614,7 +638,11 @@ class FilterConfig implements \JsonSerializable
             return null;
         }
 
-        return $router->generate('filter_frontend_preselect', ['id' => $filter['id'], 'data' => $data]);
+        return $router->generate(
+            'filter_frontend_preselect',
+            ['id' => $filter['id'], 'data' => array_filter($data)],
+            $absoluteUrl ? UrlGeneratorInterface::ABSOLUTE_URL : UrlGeneratorInterface::ABSOLUTE_PATH
+        );
     }
 
     /**
@@ -636,6 +664,7 @@ class FilterConfig implements \JsonSerializable
     /**
      * {@inheritdoc}
      */
+    #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
         return get_object_vars($this);

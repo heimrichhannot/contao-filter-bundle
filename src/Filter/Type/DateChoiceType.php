@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2021 Heimrich & Hannot GmbH
+ * Copyright (c) 2022 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -92,8 +92,8 @@ class DateChoiceType extends ChoiceType
 
         $builder->andWhere($andXA);
 
-        $builder->setParameter(':start', $start);
-        $builder->setParameter(':stop', $stop);
+        $builder->setParameter('start', $start);
+        $builder->setParameter('stop', $stop);
     }
 
     public function getOptions(FilterConfigElementModel $element, FormBuilderInterface $builder, bool $triggerEvent = true)
@@ -161,6 +161,7 @@ class DateChoiceType extends ChoiceType
         );
 
         $dates = [];
+
         foreach ($period as $key => $value) {
             $dates[] = $value->format($dateFormat);
         }

@@ -2,6 +2,19 @@ services:
   _defaults:
     public: true
     autowire: true
+    bind:
+      $bundleConfig: '%huh.filter%'
+
+  HeimrichHannot\FilterBundle\:
+    resource: '../../{Asset,Controller,DataContainer,EventListener}/*'
+    exclude: '../../EventListener/{FilterConfigElementCallbackListener.php,HookListener.php,InsertTagsListener.php}'
+    autoconfigure: true
+    autowire: true
+    public: false
+
+  HeimrichHannot\FilterBundle\Filter\FilterCollection:
+    autowire: true
+    public: true
 
   huh.form_type_extension:
     class: HeimrichHannot\FilterBundle\Form\Extension\FormTypeExtension
@@ -27,9 +40,7 @@ services:
   huh.filter.session:
     class: HeimrichHannot\FilterBundle\Session\FilterSession
     public: true
-    arguments:
-    - "@contao.framework"
-    - "@session"
+    autowire: true
 
   HeimrichHannot\FilterBundle\Session\FilterSession:
     alias: 'huh.filter.session'
@@ -50,8 +61,7 @@ services:
   huh.filter.backend.filter_config_element:
     public: true
     class: HeimrichHannot\FilterBundle\Backend\FilterConfigElement
-    arguments:
-    - "@contao.framework"
+    autowire: true
 
   huh.filter.backend.content:
     public: true
@@ -62,8 +72,7 @@ services:
   huh.filter.backend.filter_preselect:
     public: true
     class: HeimrichHannot\FilterBundle\Backend\FilterPreselect
-    arguments:
-    - "@contao.framework"
+    autowire: true
 
   # choices
   huh.filter.choice.template:
@@ -115,28 +124,6 @@ services:
     public: true
     arguments: ['@service_container', '@huh.utils.model']
 
-  twig.extension.text:
-    class: Twig_Extensions_Extension_Text
-    tags:
-    - { name: twig.extension }
-
-  twig.extension.intl:
-    class: Twig_Extensions_Extension_Intl
-    tags:
-    - { name: twig.extension }
-
-  twig.extension.array:
-    class: Twig_Extensions_Extension_Array
-    tags:
-    - { name: twig.extension }
-
-  twig.extension.date:
-    class: Twig_Extensions_Extension_Date
-    arguments:
-    - "@translator"
-    tags:
-    - { name: twig.extension }
-
   huh.filter.choice.sort:
     class: HeimrichHannot\FilterBundle\Choice\SortChoice
     public: true
@@ -171,3 +158,20 @@ services:
     tags:
     - { name: twig.extension }
 
+  twig.extension.string:
+    class: Twig\Extra\String\StringExtension
+    autowire: true
+    tags:
+      - { name: twig.extension }
+
+  twig.extension.html:
+    class: Twig\Extra\Html\HtmlExtension
+    autowire: true
+    tags:
+      - { name: twig.extension }
+
+  twig.extension.intl:
+    class: Twig\Extra\Intl\IntlExtension
+    autowire: true
+    tags:
+      - { name: twig.extension }

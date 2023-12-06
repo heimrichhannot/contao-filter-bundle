@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2021 Heimrich & Hannot GmbH
+ * Copyright (c) 2023 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -51,7 +51,7 @@ class FilterType extends AbstractType
 
         $filter = $this->config->getFilter();
 
-        $builder->setAction($this->config->getAction());
+        $builder->setAction($this->config->getAction() ?? '');
 
         if (isset($filter['method'])) {
             $builder->setMethod($filter['method']);
@@ -64,9 +64,13 @@ class FilterType extends AbstractType
 
         // always add a hidden field with the page id
         global $objPage;
-        $pageId = $objPage->id;
+        $pageId = 0;
 
-        if (!$objPage->id && isset($this->config->getData()[self::FILTER_PAGE_ID_NAME])) {
+        if ($objPage) {
+            $pageId = $objPage->id;
+        }
+
+        if ((!$objPage || !$objPage->id) && isset($this->config->getData()[self::FILTER_PAGE_ID_NAME])) {
             $pageId = $this->config->getData()[self::FILTER_PAGE_ID_NAME];
         }
 
@@ -74,10 +78,10 @@ class FilterType extends AbstractType
 
         // always add a hidden field with the referrer url (required by reset for example to redirect back to user action page) -> use request query string when in esi _ fragment sub-request
         if ($request->query->has('request')) {
-            $referrerUrl = $request->getSchemeAndHttpHost().'/'.$request->query->get('request');
+            $referrerUrl = $request->getSchemeAndHttpHost() . '/' . $request->query->get('request');
         } else {
             // Check if referrer is set to set again
-            if (Environment::get('isAjaxRequest') && $request->get($filter['name']) && isset($request->get($filter['name'])[static::FILTER_REFERRER_NAME])) {
+            if (Environment::get('isAjaxRequest') && $request->get($filter['name'] ?? '') && isset($request->get($filter['name'] ?? '')[static::FILTER_REFERRER_NAME])) {
                 if (parse_url($request->get($filter['name'])[static::FILTER_REFERRER_NAME], \PHP_URL_HOST) !== parse_url(Environment::get('url'), \PHP_URL_HOST)) {
                     throw new \Exception('Invalid redirect url.');
                 }
@@ -87,6 +91,9 @@ class FilterType extends AbstractType
                 $referrerUrl = $request->getUri();
             }
         }
+
+        // Remove page_s param so pagination can be reset when applying filter
+        $referrerUrl = $this->removeParam($referrerUrl, 'page_s');
 
         $builder->add(static::FILTER_REFERRER_NAME, HiddenType::class, [
             'attr' => [
@@ -117,7 +124,7 @@ class FilterType extends AbstractType
         }
 
         $wrappers = [];
-        $types = \System::getContainer()->get('huh.filter.choice.type')->getCachedChoices();
+        $types = System::getContainer()->get('huh.filter.choice.type')->getCachedChoices();
 
         if (!\is_array($types) || empty($types)) {
             return;
@@ -146,6 +153,13 @@ class FilterType extends AbstractType
             }
 
             if (null === ($name = $type->getName($element))) {
+                continue;
+            }
+
+            if (!$type::isEnabledForCurrentContext([
+                'table' => $this->config->getFilter()['dataContainer'],
+                'filterConfigElementModel' => $element,
+            ])) {
                 continue;
             }
 
@@ -213,6 +227,40 @@ class FilterType extends AbstractType
             } catch (InvalidOptionsException $e) {
                 continue;
             }
+        }
+    }
+
+    protected function removeParam(string $url, string $param = ''): string
+    {
+        if (empty($param)) {
+            return $url;
+        }
+
+        $urlParts = parse_url($url);
+
+        if ($urlParts !== false && isset($urlParts['query'])) {
+            // Parse the query string into an associative array
+            parse_str($urlParts['query'], $queryParameters);
+
+            // Remove the 'page_s*ID*' parameter if it exists
+            foreach ($queryParameters as $key => $value) {
+                if (str_starts_with($key, $param)) {
+                    unset($queryParameters[$key]);
+                }
+            }
+
+            // Rebuild the query string without the removed parameter
+            $newQueryString = http_build_query($queryParameters);
+
+            // Reconstruct the URL
+            $outputUrl = $urlParts['scheme'] . '://' . $urlParts['host'] . $urlParts['path'];
+            if (!empty($newQueryString)) {
+                $outputUrl .= '?' . $newQueryString;
+            }
+
+            return $outputUrl;
+        } else {
+            return $url;
         }
     }
 }
