@@ -216,7 +216,7 @@ class FieldOptionsChoice extends AbstractChoice
                 if (isset($dca['foreignKey'])) {
                     [$foreignTable, $foreignField] = explode('.', $dca['foreignKey']);
 
-                    if (null !== ($instances = System::getContainer()->get(ModelUtil::class)->findModelInstancesBy(
+                    if (!empty($items) && null !== ($instances = System::getContainer()->get(ModelUtil::class)->findModelInstancesBy(
                         $foreignTable, [$foreignTable.'.id IN ('.implode(',', $items).')'], []))) {
                         $labels = array_combine($instances->fetchEach('id'), $instances->fetchEach($foreignField));
 
