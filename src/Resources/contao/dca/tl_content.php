@@ -6,15 +6,15 @@
  * @license LGPL-3.0-or-later
  */
 
-$dc = &$GLOBALS['TL_DCA']['tl_content'];
+use HeimrichHannot\FilterBundle\Controller\ContentElement\FilterPreselectElementController;
 
-$dc['config']['onload_callback'][] = ['huh.filter.backend.content', 'onLoad'];
+$dc = &$GLOBALS['TL_DCA']['tl_content'];
 
 /*
  * Palettes
  */
 $dc['palettes']['__selector__'][] = 'filter';
-$dc['palettes']['filter_preselect'] = '{type_legend},type;{filter_legend},filterConfig;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests;{invisible_legend:hide},invisible,start,stop';
+$dc['palettes'][FilterPreselectElementController::TYPE] = '{type_legend},type;{filter_legend},filterConfig;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests;{invisible_legend:hide},invisible,start,stop';
 $dc['palettes']['filter_hyperlink'] = '{type_legend},type,headline;{filter_legend},filterConfig;{link_legend},target,linkTitle,embed,titleText,rel;{imglink_legend:hide},useImage;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID;{invisible_legend:hide},invisible,start,stop';
 
 /**

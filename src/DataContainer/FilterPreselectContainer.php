@@ -15,6 +15,7 @@ use HeimrichHannot\FilterBundle\Filter\FilterCollection;
 use HeimrichHannot\FilterBundle\Filter\Type\ChoiceType;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\Model\FilterConfigModel;
+use HeimrichHannot\FilterBundle\Model\FilterPreselectModel;
 use HeimrichHannot\UtilsBundle\Util\Utils;
 use Symfony\Component\HttpFoundation\RequestStack;
 
@@ -40,25 +41,39 @@ class FilterPreselectContainer
      */
     public function onLoadCallback(DataContainer $dc = null): void
     {
-        if (null === $dc || !$dc->id || 'tl_filter_preselect' !== $dc->table || 'tl_content' !== $dc->parentTable || 'edit' !== $this->requestStack->getCurrentRequest()->query->get('act')) {
+        if (null === $dc || !$dc->id || 'tl_content' !== $dc->parentTable || 'edit' !== $this->requestStack->getCurrentRequest()->query->get('act')) {
             return;
         }
 
-        $this->prepareElementChoices((int) $dc->id);
+        $preselectModel = FilterPreselectModel::findByPk($dc->id);
+        if (null === $preselectModel) {
+            return;
+        }
+
+        $filterConfigElement = FilterConfigElementModel::findByPk($preselectModel->element);
+        if (null === $filterConfigElement) {
+            return;
+        }
+
+        $choices = $this->prepareElementChoices($filterConfigElement);
+
+        $dca = &$GLOBALS['TL_DCA']['tl_filter_preselect'];
+
+        if ($filterConfigElement->multiple) {
+            $dca['fields']['initialValueType']['options'];
+        }
+
+        $dca['fields']['initialValue']['inputType'] = 'select';
+        $dca['fields']['initialValue']['options'] = $choices;
+        $dca['fields']['initialValue']['eval']['chosen'] = true;
+
+        $dca['fields']['initialValueArray']['eval']['multiColumnEditor']['fields']['value']['inputType'] = 'select';
+        $dca['fields']['initialValueArray']['eval']['multiColumnEditor']['fields']['value']['options'] = $choices;
+        $dca['fields']['initialValueArray']['eval']['multiColumnEditor']['fields']['value']['eval']['chosen'] = true;
     }
 
-    public function prepareElementChoices(int $preselectItemId): array
+    public function prepareElementChoices(FilterConfigElementModel $filterConfigElement): array
     {
-        if (null === ($filterPreselect = $this->utils->model()->findModelInstanceByPk('tl_filter_preselect', $preselectItemId))) {
-            return [];
-        }
-
-        $filterConfigElement = FilterConfigElementModel::findById($filterPreselect->element);
-
-        if (!$filterConfigElement) {
-            return [];
-        }
-
         $filter = FilterConfigModel::findByPk($filterConfigElement->pid);
 
         if (!$filter) {
@@ -99,15 +114,6 @@ class FilterPreselectContainer
             }
             $choices = $choicesNew;
         }
-
-        $dca = &$GLOBALS['TL_DCA']['tl_filter_preselect'];
-        $dca['fields']['initialValue']['inputType'] = 'select';
-        $dca['fields']['initialValue']['options'] = $choices;
-        $dca['fields']['initialValue']['eval']['chosen'] = true;
-
-        $dca['fields']['initialValueArray']['eval']['multiColumnEditor']['fields']['value']['inputType'] = 'select';
-        $dca['fields']['initialValueArray']['eval']['multiColumnEditor']['fields']['value']['options'] = $choices;
-        $dca['fields']['initialValueArray']['eval']['multiColumnEditor']['fields']['value']['eval']['chosen'] = true;
 
         return $choices;
     }

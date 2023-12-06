@@ -6,6 +6,8 @@
  * @license LGPL-3.0-or-later
  */
 
+use HeimrichHannot\FilterBundle\ContentElement\ContentFilterHyperlink;
+
 $GLOBALS['BE_MOD']['system']['filter'] = [
     'tables' => ['tl_filter_config', 'tl_filter_config_element'],
     'option' => ['contao.controller.backend_csv_import', 'importOptionWizard'],
@@ -27,8 +29,7 @@ $GLOBALS['TL_PERMISSIONS'][] = 'filterp';
 /*
  * Content elements
  */
-$GLOBALS['TL_CTE']['filter']['filter_preselect'] = \HeimrichHannot\FilterBundle\ContentElement\ContentFilterPreselect::class;
-$GLOBALS['TL_CTE']['filter']['filter_hyperlink'] = \HeimrichHannot\FilterBundle\ContentElement\ContentFilterHyperlink::class;
+$GLOBALS['TL_CTE']['filter'][ContentFilterHyperlink::TYPE] = ContentFilterHyperlink::class;
 
 /*
  * Hooks
