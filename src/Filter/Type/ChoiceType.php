@@ -18,7 +18,12 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class ChoiceType extends AbstractType
 {
-    const TYPE = 'choice';
+    public const TYPE = 'choice';
+
+    public const VALUE_TYPES_MULTIPLE = [
+        self::VALUE_TYPE_ARRAY,
+        self::VALUE_TYPE_CONTEXTUAL,
+    ];
 
     /**
      * {@inheritdoc}
@@ -33,7 +38,11 @@ class ChoiceType extends AbstractType
      */
     public function buildForm(FilterConfigElementModel $element, FormBuilderInterface $builder)
     {
-        $builder->add($this->getName($element), \Symfony\Component\Form\Extension\Core\Type\ChoiceType::class, $this->getOptions($element, $builder));
+        $builder->add(
+            $this->getName($element),
+            \Symfony\Component\Form\Extension\Core\Type\ChoiceType::class,
+            $this->getOptions($element, $builder)
+        );
     }
 
     /**

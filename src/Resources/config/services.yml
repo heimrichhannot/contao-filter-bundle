@@ -63,12 +63,6 @@ services:
     class: HeimrichHannot\FilterBundle\Backend\FilterConfigElement
     autowire: true
 
-  huh.filter.backend.content:
-    public: true
-    class: HeimrichHannot\FilterBundle\Backend\Content
-    arguments:
-    - "@contao.framework"
-
   huh.filter.backend.filter_preselect:
     public: true
     class: HeimrichHannot\FilterBundle\Backend\FilterPreselect

@@ -13,6 +13,9 @@ use Contao\Controller;
 use Contao\System;
 use HeimrichHannot\FilterBundle\Model\FilterPreselectModel;
 
+/**
+ * @deprecated Use FilterPreselectElementController instead. Will be removed in next major version.
+ */
 class ContentFilterPreselect extends ContentElement
 {
     /**

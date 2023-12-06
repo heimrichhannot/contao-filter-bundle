@@ -43,7 +43,7 @@ class FilterPreselect
             return $label;
         }
 
-        $choices = $this->filterPreselectContainer->prepareElementChoices((int) $row['id']);
+        $choices = $this->filterPreselectContainer->prepareElementChoices($filterConfigElement);
 
         switch ($row['initialValueType']) {
             case \HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_SCALAR:

@@ -14,6 +14,8 @@ use HeimrichHannot\FilterBundle\Model\FilterPreselectModel;
 
 class ContentFilterHyperlink extends ContentHyperlink
 {
+    public const TYPE = 'filter_hyperlink';
+
     /**
      * {@inheritdoc}
      */
