@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.27.1] - 2023-12-07
+- Fixed: re-add missing 'fields' option callback
+
 ## [1.27.0] - 2023-12-06
 - Changed: refactored Preselect element to module controller
 - Changed: small code enhancements and refactoring

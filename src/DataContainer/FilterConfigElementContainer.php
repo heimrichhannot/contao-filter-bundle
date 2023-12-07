@@ -113,6 +113,7 @@ class FilterConfigElementContainer
 
     /**
      * @Callback(table="tl_filter_config_element", target="fields.field.options")
+     * @Callback(table="tl_filter_config_element", target="fields.fields.options")
      */
     public function onFieldOptionsCallback(DataContainer $dc = null): array
     {

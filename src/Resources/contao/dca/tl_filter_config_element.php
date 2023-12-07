@@ -264,9 +264,6 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'exclude' => true,
             'filter' => true,
             'inputType' => 'checkboxWizard',
-//            'options_callback' => function (Contao\DataContainer $dc) {
-//                return \Contao\System::getContainer()->get('huh.filter.util.filter_config_element')->getFields($dc);
-//            },
             'eval' => ['chosen' => true, 'includeBlankOption' => true, 'multiple' => true, 'mandatory' => true],
             'sql' => 'blob NULL',
         ],
