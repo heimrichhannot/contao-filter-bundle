@@ -85,7 +85,7 @@ class NewsCategoriesType extends ChoiceType
         }
 
         if ($element->sortOptionValues) {
-            $options = asort($options);
+            asort($options);
         }
 
         return $options;

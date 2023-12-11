@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.27.2] - 2023-12-11
+- Fixed: filter sorting options not working
+
 ## [1.27.1] - 2023-12-07
 - Fixed: re-add missing 'fields' option callback
 
