@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.28.X] - 2023-12-XX
+- Added: child table concat search
+
 ## [1.27.2] - 2023-12-11
 - Fixed: filter sorting options not working
 

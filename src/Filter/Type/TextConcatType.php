@@ -39,7 +39,7 @@ class TextConcatType extends AbstractType
             return;
         }
 
-        $wildcard = ':'.$name;
+        $wildcard = ':' . $name;
         $wildcardParameterName = $name;
         $fields = StringUtil::deserialize($element->fields, true);
 
@@ -53,18 +53,18 @@ class TextConcatType extends AbstractType
 
         foreach ($fields as $field) {
             if ('cfgTags' === $dca['fields'][$field]['inputType']) {
-                $associationTable = 'tl_cfg_tag_'.System::getContainer()->get('huh.utils.string')
+                $associationTable = 'tl_cfg_tag_' . System::getContainer()->get('huh.utils.string')
                         ->removeLeadingString('tl_', $filter['dataContainer']);
                 $associationProperty = System::getContainer()->get('huh.utils.string')
-                        ->removeLeadingString('tl_', $filter['dataContainer']).'_id';
+                        ->removeLeadingString('tl_', $filter['dataContainer']) . '_id';
 
                 $subBuilder = new QueryBuilder(System::getContainer()->get('database_connection'));
 
-                $conditions[] = $builder->expr()->in($filter['dataContainer'].'.id',
-                    $subBuilder->select('ta.'.$associationProperty)
+                $conditions[] = $builder->expr()->in($filter['dataContainer'] . '.id',
+                    $subBuilder->select('ta.' . $associationProperty)
                         ->from($associationTable, 'ta')
-                        ->join('ta', 'tl_cfg_tag', 'tn', 'ta.cfg_tag_id='.'tn.id')
-                        ->where('tn.name LIKE '.$wildcard)->getSQL()
+                        ->join('ta', 'tl_cfg_tag', 'tn', 'ta.cfg_tag_id=' . 'tn.id')
+                        ->where('tn.name LIKE ' . $wildcard)->getSQL()
                 );
             } elseif (Database::getInstance()->fieldExists($field, $filter['dataContainer'])) {
                 $textualFields[] = $field;
@@ -72,15 +72,15 @@ class TextConcatType extends AbstractType
         }
 
         if (!empty($textualFields)) {
-            $concat = 'CONCAT('.implode(
+            $concat = 'CONCAT(' . implode(
                     '," ",',
                     array_map(
                         function ($field) use ($filter) {
-                            return 'COALESCE(LOWER('.$filter['dataContainer'].'.'.$field.'), "")';
+                            return 'COALESCE(LOWER(' . $filter['dataContainer'] . '.' . $field . '), "")';
                         },
                         $textualFields
                     )
-                ).')';
+                ) . ')';
 
             $conditions[] = $builder->expr()->like($concat, $wildcard);
         }
@@ -89,10 +89,39 @@ class TextConcatType extends AbstractType
             return;
         }
 
-        $builder->setParameter($wildcardParameterName, '%'.strtolower($data[$name]).'%');
+        $builder->setParameter($wildcardParameterName, '%' . strtolower($data[$name]) . '%');
 
         // combine everything in a disjunction
         $or = $builder->expr()->orX();
+
+        // Support child table concat search
+        if ($element->addChildFields && !empty($element->childFields)) {
+            $builder->join($filter['dataContainer'], $element->childTable, 'child', $filter['dataContainer'].'.id = child.pid');
+            $childFields = StringUtil::deserialize($element->childFields, true);
+
+            $textualChildFields = [];
+
+            foreach ($childFields as $field) {
+                if (Database::getInstance()->fieldExists($field, $element->childTable)) {
+                    $textualChildFields[] = $field;
+                }
+            }
+
+            if($textualChildFields) {
+                $childConcat = 'CONCAT(' . implode(
+                        '," ",',
+                        array_map(
+                            function ($field) use ($element) {
+                                return 'COALESCE(LOWER(child.' . $field . '), "")';
+                            },
+                            $textualChildFields
+                        )
+                    ) . ')';
+
+                $conditions[] = $builder->expr()->like($childConcat, $wildcard);
+                $builder->distinct();
+            }
+        }
 
         foreach ($conditions as $condition) {
             $or->add($condition);

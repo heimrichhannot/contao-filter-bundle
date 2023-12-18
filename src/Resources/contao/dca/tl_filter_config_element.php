@@ -121,10 +121,11 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'allowHtmlGeoLocation',
             'submitOnInput',
             'addMultilingualInitialValues',
+            'addChildFields',
         ],
         'default' => '{general_legend},title,type,isInitial;{publish_legend},published;',
         'text' => '{general_legend},title,type,isInitial;{config_legend},field,customName,customOperator,addDefaultValue,submitOnInput;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
-        \HeimrichHannot\FilterBundle\Filter\Type\TextConcatType::TYPE => '{general_legend},title,type,isInitial;{config_legend},fields,name,submitOnInput;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
+        \HeimrichHannot\FilterBundle\Filter\Type\TextConcatType::TYPE => '{general_legend},title,type,isInitial;{config_legend},fields,name,submitOnInput,addChildFields;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
         'textarea' => '{general_legend},title,type,isInitial;{config_legend},field,customName,customOperator,addDefaultValue;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
         \HeimrichHannot\FilterBundle\Filter\Type\EmailType::TYPE => '{general_legend},title,type,isInitial;{config_legend},field,customName,customOperator,addDefaultValue;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
         \HeimrichHannot\FilterBundle\Filter\Type\IntegerType::TYPE => '{general_legend},title,type,isInitial;{config_legend},field,customName,customOperator,addDefaultValue,grouping,scale,rounding_mode;{visualization_legend},addPlaceholder,customLabel,hideLabel,inputGroup;{expert_legend},cssClass;{publish_legend},published;',
@@ -196,6 +197,7 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
         'published' => 'start,stop',
         'submitOnInput' => 'threshold,debounce',
         'addMultilingualInitialValues' => 'multilingualInitialValues',
+        'addChildFields' => 'childTable, childFields',
     ],
     'fields' => [
         'id' => [
@@ -265,6 +267,32 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'filter' => true,
             'inputType' => 'checkboxWizard',
             'eval' => ['chosen' => true, 'includeBlankOption' => true, 'multiple' => true, 'mandatory' => true],
+            'sql' => 'blob NULL',
+        ],
+        'addChildFields' => [
+            'exclude' => true,
+            'inputType' => 'checkbox',
+            'eval' => ['tl_class' => 'w50', 'submitOnChange' => true],
+            'sql' => "char(1) NOT NULL default ''",
+        ],
+        'childTable' => [
+            'exclude' => true,
+            'filter' => true,
+            'inputType' => 'select',
+            'eval' => [
+                'chosen' => true,
+                'tl_class' => 'w100',
+                'submitOnChange' => true,
+                'mandatory' => true,
+                'includeBlankOption' => true,
+            ],
+            'sql' => "varchar(128) NOT NULL default ''",
+        ],
+        'childFields' => [
+            'exclude' => true,
+            'filter' => true,
+            'inputType' => 'checkboxWizard',
+            'eval' => ['chosen' => true, 'includeBlankOption' => true, 'multiple' => true],
             'sql' => 'blob NULL',
         ],
         'parentField' => [

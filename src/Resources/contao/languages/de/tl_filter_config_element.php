@@ -126,6 +126,9 @@ $lang['multilingualInitialValues'] = ['Sprachenabhängige initiale Werte', 'Setz
 $lang['language'] = ['Sprache', 'Wählen Sie hier eine Sprache aus.'];
 $lang['cf_newsCategories'] = ['Kategorien', 'Wählen Sie hier die Kategorien aus, welche gefiltert werden sollen.'];
 $lang['cf_newsCategoriesChilds'] = ['Kind-Kategorien anzeigen', 'Wählen Sie diese Option, wenn anstelle der ausgewählten Kategorien deren Kind-Kategorien ausgegeben werden sollen. Enthält eine Kategorie keine Kind-Kategorien, dann wird diese weiterhin ausgegeben.'];
+$lang['addChildFields'] = ['Kindfelder aktivieren', 'Wählen Sie diese Option, wenn die Suche in der Kindtabelle auch stattfinden soll.'];
+$lang['childTable'] = ['Kindtabelle auswählen', 'Wählen Sie eine Kindtabelle aus, um die dazugehörigen Felder anzuzeigen.'];
+$lang['childFields'] = ['Kindfelder', 'Wählen Sie hier mehrere Felder aus, die in der gewählten Reihenfolge verknüpft werden sollen.'];
 
 // sort
 $lang['sortOptions'] = ['Sortier-Optionen', 'Fügen Sie hier die gewünschten Sortieroptionen hinzu.'];
