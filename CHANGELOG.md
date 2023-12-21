@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [1.28.X] - 2023-12-XX
+## [1.28.0] - 2023-12-21
 - Added: child table concat search
 
 ## [1.27.2] - 2023-12-11
