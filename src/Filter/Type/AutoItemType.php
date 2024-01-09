@@ -8,10 +8,10 @@
 
 namespace HeimrichHannot\FilterBundle\Filter\Type;
 
+use Contao\Input;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
-use HeimrichHannot\Request\Request;
 use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 use Symfony\Component\Form\FormBuilderInterface;
 
@@ -24,12 +24,12 @@ class AutoItemType extends AbstractType
      */
     public function buildQuery(FilterQueryBuilder $builder, FilterConfigElementModel $element)
     {
-        if (!Request::hasGet('auto_item')) {
+        if (!($autoItem = Input::get('auto_item'))) {
             return;
         }
 
         $element->isInitial = true;
-        $element->initialValue = Request::getGet('auto_item');
+        $element->initialValue = $autoItem;
         $builder->whereElement($element, $this->getName($element), $this->config, $this->getDefaultOperator($element));
     }
 
