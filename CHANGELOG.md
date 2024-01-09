@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.28.1] - 2024-01-09
+- Removed: leftover dependency on heimrichhannot/contao-requests
+
 ## [1.28.0] - 2023-12-21
 - Added: child table concat search
 
