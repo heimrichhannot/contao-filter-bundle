@@ -36,6 +36,10 @@ class FilterPreselectElementController extends AbstractContentElementController
             return $template->getResponse();
         }
 
+        if ($this->container->get('contao.routing.scope_matcher')->isBackendRequest($request)) {
+            return $template->getResponse();
+        }
+
         $preselections = new FilterPreselectModel();
         $url = $filterConfig->getUrl();
 
