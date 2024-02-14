@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.28.2] - 2024-02-14
+- Fixed: backend redirect issue
+- Fixed: exception in field option choice
+- Fixed: some deprecations
+
 ## [1.28.1] - 2024-01-09
 - Removed: leftover dependency on heimrichhannot/contao-requests
 
