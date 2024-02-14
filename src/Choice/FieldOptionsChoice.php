@@ -14,8 +14,10 @@ use Contao\System;
 use Contao\Widget;
 use Doctrine\DBAL\FetchMode;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
+use HeimrichHannot\MailDrumBundle\Util\Util;
 use HeimrichHannot\UtilsBundle\Choice\AbstractChoice;
 use HeimrichHannot\UtilsBundle\Model\ModelUtil;
+use HeimrichHannot\UtilsBundle\Util\Utils;
 use Symfony\Component\Translation\Translator;
 use Symfony\Component\Translation\TranslatorBagInterface;
 
@@ -178,7 +180,7 @@ class FieldOptionsChoice extends AbstractChoice
     {
         $options = [];
 
-        if (!isset($GLOBALS['TL_FFL'][$dca['inputType']]) && (System::getContainer()->get('huh.utils.container')->isBackend() && !isset($GLOBALS['BE_FFL'][$dca['inputType']]))) {
+        if (!isset($GLOBALS['TL_FFL'][$dca['inputType']]) && (System::getContainer()->get(Utils::class)->container()->isBackend() && !isset($GLOBALS['BE_FFL'][$dca['inputType']]))) {
             return $options;
         }
 
@@ -205,7 +207,7 @@ class FieldOptionsChoice extends AbstractChoice
             $options = [];
 
             if (null !== ($queryBuilder = System::getContainer()->get('huh.filter.manager')->getInitialQueryBuilder($filter['id'], [$element->id], true))) {
-                $items = $queryBuilder->select([$filter['dataContainer'].'.'.$element->field])->execute()->fetchAll(FetchMode::COLUMN);
+                $items = $queryBuilder->select([$filter['dataContainer'].'.'.$element->field])->execute()->fetchFirstColumn();
 
                 // make the values unique
                 $items = array_filter(array_unique($items));
@@ -214,7 +216,7 @@ class FieldOptionsChoice extends AbstractChoice
                     $multipleItems = [];
 
                     foreach ($items as $item) {
-                        $multipleItems = array_merge($multipleItems, StringUtil::deserialize($item));
+                        $multipleItems = array_merge($multipleItems, StringUtil::deserialize($item, true));
                     }
                     $items = array_unique($multipleItems);
                 }
@@ -222,7 +224,7 @@ class FieldOptionsChoice extends AbstractChoice
                 if (isset($dca['foreignKey'])) {
                     [$foreignTable, $foreignField] = explode('.', $dca['foreignKey']);
 
-                    if (!empty($items) && null !== ($instances = System::getContainer()->get(ModelUtil::class)->findModelInstancesBy(
+                    if (!empty($items) && null !== ($instances = System::getContainer()->get(Utils::class)->model()->findModelInstancesBy(
                         $foreignTable, [$foreignTable.'.id IN ('.implode(',', $items).')'], []))) {
                         $labels = array_combine($instances->fetchEach('id'), $instances->fetchEach($foreignField));
 
