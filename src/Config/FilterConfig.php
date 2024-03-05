@@ -9,14 +9,18 @@
 namespace HeimrichHannot\FilterBundle\Config;
 
 use Contao\Controller;
+use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
+use Contao\CoreBundle\InsertTag\InsertTagParser;
 use Contao\Environment;
+use Contao\Input;
 use Contao\InsertTags;
 use Contao\System;
 use Doctrine\DBAL\Connection;
 use HeimrichHannot\FilterBundle\Event\FilterConfigInitEvent;
 use HeimrichHannot\FilterBundle\Event\FilterFormAdjustOptionsEvent;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
+use HeimrichHannot\FilterBundle\Filter\FilterCollection;
 use HeimrichHannot\FilterBundle\Filter\Type\PublishedType;
 use HeimrichHannot\FilterBundle\Filter\Type\SkipParentsType;
 use HeimrichHannot\FilterBundle\Filter\Type\SqlType;
@@ -27,7 +31,10 @@ use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\Model\FilterConfigModel;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 use HeimrichHannot\FilterBundle\Session\FilterSession;
+use HeimrichHannot\FilterBundle\Util\DatabaseUtilPolyfill;
 use HeimrichHannot\TwigSupportBundle\Filesystem\TwigTemplateLocator;
+use HeimrichHannot\UtilsBundle\Util\Utils;
+use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -54,75 +61,46 @@ class FilterConfig implements \JsonSerializable
     const QUERY_BUILDER_MODE_SKIP_INITIAL = 'skip_initial';
     const QUERY_BUILDER_MODE_DEFAULT = 'default';
 
-    /**
-     * @var ContaoFrameworkInterface
-     */
-    protected $framework;
-
-    /**
-     * @var FilterSession
-     */
-    protected $session;
-
-    /**
-     * @var string
-     */
-    protected $sessionKey;
-
-    /**
-     * @var array
-     */
-    protected $resetNames;
-
-    /**
-     * @var array|null
-     */
-    protected $filter;
-
+    protected ContaoFramework $framework;
+    protected FilterSession $session;
+    protected string $sessionKey;
+    protected array $resetNames = [];
+    protected ?array $filter;
     /**
      * @var \Contao\Model\Collection|FilterConfigElementModel[]|null
      */
-    protected $elements;
+    protected mixed $elements;
+    protected ?FormBuilderInterface $builder;
+    protected FilterQueryBuilder $queryBuilder;
+    protected bool $formSubmitted = false;
+    private RequestStack $requestStack;
+    private Utils $utils;
+    private InsertTagParser $insertTagParser;
 
-    /**
-     * @var FormBuilderInterface|null
-     */
-    protected $builder;
-
-    /**
-     * @var FilterQueryBuilder
-     */
-    protected $queryBuilder;
-
-    /**
-     * @var bool
-     */
-    protected $formSubmitted = false;
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
-
-    /**
-     * @var RequestStack
-     */
-    private $requestStack;
-
-    /**
-     * Constructor.
-     */
     public function __construct(
-        ContainerInterface $container,
-        ContaoFrameworkInterface $framework,
+        ContaoFramework $framework,
         FilterSession $session,
         Connection $connection,
-        RequestStack $requestStack
+        RequestStack $requestStack,
+        Utils $utils,
+        InsertTagParser $insertTagParser,
+        FilterCollection $filterCollection,
+        DatabaseUtilPolyfill $dbUtil
     ) {
         $this->framework = $framework;
         $this->session = $session;
-        $this->container = $container;
-        $this->queryBuilder = new FilterQueryBuilder($this->container, $this->framework, $connection);
         $this->requestStack = $requestStack;
+        $this->utils = $utils;
+        $this->insertTagParser = $insertTagParser;
+
+        $this->queryBuilder = new FilterQueryBuilder(
+            $framework,
+            $connection,
+            $insertTagParser,
+            $filterCollection,
+            $utils,
+            $dbUtil
+        );
     }
 
     /**
@@ -130,7 +108,7 @@ class FilterConfig implements \JsonSerializable
      *
      * @param \Contao\Model\Collection|FilterConfigElementModel[]|null $elements
      */
-    public function init(string $sessionKey, array $filter, $elements = null)
+    public function init(string $sessionKey, array $filter, $elements = null): void
     {
         $event = System::getContainer()->get('event_dispatcher')->dispatch(
             new FilterConfigInitEvent($filter, $sessionKey, $elements),
@@ -145,7 +123,7 @@ class FilterConfig implements \JsonSerializable
     /**
      * Build the form.
      */
-    public function buildForm(array $data = [], array $configuration = [])
+    public function buildForm(array $data = [], array $configuration = []): void
     {
         $configuration = array_merge([
             'overrideFilter' => null,
@@ -192,7 +170,7 @@ class FilterConfig implements \JsonSerializable
             }
         }
 
-        if (!$configuration['skipAjax'] && $this->container->get('huh.request')->isXmlHttpRequest()) {
+        if (!$configuration['skipAjax'] && $this->requestStack->getCurrentRequest()->isXmlHttpRequest()) {
             $this->container->get('huh.filter.util.filter_ajax')->updateData($this);
             $data = $this->getData();
         }
@@ -216,8 +194,11 @@ class FilterConfig implements \JsonSerializable
      *
      * @param array $skipElements Array with tl_filter_config_element ids that should be skipped on initQueryBuilder
      */
-    public function initQueryBuilder(array $skipElements = [], $mode = self::QUERY_BUILDER_MODE_DEFAULT, bool $doNotChangeExistingQueryBuilder = false)
-    {
+    public function initQueryBuilder(
+        array $skipElements = [],
+        $mode = self::QUERY_BUILDER_MODE_DEFAULT,
+        bool $doNotChangeExistingQueryBuilder = false
+    ): FilterQueryBuilder {
         $queryBuilder = new FilterQueryBuilder($this->container, $this->framework, $this->queryBuilder->getConnection());
 
         if ($doNotChangeExistingQueryBuilder) {
@@ -239,8 +220,11 @@ class FilterConfig implements \JsonSerializable
         return $queryBuilder;
     }
 
-    public function doInitQueryBuilder(FilterQueryBuilder $queryBuilder, array $skipElements = [], $mode = self::QUERY_BUILDER_MODE_DEFAULT)
-    {
+    public function doInitQueryBuilder(
+        FilterQueryBuilder $queryBuilder,
+        array $skipElements = [],
+        $mode = self::QUERY_BUILDER_MODE_DEFAULT
+    ): void {
         $queryBuilder->from($this->getFilter()['dataContainer']);
 
         if (null === $this->getElements()) {
@@ -258,14 +242,14 @@ class FilterConfig implements \JsonSerializable
                 return;
             }
 
-            $initial = ((bool) $element->isInitial || \in_array($element->type, [
-                    PublishedType::TYPE,
-                    SqlType::TYPE,
-                    SkipParentsType::TYPE,
-                ]));
+            $initial = ($element->isInitial || in_array($element->type, [
+                PublishedType::TYPE,
+                SqlType::TYPE,
+                SkipParentsType::TYPE,
+            ]));
 
             if (!isset($types[$element->type])
-                || \in_array($element->id, $skipElements)
+                || in_array($element->id, $skipElements)
                 || $mode === static::QUERY_BUILDER_MODE_INITIAL_ONLY && !$initial
                 || $mode === static::QUERY_BUILDER_MODE_SKIP_INITIAL && $initial) {
                 continue;
@@ -336,7 +320,7 @@ class FilterConfig implements \JsonSerializable
 
             $data = $form->getData();
             $data['f_submitted'] = true;
-            $url = $this->container->get('huh.utils.url')->removeQueryString([$form->getName()], $url ?: null);
+            $url = $this->utils->url()->removeQueryStringParameterFromUrl($form->getName(), $url ?: null);
 
             // do not save filter id in session
             $this->setData($this->filter['mergeData'] ? array_merge($this->getData(), $data) : $data);
@@ -347,7 +331,7 @@ class FilterConfig implements \JsonSerializable
                 $this->resetData();
                 $this->getBuilder()->setData($this->getData());
                 // redirect to referrer page without filter parameters
-                $url = $this->container->get('huh.utils.url')->removeQueryString([$form->getName()],
+                $url = $this->utils->url()->removeQueryStringParameterFromUrl($form->getName(),
                     $form->get(FilterType::FILTER_REFERRER_NAME)->getData() ?: null);
             }
 
@@ -356,14 +340,14 @@ class FilterConfig implements \JsonSerializable
             }
 
             // extract hash if present
-            if (false !== strpos($url, '#')) {
+            if (str_contains($url, '#')) {
                 $urlParts = explode('#', $url);
 
                 $url = implode('#', \array_slice($urlParts, 0, \count($urlParts) - 1));
 
-                $url = $this->container->get('huh.utils.url')->addQueryString('t='.time(), $url).'#'.$urlParts[\count($urlParts) - 1];
+                $url = $this->utils->url()->addQueryStringParameterToUrl('t='.time(), $url).'#'.$urlParts[\count($urlParts) - 1];
             } else {
-                $url = $this->container->get('huh.utils.url')->addQueryString('t='.time(), $url);
+                $url = $this->utils->url()->addQueryStringParameterToUrl('t='.time(), $url);
             }
 
             return new RedirectResponse($url, 303);
@@ -393,7 +377,7 @@ class FilterConfig implements \JsonSerializable
      *
      * @return FilterConfigElementModel|null
      */
-    public function getElementByValue($value, $key = 'id')
+    public function getElementByValue(mixed $value, string $key = 'id'): ?FilterConfigElementModel
     {
         if (null === $this->getElements()) {
             return null;
@@ -425,7 +409,7 @@ class FilterConfig implements \JsonSerializable
     /**
      * @return FormBuilderInterface|null
      */
-    public function getBuilder()
+    public function getBuilder(): ?FormBuilderInterface
     {
         return $this->builder;
     }
@@ -438,7 +422,7 @@ class FilterConfig implements \JsonSerializable
     /**
      * @return FilterQueryBuilder|null
      */
-    public function getQueryBuilder()
+    public function getQueryBuilder(): ?FilterQueryBuilder
     {
         return $this->queryBuilder;
     }
@@ -446,7 +430,7 @@ class FilterConfig implements \JsonSerializable
     /**
      * Set the filter data.
      */
-    public function setData(array $data = [])
+    public function setData(array $data = []): void
     {
         $this->session->setData($this->getSessionKey(), $data);
     }
@@ -498,7 +482,7 @@ class FilterConfig implements \JsonSerializable
     /**
      * Reset the filter data.
      */
-    public function resetData()
+    public function resetData(): void
     {
         $this->session->reset($this->getSessionKey());
     }
@@ -512,28 +496,25 @@ class FilterConfig implements \JsonSerializable
 
     public function getResetNames(): array
     {
-        return !\is_array($this->resetNames) ? [$this->resetNames] : $this->resetNames;
+        return $this->resetNames;
     }
 
-    public function addResetName(string $resetName)
+    public function addResetName(string $resetName): void
     {
         $this->resetNames[] = $resetName;
     }
 
-    /**
-     * @param array $resetName
-     */
-    public function setResetNames(array $resetNames)
+    public function setResetNames(array $resetNames): void
     {
-        $this->resetName = $resetNames;
+        $this->resetNames = $resetNames;
     }
 
-    public function getFramework(): ContaoFrameworkInterface
+    public function getFramework(): ContaoFramework
     {
         return $this->framework;
     }
 
-    public function addContextualValue($elementId, $values)
+    public function addContextualValue($elementId, $values): void
     {
         $this->queryBuilder->addContextualValue($elementId, $values);
     }
@@ -564,7 +545,7 @@ class FilterConfig implements \JsonSerializable
      *
      * @since 1.0.0-beta128.2 Url is absolute
      */
-    public function getUrl()
+    public function getUrl(): string
     {
         $filter = $this->getFilter();
 
@@ -580,21 +561,13 @@ class FilterConfig implements \JsonSerializable
             }
         }
 
-        if (!isset($filter['filterFormAction']) || empty($filter['filterFormAction'])) {
+        if (empty($filter['filterFormAction'])) {
             return '';
         }
 
-        /**
-         * @var InsertTags
-         */
-        $insertTagAdapter = $this->framework->createInstance(InsertTags::class);
+        $action = $this->insertTagParser->replace($filter['filterFormAction']);
 
-        // while unit testing, the mock object cant be instantiated
-        if (null === $insertTagAdapter) {
-            $insertTagAdapter = $this->framework->getAdapter(InsertTags::class);
-        }
-
-        return Environment::get('url').'/'.urldecode($insertTagAdapter->replace($filter['filterFormAction']));
+        return Environment::get('url').'/'.urldecode($action);
     }
 
     /**
@@ -627,7 +600,7 @@ class FilterConfig implements \JsonSerializable
      *
      * @return string|null
      */
-    public function getPreselectAction(array $data = [], bool $absoluteUrl = false)
+    public function getPreselectAction(array $data = [], bool $absoluteUrl = false): ?string
     {
         /** @var RouterInterface $router */
         $router = $this->container->get('router');
@@ -648,7 +621,7 @@ class FilterConfig implements \JsonSerializable
     /**
      * Handle current request or the given one.
      */
-    public function handleRequest(Request $request = null)
+    public function handleRequest(Request $request = null): void
     {
         if (null === $request) {
             $request = $this->container->get('request_stack')->getCurrentRequest();
@@ -656,15 +629,18 @@ class FilterConfig implements \JsonSerializable
 
         if ($request->query->has(FilterType::FILTER_RESET_URL_PARAMETER_NAME)) {
             $this->resetData();
-            Controller::redirect($this->container->get('huh.utils.url')->removeQueryString([FilterType::FILTER_RESET_URL_PARAMETER_NAME],
-                $request->getUri()));
+            $target = $this->utils->url()->removeQueryStringParameterFromUrl(
+                FilterType::FILTER_RESET_URL_PARAMETER_NAME,
+                $request->getUri()
+            );
+            Controller::redirect($target);
         }
     }
 
     /**
      * {@inheritdoc}
      */
-    #[\ReturnTypeWillChange]
+    #[ReturnTypeWillChange]
     public function jsonSerialize()
     {
         return get_object_vars($this);
@@ -672,18 +648,18 @@ class FilterConfig implements \JsonSerializable
 
     protected function isResetButtonClicked(FormInterface $form): bool
     {
-        if (!(null !== $form->getClickedButton() && \in_array($form->getClickedButton()->getName(),
-                $this->getResetNames(), true))) {
+        if ($form->getClickedButton() === null
+            || !in_array($form->getClickedButton()->getName(), $this->getResetNames(), true))
+        {
             return $this->isResetButtonClickedFromRequest();
         }
-
         return true;
     }
 
     protected function isResetButtonClickedFromRequest(): bool
     {
-        $request = $this->container->get('huh.request');
-        $data = \in_array($request->getMethod(), ['GET', 'HEAD']) ? $request->getGet($this->getFilter()['name']) : $request->getPost($this->getFilter()['name']);
+        $request = $this->requestStack->getCurrentRequest();
+        $data = in_array($request->getMethod(), ['GET', 'HEAD']) ? Input::get($this->getFilter()['name']) : Input::post($this->getFilter()['name']);
 
         return isset($data['reset']);
     }

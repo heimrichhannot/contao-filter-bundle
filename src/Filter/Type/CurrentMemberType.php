@@ -12,6 +12,7 @@ use Contao\System;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
+use HeimrichHannot\UtilsBundle\Util\Model\ModelUtil;
 use Symfony\Component\Form\FormBuilderInterface;
 
 class CurrentMemberType extends AbstractType
@@ -78,7 +79,9 @@ class CurrentMemberType extends AbstractType
 
         switch ($element->currentUserAssign) {
             case self::TYPE_ID:
-                if (null === ($member = System::getContainer()->get('huh.utils.model')->findOneModelInstanceBy('tl_member', ['tl_member.username=?'], [$GLOBALS['TL_USERNAME']]))) {
+                $member = System::getContainer()->get(ModelUtil::class)
+                    ->findOneModelInstanceBy('tl_member', ['tl_member.username=?'], [$GLOBALS['TL_USERNAME']]);
+                if (null === $member) {
                     break;
                 }
                 $value = $member->id;

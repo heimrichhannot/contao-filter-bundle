@@ -30,7 +30,7 @@ class FilterPreselectElementController extends AbstractContentElementController
         $this->preselectUtil = $preselectUtil;
     }
 
-    protected function getResponse(Template $template, ContentModel $model, Request $request): ?Response
+    protected function getResponse(Template $template, ContentModel $model, Request $request): Response
     {
         if (null === ($filterConfig = $this->filterManager->findById($model->filterConfig)) || null === ($elements = $filterConfig->getElements())) {
             return $template->getResponse();

@@ -8,40 +8,35 @@
 
 namespace HeimrichHannot\FilterBundle\Manager;
 
-use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
+use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\System;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\Model\FilterConfigModel;
 use HeimrichHannot\FilterBundle\Session\FilterSession;
-use Model\Collection;
+use HeimrichHannot\UtilsBundle\Util\Utils;
+use Contao\Model\Collection;
 
 class FilterManager
 {
-    /**
-     * @var ContaoFrameworkInterface
-     */
-    protected $framework;
-
-    /**
-     * @var FilterSession
-     */
-    protected $session;
-
+    protected ContaoFramework $framework;
+    protected FilterSession $session;
     /**
      * All available filter configurations cache.
      *
      * @var FilterConfig[]
      */
-    protected $filters;
+    protected array $filters;
+    protected Utils $utils;
 
-    /**
-     * Constructor.
-     */
-    public function __construct(ContaoFrameworkInterface $framework, FilterSession $session)
-    {
+    public function __construct(
+        ContaoFramework $framework,
+        FilterSession   $session,
+        Utils           $utils
+    ) {
         $this->framework = $framework;
         $this->session = $session;
+        $this->utils = $utils;
     }
 
     /**
@@ -72,7 +67,8 @@ class FilterManager
      */
     public function getInitialQueryBuilder(int $id, array $skipElements = [], bool $doNotChangeExistingQueryBuilder = false)
     {
-        if (null === ($config = $this->findById($id))) {
+        $config = $this->findById($id);
+        if (null === $config) {
             return null;
         }
 
@@ -90,7 +86,7 @@ class FilterManager
      *
      * @return string The unique session key
      */
-    public function getSessionKey(array $filter)
+    public function getSessionKey(array $filter): string
     {
         return 'huh.filter.session.'.$filter['name'] ?: $filter['id'];
     }
@@ -98,13 +94,12 @@ class FilterManager
     /**
      * Find filter by id.
      *
-     * @param bool $cache Disable for a fresh filter/querybuilder instance
-     *
+     * @param bool $cache Disable for a fresh filter/query builder instance
      * @return FilterConfig|null The config or null if not found
      */
-    public function findById(int $id, $cache = true)
+    public function findById(int $id, bool $cache = true): ?FilterConfig
     {
-        if (true === $cache && isset($this->filters[$id])) {
+        if ($cache && isset($this->filters[$id])) {
             return $this->filters[$id];
         }
 
@@ -119,23 +114,23 @@ class FilterManager
 
         $filterConfig = $this->getConfig($filter->row());
 
-        if (false === $cache) {
+        if (!$cache) {
             return $filterConfig;
         }
 
         $this->filters[$id] = $filterConfig;
 
-        return isset($this->filters[$id]) ? $this->filters[$id] : null;
+        return $this->filters[$id] ?? null;
     }
 
     /**
      * Get the config for a given filter.
      *
-     * @param mixed $request The request to handle
+     * @param mixed|null $request The request to handle
      *
      * @return FilterConfig
      */
-    protected function getConfig(array $filter, $request = null)
+    protected function getConfig(array $filter, mixed $request = null): FilterConfig
     {
         /**
          * @var FilterConfig
@@ -163,8 +158,11 @@ class FilterManager
         /** @var Collection $elements */
         $elements = $adapter->findPublishedByPid($filter['id']);
 
-        // merge multiple filters (e.g. inital filters and sort filter)
-        if (null !== $elements && FilterConfig::FILTER_TYPE_DEFAULT === $filter['type'] && System::getContainer()->get('huh.utils.container')->isFrontend()) {
+        // merge multiple filters (e.g. initial filters and sort filter)
+        if (null !== $elements
+            && FilterConfig::FILTER_TYPE_DEFAULT === $filter['type']
+            && $this->utils->container()->isFrontend())
+        {
             $elementModels = $elements->getModels();
             $sort = $this->framework->getAdapter(FilterConfigModel::class)->findBy('parentFilter', $filter['id']);
 

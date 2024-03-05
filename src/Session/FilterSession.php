@@ -9,26 +9,27 @@
 namespace HeimrichHannot\FilterBundle\Session;
 
 use HeimrichHannot\FilterBundle\Form\FilterType;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class FilterSession
 {
-    protected SessionInterface $session;
+    protected RequestStack $requestStack;
 
     /**
      * Constructor.
      */
-    public function __construct(SessionInterface $session)
+    public function __construct(RequestStack $requestStack)
     {
-        $this->session = $session;
+        $this->requestStack = $requestStack;
     }
 
     /**
      * Set the filter data for a given filter key.
      */
-    public function setData(string $key, array $data = [])
+    public function setData(string $key, array $data = []): void
     {
-        $this->session->set($key, $data);
+        $this->requestStack->getSession()->set($key, $data);
     }
 
     /**
@@ -36,13 +37,14 @@ class FilterSession
      */
     public function getData(string $key): array
     {
+        $session = $this->requestStack->getSession();
         $data = [];
 
-        if ($this->session->isStarted() && $this->session->has($key)) {
-            $data = $this->session->get($key);
+        if ($session->isStarted() && $session->has($key)) {
+            $data = $session->get($key);
         }
 
-        return !\is_array($data) ? [$data] : $data;
+        return !is_array($data) ? [$data] : $data;
     }
 
     /**
@@ -62,7 +64,7 @@ class FilterSession
         }
 
         // remove empty values
-        if (\is_array($data)) {
+        if (is_array($data)) {
             $data = array_filter($data);
         }
 
@@ -72,10 +74,11 @@ class FilterSession
     /**
      * Reset the filter data for a given key.
      */
-    public function reset(string $key)
+    public function reset(string $key): void
     {
-        if ($this->session->has($key)) {
-            $this->session->remove($key);
+        $session = $this->requestStack->getSession();
+        if ($session->has($key)) {
+            $session->remove($key);
         }
     }
 }

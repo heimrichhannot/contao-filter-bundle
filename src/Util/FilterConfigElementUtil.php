@@ -11,6 +11,7 @@ namespace HeimrichHannot\FilterBundle\Util;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\DataContainer;
 use Contao\System;
+use HeimrichHannot\UtilsBundle\Util\Model\ModelUtil;
 
 class FilterConfigElementUtil
 {
@@ -26,7 +27,7 @@ class FilterConfigElementUtil
 
     public function getFields(DataContainer $dc)
     {
-        if (null === ($model = System::getContainer()->get('huh.utils.model')->findModelInstanceByPk($dc->table, $dc->id))) {
+        if (null === ($model = System::getContainer()->get(ModelUtil::class)->findModelInstanceByPk($dc->table, $dc->id))) {
             return [];
         }
 
@@ -77,7 +78,7 @@ class FilterConfigElementUtil
 
     public function getElements(DataContainer $dc, array $options = [])
     {
-        if (null === ($model = System::getContainer()->get('huh.utils.model')->findModelInstanceByPk($dc->table, $dc->id))) {
+        if (null === ($model = System::getContainer()->get(ModelUtil::class)->findModelInstanceByPk($dc->table, $dc->id))) {
             return [];
         }
 

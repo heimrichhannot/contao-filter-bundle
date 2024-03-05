@@ -20,6 +20,7 @@ use HeimrichHannot\UtilsBundle\Container\ContainerUtil;
 use Symfony\Component\Config\Loader\LoaderResolverInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\RouteCollection;
+use Symfony\Component\Yaml\Yaml;
 
 class Plugin implements BundlePluginInterface, ExtensionPluginInterface, RoutingPluginInterface
 {
@@ -53,7 +54,22 @@ class Plugin implements BundlePluginInterface, ExtensionPluginInterface, Routing
             }
         }
 
-        return ContainerUtil::mergeConfigFile(
+        # todo: is this available in utils?
+        $mergeConfigFile = function (
+            string $activeExtensionName,
+            string $extensionName,
+            array $extensionConfigs,
+            string $configFile
+        ): array {
+            if ($activeExtensionName === $extensionName && file_exists($configFile))
+            {
+                $config = Yaml::parseFile($configFile);
+                $extensionConfigs = array_merge_recursive(\is_array($extensionConfigs) ? $extensionConfigs : [], \is_array($config) ? $config : []);
+            }
+            return $extensionConfigs;
+        };
+
+        return $mergeConfigFile(
             'huh_filter',
             $extensionName,
             $extensionConfigs,

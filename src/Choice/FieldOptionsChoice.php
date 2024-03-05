@@ -8,16 +8,16 @@
 
 namespace HeimrichHannot\FilterBundle\Choice;
 
+use Codefog\TagsBundle\Manager\ManagerInterface;
 use Contao\Controller;
 use Contao\StringUtil;
 use Contao\System;
 use Contao\Widget;
 use Doctrine\DBAL\FetchMode;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
-use HeimrichHannot\MailDrumBundle\Util\Util;
-use HeimrichHannot\UtilsBundle\Choice\AbstractChoice;
-use HeimrichHannot\UtilsBundle\Model\ModelUtil;
+use HeimrichHannot\FilterBundle\Util\AbstractChoice;
 use HeimrichHannot\UtilsBundle\Util\Utils;
+use Psr\Cache\InvalidArgumentException;
 use Symfony\Component\Translation\Translator;
 use Symfony\Component\Translation\TranslatorBagInterface;
 
@@ -27,8 +27,9 @@ class FieldOptionsChoice extends AbstractChoice
      * @param null $context
      *
      * @return array
+     * @throws InvalidArgumentException
      */
-    public function getCachedChoices($context = null)
+    public function getCachedChoices($context = null): array
     {
         $choices = parent::getCachedChoices($context);
         $element = $context['element'];
@@ -45,7 +46,7 @@ class FieldOptionsChoice extends AbstractChoice
     /**
      * @return array
      */
-    protected function collect()
+    protected function collect(): array
     {
         $choices = [];
         $context = $this->getContext();
@@ -61,10 +62,6 @@ class FieldOptionsChoice extends AbstractChoice
 
         /** @var Controller $controller */
         $controller = $this->framework->getAdapter(Controller::class);
-
-        if (null === $controller) {
-            return $choices;
-        }
 
         $controller->loadDataContainer($filter['dataContainer']);
         $controller->loadLanguageFile($filter['dataContainer']);
@@ -117,15 +114,13 @@ class FieldOptionsChoice extends AbstractChoice
      *
      * @return array
      */
-    protected function getCustomOptions(FilterConfigElementModel $element, array $filter)
+    protected function getCustomOptions(FilterConfigElementModel $element, array $filter): array
     {
         if (null === $element->options) {
             return [];
         }
 
-        $options = StringUtil::deserialize($element->options, true);
-
-        return $options;
+        return StringUtil::deserialize($element->options, true);
     }
 
     /**
@@ -133,7 +128,7 @@ class FieldOptionsChoice extends AbstractChoice
      *
      * @return array
      */
-    protected function getDcaOptions(FilterConfigElementModel $element, array $filter, array $dca)
+    protected function getDcaOptions(FilterConfigElementModel $element, array $filter, array $dca): array
     {
         $options = [];
         $dca = $GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element->field];
@@ -146,9 +141,7 @@ class FieldOptionsChoice extends AbstractChoice
                 return $this->getWidgetOptions($element, $filter, $dca);
             }
 
-            $options = $this->getCategoryWidgetOptions($element, $filter, $dca);
-
-            return $options;
+            return $this->getCategoryWidgetOptions($element, $filter, $dca);
         }
 
         if (!isset($dca['inputType'])) {
@@ -176,17 +169,13 @@ class FieldOptionsChoice extends AbstractChoice
      *
      * @return array
      */
-    protected function getWidgetOptions(FilterConfigElementModel $element, array $filter, array $dca)
+    protected function getWidgetOptions(FilterConfigElementModel $element, array $filter, array $dca): array
     {
         $options = [];
 
-        if (!isset($GLOBALS['TL_FFL'][$dca['inputType']]) && (System::getContainer()->get(Utils::class)->container()->isBackend() && !isset($GLOBALS['BE_FFL'][$dca['inputType']]))) {
-            return $options;
-        }
+        $class = $GLOBALS['TL_FFL'][$dca['inputType']] ?? $GLOBALS['BE_FFL'][$dca['inputType']] ?? '';
 
-        $class = $GLOBALS['TL_FFL'][$dca['inputType']] ?? $GLOBALS['BE_FFL'][$dca['inputType']] ?? null;
-
-        if (null === $class || !class_exists($class)) {
+        if (!class_exists($class)) {
             return $options;
         }
 
@@ -203,10 +192,15 @@ class FieldOptionsChoice extends AbstractChoice
             $options = $attributes['options'];
         }
 
-        if (true === (bool) $element->dynamicOptions) {
+        if ($element->dynamicOptions)
+        {
             $options = [];
 
-            if (null !== ($queryBuilder = System::getContainer()->get('huh.filter.manager')->getInitialQueryBuilder($filter['id'], [$element->id], true))) {
+            $queryBuilder = System::getContainer()->get('huh.filter.manager')
+                ->getInitialQueryBuilder($filter['id'], [$element->id], true);
+
+            if (null !== $queryBuilder)
+            {
                 $items = $queryBuilder->select([$filter['dataContainer'].'.'.$element->field])->execute()->fetchFirstColumn();
 
                 // make the values unique
@@ -253,8 +247,13 @@ class FieldOptionsChoice extends AbstractChoice
             }
         } else {
             // cleanup/revise options (remove options that do not occur result list)
-            if (true === (bool) $element->reviseOptions && !empty($options)) {
-                if (null !== ($filterQueryBuilder = System::getContainer()->get('huh.filter.manager')->getInitialQueryBuilder($filter['id'], [$element->id], true))) {
+            if ($element->reviseOptions && !empty($options))
+            {
+                $filterQueryBuilder = System::getContainer()->get('huh.filter.manager')
+                    ->getInitialQueryBuilder($filter['id'], [$element->id], true);
+
+                if (null !== $filterQueryBuilder)
+                {
                     $filterQueryBuilder->select([$filter['dataContainer'].'.'.$element->field]);
 
                     $values = $filterQueryBuilder->execute()->fetchAll(FetchMode::COLUMN);
@@ -263,7 +262,7 @@ class FieldOptionsChoice extends AbstractChoice
                     $values = array_unique($values);
 
                     foreach ($options as $key => $option) {
-                        if (!\in_array($option['value'], $values)) {
+                        if (!in_array($option['value'], $values)) {
                             unset($options[$key]);
                         }
                     }
@@ -271,8 +270,13 @@ class FieldOptionsChoice extends AbstractChoice
             }
         }
 
-        if (!empty($options) && true === (bool) $element->adjustOptionLabels && !empty($element->optionLabelPattern)) {
-            if (null !== ($filterQueryBuilder = System::getContainer()->get('huh.filter.manager')->getQueryBuilder($filter['id'], [$element->id]))) {
+        if (!empty($options) && $element->adjustOptionLabels && !empty($element->optionLabelPattern))
+        {
+            $filterQueryBuilder = System::getContainer()->get('huh.filter.manager')
+                ->getQueryBuilder($filter['id'], [$element->id]);
+
+            if (null !== $filterQueryBuilder)
+            {
                 $filterQueryBuilder->select([$filter['dataContainer'].'.'.$element->field, $filter['dataContainer'].'.*']);
                 $filterQueryBuilder->orderBy($element->field);
                 $rows = $filterQueryBuilder->execute()->fetchAll();
@@ -291,7 +295,7 @@ class FieldOptionsChoice extends AbstractChoice
                     $data[$currentValue] = ['data' => $row, 'count' => 1];
                 }
 
-                foreach ($options as $key => &$option) {
+                foreach ($options as &$option) {
                     if (!isset($option['label']) || !isset($rows[$option['value']])) {
                         continue;
                     }
@@ -304,7 +308,8 @@ class FieldOptionsChoice extends AbstractChoice
                         $params['%'.$key.'%'] = $value;
                     }
 
-                    $option['label'] = System::getContainer()->get('translator')->trans($element->optionLabelPattern, $params);
+                    $option['label'] = System::getContainer()->get('translator')
+                        ->trans($element->optionLabelPattern, $params);
                 }
             }
         }
@@ -314,10 +319,8 @@ class FieldOptionsChoice extends AbstractChoice
 
     /**
      * Get tag widget options.
-     *
-     * @return array
      */
-    protected function getTagWidgetOptions(FilterConfigElementModel $element, array $filter, array $dca)
+    protected function getTagWidgetOptions(FilterConfigElementModel $element, array $filter, array $dca): array
     {
         $options = [];
 
@@ -326,7 +329,7 @@ class FieldOptionsChoice extends AbstractChoice
         }
 
         /**
-         * @var \Codefog\TagsBundle\Manager\ManagerInterface
+         * @var ManagerInterface $tagsManager
          */
         $tagsManager = System::getContainer()->get('codefog_tags.manager_registry')->get(
             $dca['eval']['tagsManager']
@@ -352,10 +355,8 @@ class FieldOptionsChoice extends AbstractChoice
 
     /**
      * Get category widget options.
-     *
-     * @return array
      */
-    protected function getCategoryWidgetOptions(FilterConfigElementModel $element, array $filter, array $dca)
+    protected function getCategoryWidgetOptions(FilterConfigElementModel $element, array $filter, array $dca): array
     {
         $options = [];
 
@@ -363,7 +364,10 @@ class FieldOptionsChoice extends AbstractChoice
             return $options;
         }
 
-        if (null === ($categories = System::getContainer()->get('huh.categories.manager')->findByCategoryFieldAndTable($element->field, $filter['dataContainer']))) {
+        $categories = System::getContainer()->get('huh.categories.manager')
+            ->findByCategoryFieldAndTable($element->field, $filter['dataContainer']);
+
+        if (null === $categories) {
             return $options;
         }
 

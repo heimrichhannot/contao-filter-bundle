@@ -14,6 +14,7 @@ use HeimrichHannot\FilterBundle\Filter\AbstractType;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
+use HeimrichHannot\UtilsBundle\Util\Model\ModelUtil;
 use Symfony\Component\Form\FormBuilderInterface;
 
 class ExternalEntityType extends AbstractType
@@ -68,10 +69,10 @@ class ExternalEntityType extends AbstractType
             return null;
         }
 
-        list($where, $values) = System::getContainer()->get('huh.entity_filter.backend.entity_filter')->computeSqlCondition($sourceEntityConditions,
+        [$where, $values] = System::getContainer()->get('huh.entity_filter.backend.entity_filter')->computeSqlCondition($sourceEntityConditions,
             $element->sourceTable);
 
-        return System::getContainer()->get('huh.utils.model')->findOneModelInstanceBy($element->sourceTable, [$where], $values);
+        return System::getContainer()->get(ModelUtil::class)->findOneModelInstanceBy($element->sourceTable, [$where], $values);
     }
 
     /**

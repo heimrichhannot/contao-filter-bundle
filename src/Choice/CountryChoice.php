@@ -19,12 +19,12 @@ class CountryChoice extends FieldOptionsChoice
     /**
      * @return array
      */
-    protected function collect()
+    protected function collect(): array
     {
         $choices = [];
         $options = [];
 
-        if (!\is_array($this->getContext()) || empty($this->getContext())) {
+        if (!is_array($this->getContext()) || empty($this->getContext())) {
             return $choices;
         }
 
@@ -34,13 +34,17 @@ class CountryChoice extends FieldOptionsChoice
             return $choices;
         }
 
-        list($element, $filter) = $context;
+        [$element, $filter] = $context;
 
-        if (true === (bool) $element->customCountries) {
+        if ($element->customCountries) {
             $options = $this->getCustomCountryOptions($element, $filter);
-        } elseif (true === (bool) $element->customOptions) {
+        } elseif ($element->customOptions) {
             $options = $this->getCustomOptions($element, $filter);
-        } elseif (isset($filter['dataContainer']) && '' !== $filter['dataContainer'] && null !== $element->field) {
+        } elseif (
+            isset($filter['dataContainer'])
+            && '' !== $filter['dataContainer']
+            && null !== $element->field
+        ) {
             Controller::loadDataContainer($filter['dataContainer']);
 
             if (isset($GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element->field])) {
@@ -51,7 +55,7 @@ class CountryChoice extends FieldOptionsChoice
         $translator = System::getContainer()->get('translator');
 
         foreach ($options as $key => $option) {
-            if (!\is_array($option) && (!isset($option['label']) || !isset($option['value']))) {
+            if (!is_array($option) && (!isset($option['label']) || !isset($option['value']))) {
                 $choices[$option] = $key;
 
                 continue;
@@ -63,8 +67,6 @@ class CountryChoice extends FieldOptionsChoice
 
             if ($translator->getCatalogue()->has($option['label'])) {
                 $option['label'] = $translator->trans($option['label']);
-            } elseif (version_compare(VERSION, '4.9', '<') && null !== ($label = Intl::getRegionBundle()->getCountryName($option['label']))) {
-                $option['label'] = $label;
             }
 
             $choices[$option['value']] = $option['label'];
@@ -78,7 +80,7 @@ class CountryChoice extends FieldOptionsChoice
      *
      * @return array
      */
-    protected function getCustomCountryOptions(FilterConfigElementModel $element, array $filter)
+    protected function getCustomCountryOptions(FilterConfigElementModel $element, array $filter): array
     {
         if (null === $element->countries) {
             return [];

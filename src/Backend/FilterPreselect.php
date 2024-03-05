@@ -10,48 +10,53 @@ namespace HeimrichHannot\FilterBundle\Backend;
 
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\StringUtil;
-use Contao\System;
 use HeimrichHannot\FilterBundle\DataContainer\FilterPreselectContainer;
+use HeimrichHannot\FilterBundle\Filter\AbstractType;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
+use HeimrichHannot\UtilsBundle\Util\Utils;
 
 class FilterPreselect
 {
     protected ContaoFramework        $framework;
     private FilterPreselectContainer $filterPreselectContainer;
+    private Utils                    $utils;
 
-    public function __construct(ContaoFramework $framework, FilterPreselectContainer $filterPreselectContainer)
-    {
+    public function __construct(
+        ContaoFramework $framework,
+        FilterPreselectContainer $filterPreselectContainer,
+        Utils $utils
+    ) {
         $this->framework = $framework;
         $this->filterPreselectContainer = $filterPreselectContainer;
+        $this->utils = $utils;
     }
 
     /**
      * Adjust label of entries.
      *
-     * @param array  $row
+     * @param array $row
      * @param string $label
      *
      * @return string
      */
-    public function adjustLabel($row, $label)
+    public function adjustLabel(array $row, string $label): string
     {
         /** @var $filterConfigElement FilterConfigElementModel */
-        if (null === ($filterConfigElement = System::getContainer()->get('huh.utils.model')->findModelInstanceByPk(
-                'tl_filter_config_element',
-                $row['element']
-            ))) {
+        $filterConfigElement = $this->utils->model()
+            ->findModelInstanceByPk('tl_filter_config_element', $row['element']);
+        if (null === $filterConfigElement) {
             return $label;
         }
 
         $choices = $this->filterPreselectContainer->prepareElementChoices($filterConfigElement);
 
         switch ($row['initialValueType']) {
-            case \HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_SCALAR:
+            case AbstractType::VALUE_TYPE_SCALAR:
                 $label = $choices[$row['initialValue']] ?? $row['initialValue'];
 
                 break;
 
-            case \HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_ARRAY:
+            case AbstractType::VALUE_TYPE_ARRAY:
                 $values = array_map(
                     function ($item) {
                         return $item['value'] ?? null;
@@ -63,8 +68,8 @@ class FilterPreselect
 
                 break;
 
-            case \HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_CONTEXTUAL:
-                $label = \HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_CONTEXTUAL;
+            case AbstractType::VALUE_TYPE_CONTEXTUAL:
+                $label = AbstractType::VALUE_TYPE_CONTEXTUAL;
         }
 
         return sprintf('%s -> %s [ID: %s]', $filterConfigElement->title, $label, $filterConfigElement->id);

@@ -10,10 +10,15 @@ use Contao\Template;
 use HeimrichHannot\EncoreContracts\PageAssetsTrait;
 use HeimrichHannot\FilterBundle\Event\FilterBeforeRenderFilterFormEvent;
 use HeimrichHannot\FilterBundle\Manager\FilterManager;
-use HeimrichHannot\TwigSupportBundle\Renderer\TwigTemplateRenderer;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+use Twig\Environment as TwigEnvironment;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 
 /**
  * @FrontendModule(FilterModuleController::TYPE, category="filter", template="mod_filter")
@@ -26,17 +31,26 @@ class FilterModuleController extends AbstractFrontendModuleController
 
     private FilterManager $filterManager;
     private EventDispatcherInterface $eventDispatcher;
-    private TwigTemplateRenderer $twigTemplateRenderer;
+    private TwigEnvironment $twig;
 
-    public function __construct(FilterManager $filterManager, EventDispatcherInterface $eventDispatcher, TwigTemplateRenderer $twigTemplateRenderer)
-    {
-
+    public function __construct(
+        FilterManager $filterManager,
+        EventDispatcherInterface $eventDispatcher,
+        TwigEnvironment $twig
+    ) {
         $this->filterManager = $filterManager;
         $this->eventDispatcher = $eventDispatcher;
-        $this->twigTemplateRenderer = $twigTemplateRenderer;
+        $this->twig = $twig;
     }
 
-    protected function getResponse(Template $template, ModuleModel $model, Request $request): ?Response
+    /**
+     * @throws NotFoundExceptionInterface
+     * @throws SyntaxError
+     * @throws ContainerExceptionInterface
+     * @throws RuntimeError
+     * @throws LoaderError
+     */
+    protected function getResponse(Template $template, ModuleModel $model, Request $request): Response
     {
         if ('1' === $model->filter_hideOnAutoItem && (Config::get('useAutoItem') && isset($_GET['auto_item']))) {
             return new Response();
@@ -78,7 +92,7 @@ class FilterModuleController extends AbstractFrontendModuleController
         );
 
         $template->preselectUrl = !empty($config->getData()) ? $config->getPreselectAction($config->getData(), true) : '';
-        $template->form = $this->twigTemplateRenderer->render(
+        $template->form = $this->twig->render(
             $event->getTemplate(),
             $event->getContext()
         );

@@ -9,7 +9,7 @@
 namespace HeimrichHannot\FilterBundle\Choice;
 
 use Contao\Controller;
-use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
+use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Model\Collection;
 use Contao\StringUtil;
 use Contao\System;
@@ -19,26 +19,30 @@ use HeimrichHannot\FilterBundle\Filter\Type\SkipParentsType;
 use HeimrichHannot\FilterBundle\Filter\Type\SqlType;
 use HeimrichHannot\FilterBundle\Filter\Type\YearType;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
-use HeimrichHannot\UtilsBundle\Choice\AbstractChoice;
+use HeimrichHannot\FilterBundle\Util\AbstractChoice;
+use HeimrichHannot\FilterBundle\Util\DatabaseUtilPolyfill;
 use HeimrichHannot\UtilsBundle\Model\ModelUtil;
+use HeimrichHannot\UtilsBundle\Util\Utils;
 
 class DateChoice extends AbstractChoice
 {
-    /**
-     * @var ModelUtil
-     */
-    private $modelUtil;
+    private Utils $utils;
+    private DatabaseUtilPolyfill $dbUtil;
 
-    public function __construct(ContaoFrameworkInterface $framework, ModelUtil $modelUtil)
-    {
+    public function __construct(
+        ContaoFramework $framework,
+        Utils $utils,
+        DatabaseUtilPolyfill $dbUtil
+    ) {
         parent::__construct($framework);
-        $this->modelUtil = $modelUtil;
+        $this->utils = $utils;
+        $this->dbUtil = $dbUtil;
     }
 
     /**
      * @return array
      */
-    protected function collect()
+    protected function collect(): array
     {
         if (!\is_array($this->getContext()) || empty($this->getContext())) {
             return [];
@@ -53,7 +57,7 @@ class DateChoice extends AbstractChoice
         $element = $context['element'];
 
         /** @var FilterConfigElementModel[]|Collection $elements */
-        $elements = \is_array($context['elements']) || $context['elements'] instanceof \Model\Collection ? $context['elements'] : [$context['elements']];
+        $elements = \is_array($context['elements']) || $context['elements'] instanceof Collection ? $context['elements'] : [$context['elements']];
 
         $columns = [];
         $values = [];
@@ -99,7 +103,7 @@ class DateChoice extends AbstractChoice
                     if ($entry->isInitial && $entry->id !== $element->id) {
                         switch ($entry->initialValueType) {
                             case AbstractType::VALUE_TYPE_SCALAR:
-                                $operator = System::getContainer()->get('huh.utils.database')->transformVerboseOperator($entry->operator);
+                                $operator = $this->dbUtil->transformVerboseOperator($entry->operator);
 
                                 $columns[] = $table.'.'.$entry->field.' '.$operator.' ?';
                                 $values[] = $entry->initialValue;
@@ -136,7 +140,7 @@ class DateChoice extends AbstractChoice
             return [];
         }
 
-        $items = $this->modelUtil->findModelInstancesBy($filter['dataContainer'], $columns, $values, $options);
+        $items = $this->utils->model()->findModelInstancesBy($filter['dataContainer'], $columns, $values, $options);
 
         if (!$items) {
             return [];

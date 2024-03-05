@@ -9,14 +9,14 @@
 namespace HeimrichHannot\FilterBundle\Choice;
 
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
-use HeimrichHannot\UtilsBundle\Choice\AbstractChoice;
+use HeimrichHannot\FilterBundle\Util\AbstractChoice;
 
 class ElementChoice extends AbstractChoice
 {
     /**
      * {@inheritdoc}
      */
-    protected function collect()
+    protected function collect(): array
     {
         $choices = [];
 

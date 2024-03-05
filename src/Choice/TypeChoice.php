@@ -8,24 +8,26 @@
 
 namespace HeimrichHannot\FilterBundle\Choice;
 
+use Contao\DataContainer;
+use Contao\System;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\Model\FilterConfigModel;
-use HeimrichHannot\UtilsBundle\Choice\AbstractChoice;
+use HeimrichHannot\FilterBundle\Util\AbstractChoice;
 
 class TypeChoice extends AbstractChoice
 {
     /**
      * @return array
      */
-    protected function collect()
+    protected function collect(): array
     {
         $choices = [];
         $filterType = 'filter';
 
-        $groupChoices = $this->getContext() instanceof \Contao\DataContainer;
+        $groupChoices = $this->getContext() instanceof DataContainer;
 
-        $config = \System::getContainer()->getParameter('huh.filter');
+        $config = System::getContainer()->getParameter('huh.filter');
 
         if (!isset($config['filter']['types'])) {
             return $choices;

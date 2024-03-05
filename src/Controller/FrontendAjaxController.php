@@ -12,19 +12,21 @@ use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Environment;
 use Contao\FrontendIndex;
 use Contao\System;
+use Exception;
 use HeimrichHannot\FilterBundle\Event\ModifyJsonResponseEvent;
 use HeimrichHannot\FilterBundle\Exception\HandleFormException;
 use HeimrichHannot\FilterBundle\Exception\MissingFilterException;
 use HeimrichHannot\FilterBundle\Form\FilterType;
 use HeimrichHannot\FilterBundle\Manager\FilterManager;
-use HeimrichHannot\TwigSupportBundle\Renderer\TwigTemplateRenderer;
-use HeimrichHannot\UtilsBundle\Page\PageUtil;
+use HeimrichHannot\FilterBundle\Util\Polyfill;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+use Twig\Environment as TwigEnvironment;
+use const PHP_URL_HOST;
 
 /**
  * Handles the filter frontend ajax routes.
@@ -35,46 +37,35 @@ class FrontendAjaxController extends AbstractController
 {
     const ROUTE_NAME_AJAX = 'filter_frontend_ajax_submit';
 
-    /**
-     * @var ContaoFramework
-     */
-    protected $framework;
-    /**
-     * @var FilterManager
-     */
-    protected $filterManager;
-    /**
-     * @var EventDispatcherInterface
-     */
-    protected $eventDispatcher;
-    /**
-     * @var PageUtil
-     */
-    private $pageUtil;
+    protected ContaoFramework $framework;
+    protected FilterManager $filterManager;
+    protected EventDispatcherInterface $eventDispatcher;
+    private TwigEnvironment $twig;
 
     /**
      * FrontendAjaxController constructor.
      */
     public function __construct(
-        PageUtil $pageUtil,
         ContaoFramework $framework,
         FilterManager $filterManager,
-        EventDispatcherInterface $eventDispatcher
+        EventDispatcherInterface $eventDispatcher,
+        TwigEnvironment $twig
     ) {
-        $this->pageUtil = $pageUtil;
         $this->framework = $framework;
         $this->filterManager = $filterManager;
         $this->eventDispatcher = $eventDispatcher;
+        $this->twig = $twig;
     }
 
     /**
      * @Route("/_filter/ajax_submit/{id}", name=FrontendAjaxController::ROUTE_NAME_AJAX)
      *
      * @param Request $request Current request
-     * @param int     $id      Filter id
+     * @param int $id Filter id
      *
      * @throws HandleFormException
      * @throws MissingFilterException
+     * @throws Exception
      */
     public function ajaxSubmitAction(Request $request, int $id): Response
     {
@@ -90,7 +81,7 @@ class FrontendAjaxController extends AbstractController
             $pageId = $request->get($filter->getFilter()['name'])[FilterType::FILTER_PAGE_ID_NAME];
 
             if (is_numeric($pageId)) {
-                $objPage = $this->pageUtil->retrieveGlobalPageFromCurrentPageId((int) $pageId);
+                $objPage = Polyfill::retrieveGlobalPageFromCurrentPageId((int) $pageId);
             }
         }
 
@@ -98,9 +89,12 @@ class FrontendAjaxController extends AbstractController
             throw new HandleFormException('Unable to handle form for filter with id '.$id.'.');
         }
 
-        if ($request->get($filter->getFilter()['name']) && isset($request->get($filter->getFilter()['name'])[FilterType::FILTER_REFERRER_NAME])) {
-            if (parse_url($request->get($filter->getFilter()['name'])[FilterType::FILTER_REFERRER_NAME], \PHP_URL_HOST) !== parse_url(Environment::get('url'), \PHP_URL_HOST)) {
-                throw new \Exception('Invalid redirect url');
+        $nameFilterParam = $request->get($filter->getFilter()['name'] ?? null);
+        $nameFilter = $nameFilterParam[FilterType::FILTER_REFERRER_NAME] ?? null;
+
+        if ($nameFilter) {
+            if (parse_url($nameFilter, PHP_URL_HOST) !== parse_url(Environment::get('url'), PHP_URL_HOST)) {
+                throw new Exception('Invalid redirect url');
             }
 
             Environment::set('request', $request->get($filter->getFilter()['name'])[FilterType::FILTER_REFERRER_NAME]);
@@ -119,7 +113,7 @@ class FrontendAjaxController extends AbstractController
 
         $filterConfig = $filter;
 
-        $filter = System::getContainer()->get(TwigTemplateRenderer::class)->render(
+        $filter = $this->twig->render(
             $filter->getFilterTemplateByName($filter->getFilter()['template']),
             [
                 'filter' => $filter,

@@ -8,21 +8,23 @@
 
 namespace HeimrichHannot\FilterBundle\Choice;
 
+use Contao\DataContainer;
+use Contao\System;
 use HeimrichHannot\FilterBundle\Sort\AbstractSort;
-use HeimrichHannot\UtilsBundle\Choice\AbstractChoice;
+use HeimrichHannot\FilterBundle\Util\AbstractChoice;
 
 class SortChoice extends AbstractChoice
 {
     /**
      * @return array
      */
-    protected function collect()
+    protected function collect(): array
     {
         $choices = [];
 
-        $groupChoices = $this->getContext() instanceof \Contao\DataContainer;
+        $groupChoices = $this->getContext() instanceof DataContainer;
 
-        $config = \System::getContainer()->getParameter('huh.sort');
+        $config = System::getContainer()->getParameter('huh.sort');
 
         if (!isset($config['sort']['classes'])) {
             return $choices;

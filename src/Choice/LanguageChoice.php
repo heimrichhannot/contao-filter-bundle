@@ -19,7 +19,7 @@ class LanguageChoice extends FieldOptionsChoice
     /**
      * @return array
      */
-    protected function collect()
+    protected function collect(): array
     {
         $choices = [];
         $options = [];
@@ -34,7 +34,7 @@ class LanguageChoice extends FieldOptionsChoice
             return $choices;
         }
 
-        list($element, $filter) = $context;
+        [$element, $filter] = $context;
 
         if (!$element instanceof FilterConfigElementModel) {
             return $choices;

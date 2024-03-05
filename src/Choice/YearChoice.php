@@ -9,6 +9,7 @@
 namespace HeimrichHannot\FilterBundle\Choice;
 
 use Contao\Controller;
+use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Model\Collection;
 use Contao\StringUtil;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
@@ -16,9 +17,10 @@ use HeimrichHannot\FilterBundle\Filter\Type\PublishedType;
 use HeimrichHannot\FilterBundle\Filter\Type\SkipParentsType;
 use HeimrichHannot\FilterBundle\Filter\Type\SqlType;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
-use HeimrichHannot\UtilsBundle\Choice\AbstractChoice;
+use HeimrichHannot\FilterBundle\Util\AbstractChoice;
 use HeimrichHannot\UtilsBundle\Model\ModelUtil;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use const SORT_NUMERIC;
 
 class YearChoice extends AbstractChoice
 {
@@ -31,9 +33,9 @@ class YearChoice extends AbstractChoice
      */
     private $container;
 
-    public function __construct(ContainerInterface $container, ModelUtil $modelUtil)
+    public function __construct(ContainerInterface $container, ModelUtil $modelUtil, ContaoFramework $framework)
     {
-        parent::__construct($container->get('contao.framework'));
+        parent::__construct($framework);
         $this->modelUtil = $modelUtil;
         $this->container = $container;
     }
@@ -41,7 +43,7 @@ class YearChoice extends AbstractChoice
     /**
      * @return array
      */
-    protected function collect()
+    protected function collect(): array
     {
         if (!\is_array($this->getContext()) || empty($this->getContext())) {
             return [];
@@ -55,7 +57,7 @@ class YearChoice extends AbstractChoice
         $element = $context['element'];
 
         /** @var FilterConfigElementModel[]|Collection $elements */
-        $elements = \is_array($context['elements']) || $context['elements'] instanceof \Model\Collection ? $context['elements'] : [$context['elements']];
+        $elements = is_array($context['elements']) || $context['elements'] instanceof Collection ? $context['elements'] : [$context['elements']];
 
         $columns = [];
         $values = [];
@@ -65,7 +67,7 @@ class YearChoice extends AbstractChoice
                 case SkipParentsType::TYPE:
                     $skipParentsType = new SkipParentsType($this->container->get('huh.filter.config'));
 
-                    list($elementColumns, $elementValues) = $skipParentsType->buildQueryForModels($filter, $entry);
+                    [$elementColumns, $elementValues] = $skipParentsType->buildQueryForModels($filter, $entry);
 
                     $columns = array_merge($columns, $elementColumns);
                     $values = array_merge($values, $elementValues);
@@ -75,7 +77,7 @@ class YearChoice extends AbstractChoice
                 case PublishedType::TYPE:
                     $publishedType = new PublishedType($this->container->get('huh.filter.config'));
 
-                    list($elementColumns, $elementValues) = $publishedType->buildQueryForModels($filter, $entry);
+                    [$elementColumns, $elementValues] = $publishedType->buildQueryForModels($filter, $entry);
 
                     $columns = array_merge($columns, $elementColumns);
                     $values = array_merge($values, $elementValues);
@@ -155,11 +157,9 @@ class YearChoice extends AbstractChoice
                     ]);
                 }
             }
-
-            $years = $years;
         }
 
-        krsort($years, \SORT_NUMERIC);
+        krsort($years, SORT_NUMERIC);
 
         return $years;
     }

@@ -13,6 +13,7 @@ use HeimrichHannot\FilterBundle\Filter\AbstractType;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
+use HeimrichHannot\UtilsBundle\Util\Model\ModelUtil;
 use Symfony\Component\Form\FormBuilderInterface;
 
 class SkipParentsType extends AbstractType
@@ -36,8 +37,10 @@ class SkipParentsType extends AbstractType
 
         $parentField = $filter['dataContainer'].'.'.$element->parentField;
 
-        if (null === ($parents = System::getContainer()->get('huh.utils.model')->findModelInstancesBy(
-            $filter['dataContainer'], ["$parentField != '' AND $parentField IS NOT NULL AND $parentField != 0"], []))) {
+        $parents = System::getContainer()->get(ModelUtil::class)->findModelInstancesBy(
+            $filter['dataContainer'], ["$parentField != '' AND $parentField IS NOT NULL AND $parentField != 0"], []
+        );
+        if (null === $parents) {
             return;
         }
 
@@ -69,8 +72,10 @@ class SkipParentsType extends AbstractType
 
         $parentField = $filter['dataContainer'].'.'.$element->parentField;
 
-        if (null === ($parents = System::getContainer()->get('huh.utils.model')->findModelInstancesBy(
-                $filter['dataContainer'], ["$parentField != '' AND $parentField IS NOT NULL AND $parentField != 0"], []))) {
+        $parents = System::getContainer()->get(ModelUtil::class)->findModelInstancesBy(
+            $filter['dataContainer'], ["$parentField != '' AND $parentField IS NOT NULL AND $parentField != 0"], []
+        );
+        if (null === $parents) {
             return [$columns, $values];
         }
 

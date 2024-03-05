@@ -20,15 +20,16 @@ class HeimrichHannotContaoFilterExtension extends Extension
     /**
      * {@inheritdoc}
      */
-    public function getAlias()
+    public function getAlias(): string
     {
         return 'huh_filter';
     }
 
     /**
      * {@inheritdoc}
+     * @throws \Exception
      */
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $configuration = new Configuration($container->getParameter('kernel.debug'));
         $processedConfig = $this->processConfiguration($configuration, $configs);

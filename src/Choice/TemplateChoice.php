@@ -9,14 +9,14 @@
 namespace HeimrichHannot\FilterBundle\Choice;
 
 use Contao\System;
-use HeimrichHannot\UtilsBundle\Choice\AbstractChoice;
+use HeimrichHannot\FilterBundle\Util\AbstractChoice;
 
 class TemplateChoice extends AbstractChoice
 {
     /**
      * @return array
      */
-    protected function collect()
+    protected function collect(): array
     {
         $choices = [];
         $config = System::getContainer()->getParameter('huh.filter');

@@ -8,13 +8,18 @@
 
 namespace HeimrichHannot\FilterBundle\Backend;
 
+use Contao\BackendUser;
 use Contao\Controller;
 use Contao\CoreBundle\DataContainer\PaletteManipulator;
+use Contao\CoreBundle\Exception\AccessDeniedException;
 use Contao\CoreBundle\Framework\ContaoFramework;
+use Contao\Database;
 use Contao\DataContainer;
 use Contao\Image;
+use Contao\Input;
 use Contao\StringUtil;
 use Contao\System;
+use Contao\Versions;
 use HeimrichHannot\FilterBundle\DataContainer\FilterConfigElementContainer;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
 use HeimrichHannot\FilterBundle\Filter\FilterCollection;
@@ -24,6 +29,7 @@ use HeimrichHannot\FilterBundle\Filter\Type\DateType;
 use HeimrichHannot\FilterBundle\Filter\Type\ExternalEntityType;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\UtilsBundle\Util\Utils;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class FilterConfigElement
 {
@@ -59,11 +65,16 @@ class FilterConfigElement
 
         $dca = &$GLOBALS['TL_DCA']['tl_filter_config_element'];
 
-        if ($filterConfigElement->isInitial && isset($dca['palettes'][$filterConfigElement->type]) && false !== strpos($dca['palettes'][$filterConfigElement->type], 'isInitial')) {
-            if (null !== ($palette = $type::getInitialPalette(
-                    FilterConfigElementContainer::PALETTE_PREFIX,
-                    FilterConfigElementContainer::PALETTE_SUFFIX
-                ))) {
+        if ($filterConfigElement->isInitial
+            && !empty($dca['palettes'][$filterConfigElement->type])
+            && str_contains($dca['palettes'][$filterConfigElement->type], 'isInitial'))
+        {
+            $palette = $type::getInitialPalette(
+                FilterConfigElementContainer::PALETTE_PREFIX,
+                FilterConfigElementContainer::PALETTE_SUFFIX
+            );
+            if (null !== $palette)
+            {
                 $dca['palettes'][$filterConfigElement->type] = $palette;
             } else {
                 $dca['palettes'][$filterConfigElement->type] = static::INITIAL_PALETTE;
@@ -138,10 +149,10 @@ class FilterConfigElement
         $dca['fields']['multilingualInitialValues']['eval']['multiColumnEditor']['fields']['initialValueArray']['eval']['chosen'] = true;
     }
 
-    public function checkPermission()
+    public function checkPermission(): void
     {
-        $user = \BackendUser::getInstance();
-        $database = \Database::getInstance();
+        $user = BackendUser::getInstance();
+        $database = Database::getInstance();
 
         if ($user->isAdmin) {
             return;
@@ -154,25 +165,26 @@ class FilterConfigElement
             $root = $user->filters;
         }
 
-        $id = \strlen(\Input::get('id')) ? \Input::get('id') : CURRENT_ID;
+        $id = \strlen(Input::get('id')) ? Input::get('id') : CURRENT_ID;
 
         // Check current action
-        switch (\Input::get('act')) {
+        switch (Input::get('act')) {
             case 'paste':
                 // Allow
                 break;
 
             case 'create':
-                if (!\strlen(\Input::get('pid')) || !\in_array(\Input::get('pid'), $root, true)) {
-                    throw new \Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to create filter_element items in filter_element archive ID '.\Input::get('pid').'.');
+                if (!\strlen(Input::get('pid')) || !\in_array(Input::get('pid'), $root, true)) {
+                    throw new AccessDeniedException('Not enough permissions to create filter_element items in filter_element archive ID '.Input::get('pid').'.');
                 }
 
                 break;
 
             case 'cut':
+            /** @noinspection PhpMissingBreakStatementInspection */
             case 'copy':
-                if (!\in_array(\Input::get('pid'), $root, true)) {
-                    throw new \Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to '.\Input::get('act').' filter_element item ID '.$id.' to filter_element archive ID '.\Input::get('pid').'.');
+                if (!\in_array(Input::get('pid'), $root, true)) {
+                    throw new AccessDeniedException('Not enough permissions to '.Input::get('act').' filter_element item ID '.$id.' to filter_element archive ID '.Input::get('pid').'.');
                 }
             // no break STATEMENT HERE
 
@@ -184,11 +196,11 @@ class FilterConfigElement
                 $objArchive = $database->prepare('SELECT pid FROM tl_filter_config_element WHERE id=?')->limit(1)->execute($id);
 
                 if ($objArchive->numRows < 1) {
-                    throw new \Contao\CoreBundle\Exception\AccessDeniedException('Invalid filter_element item ID '.$id.'.');
+                    throw new AccessDeniedException('Invalid filter_element item ID '.$id.'.');
                 }
 
                 if (!\in_array($objArchive->pid, $root, true)) {
-                    throw new \Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to '.\Input::get('act').' filter_element item ID '.$id.' of filter_element archive ID '.$objArchive->pid.'.');
+                    throw new AccessDeniedException('Not enough permissions to '.Input::get('act').' filter_element item ID '.$id.' of filter_element archive ID '.$objArchive->pid.'.');
                 }
 
                 break;
@@ -200,41 +212,41 @@ class FilterConfigElement
             case 'cutAll':
             case 'copyAll':
                 if (!\in_array($id, $root, true)) {
-                    throw new \Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to access filter_element archive ID '.$id.'.');
+                    throw new AccessDeniedException('Not enough permissions to access filter_element archive ID '.$id.'.');
                 }
 
                 $objArchive = $database->prepare('SELECT id FROM tl_filter_config_element WHERE pid=?')->execute($id);
 
                 if ($objArchive->numRows < 1) {
-                    throw new \Contao\CoreBundle\Exception\AccessDeniedException('Invalid filter_element archive ID '.$id.'.');
+                    throw new AccessDeniedException('Invalid filter_element archive ID '.$id.'.');
                 }
 
-                /** @var \Symfony\Component\HttpFoundation\Session\SessionInterface $session */
-                $session = \System::getContainer()->get('session');
+                /** @var SessionInterface $session */
+                $session = System::getContainer()->get('request_stack')->getSession();
 
-                $session = $session->all();
-                $session['CURRENT']['IDS'] = array_intersect($session['CURRENT']['IDS'], $objArchive->fetchEach('id'));
-                $session->replace($session);
+                $arrSession = $session->all();
+                $arrSession['CURRENT']['IDS'] = array_intersect($arrSession['CURRENT']['IDS'], $objArchive->fetchEach('id'));
+                $session->replace($arrSession);
 
                 break;
 
             default:
-                if (\strlen(\Input::get('act'))) {
-                    throw new \Contao\CoreBundle\Exception\AccessDeniedException('Invalid command "'.\Input::get('act').'".');
+                if (\strlen(Input::get('act'))) {
+                    throw new AccessDeniedException('Invalid command "'.Input::get('act').'".');
                 } elseif (!\in_array($id, $root, true)) {
-                    throw new \Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to access filter_element archive ID '.$id.'.');
+                    throw new AccessDeniedException('Not enough permissions to access filter_element archive ID '.$id.'.');
                 }
 
                 break;
         }
     }
 
-    public function toggleIcon($row, $href, $label, $title, $icon, $attributes)
+    public function toggleIcon($row, $href, $label, $title, $icon, $attributes): string
     {
-        $user = \BackendUser::getInstance();
+        $user = BackendUser::getInstance();
 
-        if (\strlen(\Input::get('tid'))) {
-            $this->toggleVisibility(\Input::get('tid'), ('1' === \Input::get('state')), (@func_get_arg(12) ?: null));
+        if (\strlen(Input::get('tid'))) {
+            $this->toggleVisibility(Input::get('tid'), ('1' === Input::get('state')), (@func_get_arg(12) ?: null));
             Controller::redirect(Controller::getReferer());
         }
 
@@ -249,21 +261,23 @@ class FilterConfigElement
             $icon = 'invisible.svg';
         }
 
-        return '<a href="'.Controller::addToUrl($href).'" title="'.\StringUtil::specialchars($title).'"'.$attributes.'>'.\Image::getHtml(
-                $icon,
-                $label,
-                'data-state="'.($row['published'] ? 1 : 0).'"'
-            ).'</a> ';
+        return sprintf(
+            '<a href="%s" title="%s"%s>%s</a> ',
+            Controller::addToUrl($href),
+            StringUtil::specialchars($title),
+            $attributes,
+            Image::getHtml($icon, $label, 'data-state="'.($row['published'] ? 1 : 0).'"')
+        );
     }
 
-    public function toggleVisibility($intId, $blnVisible, \DataContainer $dc = null)
+    public function toggleVisibility($intId, $blnVisible, DataContainer $dc = null): void
     {
-        $user = \BackendUser::getInstance();
-        $database = \Database::getInstance();
+        $user = BackendUser::getInstance();
+        $database = Database::getInstance();
 
         // Set the ID and action
-        \Input::setGet('id', $intId);
-        \Input::setGet('act', 'toggle');
+        Input::setGet('id', $intId);
+        Input::setGet('act', 'toggle');
 
         if ($dc) {
             $dc->id = $intId; // see #8043
@@ -283,7 +297,7 @@ class FilterConfigElement
 
         // Check the field access
         if (!$user->hasAccess('tl_filter_config_element::published', 'alexf')) {
-            throw new \Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to publish/unpublish filter_element item ID '.$intId.'.');
+            throw new AccessDeniedException('Not enough permissions to publish/unpublish filter_element item ID '.$intId.'.');
         }
 
         // Set the current record
@@ -295,7 +309,7 @@ class FilterConfigElement
             }
         }
 
-        $objVersions = new \Versions('tl_filter_config_element', $intId);
+        $objVersions = new Versions('tl_filter_config_element', $intId);
         $objVersions->initialize();
 
         // Trigger the save_callback
@@ -344,22 +358,29 @@ class FilterConfigElement
      *
      * @return string
      */
-    public function optionImportWizard()
+    public function optionImportWizard(): string
     {
-        return ' <a href="'.Controller::addToUrl('key=option').'" title="'.specialchars($GLOBALS['TL_LANG']['MSC']['ow_import'][1]).'" onclick="Backend.getScrollOffset()">'.Image::getHtml('tablewizard.gif', $GLOBALS['TL_LANG']['MSC']['ow_import'][0]).'</a>';
+        return sprintf(
+            '<a href="%s" title="%s" onclick="Backend.getScrollOffset()">%s</a>',
+            Controller::addToUrl('key=option'),
+            StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['ow_import'][1] ?? ''),
+            Image::getHtml('tablewizard.gif', $GLOBALS['TL_LANG']['MSC']['ow_import'][0])
+        );
     }
 
-    public function getOptions(DataContainer $dc)
+    public function getOptions(DataContainer $dc): array
     {
-        if ($dc->activeRecord->customOptions) {
-            $options = [];
-
-            foreach (StringUtil::deserialize($dc->activeRecord->options) as $option) {
-                $options[$option['value']] = $option['label'];
-            }
-
-            return $options;
+        if (!$dc->activeRecord->customOptions) {
+            return [];
         }
+
+        $options = [];
+
+        foreach (StringUtil::deserialize($dc->activeRecord->options) as $option) {
+            $options[$option['value']] = $option['label'];
+        }
+
+        return $options;
     }
 
     public function getSourceFields(DataContainer $dc): array
@@ -368,6 +389,6 @@ class FilterConfigElement
             return [];
         }
 
-        return System::getContainer()->get('huh.utils.dca')->getFields($dc->activeRecord->sourceTable);
+        return System::getContainer()->get(Utils::class)->dca()->getDcaFields($dc->activeRecord->sourceTable);
     }
 }

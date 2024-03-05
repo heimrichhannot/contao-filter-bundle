@@ -10,11 +10,13 @@ namespace HeimrichHannot\FilterBundle\QueryBuilder;
 
 use Codefog\HasteBundle\DcaRelationsManager;
 use Contao\Controller;
-use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
+use Contao\CoreBundle\Framework\ContaoFramework;
+use Contao\CoreBundle\InsertTag\InsertTagParser;
 use Contao\System;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Haste\Model\Relations;
+use HeimrichHannot\FilterBundle\Util\DatabaseUtilPolyfill;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
 use HeimrichHannot\FilterBundle\Event\AdjustFilterValueEvent;
 use HeimrichHannot\FilterBundle\Event\FilterQueryBuilderComposeEvent;
@@ -23,36 +25,38 @@ use HeimrichHannot\FilterBundle\Filter\FilterCollection;
 use HeimrichHannot\FilterBundle\Filter\Type\ChoiceType;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
+use HeimrichHannot\UtilsBundle\Util\Utils;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class FilterQueryBuilder extends QueryBuilder
 {
-    /**
-     * @var ContaoFrameworkInterface
-     */
-    protected $framework;
-
-    /**
-     * @var array
-     */
-    protected $contextualValues = [];
-
+    protected ContaoFramework $framework;
+    protected array $contextualValues = [];
     /**
      * List of elements that should be skipped.
      *
      * @var FilterConfigElementModel[]
      */
-    protected $skip = [];
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
+    protected array $skip = [];
+    protected InsertTagParser $insertTagParser;
+    protected FilterCollection $filterCollection;
+    protected Utils $utils;
+    protected DatabaseUtilPolyfill $dbUtil;
 
-    public function __construct(ContainerInterface $container, ContaoFrameworkInterface $framework, Connection $connection)
-    {
+    public function __construct(
+        ContaoFramework $framework,
+        Connection $connection,
+        InsertTagParser $insertTagParser,
+        FilterCollection $filterCollection,
+        Utils $utils,
+        DatabaseUtilPolyfill $dbUtil
+    ) {
         parent::__construct($connection);
         $this->framework = $framework;
-        $this->container = $container;
+        $this->insertTagParser = $insertTagParser;
+        $this->filterCollection = $filterCollection;
+        $this->utils = $utils;
+        $this->dbUtil = $dbUtil;
     }
 
     /**
@@ -62,7 +66,7 @@ class FilterQueryBuilder extends QueryBuilder
      *
      * @return $this this FilterQueryBuilder instance
      */
-    public function whereElement(FilterConfigElementModel $element, string $name, FilterConfig $config, string $defaultOperator)
+    public function whereElement(FilterConfigElementModel $element, string $name, FilterConfig $config, string $defaultOperator): static
     {
         $filter = $config->getFilter();
 
@@ -75,7 +79,7 @@ class FilterQueryBuilder extends QueryBuilder
         $dca = $GLOBALS['TL_DCA'][$filter['dataContainer']]['fields'][$element->field];
 
         if ($dca['eval']['isCategoryField'] ?? false) {
-            $this->whereCategoryWidget($element, $name, $config, $dca, DatabaseUtil::OPERATOR_IN);
+            $this->whereCategoryWidget($element, $name, $config, $dca, $this->dbUtil::OPERATOR_IN);
 
             return $this;
         }
@@ -85,7 +89,7 @@ class FilterQueryBuilder extends QueryBuilder
                 if (!isset($dca['eval']['tagsManager'])) {
                     break;
                 }
-                $this->whereTagWidget($element, $name, $config, $dca, DatabaseUtil::OPERATOR_IN);
+                $this->whereTagWidget($element, $name, $config, $dca, $this->dbUtil::OPERATOR_IN);
 
                 break;
 
@@ -118,19 +122,20 @@ class FilterQueryBuilder extends QueryBuilder
                 $value = $this->getValueFromAlternativeSource($value, $data, $element, $name, $config, $dca);
             }
 
-            if (!\in_array($element->operator, [DatabaseUtil::OPERATOR_IS_EMPTY, DatabaseUtil::OPERATOR_IS_NOT_EMPTY], true)
-                && (null === $value
-                    || !$element->field)) {
+            if (!in_array($element->operator, [$this->dbUtil::OPERATOR_IS_EMPTY, $this->dbUtil::OPERATOR_IS_NOT_EMPTY], true)
+                and
+                null === $value || !$element->field)
+            {
                 return $this;
             }
 
-            // never replace non initial Inserttags (user inputs), avoid injection and never cache to avoid esi:tags
+            // never replace non initial Insert tags (user inputs), avoid injection and never cache to avoid esi:tags
             if (\is_array($value)) {
                 foreach ($value as &$val) {
-                    $val = Controller::replaceInsertTags($val, false);
+                    $val = $this->insertTagParser->replace($val);
                 }
             } else {
-                $value = Controller::replaceInsertTags($value, false);
+                $value = $this->insertTagParser->replace($value);
             }
 
             $operator = $this->getOperator($element, $defaultOperator, $dca) ?: $defaultOperator;
@@ -145,7 +150,7 @@ class FilterQueryBuilder extends QueryBuilder
         }
 
         /** @var class-string<AbstractType> $typeClass */
-        $typeClass = $this->container->get(FilterCollection::class)->getClassByType($element->type);
+        $typeClass = $this->filterCollection->getClassByType($element->type);
 
         if ($typeClass) {
             $value = $typeClass::normalizeValue($value);
@@ -157,9 +162,14 @@ class FilterQueryBuilder extends QueryBuilder
             FilterQueryBuilderComposeEvent::class
         );
 
-        if (true === $event->getContinue() && (!empty($event->getValue()) || '0' === $event->getValue() || 0 === $event->getValue())) {
+        $eventValue = $event->getValue();
+
+        if ($event->getContinue()
+            and
+            !empty($eventValue) || $eventValue === 0 || $eventValue === '0')
+        {
             $this->andWhere(
-                $this->container->get('huh.utils.database')->composeWhereForQueryBuilder(
+                $this->dbUtil->composeWhereForQueryBuilder(
                     $this,
                     $config->getFilter()['dataContainer'].'.'.$element->field,
                     $event->getOperator(),
@@ -173,7 +183,7 @@ class FilterQueryBuilder extends QueryBuilder
         return $this;
     }
 
-    public function addContextualValue($elementId, $value)
+    public function addContextualValue($elementId, $value): void
     {
         $this->contextualValues[$elementId] = $value;
     }
@@ -188,9 +198,9 @@ class FilterQueryBuilder extends QueryBuilder
      *
      * @return FilterConfigElementModel[]
      */
-    public function getSkip()
+    public function getSkip(): array
     {
-        return \is_array($this->skip) ? $this->skip : [];
+        return $this->skip ??= [];
     }
 
     /**
@@ -198,7 +208,7 @@ class FilterQueryBuilder extends QueryBuilder
      *
      * @param FilterConfigElementModel[] $skip
      */
-    public function setSkip(array $skip)
+    public function setSkip(array $skip): void
     {
         $this->skip = $skip;
     }
@@ -206,26 +216,29 @@ class FilterQueryBuilder extends QueryBuilder
     /**
      * Add filter element to skip.
      */
-    public function addSkip(FilterConfigElementModel $element)
+    public function addSkip(FilterConfigElementModel $element): void
     {
         $this->skip[$element->id] = $element;
     }
 
     protected function getOperator(FilterConfigElementModel $element, string $operator, array $dca, bool $supportSerializedBlob = true): string
     {
-        if ((isset($dca['eval']['multiple']) && $dca['eval']['multiple'] || 'tagsinput' === ($dca['eval']['inputType'] ?? null)) && $supportSerializedBlob) {
-            if (\in_array($operator, DatabaseUtil::NEGATIVE_OPERATORS)) {
+        if ($dca['eval']['multiple'] ?? 'tagsinput' === ($dca['eval']['inputType'] ?? null)
+            and
+            $supportSerializedBlob)
+        {
+            if (\in_array($operator, $this->dbUtil::NEGATIVE_OPERATORS)) {
                 // db value is a serialized blob
-                if (false !== strpos($dca['sql'], 'blob')) {
-                    $operator = DatabaseUtil::OPERATOR_NOT_REGEXP;
+                if (str_contains($dca['sql'], 'blob')) {
+                    $operator = $this->dbUtil::OPERATOR_NOT_REGEXP;
                 } else {
-                    $operator = DatabaseUtil::OPERATOR_NOT_IN;
+                    $operator = $this->dbUtil::OPERATOR_NOT_IN;
                 }
             } else {
-                if (false !== strpos($dca['sql'], 'blob')) {
-                    $operator = DatabaseUtil::OPERATOR_REGEXP;
+                if (str_contains($dca['sql'], 'blob')) {
+                    $operator = $this->dbUtil::OPERATOR_REGEXP;
                 } else {
-                    $operator = DatabaseUtil::OPERATOR_IN;
+                    $operator = $this->dbUtil::OPERATOR_IN;
                 }
             }
         }
@@ -245,7 +258,7 @@ class FilterQueryBuilder extends QueryBuilder
      *
      * @return $this this FilterQueryBuilder instance
      */
-    protected function whereTagWidget(FilterConfigElementModel $element, string $name, FilterConfig $config, array $dca, string $defaultOperator = null)
+    protected function whereTagWidget(FilterConfigElementModel $element, string $name, FilterConfig $config, array $dca, string $defaultOperator = null): static
     {
         $data = $config->getData();
 
@@ -289,7 +302,7 @@ class FilterQueryBuilder extends QueryBuilder
                 $alias.'.'.$relation['reference_field'].'='.$relation['reference_table'].'.'.$relation['reference']);
 
             $this->andWhere(
-                $this->container->get('huh.utils.database')->composeWhereForQueryBuilder(
+                $this->dbUtil->composeWhereForQueryBuilder(
                     $this, $alias.'.'.$relation['related_field'], $event->getOperator(), $dca, $event->getValue()
                 )
             );
@@ -308,7 +321,7 @@ class FilterQueryBuilder extends QueryBuilder
      *
      * @return $this this FilterQueryBuilder instance
      */
-    protected function whereCategoryWidget(FilterConfigElementModel $element, string $name, FilterConfig $config, array $dca, string $defaultOperator = null)
+    protected function whereCategoryWidget(FilterConfigElementModel $element, string $name, FilterConfig $config, array $dca, string $defaultOperator = null): static
     {
         $filter = $config->getFilter();
         $data = $config->getData();
@@ -356,7 +369,7 @@ class FilterQueryBuilder extends QueryBuilder
         }
 
         $this->andWhere(
-            $this->container->get('huh.utils.database')->composeWhereForQueryBuilder(
+            $this->dbUtil->composeWhereForQueryBuilder(
                 $this, $alias.'.category', $operator, $dca, $value
             )
         );
@@ -376,7 +389,7 @@ class FilterQueryBuilder extends QueryBuilder
         array $dca
     ) {
         $event = System::getContainer()->get('event_dispatcher')->dispatch(
-            new AdjustFilterValueEvent($value ?? null, \is_array($data) ? $data : [], $element, $name, $config, $dca),
+            new AdjustFilterValueEvent($value ?? null, $data, $element, $name, $config, $dca),
             AdjustFilterValueEvent::NAME
         );
 
