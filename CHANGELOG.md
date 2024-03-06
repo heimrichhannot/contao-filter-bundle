@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## prepared [2.0.0] - 2024-03-06
+- Added: support for contao 5
+- Removed: support for php <8.0
+- Removed: legacy dependencies
+- Changed: dependencies required for DI on some providers
+
 ## [1.28.2] - 2024-02-14
 - Fixed: backend redirect issue
 - Fixed: exception in field option choice
