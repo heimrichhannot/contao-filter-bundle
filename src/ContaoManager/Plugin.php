@@ -27,7 +27,7 @@ class Plugin implements BundlePluginInterface, ExtensionPluginInterface, Routing
     /**
      * {@inheritdoc}
      */
-    public function getBundles(ParserInterface $parser)
+    public function getBundles(ParserInterface $parser): array
     {
         return [
             BundleConfig::create(HeimrichHannotContaoFilterBundle::class)->setLoadAfter([ContaoCoreBundle::class, 'blocks']),
@@ -41,7 +41,7 @@ class Plugin implements BundlePluginInterface, ExtensionPluginInterface, Routing
      *
      * @return
      */
-    public function getExtensionConfig($extensionName, array $extensionConfigs, ContainerBuilder $container)
+    public function getExtensionConfig($extensionName, array $extensionConfigs, ContainerBuilder $container): array
     {
         if ('framework' === $extensionName) {
             foreach ($extensionConfigs as &$extensionConfig) {
@@ -64,7 +64,7 @@ class Plugin implements BundlePluginInterface, ExtensionPluginInterface, Routing
             if ($activeExtensionName === $extensionName && file_exists($configFile))
             {
                 $config = Yaml::parseFile($configFile);
-                $extensionConfigs = array_merge_recursive(\is_array($extensionConfigs) ? $extensionConfigs : [], \is_array($config) ? $config : []);
+                $extensionConfigs = array_merge_recursive($extensionConfigs, is_array($config) ? $config : []);
             }
             return $extensionConfigs;
         };
@@ -79,6 +79,7 @@ class Plugin implements BundlePluginInterface, ExtensionPluginInterface, Routing
 
     /**
      * {@inheritdoc}
+     * @throws \Exception
      */
     public function getRouteCollection(LoaderResolverInterface $resolver, KernelInterface $kernel): ?RouteCollection
     {

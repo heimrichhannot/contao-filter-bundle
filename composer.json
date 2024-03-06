@@ -52,7 +52,8 @@
   },
   "conflict": {
     "contao/core": "*",
-    "contao/manager-plugin": "<2.0 || >=3.0"
+    "contao/manager-plugin": "<2.0 || >=3.0",
+    "heimrichhannot/contao-blocks": "<2.0@beta"
   },
   "autoload": {
     "psr-4": {

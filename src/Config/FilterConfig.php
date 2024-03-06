@@ -10,13 +10,13 @@ namespace HeimrichHannot\FilterBundle\Config;
 
 use Contao\Controller;
 use Contao\CoreBundle\Framework\ContaoFramework;
-use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\CoreBundle\InsertTag\InsertTagParser;
 use Contao\Environment;
 use Contao\Input;
-use Contao\InsertTags;
 use Contao\System;
+use DateTime;
 use Doctrine\DBAL\Connection;
+use HeimrichHannot\FilterBundle\Choice\TypeChoice;
 use HeimrichHannot\FilterBundle\Event\FilterConfigInitEvent;
 use HeimrichHannot\FilterBundle\Event\FilterFormAdjustOptionsEvent;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
@@ -32,10 +32,9 @@ use HeimrichHannot\FilterBundle\Model\FilterConfigModel;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 use HeimrichHannot\FilterBundle\Session\FilterSession;
 use HeimrichHannot\FilterBundle\Util\DatabaseUtilPolyfill;
-use HeimrichHannot\TwigSupportBundle\Filesystem\TwigTemplateLocator;
+use HeimrichHannot\FilterBundle\Util\TwigSupportPolyfill\TwigTemplateLocator;
 use HeimrichHannot\UtilsBundle\Util\Utils;
-use Symfony\Component\DependencyInjection\Container;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use JsonSerializable;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
@@ -47,7 +46,7 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 
-class FilterConfig implements \JsonSerializable
+class FilterConfig implements JsonSerializable
 {
     const FILTER_TYPE_DEFAULT = 'filter';
     const FILTER_TYPE_SORT = 'sort';
@@ -171,7 +170,7 @@ class FilterConfig implements \JsonSerializable
         }
 
         if (!$configuration['skipAjax'] && $this->requestStack->getCurrentRequest()->isXmlHttpRequest()) {
-            $this->container->get('huh.filter.util.filter_ajax')->updateData($this);
+            System::getContainer()->get('huh.filter.util.filter_ajax')->updateData($this);
             $data = $this->getData();
         }
 
@@ -199,7 +198,27 @@ class FilterConfig implements \JsonSerializable
         $mode = self::QUERY_BUILDER_MODE_DEFAULT,
         bool $doNotChangeExistingQueryBuilder = false
     ): FilterQueryBuilder {
-        $queryBuilder = new FilterQueryBuilder($this->container, $this->framework, $this->queryBuilder->getConnection());
+        $container = System::getContainer();
+
+        /** @var Connection $connection */
+        $container->get('database_connection');
+        /** @var InsertTagParser $insertTagParser */
+        $insertTagParser = $container->get('contao.insert_tag.parser');
+        /** @var FilterCollection $filterCollection */
+        $filterCollection = $container->get(FilterCollection::class);
+        /** @var Utils $utils */
+        $dbUtil = $container->get(Utils::class);
+        /** @var DatabaseUtilPolyfill $dbUtil */
+        $dbUtil = $container->get(DatabaseUtilPolyfill::class);
+
+        $queryBuilder = new FilterQueryBuilder(
+            $this->framework,
+            $connection,
+            $insertTagParser,
+            $filterCollection,
+            $utils,
+            $dbUtil
+        );
 
         if ($doNotChangeExistingQueryBuilder) {
             $this->doInitQueryBuilder(
@@ -231,9 +250,9 @@ class FilterConfig implements \JsonSerializable
             return;
         }
 
-        $types = $this->container->get('huh.filter.choice.type')->getCachedChoices();
+        $types = System::getContainer()->get(TypeChoice::class)->getCachedChoices();
 
-        if (!\is_array($types) || empty($types)) {
+        if (!is_array($types) || empty($types)) {
             return;
         }
 
@@ -251,7 +270,8 @@ class FilterConfig implements \JsonSerializable
             if (!isset($types[$element->type])
                 || in_array($element->id, $skipElements)
                 || $mode === static::QUERY_BUILDER_MODE_INITIAL_ONLY && !$initial
-                || $mode === static::QUERY_BUILDER_MODE_SKIP_INITIAL && $initial) {
+                || $mode === static::QUERY_BUILDER_MODE_SKIP_INITIAL && $initial)
+            {
                 continue;
             }
 
@@ -270,10 +290,9 @@ class FilterConfig implements \JsonSerializable
                 continue;
             }
 
-            if (!$type::isEnabledForCurrentContext([
-                'filterConfigElementModel' => $element,
-                'table' => $this->getFilter()['dataContainer'],
-            ])) {
+            if (!$type::isEnabledForCurrentContext(
+                ['filterConfigElementModel' => $element, 'table' => $this->getFilter()['dataContainer']]))
+            {
                 continue;
             }
 
@@ -521,10 +540,10 @@ class FilterConfig implements \JsonSerializable
 
     public function getFilterTemplateByName(string $name)
     {
-        $config = $this->container->getParameter('huh.filter');
+        $config = System::getContainer()->getParameter('huh.filter');
 
         if (!isset($config['filter']['templates'])) {
-            return $this->container->get(TwigTemplateLocator::class)->getTemplatePath($name);
+            return System::getContainer()->get(TwigTemplateLocator::class)->getTemplatePath($name);
         }
 
         $templates = $config['filter']['templates'];
@@ -535,7 +554,7 @@ class FilterConfig implements \JsonSerializable
             }
         }
 
-        return $this->container->get(TwigTemplateLocator::class)->getTemplatePath($name);
+        return System::getContainer()->get(TwigTemplateLocator::class)->getTemplatePath($name);
     }
 
     /**
@@ -575,7 +594,7 @@ class FilterConfig implements \JsonSerializable
      */
     public function getAction()
     {
-        $router = $this->container->get('router');
+        $router = System::getContainer()->get('router');
 
         $filter = $this->getFilter();
 
@@ -603,7 +622,7 @@ class FilterConfig implements \JsonSerializable
     public function getPreselectAction(array $data = [], bool $absoluteUrl = false): ?string
     {
         /** @var RouterInterface $router */
-        $router = $this->container->get('router');
+        $router = System::getContainer()->get('router');
 
         $filter = $this->getFilter();
 
@@ -624,7 +643,7 @@ class FilterConfig implements \JsonSerializable
     public function handleRequest(Request $request = null): void
     {
         if (null === $request) {
-            $request = $this->container->get('request_stack')->getCurrentRequest();
+            $request = System::getContainer()->get('request_stack')->getCurrentRequest();
         }
 
         if ($request->query->has(FilterType::FILTER_RESET_URL_PARAMETER_NAME)) {
@@ -666,14 +685,14 @@ class FilterConfig implements \JsonSerializable
     /**
      * Maps the data of the current forms and update builder data.
      */
-    protected function mapFormsToData()
+    protected function mapFormsToData(): void
     {
         $data = [];
 
         try {
             // in case of form configuration did change (e.g. choice from single to multiple value), we need to reset form data
             $forms = $this->builder->getForm();
-        } catch (TransformationFailedException $e) {
+        } catch (TransformationFailedException) {
             $this->resetData();
             $this->builder->setData($this->getData());
             $forms = $this->builder->getForm();
@@ -693,7 +712,7 @@ class FilterConfig implements \JsonSerializable
             if (null !== $propertyPath && $config->getMapped() && $form->isSynchronized() && !$form->isDisabled()) {
                 // If the field is of type DateTime and the data is the same skip the update to
                 // keep the original object hash
-                if ($form->getData() instanceof \DateTime && $form->getData() === $propertyAccessor->getValue($data,
+                if ($form->getData() instanceof DateTime && $form->getData() === $propertyAccessor->getValue($data,
                         $propertyPath)) {
                     continue;
                 }

@@ -31,7 +31,7 @@ use const PHP_URL_HOST;
 /**
  * Handles the filter frontend ajax routes.
  *
- * @Route(defaults={"_scope" = "frontend", "_token_check" = true})
+ * @Route(defaults={"_scope" = "frontend", "_token_check" = true}, name=FrontendAjaxController::ROUTE_NAME_AJAX)
  */
 class FrontendAjaxController extends AbstractController
 {

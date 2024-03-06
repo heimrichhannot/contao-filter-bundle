@@ -8,7 +8,7 @@
 
 namespace HeimrichHannot\FilterBundle\EventListener;
 
-use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
+use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\PageModel;
 use Contao\System;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
@@ -16,21 +16,12 @@ use HeimrichHannot\FilterBundle\Form\FilterType;
 
 class InsertTagsListener
 {
-    /**
-     * @var array
-     */
-    private $supportedFilterTags = [
+    private array $supportedFilterTags = [
         'filter_reset_url',
     ];
+    private ContaoFramework $framework;
 
-    /**
-     * Contao framework.
-     *
-     * @var ContaoFrameworkInterface
-     */
-    private $framework;
-
-    public function __construct(ContaoFrameworkInterface $framework)
+    public function __construct(ContaoFramework $framework)
     {
         $this->framework = $framework;
     }
@@ -67,27 +58,26 @@ class InsertTagsListener
      *
      * @return string
      */
-    private function replaceFilterInsertTag(string $insertTag, FilterConfig $filterConfig, array $elements = [])
+    private function replaceFilterInsertTag(string $insertTag, FilterConfig $filterConfig, array $elements = []): string
     {
-        switch ($insertTag) {
-            case 'filter_reset_url':
-                if (!isset($elements[0])) {
-                    return '';
-                }
-
-                /** @var PageModel $page */
-                $page = $this->framework->createInstance(PageModel::class);
-
-                if (null === ($page = $page->findByIdOrAlias($elements[0]))) {
-                    return '';
-                }
-
-                $url = $page->getFrontendUrl();
-                $url .= '?'.FilterType::FILTER_RESET_URL_PARAMETER_NAME.'='.$filterConfig->getId();
-
-                return $url;
+        if ($insertTag !== 'filter_reset_url') {
+            return '';
         }
 
-        return '';
+        if (!isset($elements[0])) {
+            return '';
+        }
+
+        /** @var PageModel $page */
+        $page = $this->framework->createInstance(PageModel::class);
+
+        if (null === ($page = $page->findByIdOrAlias($elements[0]))) {
+            return '';
+        }
+
+        $url = $page->getFrontendUrl();
+        $url .= '?' . FilterType::FILTER_RESET_URL_PARAMETER_NAME . '=' . $filterConfig->getId();
+
+        return $url;
     }
 }

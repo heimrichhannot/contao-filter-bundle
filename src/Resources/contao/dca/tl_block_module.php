@@ -6,9 +6,11 @@
  * @license LGPL-3.0-or-later
  */
 
-use HeimrichHannot\Blocks\BlockModuleModel;
+use HeimrichHannot\Blocks\Model\BlockModuleModel;
+use HeimrichHannot\Blocks\BlockModuleModel as LegacyBlockModuleModel;
 
-if (class_exists(BlockModuleModel::class)) {
+if (class_exists(BlockModuleModel::class) || class_exists(LegacyBlockModuleModel::class))
+{
     $dca = &$GLOBALS['TL_DCA']['tl_block_module'];
 
     $dca['palettes']['__selector__'][] = 'useFilter';

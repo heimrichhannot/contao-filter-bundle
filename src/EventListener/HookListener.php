@@ -9,14 +9,15 @@
 namespace HeimrichHannot\FilterBundle\EventListener;
 
 use Contao\System;
-use HeimrichHannot\Blocks\BlockModuleModel;
+use HeimrichHannot\Blocks\Model\BlockModuleModel;
+use HeimrichHannot\Blocks\BlockModuleModel as LegacyBlockModuleModel;
 
 class HookListener
 {
     /**
      * exclude/include BlockModule by filter parameter.
      */
-    public function isBlockVisible(BlockModuleModel $block): bool
+    public function isBlockVisible(BlockModuleModel|LegacyBlockModuleModel $block): bool
     {
         if ($block->useFilter) {
             $sessionKey = System::getContainer()->get('huh.filter.manager')->findById($block->filter)->getSessionKey();

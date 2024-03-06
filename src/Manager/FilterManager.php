@@ -13,6 +13,7 @@ use Contao\System;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\Model\FilterConfigModel;
+use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 use HeimrichHannot\FilterBundle\Session\FilterSession;
 use HeimrichHannot\UtilsBundle\Util\Utils;
 use Contao\Model\Collection;
@@ -44,10 +45,13 @@ class FilterManager
      *
      * @param array $skipElements Array with tl_filter_config_element ids that should be skipped on initQueryBuilder
      *
-     * @return \HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder|null
+     * @return FilterQueryBuilder|null
      */
-    public function getQueryBuilder(int $id, array $skipElements = [], bool $doNotChangeExistingQueryBuilder = false)
-    {
+    public function getQueryBuilder(
+        int $id,
+        array $skipElements = [],
+        bool $doNotChangeExistingQueryBuilder = false
+    ): ?FilterQueryBuilder {
         if (null === ($config = $this->findById($id))) {
             return null;
         }
@@ -63,10 +67,13 @@ class FilterManager
      *
      * @param array $skipElements Array with tl_filter_config_element ids that should be skipped on initQueryBuilder
      *
-     * @return \HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder|null
+     * @return FilterQueryBuilder|null
      */
-    public function getInitialQueryBuilder(int $id, array $skipElements = [], bool $doNotChangeExistingQueryBuilder = false)
-    {
+    public function getInitialQueryBuilder(
+        int $id,
+        array $skipElements = [],
+        bool $doNotChangeExistingQueryBuilder = false
+    ): ?FilterQueryBuilder {
         $config = $this->findById($id);
         if (null === $config) {
             return null;

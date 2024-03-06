@@ -31,7 +31,7 @@ class FilterCollection
             'published' => false,
         ], $options);
 
-        if (\is_int($filterConfigElement)) {
+        if (is_int($filterConfigElement)) {
             $filterConfigElement = FilterConfigElementModel::findById($filterConfigElement);
         }
 
@@ -99,7 +99,7 @@ class FilterCollection
     {
         $class = null;
 
-        if (!isset($this->bundleConfig['filter']['types']) || !\is_array($this->bundleConfig['filter']['types'])) {
+        if (!isset($this->bundleConfig['filter']['types']) || !is_array($this->bundleConfig['filter']['types'])) {
             return $class;
         }
 

@@ -8,7 +8,7 @@
 
 namespace HeimrichHannot\FilterBundle\Form;
 
-use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
+use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Environment;
 use Contao\System;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
@@ -28,17 +28,13 @@ class FilterType extends AbstractType
     const FILTER_FORM_SUBMITTED = 'f_submitted';
     const FILTER_PAGE_ID_NAME = 'f_pageId';
 
-    /**
-     * @var FilterConfig|null
-     */
-    protected $config;
+    protected ?FilterConfig $config;
+    protected ?ContaoFramework $framework;
 
     /**
-     * @var ContaoFrameworkInterface
+     * @throws \Exception
      */
-    protected $framework;
-
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         if (!isset($options['filter']) || !$options['filter'] instanceof FilterConfig) {
             throw new MissingFilterConfigException('Missing filter configuration.');
@@ -104,7 +100,7 @@ class FilterType extends AbstractType
         $this->buildElements($builder, $options);
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'filter' => null,
@@ -115,7 +111,7 @@ class FilterType extends AbstractType
     /**
      * Build the form fields for the given elements.
      */
-    protected function buildElements(FormBuilderInterface $builder, array $options)
+    protected function buildElements(FormBuilderInterface $builder, array $options): void
     {
         $elements = $this->config->getElements();
 
@@ -191,7 +187,7 @@ class FilterType extends AbstractType
      */
     protected function buildWrapperElements(array $wrappers, FormBuilderInterface $builder, array $options)
     {
-        $types = \System::getContainer()->get('huh.filter.choice.type')->getCachedChoices();
+        $types = System::getContainer()->get('huh.filter.choice.type')->getCachedChoices();
 
         if (!\is_array($types) || empty($types)) {
             return;

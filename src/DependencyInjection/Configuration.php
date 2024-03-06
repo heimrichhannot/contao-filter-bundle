@@ -13,10 +13,7 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 class Configuration implements ConfigurationInterface
 {
-    /**
-     * @var bool
-     */
-    private $debug;
+    private bool $debug;
 
     /**
      * Constructor.
@@ -28,7 +25,7 @@ class Configuration implements ConfigurationInterface
         $this->debug = (bool) $debug;
     }
 
-    public function getConfigTreeBuilder()
+    public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder('huh');
 

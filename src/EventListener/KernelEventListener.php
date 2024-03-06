@@ -9,6 +9,7 @@
 namespace HeimrichHannot\FilterBundle\EventListener;
 
 use HeimrichHannot\FilterBundle\Controller\FrontendAjaxController;
+use InvalidArgumentException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -36,7 +37,7 @@ class KernelEventListener implements EventSubscriberInterface
                 if ($this->translator instanceof LocaleAwareInterface) {
                     try {
                         $this->translator->setLocale($locale);
-                    } catch (\InvalidArgumentException $e) {
+                    } catch (InvalidArgumentException) {
                         $this->translator->setLocale($request->getDefaultLocale());
                     }
                 }
@@ -44,7 +45,7 @@ class KernelEventListener implements EventSubscriberInterface
         }
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             KernelEvents::REQUEST => [['onKernelRequest', 10]],

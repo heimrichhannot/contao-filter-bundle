@@ -11,6 +11,7 @@ namespace HeimrichHannot\FilterBundle\EventListener\Contao;
 use Codefog\NewsCategoriesBundle\CodefogNewsCategoriesBundle;
 use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Exception;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 
 /**
@@ -28,6 +29,9 @@ class LoadDataContainerListener
         $this->connection = $connection;
     }
 
+    /**
+     * @throws Exception
+     */
     public function __invoke(string $table): void
     {
         if ('tl_filter_config' === $table) {
@@ -36,11 +40,8 @@ class LoadDataContainerListener
             }
         }
 
-        switch ($table) {
-            case FilterConfigElementModel::getTable():
-                $this->newsCategoriesSupport();
-
-                break;
+        if ($table == FilterConfigElementModel::getTable()) {
+            $this->newsCategoriesSupport();
         }
     }
 

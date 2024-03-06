@@ -59,9 +59,9 @@ class FilterPreselectContainer
 
         $dca = &$GLOBALS['TL_DCA']['tl_filter_preselect'];
 
-        if ($filterConfigElement->multiple) {
-            $dca['fields']['initialValueType']['options'];
-        }
+        // if ($filterConfigElement->multiple) {
+        //     $dca['fields']['initialValueType']['options'];
+        // }  # todo: why is this?
 
         $dca['fields']['initialValue']['inputType'] = 'select';
         $dca['fields']['initialValue']['options'] = $choices;

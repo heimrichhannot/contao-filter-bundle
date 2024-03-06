@@ -9,6 +9,7 @@
 namespace HeimrichHannot\FilterBundle\ContentElement;
 
 use Contao\ContentHyperlink;
+use Contao\CoreBundle\Image\Studio\FigureBuilder;
 use Contao\FilesModel;
 use Contao\StringUtil;
 use Contao\System;
@@ -37,7 +38,21 @@ class ContentFilterHyperlink extends ContentHyperlink
 
             if (null !== $objModel && is_file(TL_ROOT.'/'.$objModel->path)) {
                 $this->singleSRC = $objModel->path;
-                $this->addImageToTemplate($this->Template, $this->arrData, null, null, $objModel);
+
+                // $this->addImageToTemplate($this->Template, $this->arrData, null, null, $objModel);
+                // todo: tis right...?
+
+                /** @var FigureBuilder $figureBuilder */
+                $figureBuilder = System::getContainer()->get(FigureBuilder::class);
+
+                $figure = $figureBuilder->from($this->singleSRC)
+                    ->setSize($this->size)
+                    ->setMetadata($this->objModel->getMetadata())
+                    ->setOverwriteMetadata($this->objModel->getOverwriteMetadata())
+                    ->buildIfResourceExists();
+
+                $figure->applyLegacyTemplateData($this->Template);
+
                 $this->Template->useImage = true;
             }
         }

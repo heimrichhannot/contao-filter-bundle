@@ -19,7 +19,7 @@ class FormTypeExtension extends AbstractTypeExtension
     /**
      * Add the extra row_attr option.
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults(
             [
@@ -33,7 +33,7 @@ class FormTypeExtension extends AbstractTypeExtension
     /**
      * Pass the set row_attr options to the view.
      */
-    public function buildView(FormView $view, FormInterface $form, array $options)
+    public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         $view->vars['group_attr'] = isset($options['group_attr']) && \is_array($options['group_attr']) ? $options['group_attr'] : [];
         $view->vars['input_prepend'] = $options['input_group_prepend'];

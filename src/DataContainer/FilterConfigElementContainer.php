@@ -17,6 +17,7 @@ use HeimrichHannot\FilterBundle\Filter\FilterCollection;
 use HeimrichHannot\FilterBundle\Manager\FilterManager;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\Model\FilterConfigModel;
+use HeimrichHannot\UtilsBundle\Util\DcaUtil\GetDcaFieldsOptions;
 use HeimrichHannot\UtilsBundle\Util\Utils;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -125,10 +126,10 @@ class FilterConfigElementContainer
             return [];
         }
 
-        $fields = $this->utils->dca()->getDcaFields($filterConfig->getFilter()['dataContainer'], [
-            'onlyDatabaseFields' => true,
-            'localizeLabels' => true,
-        ]);
+        $fieldOptions = GetDcaFieldsOptions::create()
+            ->setOnlyDatabaseFields(true)
+            ->setLocalizeLabels(true);
+        $fields = $this->utils->dca()->getDcaFields($filterConfig->getFilter()['dataContainer'], $fieldOptions);
 
         $options = [];
 
@@ -180,11 +181,10 @@ class FilterConfigElementContainer
             return [];
         }
 
-
-        $fields = $this->utils->dca()->getDcaFields($model->childTable, [
-            'onlyDatabaseFields' => true,
-            'localizeLabels' => true,
-        ]);
+        $fieldOptions = GetDcaFieldsOptions::create()
+            ->setOnlyDatabaseFields(true)
+            ->setLocalizeLabels(true);
+        $fields = $this->utils->dca()->getDcaFields($model->childTable, $fieldOptions);
 
         $options = [];
 

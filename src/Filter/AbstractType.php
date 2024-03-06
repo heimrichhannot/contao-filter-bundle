@@ -11,12 +11,16 @@ namespace HeimrichHannot\FilterBundle\Filter;
 use Ausi\SlugGenerator\SlugGenerator;
 use Ausi\SlugGenerator\SlugOptions;
 use Contao\Controller;
+use Contao\CoreBundle\InsertTag\InsertTagParser;
 use Contao\StringUtil;
 use Contao\System;
+use DateTime;
+use Exception;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
 use HeimrichHannot\FilterBundle\Event\AdjustFilterOptionsEvent;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
+use HeimrichHannot\UtilsBundle\Util\Utils;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -58,86 +62,60 @@ abstract class AbstractType
     {
         $name = $this->getDefaultName($element) ?: $element->field;
 
-        if (true === (bool) $element->customName && '' !== $element->name) {
+        if ($element->customName && '' !== $element->name) {
             $name = $element->name;
         }
 
         if ('' === $name) {
-            $name = (new SlugGenerator((new SlugOptions)->setValidChars('a-z0-9_')->setDelimiter('_')))->generate($element->title);
+            $slugOptions = new SlugOptions();
+            $slugOptions->setValidChars('a-z0-9_')->setDelimiter('_');
+            $slugGenerator = new SlugGenerator($slugOptions);
+            $name = $slugGenerator->generate($element->title);
         }
 
         return $name;
     }
 
-    public static function getDefaultValue(FilterConfigElementModel $element)
+    public static function getDefaultValue(FilterConfigElementModel $element): array|string
     {
-        switch ($element->defaultValueType) {
-            case static::VALUE_TYPE_ARRAY:
-                $value = array_map(function ($val) {
-                    return System::getContainer()->get(\HeimrichHannot\UtilsBundle\String\StringUtil::class)->replaceInsertTags($val['value']);
-                }, StringUtil::deserialize($element->defaultValueArray, true));
+        /** @var InsertTagParser $insertTagParser */
+        $insertTagParser = System::getContainer()->get('contao.insert_tag.parser');
 
-                break;
-
-            default:
-                $value = System::getContainer()->get(\HeimrichHannot\UtilsBundle\String\StringUtil::class)->replaceInsertTags($element->defaultValue, false);
-
-                break;
-        }
-
-        return $value;
+        return match ($element->defaultValueType) {
+            static::VALUE_TYPE_ARRAY => array_map(function ($val) use ($insertTagParser) {
+                return $insertTagParser->replace($val['value']);
+            }, StringUtil::deserialize($element->defaultValueArray, true)),
+            default => $insertTagParser->replace($element->defaultValue),
+        };
     }
 
     public static function getInitialValue(FilterConfigElementModel $element, array $contextualValues = [])
     {
-        $value = null;
-
-        switch ($element->initialValueType) {
-            case static::VALUE_TYPE_ARRAY:
-                $value = array_map(function ($val) {
-                    return $val['value'];
-                }, StringUtil::deserialize($element->initialValueArray, true));
-
-                break;
-
-            case static::VALUE_TYPE_CONTEXTUAL:
-                if (isset($contextualValues[$element->field])) {
-                    $value = $contextualValues[$element->field];
-                }
-
-                break;
-
-            default:
-                $value = $element->initialValue;
-
-                break;
-        }
+        $value = match ($element->initialValueType) {
+            static::VALUE_TYPE_ARRAY => array_map(function ($val) {
+                return $val['value'];
+            }, StringUtil::deserialize($element->initialValueArray, true)),
+            static::VALUE_TYPE_CONTEXTUAL => $contextualValues[$element->field] ?? null,
+            default => $element->initialValue,
+        };
 
         // multilingual initial values
-        if ($element->addMultilingualInitialValues) {
-            foreach (StringUtil::deserialize($element->multilingualInitialValues, true) as $row) {
-                if ($GLOBALS['TL_LANGUAGE'] === $row['language']) {
-                    switch ($row['initialValueType']) {
-                        case static::VALUE_TYPE_ARRAY:
-                            $value = $row['initialValueArray'];
-
-                            break;
-
-                        case static::VALUE_TYPE_CONTEXTUAL:
-                            if (isset($contextualValues[$element->field])) {
-                                $value = $contextualValues[$element->field];
-                            }
-
-                            break;
-
-                        default:
-                            $value = $row['initialValue'];
-
-                            break;
-                    }
-
-                    break;
+        if ($element->addMultilingualInitialValues)
+        {
+            $rows = StringUtil::deserialize($element->multilingualInitialValues, true);
+            foreach ($rows as $row)
+            {
+                if ($GLOBALS['TL_LANGUAGE'] !== $row['language']) {
+                    continue;
                 }
+
+                $value = match ($row['initialValueType']) {
+                    static::VALUE_TYPE_ARRAY => $row['initialValueArray'],
+                    static::VALUE_TYPE_CONTEXTUAL => $contextualValues[$element->field] ?? $value,
+                    default => $row['initialValue'],
+                };
+
+                break;
             }
         }
 
@@ -170,7 +148,8 @@ abstract class AbstractType
      *
      * @param FilterConfigElementModel $element The element data
      *
-     * @return string|null The returned string must be an operator defined in \HeimrichHannot\UtilsBundle\Database\DatabaseUtil::OPERATORS
+     * @return string|null The returned string must be an operator defined in
+     *     \HeimrichHannot\UtilsBundle\Database\DatabaseUtil::OPERATORS
      */
     abstract public function getDefaultOperator(FilterConfigElementModel $element);
 
@@ -232,16 +211,16 @@ abstract class AbstractType
             $options['data'] = static::getDefaultValue($element);
         }
 
-        if (true === (bool) $element->addPlaceholder && '' !== $element->placeholder) {
+        if ($element->addPlaceholder && $element->placeholder) {
             $options['attr']['placeholder'] = $this->translator->trans($element->placeholder, ['%label%' => $this->translator->trans($options['label']) ?: $element->title]);
         }
 
-        if ('' !== $element->cssClass) {
+        if ($element->cssClass) {
             $options['attr']['class'] = $element->cssClass;
         }
 
-        if (true === (bool) $element->inputGroup) {
-            if ('' !== $element->inputGroupPrepend) {
+        if ($element->inputGroup) {
+            if ($element->inputGroupPrepend) {
                 $prepend = $element->inputGroupPrepend;
 
                 if ($this->translator->getCatalogue()->has($prepend)) {
@@ -251,7 +230,7 @@ abstract class AbstractType
                 $options['input_group_prepend'] = $prepend;
             }
 
-            if ('' !== $element->inputGroupAppend) {
+            if ($element->inputGroupAppend) {
                 $append = $element->inputGroupAppend;
 
                 if ($this->translator->getCatalogue()->has($append)) {
@@ -317,32 +296,17 @@ abstract class AbstractType
      *
      * @return int The min date as timestamp
      */
-    protected function getMinDate(FilterConfigElementModel $element)
+    protected function getMinDate(FilterConfigElementModel $element): int
     {
-        $field = null;
+        $field = match ($element->type) {
+            'time' => 'minTime',
+            'date' => 'minDate',
+            'date_time' => 'minDateTime',
+            default => null,
+        };
 
-        switch ($element->type) {
-            case 'time':
-                $field = 'minTime';
-
-                break;
-
-            case 'date':
-                $field = 'minDate';
-
-                break;
-
-            case 'date_time':
-                $field = 'minDateTime';
-
-                break;
-        }
-
-        if (null === $field || !isset($element->{$field}) || '' === $element->{$field}) {
-            return 0;
-        }
-
-        return System::getContainer()->get('huh.utils.date')->getTimeStamp($element->{$field});
+        $date = $element->{$field} ?? null;
+        return $this->getTimeStamp($date) ?? 0;
     }
 
     /**
@@ -350,32 +314,50 @@ abstract class AbstractType
      *
      * @return int The max date as timestamp
      */
-    protected function getMaxDate(FilterConfigElementModel $element)
+    protected function getMaxDate(FilterConfigElementModel $element): int
     {
-        $field = null;
+        $field = match ($element->type) {
+            'time' => 'maxTime',
+            'date' => 'maxDate',
+            'date_time' => 'maxDateTime',
+            default => null,
+        };
 
-        switch ($element->type) {
-            case 'time':
-                $field = 'maxTime';
+        $date = $element->{$field} ?? null;
+        return $this->getTimeStamp($date) ?? 9999999999999;
+    }
 
-                break;
-
-            case 'date':
-                $field = 'maxDate';
-
-                break;
-
-            case 'date_time':
-                $field = 'maxDateTime';
-
-                break;
+    /**
+     * @internal For the transferred polyfill below, see:
+     *   {@see https://github.com/heimrichhannot/contao-utils-bundle/blob/ee122d2e267a60aa3200ce0f40d92c22028988e8/src/Date/DateUtil.php#L45}
+     */
+    protected function getTimeStamp(mixed $date): ?int
+    {
+        if (empty($date)) {
+            return null;
         }
 
-        if (null === $field || !isset($element->{$field}) || '' === $element->{$field}) {
-            return 9999999999999;
+        /** @var InsertTagParser $insertTagParser */
+        $insertTagParser = System::getContainer()->get('contao.insert_tag.parser');
+        $date = $insertTagParser->replace(strval($date));
+
+        if (is_numeric($date)) {
+            $dateTime = new DateTime(null, null);
+            $dateTime->setTimestamp($date);
+            return $dateTime->getTimestamp();
         }
 
-        return System::getContainer()->get('huh.utils.date')->getTimeStamp($element->{$field});
+        $timeStr = strtotime($date);
+        if ($timeStr !== false) {
+            try {
+                $dateTime = new DateTime($timeStr, null);
+                return $dateTime->getTimestamp();
+            } catch (Exception) {
+                return null;
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -383,7 +365,7 @@ abstract class AbstractType
      */
     protected function getCustomOptions(FilterConfigElementModel $element): ?array
     {
-        if (false === (bool) $element->customOptions) {
+        if (!$element->customOptions) {
             return null;
         }
 

@@ -10,6 +10,7 @@ namespace HeimrichHannot\FilterBundle\Controller;
 
 use Contao\CoreBundle\Exception\PageNotFoundException;
 use Contao\CoreBundle\Framework\ContaoFramework;
+use Contao\Input;
 use Contao\Validator;
 use HeimrichHannot\FilterBundle\Exception\HandleFormException;
 use HeimrichHannot\FilterBundle\Exception\MissingFilterException;
@@ -40,19 +41,17 @@ class FrontendController extends AbstractController
      */
     protected $filterManager;
     /**
-     * @var Utils
-     */
-    private $utils;
-    /**
      * @var RouterInterface
      */
     private $router;
 
-    public function __construct(ContaoFramework $framework, FilterManager $filterManager, Utils $utils, RouterInterface $router)
-    {
+    public function __construct(
+        ContaoFramework $framework,
+        FilterManager $filterManager,
+        RouterInterface $router
+    ) {
         $this->framework = $framework;
         $this->filterManager = $filterManager;
-        $this->utils = $utils;
         $this->router = $router;
     }
 
@@ -73,9 +72,9 @@ class FrontendController extends AbstractController
             throw new MissingFilterException('A filter with id '.$id.' does not exist.');
         }
 
-        $data = $request->query->get('data');
+        $data = Input::get('data');
 
-        $filter->setData(\is_array($data) ? $data : []);
+        $filter->setData(is_array($data) ? $data : []);
 
         $url = $filter->getUrl();
 
@@ -84,7 +83,7 @@ class FrontendController extends AbstractController
                 isset($data[FilterType::FILTER_REFERRER_NAME])
                 && !empty($data[FilterType::FILTER_REFERRER_NAME])
                 && Validator::isUrl($data[FilterType::FILTER_REFERRER_NAME])
-                && $this->utils->string()->startsWith($data[FilterType::FILTER_REFERRER_NAME], $request->getSchemeAndHttpHost())
+                && str_starts_with($data[FilterType::FILTER_REFERRER_NAME], $request->getSchemeAndHttpHost())
             ) {
                 try {
                     $this->router->match(parse_url($data[FilterType::FILTER_REFERRER_NAME], \PHP_URL_PATH));
