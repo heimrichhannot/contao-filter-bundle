@@ -1,14 +1,14 @@
 <?php
 
 /*
- * Copyright (c) 2022 Heimrich & Hannot GmbH
+ * Copyright (c) 2024 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
 
 namespace HeimrichHannot\FilterBundle\Util;
 
-use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
+use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\StringUtil;
 use Contao\System;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
@@ -17,12 +17,9 @@ use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 
 class FilterPreselectUtil
 {
-    /**
-     * @var ContaoFrameworkInterface
-     */
-    protected $framework;
+    protected ContaoFramework $framework;
 
-    public function __construct(ContaoFrameworkInterface $framework)
+    public function __construct(ContaoFramework $framework)
     {
         $this->framework = $framework;
     }
@@ -38,13 +35,16 @@ class FilterPreselectUtil
      */
     public function getPreselectQueryBuilder(int $id, FilterQueryBuilder $queryBuilder, array $preselections): FilterQueryBuilder
     {
-        if (null === ($filterConfig = System::getContainer()->get('huh.filter.manager')->findById($id)) || null === ($elements = $filterConfig->getElements())) {
+        $filterConfig = System::getContainer()->get('huh.filter.manager')->findById($id);
+        if (null === $filterConfig
+            || null === $filterConfig->getElements())
+        {
             return $queryBuilder;
         }
 
-        $types = \System::getContainer()->get('huh.filter.choice.type')->getCachedChoices();
+        $types = System::getContainer()->get('huh.filter.choice.type')->getCachedChoices();
 
-        if (!\is_array($types) || empty($types)) {
+        if (!is_array($types) || empty($types)) {
             return $queryBuilder;
         }
 
@@ -54,7 +54,8 @@ class FilterPreselectUtil
         $filterConfig->setData($preselectionData);
 
         /** @var FilterPreselectModel $preselection */
-        foreach ($preselections as $preselection) {
+        foreach ($preselections as $preselection)
+        {
             $element = $filterConfig->getElementByValue($preselection->element);
 
             if (!isset($types[$element->type])) {
@@ -68,14 +69,14 @@ class FilterPreselectUtil
                 continue;
             }
 
-            /** @var \HeimrichHannot\FilterBundle\Filter\AbstractType $type */
+            /** @var AbstractType $type */
             $type = new $class($filterConfig);
 
-            if (!is_subclass_of($type, \HeimrichHannot\FilterBundle\Filter\AbstractType::class)) {
+            if (!is_subclass_of($type, AbstractType::class)) {
                 continue;
             }
 
-            if (null === ($name = $type->getName($element))) {
+            if (null === $type->getName($element)) {
                 continue;
             }
 
@@ -98,18 +99,22 @@ class FilterPreselectUtil
     {
         $data = [];
 
-        if (null === ($filterConfig = System::getContainer()->get('huh.filter.manager')->findById($id)) || null === ($elements = $filterConfig->getElements())) {
+        $filterConfig = System::getContainer()->get('huh.filter.manager')->findById($id);
+        if (null === $filterConfig
+            || null === $filterConfig->getElements())
+        {
             return $data;
         }
 
-        $types = \System::getContainer()->get('huh.filter.choice.type')->getCachedChoices();
+        $types = System::getContainer()->get('huh.filter.choice.type')->getCachedChoices();
 
-        if (!\is_array($types) || empty($types)) {
+        if (!is_array($types) || empty($types)) {
             return $data;
         }
 
         // set initial filters
-        foreach ($filterConfig->getElements() as $element) {
+        foreach ($filterConfig->getElements() as $element)
+        {
             if (!$element->isInitial || !isset($types[$element->type])) {
                 continue;
             }
@@ -121,14 +126,15 @@ class FilterPreselectUtil
                 continue;
             }
 
-            /** @var \HeimrichHannot\FilterBundle\Filter\AbstractType $type */
+            /** @var AbstractType $type */
             $type = new $class($filterConfig);
 
-            if (!is_subclass_of($type, \HeimrichHannot\FilterBundle\Filter\AbstractType::class)) {
+            if (!is_subclass_of($type, AbstractType::class)) {
                 continue;
             }
 
-            if (null === ($name = $type->getName($element))) {
+            $name = $type->getName($element);
+            if (null === $name) {
                 continue;
             }
 
@@ -136,7 +142,8 @@ class FilterPreselectUtil
         }
 
         /** @var FilterPreselectModel $preselection */
-        foreach ($preselections as $preselection) {
+        foreach ($preselections as $preselection)
+        {
             $element = $filterConfig->getElementByValue($preselection->element);
 
             if (!isset($types[$element->type])) {
@@ -150,14 +157,15 @@ class FilterPreselectUtil
                 continue;
             }
 
-            /** @var \HeimrichHannot\FilterBundle\Filter\AbstractType $type */
+            /** @var AbstractType $type */
             $type = new $class($filterConfig);
 
-            if (!is_subclass_of($type, \HeimrichHannot\FilterBundle\Filter\AbstractType::class)) {
+            if (!is_subclass_of($type, AbstractType::class)) {
                 continue;
             }
 
-            if (null === ($name = $type->getName($element))) {
+            $name = $type->getName($element);
+            if (null === $name) {
                 continue;
             }
 
@@ -172,27 +180,16 @@ class FilterPreselectUtil
      *
      * @return array|mixed|null
      */
-    public function getInitialValue(FilterPreselectModel $element)
+    public function getInitialValue(FilterPreselectModel $element): mixed
     {
-        $value = null;
-
-        switch ($element->initialValueType) {
-            case AbstractType::VALUE_TYPE_ARRAY:
-                $value = array_map(
-                    function ($val) {
-                        return $val['value'];
-                    },
-                    StringUtil::deserialize($element->initialValueArray, true)
-                );
-
-                break;
-
-            default:
-                $value = $element->initialValue;
-
-                break;
-        }
-
-        return $value;
+        return match ($element->initialValueType) {
+            AbstractType::VALUE_TYPE_ARRAY => array_map(
+                function ($val) {
+                    return $val['value'];
+                },
+                StringUtil::deserialize($element->initialValueArray, true)
+            ),
+            default => $element->initialValue,
+        };
     }
 }

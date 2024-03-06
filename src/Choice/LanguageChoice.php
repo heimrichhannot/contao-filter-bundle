@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2021 Heimrich & Hannot GmbH
+ * Copyright (c) 2024 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -13,6 +13,8 @@ use Contao\StringUtil;
 use Contao\System;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use Symfony\Component\Intl\Intl;
+use Symfony\Component\Intl\Locale;
+use Symfony\Component\Intl\Locales;
 
 class LanguageChoice extends FieldOptionsChoice
 {
@@ -86,7 +88,7 @@ class LanguageChoice extends FieldOptionsChoice
 
         $options = StringUtil::deserialize($element->languages, true);
 
-        $all = Intl::getLanguageBundle()->getLanguageNames();
+        $all = Locales::getNames();
 
         $options = array_intersect_key($all, array_flip($options));
 

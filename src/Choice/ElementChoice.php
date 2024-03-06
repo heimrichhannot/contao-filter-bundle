@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2021 Heimrich & Hannot GmbH
+ * Copyright (c) 2024 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -20,7 +20,7 @@ class ElementChoice extends AbstractChoice
     {
         $choices = [];
 
-        if (!\is_array($this->getContext()) || empty($this->getContext())) {
+        if (!is_array($this->getContext()) || empty($this->getContext())) {
             return $choices;
         }
 
@@ -30,18 +30,15 @@ class ElementChoice extends AbstractChoice
             return $choices;
         }
 
-        $context['types'] = isset($context['types']) && \is_array($context['types']) ? $context['types'] : [];
+        $context['types'] = isset($context['types']) && is_array($context['types']) ? $context['types'] : [];
 
         /**
          * @var FilterConfigElementModel
          */
         $adapter = $this->framework->getAdapter(FilterConfigElementModel::class);
+        $elements = $adapter->findPublishedByPidAndTypes($context['pid'], $context['types']);
 
-        if (null === $adapter) {
-            return $choices;
-        }
-
-        if (null === ($elements = $adapter->findPublishedByPidAndTypes($context['pid'], $context['types']))) {
+        if (null === $elements) {
             return $choices;
         }
 

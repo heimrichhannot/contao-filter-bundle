@@ -1,43 +1,43 @@
 <?php
 
 /*
- * Copyright (c) 2022 Heimrich & Hannot GmbH
+ * Copyright (c) 2024 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
 
 namespace HeimrichHannot\FilterBundle\Choice;
 
-use Contao\Controller;
 use Contao\CoreBundle\Framework\ContaoFramework;
+use Contao\CoreBundle\InsertTag\InsertTagParser;
 use Contao\Model\Collection;
 use Contao\StringUtil;
+use Contao\System;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
 use HeimrichHannot\FilterBundle\Filter\Type\PublishedType;
 use HeimrichHannot\FilterBundle\Filter\Type\SkipParentsType;
 use HeimrichHannot\FilterBundle\Filter\Type\SqlType;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\Util\AbstractChoice;
-use HeimrichHannot\UtilsBundle\Model\ModelUtil;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use HeimrichHannot\FilterBundle\Util\DatabaseUtilPolyfill;
+use HeimrichHannot\UtilsBundle\Util\Utils;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpKernel\KernelInterface;
 use const SORT_NUMERIC;
 
 class YearChoice extends AbstractChoice
 {
-    /**
-     * @var ModelUtil
-     */
-    private $modelUtil;
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
+    private InsertTagParser $insertTagParser;
 
-    public function __construct(ContainerInterface $container, ModelUtil $modelUtil, ContaoFramework $framework)
-    {
-        parent::__construct($framework);
-        $this->modelUtil = $modelUtil;
-        $this->container = $container;
+    public function __construct(
+        ContaoFramework $framework,
+        RequestStack $requestStack,
+        Utils $utils,
+        KernelInterface $kernel,
+        InsertTagParser $insertTagParser
+    ) {
+        parent::__construct($framework, $requestStack, $utils, $kernel);
+        $this->insertTagParser = $insertTagParser;
     }
 
     /**
@@ -45,7 +45,7 @@ class YearChoice extends AbstractChoice
      */
     protected function collect(): array
     {
-        if (!\is_array($this->getContext()) || empty($this->getContext())) {
+        if (!is_array($this->getContext()) || empty($this->getContext())) {
             return [];
         }
         $context = $this->getContext();
@@ -65,7 +65,7 @@ class YearChoice extends AbstractChoice
         foreach ($elements as $entry) {
             switch ($entry->type) {
                 case SkipParentsType::TYPE:
-                    $skipParentsType = new SkipParentsType($this->container->get('huh.filter.config'));
+                    $skipParentsType = new SkipParentsType(System::getContainer()->get('huh.filter.config'));
 
                     [$elementColumns, $elementValues] = $skipParentsType->buildQueryForModels($filter, $entry);
 
@@ -75,7 +75,7 @@ class YearChoice extends AbstractChoice
                     break;
 
                 case PublishedType::TYPE:
-                    $publishedType = new PublishedType($this->container->get('huh.filter.config'));
+                    $publishedType = new PublishedType(System::getContainer()->get('huh.filter.config'));
 
                     [$elementColumns, $elementValues] = $publishedType->buildQueryForModels($filter, $entry);
 
@@ -85,7 +85,7 @@ class YearChoice extends AbstractChoice
                     break;
 
                 case SqlType::TYPE:
-                    $columns[] = Controller::replaceInsertTags($entry->whereSql, false);
+                    $columns[] = $this->insertTagParser->parse($entry->whereSql);
 
                     break;
 
@@ -93,7 +93,7 @@ class YearChoice extends AbstractChoice
                     if ($entry->isInitial && $entry->id !== $element->id) {
                         switch ($entry->initialValueType) {
                             case AbstractType::VALUE_TYPE_SCALAR:
-                                $operator = $this->container->get('huh.utils.database')->transformVerboseOperator($entry->operator);
+                                $operator = DatabaseUtilPolyfill::transformVerboseOperator($entry->operator);
 
                                 $columns[] = $table.'.'.$entry->field.' '.$operator.' ?';
                                 $values[] = $entry->initialValue;
@@ -126,7 +126,7 @@ class YearChoice extends AbstractChoice
         if (empty($columns)) {
             return [];
         }
-        $items = $this->modelUtil->findModelInstancesBy($filter['dataContainer'], $columns, $values, $options);
+        $items = $this->utils->model()->findModelInstancesBy($filter['dataContainer'], $columns, $values, $options);
 
         if (!$items) {
             return [];
@@ -151,10 +151,11 @@ class YearChoice extends AbstractChoice
                 if (!$element->optionCountLabel) {
                     $years[$value] = $label.' ('.$entryCount[$value].')';
                 } else {
-                    $years[$value] = $this->container->get('translator')->trans($element->optionCountLabel, [
-                        '%value%' => $value,
-                        '%count%' => $entryCount[$value],
-                    ]);
+                    $years[$value] = System::getContainer()->get('translator')
+                        ->trans($element->optionCountLabel, [
+                            '%value%' => $value,
+                            '%count%' => $entryCount[$value],
+                        ]);
                 }
             }
         }

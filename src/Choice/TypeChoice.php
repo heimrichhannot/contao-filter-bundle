@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2021 Heimrich & Hannot GmbH
+ * Copyright (c) 2024 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -33,8 +33,14 @@ class TypeChoice extends AbstractChoice
             return $choices;
         }
 
-        if (null !== $this->getContext() && is_object($this->getContext()) && null !== $this->getContext()->id && null !== ($filterConfigElement = $this->framework->getAdapter(FilterConfigElementModel::class)->findById($this->getContext()->id)) && $filterConfigElement->pid > 0) {
-            if (null !== ($filterConfig = $this->framework->getAdapter(FilterConfigModel::class)->findById($filterConfigElement->pid)) && $filterConfig->type) {
+        $filterConfigElement = $this->framework->getAdapter(FilterConfigElementModel::class)->findById($this->getContext()->id);
+        if (is_object($this->getContext())
+            && null !== $this->getContext()->id
+            && null !== $filterConfigElement
+            && $filterConfigElement->pid > 0)
+        {
+            $filterConfig = $this->framework->getAdapter(FilterConfigModel::class)->findById($filterConfigElement->pid);
+            if (null !== $filterConfig && $filterConfig->type) {
                 $filterType = $filterConfig->type;
             }
         }

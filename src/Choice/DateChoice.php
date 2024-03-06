@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2021 Heimrich & Hannot GmbH
+ * Copyright (c) 2024 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -10,6 +10,7 @@ namespace HeimrichHannot\FilterBundle\Choice;
 
 use Contao\Controller;
 use Contao\CoreBundle\Framework\ContaoFramework;
+use Contao\CoreBundle\InsertTag\InsertTagParser;
 use Contao\Model\Collection;
 use Contao\StringUtil;
 use Contao\System;
@@ -21,22 +22,26 @@ use HeimrichHannot\FilterBundle\Filter\Type\YearType;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\Util\AbstractChoice;
 use HeimrichHannot\FilterBundle\Util\DatabaseUtilPolyfill;
-use HeimrichHannot\UtilsBundle\Model\ModelUtil;
 use HeimrichHannot\UtilsBundle\Util\Utils;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 class DateChoice extends AbstractChoice
 {
-    private Utils $utils;
     private DatabaseUtilPolyfill $dbUtil;
+    private InsertTagParser $insertTagParser;
 
     public function __construct(
         ContaoFramework $framework,
+        RequestStack $requestStack,
         Utils $utils,
-        DatabaseUtilPolyfill $dbUtil
+        KernelInterface $kernel,
+        DatabaseUtilPolyfill $dbUtil,
+        InsertTagParser $insertTagParser
     ) {
-        parent::__construct($framework);
-        $this->utils = $utils;
+        parent::__construct($framework, $requestStack, $utils, $kernel);
         $this->dbUtil = $dbUtil;
+        $this->insertTagParser = $insertTagParser;
     }
 
     /**
@@ -95,7 +100,7 @@ class DateChoice extends AbstractChoice
                     break;
 
                 case SqlType::TYPE:
-                    $columns[] = Controller::replaceInsertTags($entry->whereSql, false);
+                    $columns[] = $this->insertTagParser->replace($entry->whereSql);
 
                     break;
 
@@ -150,7 +155,7 @@ class DateChoice extends AbstractChoice
 
         foreach ($items as $entry) {
             $date = date($element->dateFormat, $entry->{$element->field});
-            $translatedDate = System::getContainer()->get('huh.utils.date')->translateMonths($date);
+            $translatedDate = $this->translateMonths($date);
 
             $dates[$translatedDate] = $translatedDate;
         }
@@ -158,5 +163,48 @@ class DateChoice extends AbstractChoice
         krsort($dates, SORT_NUMERIC);
 
         return $dates;
+    }
+
+    /**
+     * Translates available months inside a given string from English to the current language.
+     */
+    public function translateMonths(string $date): array|string
+    {
+        $monthsMap = array_flip($this->getMonthTranslationMap());
+        foreach ($monthsMap as $translated => $english) {
+            if (str_contains($date, $english)) {
+                $date = str_replace($english, $translated, $date);
+            }
+        }
+
+        $shortMonthsMap = array_flip($this->getMonthTranslationMap(true));
+        foreach ($shortMonthsMap as $translated => $english) {
+            if (str_contains($date, $english)) {
+                $date = str_replace($english, $translated, $date);
+            }
+        }
+
+        return $date;
+    }
+
+    public function getMonthTranslationMap(bool $short = false): array
+    {
+        $map = [];
+
+        $months = $short ? [
+            'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+            'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+        ] : [
+            'January', 'February', 'March', 'April', 'May', 'June',
+            'July', 'August', 'September', 'October', 'November', 'December',
+        ];
+
+        System::loadLanguageFile('default');
+
+        foreach ($GLOBALS['TL_LANG'][$short ? 'MONTHS_SHORT' : 'MONTHS'] as $index => $translated) {
+            $map[$months[$index]] = $translated;
+        }
+
+        return $map;
     }
 }

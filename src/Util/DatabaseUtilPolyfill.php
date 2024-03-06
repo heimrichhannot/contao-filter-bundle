@@ -231,7 +231,7 @@ class DatabaseUtilPolyfill
      * @return string|false The transformed operator or false if not supported
      * @internal https://github.com/heimrichhannot/contao-utils-bundle/blob/ee122d2e267a60aa3200ce0f40d92c22028988e8/src/Database/DatabaseUtil.php#L366
      */
-    public function transformVerboseOperator(string $verboseOperator): string|false
+    public static function transformVerboseOperator(string $verboseOperator): string|false
     {
         return match ($verboseOperator) {
             static::OPERATOR_LIKE => 'LIKE',

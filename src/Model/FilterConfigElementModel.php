@@ -1,13 +1,15 @@
 <?php
 
 /*
- * Copyright (c) 2023 Heimrich & Hannot GmbH
+ * Copyright (c) 2024 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
 
 namespace HeimrichHannot\FilterBundle\Model;
 
+use Contao\Database;
+use Contao\Date;
 use Contao\Model;
 use Contao\System;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
@@ -136,11 +138,7 @@ use HeimrichHannot\FilterBundle\Filter\AbstractType;
 class FilterConfigElementModel extends Model implements \JsonSerializable
 {
     protected static $strTable = 'tl_filter_config_element';
-
-    /**
-     * @var string
-     */
-    protected $formName;
+    protected ?string $formName = null;
 
     /**
      * Find published filte elements items by their parent ID.
@@ -157,7 +155,7 @@ class FilterConfigElementModel extends Model implements \JsonSerializable
         $arrColumns = ["$t.pid=?"];
 
         if (isset($arrOptions['ignoreFePreview']) || !\defined('BE_USER_LOGGED_IN') || !BE_USER_LOGGED_IN) {
-            $time = \Date::floorToMinute();
+            $time = Date::floorToMinute();
             $arrColumns[] = "($t.start='' OR $t.start<='$time') AND ($t.stop='' OR $t.stop>'".($time + 60)."') AND $t.published='1'";
         }
 
@@ -195,7 +193,7 @@ class FilterConfigElementModel extends Model implements \JsonSerializable
         $arrColumns = ["$t.pid=?"];
 
         if (isset($arrOptions['ignoreFePreview']) || !\defined('BE_USER_LOGGED_IN') || !BE_USER_LOGGED_IN) {
-            $time = \Date::floorToMinute();
+            $time = Date::floorToMinute();
             $arrColumns[] = "($t.start='' OR $t.start<='$time') AND ($t.stop='' OR $t.stop>'".($time + 60)."') AND $t.published='1'";
         }
 
@@ -208,7 +206,7 @@ class FilterConfigElementModel extends Model implements \JsonSerializable
         }
 
         if (!empty($types)) {
-            $arrColumns[] = \Database::getInstance()->findInSet("$t.type", $types);
+            $arrColumns[] = Database::getInstance()->findInSet("$t.type", $types);
         }
 
         /** @var Model $adapter */
@@ -228,19 +226,19 @@ class FilterConfigElementModel extends Model implements \JsonSerializable
      *
      * @return string|null
      */
-    public function getFormName(FilterConfig $config)
+    public function getFormName(FilterConfig $config): ?string
     {
         if (null !== $this->formName) {
             return $this->formName;
         }
 
-        if (!\System::getContainer()->has('huh.filter.choice.type')) {
+        if (!System::getContainer()->has('huh.filter.choice.type')) {
             return null;
         }
 
-        $types = \System::getContainer()->get('huh.filter.choice.type')->getCachedChoices();
+        $types = System::getContainer()->get('huh.filter.choice.type')->getCachedChoices();
 
-        if (!\is_array($types) || empty($types)) {
+        if (!is_array($types) || empty($types)) {
             return null;
         }
 

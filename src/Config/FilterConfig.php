@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2023 Heimrich & Hannot GmbH
+ * Copyright (c) 2024 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -640,8 +640,7 @@ class FilterConfig implements \JsonSerializable
     /**
      * {@inheritdoc}
      */
-    #[ReturnTypeWillChange]
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return get_object_vars($this);
     }

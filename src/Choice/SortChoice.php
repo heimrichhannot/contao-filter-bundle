@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2021 Heimrich & Hannot GmbH
+ * Copyright (c) 2024 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -12,6 +12,7 @@ use Contao\DataContainer;
 use Contao\System;
 use HeimrichHannot\FilterBundle\Sort\AbstractSort;
 use HeimrichHannot\FilterBundle\Util\AbstractChoice;
+use ReflectionClass;
 
 class SortChoice extends AbstractChoice
 {
@@ -35,7 +36,7 @@ class SortChoice extends AbstractChoice
                 continue;
             }
 
-            $r = new \ReflectionClass($type['class']);
+            $r = new ReflectionClass($type['class']);
 
             if (!$r->isSubclassOf(AbstractSort::class)) {
                 continue;

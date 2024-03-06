@@ -1,10 +1,14 @@
 <?php
 
 /*
- * Copyright (c) 2022 Heimrich & Hannot GmbH
+ * Copyright (c) 2024 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
+
+use Contao\DataContainer;
+use Contao\System;
+use HeimrichHannot\FilterBundle\Backend\FilterConfig;
 
 $GLOBALS['TL_DCA']['tl_filter_config'] = [
     'config' => [
@@ -13,7 +17,7 @@ $GLOBALS['TL_DCA']['tl_filter_config'] = [
         'switchToEdit' => true,
         'enableVersioning' => true,
         'onload_callback' => [
-            ['tl_filter_config', 'checkPermission'],
+            [FilterConfig::class, 'checkPermission'],
         ],
         'onsubmit_callback' => [
             ['huh.utils.dca', 'setDateAdded'],
@@ -57,26 +61,26 @@ $GLOBALS['TL_DCA']['tl_filter_config'] = [
                 'label' => &$GLOBALS['TL_LANG']['tl_filter_config']['editheader'],
                 'href' => 'act=edit',
                 'icon' => 'header.gif',
-                'button_callback' => ['tl_filter_config', 'editHeader'],
+                'button_callback' => [FilterConfig::class, 'editHeader'],
             ],
             'copy' => [
                 'label' => &$GLOBALS['TL_LANG']['tl_filter_config']['copy'],
                 'href' => 'act=copy',
                 'icon' => 'copy.gif',
-                'button_callback' => ['tl_filter_config', 'copyArchive'],
+                'button_callback' => [FilterConfig::class, 'copyArchive'],
             ],
             'delete' => [
                 'label' => &$GLOBALS['TL_LANG']['tl_filter_config']['copy'],
                 'href' => 'act=delete',
                 'icon' => 'delete.gif',
                 'attributes' => 'onclick="if(!confirm(\''.($GLOBALS['TL_LANG']['MSC']['deleteConfirm'] ?? null).'\'))return false;Backend.getScrollOffset()"',
-                'button_callback' => ['tl_filter_config', 'deleteArchive'],
+                'button_callback' => [FilterConfig::class, 'deleteArchive'],
             ],
             'toggle' => [
                 'label' => &$GLOBALS['TL_LANG']['tl_filter_config']['toggle'],
                 'icon' => 'visible.gif',
                 'attributes' => 'onclick="Backend.getScrollOffset();return AjaxRequest.toggleVisibility(this,%s)"',
-                'button_callback' => ['tl_filter_config', 'toggleIcon'],
+                'button_callback' => [FilterConfig::class, 'toggleIcon'],
             ],
             'show' => [
                 'label' => &$GLOBALS['TL_LANG']['tl_filter_config']['show'],
@@ -173,7 +177,7 @@ $GLOBALS['TL_DCA']['tl_filter_config'] = [
             'inputType' => 'select',
             'label' => &$GLOBALS['TL_LANG']['tl_filter_config']['template'],
             'options_callback' => function (DataContainer $dc) {
-                return \Contao\System::getContainer()->get('huh.filter.choice.template')->getCachedChoices($dc);
+                return System::getContainer()->get('huh.filter.choice.template')->getCachedChoices($dc);
             },
             'eval' => [
                 'mandatory' => true,
@@ -256,234 +260,3 @@ $GLOBALS['TL_DCA']['tl_filter_config'] = [
         ],
     ],
 ];
-
-class tl_filter_config extends \Backend
-{
-    public function checkPermission()
-    {
-        $user = \BackendUser::getInstance();
-        $database = \Database::getInstance();
-
-        if ($user->isAdmin) {
-            return;
-        }
-
-        // Set root IDs
-        if (!is_array($user->filters) || empty($user->filters)) {
-            $root = [0];
-        } else {
-            $root = $user->filters;
-        }
-
-        $GLOBALS['TL_DCA']['tl_filter_config']['list']['sorting']['root'] = $root;
-
-        // Check permissions to add archives
-        if (!$user->hasAccess('create', 'filterp')) {
-            $GLOBALS['TL_DCA']['tl_filter_config']['config']['closed'] = true;
-        }
-
-        /** @var \Symfony\Component\HttpFoundation\Session\SessionInterface $objSession */
-        $objSession = \System::getContainer()->get('session');
-
-        // Check current action
-        switch (\Input::get('act')) {
-            case 'create':
-            case 'select':
-                // Allow
-                break;
-
-            case 'edit':
-                // Dynamically add the record to the user profile
-                if (!in_array(\Input::get('id'), $root)) {
-                    /** @var \Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface $sessionBag */
-                    $sessionBag = $objSession->getBag('contao_backend');
-
-                    $arrNew = $sessionBag->get('new_records');
-
-                    if (is_array($arrNew['tl_filter_config']) && in_array(\Input::get('id'), $arrNew['tl_filter_config'])) {
-                        // Add the permissions on group level
-                        if ('custom' != $user->inherit) {
-                            $objGroup = $database->execute('SELECT id, filters, filterp FROM tl_user_group WHERE id IN('.implode(',', array_map('intval', $user->groups)).')');
-
-                            while ($objGroup->next()) {
-                                $arrModulep = \StringUtil::deserialize($objGroup->filterp);
-
-                                if (is_array($arrModulep) && in_array('create', $arrModulep)) {
-                                    $arrModules = \StringUtil::deserialize($objGroup->filters, true);
-                                    $arrModules[] = \Input::get('id');
-
-                                    $database->prepare('UPDATE tl_user_group SET filters=? WHERE id=?')->execute(serialize($arrModules), $objGroup->id);
-                                }
-                            }
-                        }
-
-                        // Add the permissions on user level
-                        if ('group' != $user->inherit) {
-                            $user = $database->prepare('SELECT filters, filterp FROM tl_user WHERE id=?')->limit(1)->execute($user->id);
-
-                            $arrModulep = \StringUtil::deserialize($user->filterp);
-
-                            if (is_array($arrModulep) && in_array('create', $arrModulep)) {
-                                $arrModules = \StringUtil::deserialize($user->filters, true);
-                                $arrModules[] = \Input::get('id');
-
-                                $database->prepare('UPDATE tl_user SET filters=? WHERE id=?')->execute(serialize($arrModules), $user->id);
-                            }
-                        }
-
-                        // Add the new element to the user object
-                        $root[] = \Input::get('id');
-                        $user->filters = $root;
-                    }
-                }
-            // no break;
-
-            case 'copy':
-            case 'delete':
-            case 'show':
-                if (!in_array(\Input::get('id'), $root) || ('delete' == \Input::get('act') && !$user->hasAccess('delete', 'filterp'))) {
-                    throw new \Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to '.\Input::get('act').' filter ID '.\Input::get('id').'.');
-                }
-
-                break;
-
-            case 'editAll':
-            case 'deleteAll':
-            case 'overrideAll':
-                $session = $objSession->all();
-
-                if ('deleteAll' == \Input::get('act') && !$user->hasAccess('delete', 'filterp')) {
-                    $session['CURRENT']['IDS'] = [];
-                } else {
-                    $session['CURRENT']['IDS'] = array_intersect($session['CURRENT']['IDS'], $root);
-                }
-                $objSession->replace($session);
-
-                break;
-
-            default:
-                if (strlen(\Input::get('act'))) {
-                    throw new \Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to '.\Input::get('act').' filters.');
-                }
-
-                break;
-        }
-    }
-
-    public function toggleIcon($row, $href, $label, $title, $icon, $attributes)
-    {
-        $user = \Contao\BackendUser::getInstance();
-
-        if (strlen(\Contao\Input::get('tid'))) {
-            $this->toggleVisibility(\Input::get('tid'), ('1' === \Input::get('state')), (@func_get_arg(12) ?: null));
-            $this->redirect($this->getReferer());
-        }
-
-        // Check permissions AFTER checking the tid, so hacking attempts are logged
-        if (!$user->hasAccess('tl_filter_config::published', 'alexf')) {
-            return '';
-        }
-
-        $href .= '&amp;tid='.$row['id'].'&amp;state='.($row['published'] ? '' : 1);
-
-        if (!$row['published']) {
-            $icon = 'invisible.svg';
-        }
-
-        return '<a href="'.$this->addToUrl($href).'" title="'.\Contao\StringUtil::specialchars($title).'"'.$attributes.'>'.\Contao\Image::getHtml($icon, $label, 'data-state="'.($row['published'] ? 1 : 0).'"').'</a> ';
-    }
-
-    public function toggleVisibility($intId, $blnVisible, DataContainer $dc = null)
-    {
-        $user = \Contao\BackendUser::getInstance();
-        $database = \Contao\Database::getInstance();
-
-        // Set the ID and action
-        \Input::setGet('id', $intId);
-        \Input::setGet('act', 'toggle');
-
-        if ($dc) {
-            $dc->id = $intId; // see #8043
-        }
-
-        // Trigger the onload_callback
-        if (is_array($GLOBALS['TL_DCA']['tl_filter_config']['config']['onload_callback'])) {
-            foreach ($GLOBALS['TL_DCA']['tl_filter_config']['config']['onload_callback'] as $callback) {
-                if (is_array($callback)) {
-                    $this->import($callback[0]);
-                    $this->{$callback[0]}->{$callback[1]}($dc);
-                } elseif (is_callable($callback)) {
-                    $callback($dc);
-                }
-            }
-        }
-
-        // Check the field access
-        if (!$user->hasAccess('tl_filter_config::published', 'alexf')) {
-            throw new \Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to publish/unpublish filter item ID '.$intId.'.');
-        }
-
-        // Set the current record
-        if ($dc) {
-            $objRow = $database->prepare('SELECT * FROM tl_filter_config WHERE id=?')->limit(1)->execute($intId);
-
-            if ($objRow->numRows) {
-                $dc->activeRecord = $objRow;
-            }
-        }
-
-        $objVersions = new \Versions('tl_filter_config_element', $intId);
-        $objVersions->initialize();
-
-        // Trigger the save_callback
-        if (is_array($GLOBALS['TL_DCA']['tl_filter_config']['fields']['published']['save_callback'])) {
-            foreach ($GLOBALS['TL_DCA']['tl_filter_config']['fields']['published']['save_callback'] as $callback) {
-                if (is_array($callback)) {
-                    $this->import($callback[0]);
-                    $blnVisible = $this->{$callback[0]}->{$callback[1]}($blnVisible, $dc);
-                } elseif (is_callable($callback)) {
-                    $blnVisible = $callback($blnVisible, $dc);
-                }
-            }
-        }
-
-        $time = time();
-
-        // Update the database
-        $database->prepare("UPDATE tl_filter_config SET tstamp=$time, published='".($blnVisible ? '1' : '')."' WHERE id=?")->execute($intId);
-
-        if ($dc) {
-            $dc->activeRecord->tstamp = $time;
-            $dc->activeRecord->published = ($blnVisible ? '1' : '');
-        }
-
-        // Trigger the onsubmit_callback
-        if (is_array($GLOBALS['TL_DCA']['tl_filter_config']['config']['onsubmit_callback'])) {
-            foreach ($GLOBALS['TL_DCA']['tl_filter_config']['config']['onsubmit_callback'] as $callback) {
-                if (is_array($callback)) {
-                    $this->import($callback[0]);
-                    $this->{$callback[0]}->{$callback[1]}($dc);
-                } elseif (is_callable($callback)) {
-                    $callback($dc);
-                }
-            }
-        }
-
-        $objVersions->create();
-    }
-
-    public function editHeader($row, $href, $label, $title, $icon, $attributes)
-    {
-        return \BackendUser::getInstance()->canEditFieldsOf('tl_filter_config') ? '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.\StringUtil::specialchars($title).'"'.$attributes.'>'.\Image::getHtml($icon, $label).'</a> ' : \Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
-    }
-
-    public function copyArchive($row, $href, $label, $title, $icon, $attributes)
-    {
-        return \BackendUser::getInstance()->hasAccess('create', 'filterp') ? '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.\StringUtil::specialchars($title).'"'.$attributes.'>'.\Image::getHtml($icon, $label).'</a> ' : \Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
-    }
-
-    public function deleteArchive($row, $href, $label, $title, $icon, $attributes)
-    {
-        return \BackendUser::getInstance()->hasAccess('delete', 'filterp') ? '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.\StringUtil::specialchars($title).'"'.$attributes.'>'.\Image::getHtml($icon, $label).'</a> ' : \Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
-    }
-}

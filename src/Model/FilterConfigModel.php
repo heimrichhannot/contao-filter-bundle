@@ -1,13 +1,14 @@
 <?php
 
 /*
- * Copyright (c) 2021 Heimrich & Hannot GmbH
+ * Copyright (c) 2024 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
 
 namespace HeimrichHannot\FilterBundle\Model;
 
+use Contao\Date;
 use Contao\Model;
 use Contao\System;
 
@@ -115,17 +116,13 @@ class FilterConfigModel extends Model
         $arrColumns = [];
 
         if (isset($arrOptions['ignoreFePreview']) || !\defined('BE_USER_LOGGED_IN') || !BE_USER_LOGGED_IN) {
-            $time = \Date::floorToMinute();
+            $time = Date::floorToMinute();
             $arrColumns[] = "($t.start='' OR $t.start<='$time') AND ($t.stop='' OR $t.stop>'".($time + 60)."') AND $t.published='1'";
         }
 
         /** @var Model $adapter */
         $adapter = System::getContainer()->get('contao.framework')->getAdapter(static::class);
 
-        if (null === $adapter) {
-            return null;
-        }
-
-        return $adapter->findBy($arrColumns, null, $options);
+        return $adapter?->findBy($arrColumns, null, $options);
     }
 }

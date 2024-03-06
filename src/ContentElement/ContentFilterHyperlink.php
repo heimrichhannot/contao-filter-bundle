@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2021 Heimrich & Hannot GmbH
+ * Copyright (c) 2024 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -9,6 +9,8 @@
 namespace HeimrichHannot\FilterBundle\ContentElement;
 
 use Contao\ContentHyperlink;
+use Contao\FilesModel;
+use Contao\StringUtil;
 use Contao\System;
 use HeimrichHannot\FilterBundle\Model\FilterPreselectModel;
 
@@ -19,19 +21,19 @@ class ContentFilterHyperlink extends ContentHyperlink
     /**
      * {@inheritdoc}
      */
-    protected function compile()
+    protected function compile(): void
     {
         if (null === ($this->url = $this->getFilterUrl())) {
             return;
         }
 
-        $this->url = ampersand($this->url);
+        $this->url = StringUtil::ampersand($this->url);
 
         $embed = explode('%s', $this->embed);
 
         // Use an image instead of the title
         if ($this->useImage && '' !== $this->singleSRC) {
-            $objModel = \FilesModel::findByUuid($this->singleSRC);
+            $objModel = FilesModel::findByUuid($this->singleSRC);
 
             if (null !== $objModel && is_file(TL_ROOT.'/'.$objModel->path)) {
                 $this->singleSRC = $objModel->path;
@@ -60,7 +62,7 @@ class ContentFilterHyperlink extends ContentHyperlink
         $this->Template->target = '';
 
         if ($this->titleText) {
-            $this->Template->linkTitle = \StringUtil::specialchars($this->titleText);
+            $this->Template->linkTitle = StringUtil::specialchars($this->titleText);
         }
 
         // Override the link target
@@ -84,14 +86,17 @@ class ContentFilterHyperlink extends ContentHyperlink
             return null;
         }
 
-        /** @var FilterPreselectModel $preselections */
-        $preselections = System::getContainer()->get('contao.framework')->createInstance(FilterPreselectModel::class);
+        /** @var FilterPreselectModel $preSelections */
+        $preSelections = System::getContainer()->get('contao.framework')->createInstance(FilterPreselectModel::class);
+        $preSelections = $preSelections->findPublishedByPidAndTableAndField($this->id, 'tl_content', 'filterPreselect');
 
-        if (null === ($preselections = $preselections->findPublishedByPidAndTableAndField($this->id, 'tl_content', 'filterPreselect'))) {
+        if (null === $preSelections) {
             return null;
         }
 
-        if (null === ($url = $filterConfig->getPreselectAction(System::getContainer()->get('huh.filter.util.filter_preselect')->getPreselectData($this->filterConfig, $preselections->getModels())))) {
+        $preselectModels = System::getContainer()->get('huh.filter.util.filter_preselect')->getPreselectData($this->filterConfig, $preSelections->getModels());
+        $url = $filterConfig->getPreselectAction($preselectModels);
+        if (null === $url) {
             return null;
         }
 

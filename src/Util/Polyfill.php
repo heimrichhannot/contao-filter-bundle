@@ -84,4 +84,29 @@ class Polyfill
 
         $page->templateGroup = $theme->templates;
     }
+
+
+    /**
+     * Filter an Array by given prefixes.
+     *
+     * @internal https://github.com/heimrichhannot/contao-utils-bundle/blob/ee122d2e267a60aa3200ce0f40d92c22028988e8/src/Arrays/ArrayUtil.php#L40
+     */
+    public static function filterByPrefixes(array $data = [], array $prefixes = []): array
+    {
+        $extract = [];
+
+        if (!is_array($prefixes) || empty($prefixes)) {
+            return $data;
+        }
+
+        foreach ($data as $key => $value) {
+            foreach ($prefixes as $prefix) {
+                if (str_starts_with($key, $prefix)) {
+                    $extract[$key] = $value;
+                }
+            }
+        }
+
+        return $extract;
+    }
 }

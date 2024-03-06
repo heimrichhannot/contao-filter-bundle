@@ -4,8 +4,14 @@ namespace HeimrichHannot\FilterBundle\Util;
 
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\System;
+use DateInterval;
+use HeimrichHannot\UtilsBundle\Util\Utils;
 use Psr\Cache\InvalidArgumentException;
+use ReflectionClass;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpKernel\KernelInterface;
+use const JSON_FORCE_OBJECT;
 
 /**
  * This is Polyfill of Utils v2 AbstractChoice
@@ -18,12 +24,23 @@ abstract class AbstractChoice
     protected string $cacheKey;
     protected mixed $context;
     protected ContaoFramework $framework;
+    protected RequestStack $requestStack;
+    protected Utils $utils;
+    protected KernelInterface $kernel;
 
     abstract protected function collect(): array;
 
-    public function __construct(ContaoFramework $framework)
+    public function __construct(
+        ContaoFramework $framework,
+        RequestStack $requestStack,
+        Utils $utils,
+        KernelInterface $kernel
+    )
     {
         $this->framework = $framework;
+        $this->requestStack = $requestStack;
+        $this->utils = $utils;
+        $this->kernel = $kernel;
     }
 
     public function getContext(): mixed
@@ -58,26 +75,28 @@ abstract class AbstractChoice
             $context = [];
         }
 
-        if (\is_array($context) && !isset($context['locale']) && ($request = System::getContainer()->get('request_stack')->getCurrentRequest())) {
+        $request = $this->requestStack->getCurrentRequest();
+        if (is_array($context) && !isset($context['locale']) && $request) {
             $context['locale'] = $request->getLocale();
         }
 
         $this->setContext($context);
 
         // disable cache while in debug mode or backend
-        if (true === System::getContainer()->getParameter('kernel.debug') || System::getContainer()->get('huh.utils.container')->isBackend()) {
+        if ($this->kernel->isDebug() || $this->utils->container()->isBackend()) {
             return $this->getChoices($this->getContext());
         }
 
-        $this->cacheKey = 'choice.'.preg_replace('#Choice$#', '', (new \ReflectionClass($this))->getShortName());
+        $this->cacheKey = 'choice.'.preg_replace('#Choice$#', '', (new ReflectionClass($this))->getShortName());
 
         // add unique identifier based on context
-        if (null !== $this->getContext() && false !== ($json = json_encode($this->getContext(), \JSON_FORCE_OBJECT))) {
+        $json = json_encode($this->getContext(), JSON_FORCE_OBJECT);
+        if (null !== $this->getContext() && false !== $json) {
             $this->cacheKey .= '.'.sha1($json);
         }
 
         if (!$this->cache) {
-            $this->cache = new FilesystemAdapter('', 0, System::getContainer()->get('kernel')->getCacheDir());
+            $this->cache = new FilesystemAdapter('', 0, $this->kernel->getCacheDir());
         }
 
         $cache = $this->cache->getItem($this->cacheKey);
@@ -86,7 +105,7 @@ abstract class AbstractChoice
             $choices = $this->getChoices($this->getContext());
 
             // TODO: clear cache on delegated field save_callback
-            $cache->expiresAfter(\DateInterval::createFromDateString('4 hour'));
+            $cache->expiresAfter(DateInterval::createFromDateString('4 hour'));
             $cache->set($choices);
 
             $this->cache->save($cache);

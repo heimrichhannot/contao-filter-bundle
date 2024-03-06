@@ -1,52 +1,63 @@
 <?php
 
 /*
- * Copyright (c) 2021 Heimrich & Hannot GmbH
+ * Copyright (c) 2024 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
 
 namespace HeimrichHannot\FilterBundle\Util;
 
-use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
+use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\DataContainer;
 use Contao\System;
-use HeimrichHannot\UtilsBundle\Util\Model\ModelUtil;
+use HeimrichHannot\FilterBundle\Choice\FieldChoice;
+use HeimrichHannot\UtilsBundle\Util\Utils;
+use Psr\Cache\InvalidArgumentException;
 
 class FilterConfigElementUtil
 {
-    /**
-     * @var ContaoFrameworkInterface
-     */
-    protected $framework;
+    protected ContaoFramework $framework;
+    protected Utils $utils;
+    protected FieldChoice $fieldChoice;
 
-    public function __construct(ContaoFrameworkInterface $framework)
-    {
+    public function __construct(
+        ContaoFramework $framework,
+        Utils $utils,
+        FieldChoice $fieldChoice
+    ) {
         $this->framework = $framework;
+        $this->utils = $utils;
+        $this->fieldChoice = $fieldChoice;
     }
 
+    /**
+     * @throws InvalidArgumentException
+     */
     public function getFields(DataContainer $dc)
     {
-        if (null === ($model = System::getContainer()->get(ModelUtil::class)->findModelInstanceByPk($dc->table, $dc->id))) {
+        $model = $this->utils->model()->findModelInstanceByPk($dc->table, $dc->id);
+        if (null === $model) {
             return [];
         }
 
-        if (null === ($filterConfig = System::getContainer()->get('huh.filter.manager')->findById($model->pid))) {
+        $filterConfig = System::getContainer()->get('huh.filter.manager')->findById($model->pid);
+        if (null === $filterConfig) {
             return [];
         }
 
-        return System::getContainer()->get('huh.utils.choice.field')->getCachedChoices([
+        return $this->fieldChoice->getCachedChoices([
             'dataContainer' => $filterConfig->getFilter()['dataContainer'],
         ]);
     }
 
-    public function getSortClasses(DataContainer $dc)
+    public function getSortClasses(DataContainer $dc): array
     {
         $types = [];
 
         $config = System::getContainer()->getParameter('huh.sort');
 
-        if (!isset($config['sort']['classes']) || !\is_array($config['sort']['classes'])) {
+        if (!isset($config['sort']['classes']) || !is_array($config['sort']['classes'])) {
             return $types;
         }
 
@@ -57,13 +68,13 @@ class FilterConfigElementUtil
         return $types;
     }
 
-    public function getSortDirections(DataContainer $dc)
+    public function getSortDirections(DataContainer $dc): array
     {
         $directions = [];
 
         $config = System::getContainer()->getParameter('huh.sort');
 
-        if (!isset($config['sort']['directions']) || !\is_array($config['sort']['directions'])) {
+        if (!isset($config['sort']['directions']) || !is_array($config['sort']['directions'])) {
             return $directions;
         }
 
@@ -78,7 +89,8 @@ class FilterConfigElementUtil
 
     public function getElements(DataContainer $dc, array $options = [])
     {
-        if (null === ($model = System::getContainer()->get(ModelUtil::class)->findModelInstanceByPk($dc->table, $dc->id))) {
+        $model = $this->utils->model()->findModelInstanceByPk($dc->table, $dc->id);
+        if (null === $model) {
             return [];
         }
 
@@ -89,6 +101,6 @@ class FilterConfigElementUtil
             'types' => $types,
         ];
 
-        return \Contao\System::getContainer()->get('huh.filter.choice.element')->getCachedChoices($context);
+        return System::getContainer()->get('huh.filter.choice.element')->getCachedChoices($context);
     }
 }

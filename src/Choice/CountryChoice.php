@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2021 Heimrich & Hannot GmbH
+ * Copyright (c) 2024 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -12,6 +12,7 @@ use Contao\Controller;
 use Contao\StringUtil;
 use Contao\System;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
+use Symfony\Component\Intl\Countries;
 use Symfony\Component\Intl\Intl;
 
 class CountryChoice extends FieldOptionsChoice
@@ -88,10 +89,8 @@ class CountryChoice extends FieldOptionsChoice
 
         $options = StringUtil::deserialize($element->countries, true);
 
-        $all = Intl::getRegionBundle()->getCountryNames();
+        $all = Countries::getNames();
 
-        $options = array_intersect_key($all, array_flip($options));
-
-        return $options;
+        return array_intersect_key($all, array_flip($options));
     }
 }

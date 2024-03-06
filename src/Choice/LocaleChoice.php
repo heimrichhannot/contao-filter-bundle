@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2021 Heimrich & Hannot GmbH
+ * Copyright (c) 2024 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -12,7 +12,7 @@ use Contao\Controller;
 use Contao\StringUtil;
 use Contao\System;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
-use Symfony\Component\Intl\Intl;
+use Symfony\Component\Intl\Locales;
 
 class LocaleChoice extends FieldOptionsChoice
 {
@@ -54,16 +54,19 @@ class LocaleChoice extends FieldOptionsChoice
 
         $translator = System::getContainer()->get('translator');
 
-        foreach ($options as $key => $option) {
-            if (!\is_array($option) && (!isset($option['label']) || !isset($option['value']))) {
+        foreach ($options as $key => $option)
+        {
+            if (!is_array($option) && (!isset($option['label']) || !isset($option['value']))) {
                 $choices[$option] = $key;
-
                 continue;
             }
 
-            if ($translator->getCatalogue()->has($option['label'])) {
+            if ($translator->getCatalogue()->has($option['label']))
+            {
                 $option['label'] = $translator->trans($option['label']);
-            } elseif (null !== ($label = Intl::getLocaleBundle()->getLocaleName($option['label']))) {
+            }
+            elseif (null !== ($label = Locales::getName($option['label'])))
+            {
                 $option['label'] = $label;
             }
 
@@ -78,7 +81,7 @@ class LocaleChoice extends FieldOptionsChoice
      *
      * @return array
      */
-    protected function getCustomLocaleOptions(FilterConfigElementModel $element, array $filter)
+    protected function getCustomLocaleOptions(FilterConfigElementModel $element, array $filter): array
     {
         if (null === $element->locales) {
             return [];
@@ -86,10 +89,8 @@ class LocaleChoice extends FieldOptionsChoice
 
         $options = StringUtil::deserialize($element->locales, true);
 
-        $all = Intl::getLocaleBundle()->getLocaleNames();
+        $all = Locales::getNames();
 
-        $options = array_intersect_key($all, array_flip($options));
-
-        return $options;
+        return array_intersect_key($all, array_flip($options));
     }
 }
