@@ -269,8 +269,8 @@ class FilterQueryBuilder extends QueryBuilder
 
         $filter = $config->getFilter();
 
-        if (class_exists(DcaRelationsManager::class) && $this->container->has(DcaRelationsManager::class)) {
-            $relation = $this->container->get(DcaRelationsManager::class)->getRelation($filter['dataContainer'], $element->field);
+        if (class_exists(DcaRelationsManager::class) && System::getContainer()->has(DcaRelationsManager::class)) {
+            $relation = System::getContainer()->get(DcaRelationsManager::class)->getRelation($filter['dataContainer'], $element->field);
         } elseif (class_exists(Relations::class)) {
             $relation = Relations::getRelation($filter['dataContainer'], $element->field);
         } else {
