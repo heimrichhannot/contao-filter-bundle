@@ -15,7 +15,7 @@ use const JSON_FORCE_OBJECT;
 
 /**
  * This is Polyfill of Utils v2 AbstractChoice
- * @internal https://github.com/heimrichhannot/contao-utils-bundle/blob/ee122d2e267a60aa3200ce0f40d92c22028988e8/src/Choice/AbstractChoice.php#L15
+ * @internal {@see https://github.com/heimrichhannot/contao-utils-bundle/blob/ee122d2e267a60aa3200ce0f40d92c22028988e8/src/Choice/AbstractChoice.php#L15}
  */
 abstract class AbstractChoice
 {

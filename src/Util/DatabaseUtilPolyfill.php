@@ -7,6 +7,9 @@ use Contao\CoreBundle\InsertTag\InsertTagParser;
 use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Query\QueryBuilder;
 
+/**
+ * @internal {@see https://github.com/heimrichhannot/contao-utils-bundle/blob/ee122d2e267a60aa3200ce0f40d92c22028988e8/src/Database/DatabaseUtil.php#L19}
+ */
 class DatabaseUtilPolyfill
 {
     const SQL_CONDITION_OR = 'OR';
@@ -86,7 +89,7 @@ class DatabaseUtilPolyfill
      * Computes a MySQL condition appropriate for the given operator.
      *
      * @return array Returns array($strQuery, $arrValues)
-     * @internal https://github.com/heimrichhannot/contao-utils-bundle/blob/ee122d2e267a60aa3200ce0f40d92c22028988e8/src/Database/DatabaseUtil.php#L425
+     * @internal {@see https://github.com/heimrichhannot/contao-utils-bundle/blob/ee122d2e267a60aa3200ce0f40d92c22028988e8/src/Database/DatabaseUtil.php#L425}
      * @noinspection PhpDuplicateSwitchCaseBodyInspection
      */
     public function computeCondition(string $field, string $operator, $value, string $table = null, bool $skipTablePrefix = false): array
