@@ -9,6 +9,7 @@
 namespace HeimrichHannot\FilterBundle\Filter\Type;
 
 use Contao\System;
+use HeimrichHannot\FilterBundle\Choice\FilterChoices;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use Symfony\Component\Form\FormBuilderInterface;
 
@@ -19,7 +20,7 @@ class CountryType extends ChoiceType
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FilterConfigElementModel $element, FormBuilderInterface $builder)
+    public function buildForm(FilterConfigElementModel $element, FormBuilderInterface $builder): void
     {
         $builder->add($this->getName($element), \Symfony\Component\Form\Extension\Core\Type\CountryType::class, $this->getOptions($element, $builder));
     }
@@ -27,12 +28,8 @@ class CountryType extends ChoiceType
     /**
      * {@inheritdoc}
      */
-    public function getChoices(FilterConfigElementModel $element)
+    public function getChoices(FilterConfigElementModel $element): array
     {
-        if (!System::getContainer()->has('huh.filter.choice.country')) {
-            return [];
-        }
-
-        return System::getContainer()->get('huh.filter.choice.country')->getCachedChoices([$element, $this->config->getFilter()]);
+        return FilterChoices::getCountryOptions($element, $this->config->getFilter());
     }
 }

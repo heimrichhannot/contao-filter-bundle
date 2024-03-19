@@ -12,6 +12,7 @@ use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\DataContainer;
 use Contao\System;
 use HeimrichHannot\FilterBundle\Choice\FieldChoice;
+use HeimrichHannot\FilterBundle\Choice\FilterChoices;
 use HeimrichHannot\UtilsBundle\Util\Utils;
 use Psr\Cache\InvalidArgumentException;
 
@@ -94,13 +95,8 @@ class FilterConfigElementUtil
             return [];
         }
 
-        $types = $options['types'] ?? [];
+        $types = $options['types'] ?? null;
 
-        $context = [
-            'pid' => $model->pid,
-            'types' => $types,
-        ];
-
-        return System::getContainer()->get('huh.filter.choice.element')->getCachedChoices($context);
+        return FilterChoices::getElementOptions($model->pid, $types);
     }
 }

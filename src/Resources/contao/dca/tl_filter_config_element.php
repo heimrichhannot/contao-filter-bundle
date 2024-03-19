@@ -12,6 +12,7 @@ use Contao\Database;
 use Contao\DataContainer;
 use Contao\System;
 use HeimrichHannot\EntityFilterBundle\Util\DatabaseUtilPolyfill;
+use HeimrichHannot\FilterBundle\Choice\FilterChoices;
 use HeimrichHannot\FilterBundle\Choice\MessageChoice;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
 use HeimrichHannot\FilterBundle\Filter\Type\{
@@ -527,24 +528,18 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
             'filter' => true,
             'inputType' => 'select',
             'options_callback' => function (DataContainer $dc) {
-                if (null === ($model = System::getContainer()->get(Utils::class)->model()->findModelInstanceByPk($dc->table, $dc->id))) {
+                $model = System::getContainer()->get(Utils::class)->model()->findModelInstanceByPk($dc->table, $dc->id);
+                if (null === $model) {
                     return [];
                 }
 
-                $context = [
-                    'pid' => $model->pid,
-                ];
+                $types = match ($model->type) {
+                    DateRangeType::TYPE => ['date', 'time', 'date_time'],
+                    MultipleRangeType::TYPE => ['text'],
+                    default => null,
+                };
 
-                switch ($model->type) {
-                    case DateRangeType::TYPE:
-                        $context['types'] = ['date', 'time', 'date_time'];
-                        break;
-                    case MultipleRangeType::TYPE:
-                        $context['types'] = ['text'];
-                        break;
-                }
-
-                return System::getContainer()->get('huh.filter.choice.element')->getCachedChoices($context);
+                return FilterChoices::getElementOptions($model->pid, $types);
             },
             'eval' => ['chosen' => true, 'tl_class' => 'w50', 'includeBlankOption' => true, 'mandatory' => true],
             'sql' => "int(10) unsigned NOT NULL default '0'",
@@ -560,15 +555,9 @@ $GLOBALS['TL_DCA']['tl_filter_config_element'] = [
                     return [];
                 }
 
-                $context = [
-                    'pid' => $model->pid,
-                ];
+                $types = DateRangeType::TYPE === $model->type ? ['date', 'time', 'date_time'] : null;
 
-                if (DateRangeType::TYPE === $model->type) {
-                    $context['types'] = ['date', 'time', 'date_time'];
-                }
-
-                return System::getContainer()->get('huh.filter.choice.element')->getCachedChoices($context);
+                return FilterChoices::getElementOptions($model->pid, $types);
             },
             'eval' => ['chosen' => true, 'tl_class' => 'w50', 'includeBlankOption' => true, 'mandatory' => true],
             'sql' => "int(10) unsigned NOT NULL default '0'",
