@@ -52,7 +52,7 @@ class TextConcatType extends AbstractType
         $conditions = [];
 
         foreach ($fields as $field) {
-            if ('cfgTags' === $dca['fields'][$field]['inputType']) {
+            if ('cfgTags' === ($dca['fields'][$field]['inputType'] ?? null)) {
                 $associationTable = 'tl_cfg_tag_' . System::getContainer()->get('huh.utils.string')
                         ->removeLeadingString('tl_', $filter['dataContainer']);
                 $associationProperty = System::getContainer()->get('huh.utils.string')

@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.28.3] - 2024-03-21
+- Fixed: warnings
+
 ## [1.28.2] - 2024-02-14
 - Fixed: backend redirect issue
 - Fixed: exception in field option choice
