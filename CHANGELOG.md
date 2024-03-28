@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.28.4] - 2024-03-28
+- Fixed: normalized values not refreshed in filter data
+
 ## [1.28.3] - 2024-03-21
 - Fixed: warnings
 

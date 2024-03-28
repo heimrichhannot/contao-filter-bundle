@@ -149,6 +149,8 @@ class FilterQueryBuilder extends QueryBuilder
 
         if ($typeClass) {
             $value = $typeClass::normalizeValue($value);
+            $data[$name] = $value;
+            $config->setData($data);
         }
 
         /** @var FilterQueryBuilderComposeEvent $event */
