@@ -12,6 +12,7 @@ use Contao\CoreBundle\ServiceAnnotation\Callback;
 use Contao\DataContainer;
 use Contao\Image;
 use Contao\Message;
+use HeimrichHannot\FilterBundle\Config\FilterConfig;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
 use HeimrichHannot\FilterBundle\Filter\FilterCollection;
 use HeimrichHannot\FilterBundle\Manager\FilterManager;
@@ -31,14 +32,16 @@ class FilterConfigElementContainer
     private TranslatorInterface $translator;
     private RequestStack $requestStack;
     private FilterManager $filterManager;
+    private FilterConfig $filterConfig;
 
-    public function __construct(Utils $utils, FilterCollection $filterCollection, TranslatorInterface $translator, RequestStack $requestStack, FilterManager $filterManager)
+    public function __construct(Utils $utils, FilterCollection $filterCollection, TranslatorInterface $translator, RequestStack $requestStack, FilterManager $filterManager, FilterConfig $filterConfig)
     {
         $this->utils = $utils;
         $this->filterCollection = $filterCollection;
         $this->translator = $translator;
         $this->requestStack = $requestStack;
         $this->filterManager = $filterManager;
+        $this->filterConfig = $filterConfig;
     }
 
     /**
@@ -64,6 +67,10 @@ class FilterConfigElementContainer
                 'filterConfigElementModel' => $element,
             ])) {
             Message::addError($this->translator->trans('huh.filter.warning.not_supported_in_current_context'));
+        }
+
+        if ($this->isDublicateName($element)) {
+            Message::addError($this->translator->trans('tl_filter_config_element.warningDuplicateName', [], 'contao_tl_filter_config_element'));
         }
     }
 
@@ -193,5 +200,37 @@ class FilterConfigElementContainer
         }
 
         return $options;
+    }
+
+    public function isDublicateName(FilterConfigElementModel $element): bool
+    {
+        $elements = FilterConfigElementModel::findPublishedByPid($element->pid);
+        if (!$elements) {
+            return false;
+        }
+
+        $type = $this->filterCollection->getClassByType($element->type);
+        if (!$type) {
+            return false;
+        }
+        $type = new $type($this->filterConfig);
+
+        $elementName = $type->getName($element);
+
+        foreach ($elements as $sibling) {
+            if ($element->id === $sibling->id) {
+                continue;
+            }
+            $siblingType = $this->filterCollection->getClassByType($sibling->type);
+            if (!$siblingType) {
+                continue;
+            }
+            $siblingType = new $siblingType($this->filterConfig);
+            if ($elementName === $siblingType->getName($sibling)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

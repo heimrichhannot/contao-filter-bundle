@@ -9,6 +9,7 @@
 namespace HeimrichHannot\FilterBundle\Model;
 
 use Contao\Model;
+use Contao\Model\Collection;
 use Contao\System;
 use HeimrichHannot\FilterBundle\Config\FilterConfig;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
@@ -113,17 +114,17 @@ use HeimrichHannot\FilterBundle\Filter\AbstractType;
  * @method FilterConfigElementModel|null                                                     findOneByPublished($val, array $opt = [])
  * @method FilterConfigElementModel|null                                                     findOneByStart($val, array $opt = [])
  * @method FilterConfigElementModel|null                                                     findOneByStop($val, array $opt = [])
- * @method \Contao\Model\Collection|FilterConfigElementModel[]|FilterConfigElementModel|null findByPid($val, array $opt = [])
- * @method \Contao\Model\Collection|FilterConfigElementModel[]|FilterConfigElementModel|null findByTstamp($val, array $opt = [])
- * @method \Contao\Model\Collection|FilterConfigElementModel[]|FilterConfigElementModel|null findByTitle($val, array $opt = [])
- * @method \Contao\Model\Collection|FilterConfigElementModel[]|FilterConfigElementModel|null findByType($val, array $opt = [])
- * @method \Contao\Model\Collection|FilterConfigElementModel[]|FilterConfigElementModel|null findByDataContainer($val, array $opt = [])
- * @method \Contao\Model\Collection|FilterConfigElementModel[]|FilterConfigElementModel|null findByPublished($val, array $opt = [])
- * @method \Contao\Model\Collection|FilterConfigElementModel[]|FilterConfigElementModel|null findByStart($val, array $opt = [])
- * @method \Contao\Model\Collection|FilterConfigElementModel[]|FilterConfigElementModel|null findByStop($val, array $opt = [])
- * @method \Contao\Model\Collection|FilterConfigElementModel[]|FilterConfigElementModel|null findMultipleByIds($val, array $opt = [])
- * @method \Contao\Model\Collection|FilterConfigElementModel[]|FilterConfigElementModel|null findBy($col, $val, array $opt = [])
- * @method \Contao\Model\Collection|FilterConfigElementModel[]|FilterConfigElementModel|null findAll(array $opt = [])
+ * @method Collection|FilterConfigElementModel[]|FilterConfigElementModel|null findByPid($val, array $opt = [])
+ * @method Collection|FilterConfigElementModel[]|FilterConfigElementModel|null findByTstamp($val, array $opt = [])
+ * @method Collection|FilterConfigElementModel[]|FilterConfigElementModel|null findByTitle($val, array $opt = [])
+ * @method Collection|FilterConfigElementModel[]|FilterConfigElementModel|null findByType($val, array $opt = [])
+ * @method Collection|FilterConfigElementModel[]|FilterConfigElementModel|null findByDataContainer($val, array $opt = [])
+ * @method Collection|FilterConfigElementModel[]|FilterConfigElementModel|null findByPublished($val, array $opt = [])
+ * @method Collection|FilterConfigElementModel[]|FilterConfigElementModel|null findByStart($val, array $opt = [])
+ * @method Collection|FilterConfigElementModel[]|FilterConfigElementModel|null findByStop($val, array $opt = [])
+ * @method Collection|FilterConfigElementModel[]|FilterConfigElementModel|null findMultipleByIds($val, array $opt = [])
+ * @method Collection|FilterConfigElementModel[]|FilterConfigElementModel|null findBy($col, $val, array $opt = [])
+ * @method Collection|FilterConfigElementModel[]|FilterConfigElementModel|null findAll(array $opt = [])
  * @method int                                                                               countById($id, array $opt = [])
  * @method int                                                                               countByTstamp($val, array $opt = [])
  * @method int                                                                               countByType($val, array $opt = [])
@@ -149,7 +150,7 @@ class FilterConfigElementModel extends Model implements \JsonSerializable
      * @param int   $intLimit   An optional limit
      * @param array $arrOptions An optional options array
      *
-     * @return \Contao\Model\Collection|FilterConfigElementModel[]|FilterConfigElementModel|null A collection of models or null if there are no filter elements
+     * @return Collection|FilterConfigElementModel[]|FilterConfigElementModel|null A collection of models or null if there are no filter elements
      */
     public static function findPublishedByPid($intId, $intLimit = 0, array $arrOptions = [])
     {
@@ -187,7 +188,7 @@ class FilterConfigElementModel extends Model implements \JsonSerializable
      * @param int   $intLimit   An optional limit
      * @param array $arrOptions An optional options array
      *
-     * @return \Contao\Model\Collection|FilterConfigElementModel[]|FilterConfigElementModel|null A collection of models or null if there are no filter elements
+     * @return Collection|FilterConfigElementModel[]|FilterConfigElementModel|null A collection of models or null if there are no filter elements
      */
     public static function findPublishedByPidAndTypes($intId, array $types = [], $intLimit = 0, array $arrOptions = [])
     {

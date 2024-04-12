@@ -168,3 +168,8 @@ $lang['reference'] = [
     \HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_ARRAY => 'Array',
     \HeimrichHannot\FilterBundle\Filter\AbstractType::VALUE_TYPE_LATEST => 'Latest',
 ];
+
+/**
+ * Messages
+ */
+$lang['warningDuplicateName'] = 'There are multiple filters with the same name. Please use the function "Custom name" to avoid conflicts';

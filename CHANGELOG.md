@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.29.0] - 2024-04-12
+- Added: duplicate field name warning to filter config element backend
+
 ## [1.28.4] - 2024-03-28
 - Fixed: normalized values not refreshed in filter data
 

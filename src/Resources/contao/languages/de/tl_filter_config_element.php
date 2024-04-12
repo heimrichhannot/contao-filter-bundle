@@ -229,3 +229,8 @@ $lang['reference'] = [
     ProximitySearchType::COORDINATES_MODE_COMPOUND => 'Zusammengesetzt (&lt;lat&gt;,&lt;long&gt;)',
     ProximitySearchType::COORDINATES_MODE_SEPARATED => 'Separiert in Latitude- und Longitude-Feld',
 ];
+
+/**
+ * Messages
+ */
+$lang['warningDuplicateName'] = 'Es existieren mehrere Filter mit dem gleichen Namen. Bitte nutzen Sie die Funktion "Name anpassen, um Konflikte zu vermeiden.';
