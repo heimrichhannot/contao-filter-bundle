@@ -50,12 +50,7 @@ services:
     class: HeimrichHannot\FilterBundle\Config\FilterConfig
     shared: false
     public: true
-    arguments:
-    - "@service_container"
-    - "@contao.framework"
-    - "@huh.filter.session"
-    - "@doctrine.dbal.default_connection"
-    - "@request_stack"
+    autowire: true
   HeimrichHannot\FilterBundle\Config\FilterConfig: "@huh.filter.config"
 
   huh.filter.backend.filter_config_element:
@@ -141,6 +136,7 @@ services:
     class: HeimrichHannot\FilterBundle\Util\FilterAjaxUtil
     public: true
     autowire: true
+  HeimrichHannot\FilterBundle\Util\FilterAjaxUtil: '@huh.filter.util.filter_ajax'
 
   twig.truncate.service:
     class: Urodoz\Truncate\TruncateService

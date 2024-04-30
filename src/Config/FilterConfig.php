@@ -27,6 +27,7 @@ use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\Model\FilterConfigModel;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 use HeimrichHannot\FilterBundle\Session\FilterSession;
+use HeimrichHannot\FilterBundle\Util\FilterAjaxUtil;
 use HeimrichHannot\TwigSupportBundle\Filesystem\TwigTemplateLocator;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\Exception\TransformationFailedException;
@@ -84,29 +85,16 @@ class FilterConfig implements \JsonSerializable
      */
     protected $elements;
 
-    /**
-     * @var FormBuilderInterface|null
-     */
-    protected $builder;
+    protected ?FormBuilderInterface $builder = null;
 
-    /**
-     * @var FilterQueryBuilder
-     */
-    protected $queryBuilder;
+    protected FilterQueryBuilder $queryBuilder;
 
-    /**
-     * @var bool
-     */
-    protected $formSubmitted = false;
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
+    protected bool $formSubmitted = false;
 
-    /**
-     * @var RequestStack
-     */
-    private $requestStack;
+    private ContainerInterface $container;
+
+    private RequestStack $requestStack;
+    private FilterAjaxUtil $filterAjaxUtil;
 
     /**
      * Constructor.
@@ -116,13 +104,15 @@ class FilterConfig implements \JsonSerializable
         ContaoFrameworkInterface $framework,
         FilterSession $session,
         Connection $connection,
-        RequestStack $requestStack
+        RequestStack $requestStack,
+        FilterAjaxUtil $filterAjaxUtil
     ) {
         $this->framework = $framework;
         $this->session = $session;
         $this->container = $container;
         $this->queryBuilder = new FilterQueryBuilder($this->container, $this->framework, $connection);
         $this->requestStack = $requestStack;
+        $this->filterAjaxUtil = $filterAjaxUtil;
     }
 
     /**
@@ -466,12 +456,11 @@ class FilterConfig implements \JsonSerializable
             return $data;
         }
 
-        $currentUrl = strtok($this->requestStack->getCurrentRequest()->getSchemeAndHttpHost().
-            $this->requestStack->getCurrentRequest()->getRequestUri(), '?');
-
-        $referrer = strtok($this->requestStack->getCurrentRequest()->headers->get('referer'), '?');
-
         if ($this->filter['resetFilterInitial']) {
+            $currentUrl = strtok($this->requestStack->getCurrentRequest()->getSchemeAndHttpHost().
+                $this->requestStack->getCurrentRequest()->getRequestUri(), '?');
+            $referrer = strtok($this->requestStack->getCurrentRequest()->headers->get('referer'), '?');
+
             if (isset($data[FilterType::FILTER_FORM_SUBMITTED]) && true === $data[FilterType::FILTER_FORM_SUBMITTED]) {
                 $data[FilterType::FILTER_FORM_SUBMITTED] = false;
                 $this->formSubmitted = true;
