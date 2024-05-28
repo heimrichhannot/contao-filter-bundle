@@ -29,6 +29,7 @@ use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
 use HeimrichHannot\FilterBundle\Session\FilterSession;
 use HeimrichHannot\FilterBundle\Util\FilterAjaxUtil;
 use HeimrichHannot\TwigSupportBundle\Filesystem\TwigTemplateLocator;
+use HeimrichHannot\UtilsBundle\Url\UrlUtil;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -326,7 +327,11 @@ class FilterConfig implements \JsonSerializable
 
             $data = $form->getData();
             $data['f_submitted'] = true;
-            $url = $this->container->get('huh.utils.url')->removeQueryString([$form->getName()], $url ?: null);
+
+            /** @var UrlUtil $urlUtil */
+            $urlUtil = $this->container->get('huh.utils.url');
+
+            $url = $urlUtil->removeQueryString([$form->getName()], $url ?: null);
 
             // do not save filter id in session
             $this->setData($this->filter['mergeData'] ? array_merge($this->getData(), $data) : $data);
@@ -336,9 +341,6 @@ class FilterConfig implements \JsonSerializable
             if ($this->isResetButtonClicked($form)) {
                 $this->resetData();
                 $this->getBuilder()->setData($this->getData());
-                // redirect to referrer page without filter parameters
-                $url = $this->container->get('huh.utils.url')->removeQueryString([$form->getName()],
-                    $form->get(FilterType::FILTER_REFERRER_NAME)->getData() ?: null);
             }
 
             if (parse_url($url, \PHP_URL_HOST) !== parse_url(Environment::get('url'), \PHP_URL_HOST)) {
@@ -351,9 +353,9 @@ class FilterConfig implements \JsonSerializable
 
                 $url = implode('#', \array_slice($urlParts, 0, \count($urlParts) - 1));
 
-                $url = $this->container->get('huh.utils.url')->addQueryString('t='.time(), $url).'#'.$urlParts[\count($urlParts) - 1];
+                $url = $urlUtil->addQueryString('t='.time(), $url).'#'.$urlParts[\count($urlParts) - 1];
             } else {
-                $url = $this->container->get('huh.utils.url')->addQueryString('t='.time(), $url);
+                $url = $urlUtil->addQueryString('t='.time(), $url);
             }
 
             return new RedirectResponse($url, 303);

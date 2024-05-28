@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.30.1] - 2024-05-28
+- Fixed: filterFormAction url not used on form reset 
+
 ## [1.30.0] - 2024-05-28
 - Changed: use twig support bundle for filter template options
 - Deprecated: `TemplateChoice` and `huh.filter.choice.template`
