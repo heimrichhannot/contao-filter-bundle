@@ -171,10 +171,6 @@ $GLOBALS['TL_DCA']['tl_filter_config'] = [
         ],
         'template' => [
             'inputType' => 'select',
-            'label' => &$GLOBALS['TL_LANG']['tl_filter_config']['template'],
-            'options_callback' => function (DataContainer $dc) {
-                return \Contao\System::getContainer()->get('huh.filter.choice.template')->getCachedChoices($dc);
-            },
             'eval' => [
                 'mandatory' => true,
                 'tl_class' => 'w50',

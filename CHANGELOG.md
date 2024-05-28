@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.30.0] - 2024-05-28
+- Changed: use twig support bundle for filter template options
+- Deprecated: `TemplateChoice` and `huh.filter.choice.template`
+
 ## [1.29.0] - 2024-04-12
 - Added: duplicate field name warning to filter config element backend
 

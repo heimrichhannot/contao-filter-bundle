@@ -11,6 +11,9 @@ namespace HeimrichHannot\FilterBundle\Choice;
 use Contao\System;
 use HeimrichHannot\UtilsBundle\Choice\AbstractChoice;
 
+/**
+ * @deprecated Will be remove in next major version.
+ */
 class TemplateChoice extends AbstractChoice
 {
     /**

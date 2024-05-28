@@ -66,6 +66,7 @@ services:
   # choices
   huh.filter.choice.template:
     class: HeimrichHannot\FilterBundle\Choice\TemplateChoice
+    deprecated: ~
     public: true
     arguments:
     - "@contao.framework"
