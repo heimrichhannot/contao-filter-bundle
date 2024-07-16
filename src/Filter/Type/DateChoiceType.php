@@ -47,7 +47,7 @@ class DateChoiceType extends ChoiceType
         parent::__construct($config);
         $this->dateUtil = System::getContainer()->get('huh.utils.date');
         $this->modelUtil = System::getContainer()->get(ModelUtil::class);
-        $this->optionsChoice = System::getContainer()->get('huh.filter.choice.date');
+        $this->optionsChoice = System::getContainer()->get(DateChoice::class);
     }
 
     public function buildQuery(FilterQueryBuilder $builder, FilterConfigElementModel $element)

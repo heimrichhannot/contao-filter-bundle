@@ -11,6 +11,7 @@ namespace HeimrichHannot\FilterBundle\Choice;
 use Contao\Controller;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\InsertTag\InsertTagParser;
+use Contao\DataContainer;
 use Contao\Model\Collection;
 use Contao\StringUtil;
 use Contao\System;
@@ -26,8 +27,12 @@ use HeimrichHannot\UtilsBundle\Util\Utils;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\KernelInterface;
 
-class DateChoice extends AbstractChoice
+class DateChoice
 {
+    protected ContaoFramework $framework;
+    protected RequestStack $requestStack;
+    protected Utils $utils;
+    protected KernelInterface $kernel;
     private DatabaseUtilPolyfill $dbUtil;
     private InsertTagParser $insertTagParser;
 
@@ -39,33 +44,28 @@ class DateChoice extends AbstractChoice
         DatabaseUtilPolyfill $dbUtil,
         InsertTagParser $insertTagParser
     ) {
-        parent::__construct($framework, $requestStack, $utils, $kernel);
+        $this->framework = $framework;
+        $this->requestStack = $requestStack;
+        $this->utils = $utils;
+        $this->kernel = $kernel;
         $this->dbUtil = $dbUtil;
         $this->insertTagParser = $insertTagParser;
     }
 
     /**
-     * @return array
+     * @param FilterConfigElementModel[]|Collection<FilterConfigElementModel> $elements
      */
-    protected function collect(): array
-    {
-        if (!\is_array($this->getContext()) || empty($this->getContext())) {
-            return [];
-        }
-
-        $context = $this->getContext();
-
-        $filter = $context['filter'];
-        $table = $filter['dataContainer'];
-
-        /** @var FilterConfigElementModel $element */
-        $element = $context['element'];
-
-        /** @var FilterConfigElementModel[]|Collection $elements */
-        $elements = \is_array($context['elements']) || $context['elements'] instanceof Collection ? $context['elements'] : [$context['elements']];
+    protected function getOptions(
+        string                   $table,
+        FilterConfigElementModel $element,
+        array|Collection         $elements,
+        bool                     $latest = false
+    ): array {
 
         $columns = [];
         $values = [];
+
+        $filter = ['dataContainer' => $table];
 
         foreach ($elements as $entry) {
             switch ($entry->type) {
@@ -134,7 +134,7 @@ class DateChoice extends AbstractChoice
 
         $options = [];
 
-        if (isset($context['latest']) && true === $context['latest']) {
+        if ($latest) {
             $options['order'] = $table.'.'.$element->field.' DESC';
             $options['limit'] = 1;
         } else {
@@ -145,7 +145,7 @@ class DateChoice extends AbstractChoice
             return [];
         }
 
-        $items = $this->utils->model()->findModelInstancesBy($filter['dataContainer'], $columns, $values, $options);
+        $items = $this->utils->model()->findModelInstancesBy($table, $columns, $values, $options);
 
         if (!$items) {
             return [];

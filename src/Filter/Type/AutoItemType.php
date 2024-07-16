@@ -12,7 +12,7 @@ use Contao\Input;
 use HeimrichHannot\FilterBundle\Filter\AbstractType;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
 use HeimrichHannot\FilterBundle\QueryBuilder\FilterQueryBuilder;
-use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
+use HeimrichHannot\FilterBundle\Util\DatabaseUtilPolyfill;
 use Symfony\Component\Form\FormBuilderInterface;
 
 class AutoItemType extends AbstractType
@@ -42,7 +42,7 @@ class AutoItemType extends AbstractType
      */
     public function getDefaultOperator(FilterConfigElementModel $element)
     {
-        return DatabaseUtil::OPERATOR_LIKE;
+        return DatabaseUtilPolyfill::OPERATOR_LIKE;
     }
 
     /**

@@ -72,18 +72,6 @@ services:
   HeimrichHannot\FilterBundle\Choice\FieldOptionsChoice: ~
   huh.filter.choice.field_options: '@HeimrichHannot\FilterBundle\Choice\FieldOptionsChoice'
 
-  huh.filter.choice.country:
-    deprecated:
-        message: 'The "%service_id%" service is deprecated. Use HeimrichHannot\FilterBundle\Choice\FilterChoices::getCountryOptions instead.'
-        package: heimrichhannot/contao-filter-bundle
-        version: '<2.0.0'
-    public: true
-    synthetic: true
-
-  huh.filter.choice.date:
-    class: HeimrichHannot\FilterBundle\Choice\DateChoice
-    public: true
-
   huh.filter.choice.language:
     class: HeimrichHannot\FilterBundle\Choice\LanguageChoice
     public: true
@@ -91,14 +79,6 @@ services:
   huh.filter.choice.locale:
     class: HeimrichHannot\FilterBundle\Choice\LocaleChoice
     public: true
-
-  huh.filter.choice.element:
-    deprecated:
-        message: 'The "%service_id%" service is deprecated. Use HeimrichHannot\FilterBundle\Choice\FilterChoices::getElementOptions instead.'
-        package: heimrichhannot/contao-filter-bundle
-        version: '<2.0.0'
-    public: true
-    synthetic: true
 
   huh.filter.choice.year:
     class: HeimrichHannot\FilterBundle\Choice\YearChoice

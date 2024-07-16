@@ -14,7 +14,6 @@ use Symfony\Component\Intl\Countries;
 
 class FilterChoices
 {
-
     /**
      * @param FilterConfigElementModel $element
      * @param array|null $filter
