@@ -139,16 +139,6 @@ services:
     autowire: true
   HeimrichHannot\FilterBundle\Util\FilterAjaxUtil: '@huh.filter.util.filter_ajax'
 
-  twig.truncate.service:
-    class: Urodoz\Truncate\TruncateService
-
-  twig.extension.truncate.html:
-    class: Urodoz\Truncate\Bridge\Twig\TruncateExtension
-    arguments:
-    - "@twig.truncate.service"
-    tags:
-    - { name: twig.extension }
-
   twig.extension.string:
     class: Twig\Extra\String\StringExtension
     autowire: true
