@@ -14,9 +14,7 @@ use Contao\System;
 use Contao\Widget;
 use Doctrine\DBAL\FetchMode;
 use HeimrichHannot\FilterBundle\Model\FilterConfigElementModel;
-use HeimrichHannot\MailDrumBundle\Util\Util;
 use HeimrichHannot\UtilsBundle\Choice\AbstractChoice;
-use HeimrichHannot\UtilsBundle\Model\ModelUtil;
 use HeimrichHannot\UtilsBundle\Util\Utils;
 use Symfony\Component\Translation\Translator;
 use Symfony\Component\Translation\TranslatorBagInterface;
@@ -28,7 +26,7 @@ class FieldOptionsChoice extends AbstractChoice
      *
      * @return array
      */
-    public function getCachedChoices($context = null)
+    public function getCachedChoices($context = null): array
     {
         $choices = parent::getCachedChoices($context);
         $element = $context['element'];
