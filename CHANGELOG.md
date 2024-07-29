@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.30.3] - 2024-07-29
+- Fixed: php8 signature inheritance error
+
 ## [1.30.2] - 2024-07-16
 - Removed: Dependency [heimrichhannot/truncate-html](https://github.com/heimrichhannot/truncateHTML)
 
