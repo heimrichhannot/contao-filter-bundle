@@ -61,7 +61,7 @@ class LocaleChoice extends FieldOptionsChoice
                 continue;
             }
 
-            if ($translator->getCatalogue()->has($option['label'])) {
+            if ($translator->getCatalogue()->has((string) $option['label'])) {
                 $option['label'] = $translator->trans($option['label']);
             } elseif (null !== ($label = Intl::getLocaleBundle()->getLocaleName($option['label']))) {
                 $option['label'] = $label;

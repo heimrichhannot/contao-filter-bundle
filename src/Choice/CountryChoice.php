@@ -61,7 +61,7 @@ class CountryChoice extends FieldOptionsChoice
                 continue;
             }
 
-            if ($translator->getCatalogue()->has($option['label'])) {
+            if ($translator->getCatalogue()->has((string) $option['label'])) {
                 $option['label'] = $translator->trans($option['label']);
             } elseif (version_compare(VERSION, '4.9', '<') && null !== ($label = Intl::getRegionBundle()->getCountryName($option['label']))) {
                 $option['label'] = $label;

@@ -87,7 +87,7 @@ class FieldOptionsChoice extends AbstractChoice
             }
 
             if ($translator instanceof TranslatorBagInterface) {
-                if ($translator->getCatalogue()->has($option['label'])) {
+                if ($translator->getCatalogue()->has((string) $option['label'])) {
                     $option['label'] = $translator->trans($option['label']);
                 }
             } else {

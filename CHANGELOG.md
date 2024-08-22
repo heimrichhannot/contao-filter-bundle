@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.30.4] - 2024-08-22
+- Fixed: issues with integer labels in choice types
+
 ## [1.30.3] - 2024-07-29
 - Fixed: php8 signature inheritance error
 
