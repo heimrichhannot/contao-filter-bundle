@@ -216,7 +216,7 @@ class FieldOptionsChoice extends AbstractChoice
                     foreach ($items as $item) {
                         $multipleItems = array_merge($multipleItems, StringUtil::deserialize($item, true));
                     }
-                    $items = array_unique($multipleItems);
+                    $items = array_filter(array_unique($multipleItems));
                 }
 
                 if (isset($dca['foreignKey'])) {
