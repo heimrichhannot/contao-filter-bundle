@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.30.5] - 2026-01-07
+- Fixed: exception with dynamic choices and empty options set
+
 ## [1.30.4] - 2024-08-22
 - Fixed: issues with integer labels in choice types
 
